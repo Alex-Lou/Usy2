@@ -18,6 +18,11 @@ export function getProfile(userId: number): Promise<Profile> {
   return apiRequest<Profile>(`/api/profiles/${userId}`);
 }
 
+/** Both members' profiles — used by the home "us" strip. */
+export function getAllProfiles(): Promise<Profile[]> {
+  return apiRequest<Profile[]>("/api/profiles");
+}
+
 export function updateMyProfile(
   theme: Theme,
   widgets: Widget[],

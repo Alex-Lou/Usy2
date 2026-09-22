@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { SPECIES, type Species } from "../../app/companion";
+import { Animal } from "../../components/ui/animals";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
@@ -33,48 +35,67 @@ export function ProfilePage() {
   if (!profile) return <Loader />;
 
   const isOwn = user?.id === profile.userId;
-  // "custom" applies the profile's saved colors; otherwise the panel follows the
-  // app's light/dark theme (tokens flow through untouched).
+  // "custom" applies the profile's saved colors; otherwise the panel follows the app theme.
   const custom = profile.theme.mode === "custom";
-  const widgets = profile.widgets.map((w, i) => <WidgetRenderer key={i} widget={w} />);
+  const companion: Species =
+    profile.companion && (SPECIES as readonly string[]).includes(profile.companion)
+      ? (profile.companion as Species)
+      : "cat";
 
   return (
-    <div className="flex flex-col gap-4">
-      {isOwn && (
-        <div className="flex justify-end animate-fade-up">
-          <Link to="/profile/edit">
-            <Button variant="surface">
-              <Icon name="sliders" size={16} />
-              Personnaliser
-            </Button>
-          </Link>
+    <div style={custom ? buildThemeStyle(profile.theme) : undefined} className="flex flex-col gap-6 font-sans">
+      {/* Hero: cover band + overlapping avatar, with room to breathe. */}
+      <div className="card overflow-hidden bg-bg animate-fade-up">
+        <div className="relative h-28 sm:h-36" style={{ backgroundImage: "var(--grad)" }}>
+          {isOwn && (
+            <Link to="/profile/edit" className="absolute right-3 top-3">
+              <Button variant="surface" className="!px-3 !py-1.5 text-sm">
+                <Icon name="sliders" size={15} /> Personnaliser
+              </Button>
+            </Link>
+          )}
         </div>
-      )}
 
-      {/* Themed panel: custom colors scoped here, or the app theme when following it. */}
-      <div style={custom ? buildThemeStyle(profile.theme) : undefined} className="card overflow-hidden bg-bg p-6 font-sans text-text animate-fade-up">
-        <div className="mb-6 flex items-center gap-4">
-          <Avatar name={profile.displayName} size={72} assetId={profile.avatarAssetId} species={profile.companion} />
-          <div className="min-w-0">
-            <h1 className="font-display text-3xl font-bold text-primary">{profile.displayName}</h1>
-            <p className="text-text-muted">@{isOwn ? user?.username : "profil"}</p>
-            {profile.bio && <p className="mt-1 text-sm text-text">{profile.bio}</p>}
+        <div className="px-6 pb-6">
+          <div className="-mt-12 mb-3 rounded-full ring-4 ring-bg inline-block">
+            <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} species={profile.companion} />
           </div>
+          <h1 className="font-display text-3xl font-bold text-primary">{profile.displayName}</h1>
+          <p className="text-text-muted">@{isOwn ? user?.username : "profil"}</p>
+          {profile.bio && <p className="mt-2 max-w-prose text-text">{profile.bio}</p>}
         </div>
+      </div>
 
-        {profile.theme.layout === "sidebar-left" ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-[220px_1fr]">
-            <aside className="flex flex-col gap-4">{widgets}</aside>
-            <main className="rounded-token border border-border bg-surface p-6 text-text-muted">
-              Le fil de {profile.displayName} vit dans l'Accueil 💌
-            </main>
+      {/* Widgets — a spacious grid, marquee spans full width. */}
+      <section className="flex flex-col gap-3 animate-fade-up">
+        <h2 className="px-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
+          {isOwn ? "Mon petit monde" : `Le monde de ${profile.displayName}`}
+        </h2>
+
+        {profile.widgets.length === 0 ? (
+          <div className="card flex flex-col items-center gap-3 p-8 text-center">
+            <Animal species={companion} size={64} />
+            <p className="text-text-muted">
+              {isOwn ? "Ton espace est encore vide." : "Rien ici pour l'instant."}
+            </p>
+            {isOwn && (
+              <Link to="/profile/edit">
+                <Button>
+                  <Icon name="sparkles" size={16} /> Ajouter des widgets
+                </Button>
+              </Link>
+            )}
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
-            {widgets.length > 0 ? widgets : <p className="text-text-muted">Aucun widget pour l'instant.</p>}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {profile.widgets.map((w, i) => (
+              <div key={i} className={w.type === "marquee" ? "sm:col-span-2" : ""}>
+                <WidgetRenderer widget={w} />
+              </div>
+            ))}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
