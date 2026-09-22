@@ -1,0 +1,42 @@
+name: keep-alive
+
+# Pings the deployed app on a schedule so the Render free instance doesn't sleep.
+# Set a repository *variable* RENDER_URL to your app URL (e.g. https://memocat.onrender.com):
+#   Repo → Settings → Secrets and variables → Actions → Variables → New repository variable.
+# Note: scheduled workflows only run from the repository's DEFAULT branch.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the app
+        env:
+          RENDER_URL: ${{ vars.RENDER_URL }}
+        run: |
+          if [ -z "$RENDER_URL" ]; then
+            echo "RENDER_URL repo variable not set — skipping (set it to your https://<app>.onrender.com URL)."
+            exit 0
+          fi
+          echo "Pinging $RENDER_URL"
+          for i in 1 2 3 4; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 40 "$RENDER_URL/" || echo "000")
+            echo "attempt $i -> HTTP $code"
+            case "$code" in
+              2*|3*) echo "app is awake"; exit 0 ;;
+            esac
+            sleep 20
+          done
+          echo "app did not answer OK yet (likely waking up) — not failing the job"
+          exit 0
