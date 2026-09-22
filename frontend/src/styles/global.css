@@ -6,7 +6,110 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-bg text-text font-sans;
+    background: var(--app-bg);
+    background-attachment: fixed;
+    min-height: 100vh;
+    @apply text-text font-sans antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-token border border-border bg-surface shadow-card;
+  }
+  .glass {
+    background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--color-border);
+  }
+  .btn-brand {
+    background-image: var(--grad);
+    @apply font-semibold text-primary-foreground shadow-glow;
+  }
+  .chip {
+    @apply rounded-full border border-border bg-surface px-3 py-1 text-sm;
+  }
+}
+
+@layer utilities {
+  .text-grad {
+    background-image: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .font-script {
+    font-family: var(--font-script);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .animate-fade-up {
+    animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .animate-pop {
+    animation: pop 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .press {
+    @apply transition-transform active:scale-95;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, -24px);
   }
 }

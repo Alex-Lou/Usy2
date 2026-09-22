@@ -1,11 +1,11 @@
 import { useState } from "react";
+import { Icon } from "../../components/ui/Icon";
 import { ApiError } from "../../lib/api/client";
 import { addPhoto, uploadImage } from "./api";
 
 /**
- * Adds photos to an album. Uses the OS-native file picker via the webview:
- * "multiple" opens the gallery / existing folders, "capture" opens the camera
- * on mobile. Each file is uploaded then attached to the album.
+ * Adds photos to an album via the OS-native file picker in the webview:
+ * "multiple" opens the gallery / existing folders, "capture" opens the camera.
  */
 export function PhotoUploader({
   albumId,
@@ -40,36 +40,20 @@ export function PhotoUploader({
   }
 
   return (
-    <div className="rounded-token border border-border bg-surface p-4">
+    <div className="card p-4">
       <div className="flex flex-wrap gap-3">
-        <label className="flex-1 cursor-pointer rounded-token bg-primary px-4 py-3 text-center font-semibold text-primary-foreground hover:opacity-90">
-          🖼️ Choisir des photos
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            multiple
-            className="hidden"
-            disabled={busy}
-            onChange={(e) => handleFiles(e.target.files)}
-          />
+        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-token btn-brand px-4 py-3 font-semibold press">
+          <Icon name="images" size={18} />
+          Choisir des photos
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple className="hidden" disabled={busy} onChange={(e) => handleFiles(e.target.files)} />
         </label>
-        <label className="flex-1 cursor-pointer rounded-token border border-primary px-4 py-3 text-center font-semibold text-primary hover:bg-bg">
-          📷 Prendre une photo
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            disabled={busy}
-            onChange={(e) => handleFiles(e.target.files)}
-          />
+        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-token border border-primary/60 px-4 py-3 font-semibold text-primary press hover:bg-primary/10">
+          <Icon name="camera" size={18} />
+          Prendre une photo
+          <input type="file" accept="image/*" capture="environment" className="hidden" disabled={busy} onChange={(e) => handleFiles(e.target.files)} />
         </label>
       </div>
-      {progress && (
-        <p className="mt-3 text-sm text-text-muted">
-          Envoi… {progress.done}/{progress.total}
-        </p>
-      )}
+      {progress && <p className="mt-3 text-sm text-text-muted">Envoi… {progress.done}/{progress.total}</p>}
       {error && <p className="mt-3 text-sm text-danger">{error}</p>}
     </div>
   );

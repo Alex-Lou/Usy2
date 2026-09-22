@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { Avatar } from "../../components/ui/Avatar";
+import { Icon } from "../../components/ui/Icon";
 import { useAuth } from "../auth/useAuth";
 import { addComment, deleteComment, listComments } from "./api";
 import type { Comment } from "./types";
@@ -63,22 +65,21 @@ export function Comments({
 
   return (
     <div className="mt-3 border-t border-border pt-3">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {items.map((c) => (
-          <div key={c.id} className="flex items-start justify-between gap-2 text-sm">
-            <p>
-              <span className="font-semibold text-primary">{c.author.displayName}</span>{" "}
-              <span className="text-text">{c.text}</span>
-            </p>
-            {user?.id === c.author.id && (
-              <button
-                onClick={() => remove(c.id)}
-                className="shrink-0 text-xs text-text-muted hover:text-danger"
-                aria-label="Supprimer le commentaire"
-              >
-                ✕
-              </button>
-            )}
+          <div key={c.id} className="flex items-start gap-2.5">
+            <Avatar name={c.author.displayName} size={30} />
+            <div className="flex-1 rounded-token rounded-tl-sm bg-bg-2/50 px-3 py-2">
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="text-sm font-semibold text-primary">{c.author.displayName}</span>
+                {user?.id === c.author.id && (
+                  <button onClick={() => remove(c.id)} aria-label="Supprimer" className="text-text-muted hover:text-danger press">
+                    <Icon name="x" size={14} />
+                  </button>
+                )}
+              </div>
+              <p className="text-sm">{c.text}</p>
+            </div>
           </div>
         ))}
         {page + 1 < totalPages && (
@@ -94,14 +95,10 @@ export function Comments({
           onChange={(e) => setText(e.target.value)}
           maxLength={1000}
           placeholder="Écrire un commentaire…"
-          className="flex-1 rounded-token border border-border bg-surface px-3 py-1.5 text-sm outline-none focus:border-primary"
+          className="flex-1 rounded-full border border-border bg-bg-2/60 px-4 py-2 text-sm outline-none focus:border-primary/70"
         />
-        <button
-          type="submit"
-          disabled={busy || !text.trim()}
-          className="rounded-token bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-        >
-          Envoyer
+        <button type="submit" disabled={busy || !text.trim()} aria-label="Envoyer" className="grid h-10 w-10 place-items-center rounded-full btn-brand disabled:opacity-50 press">
+          <Icon name="send" size={16} />
         </button>
       </form>
     </div>

@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { AssetImage } from "../../components/AssetImage";
+import { Avatar } from "../../components/ui/Avatar";
+import { Icon } from "../../components/ui/Icon";
 import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
 import type { Post } from "./types";
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleString("fr-FR", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+function timeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "à l'instant";
+  if (m < 60) return `il y a ${m} min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `il y a ${h} h`;
+  return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
 }
 
 export function PostCard({
@@ -35,18 +38,14 @@ export function PostCard({
 
   async function toggleReaction(emoji: string) {
     const summary = post.reactions.find((r) => r.emoji === emoji);
-    const updated = summary?.reactedByMe
-      ? await unreact(post.id, emoji)
-      : await react(post.id, emoji);
-    onChanged(updated);
+    onChanged(summary?.reactedByMe ? await unreact(post.id, emoji) : await react(post.id, emoji));
   }
 
   async function saveEdit() {
     if (!editText.trim()) return;
     setBusy(true);
     try {
-      const updated = await updatePost(post.id, editText, post.imageAssetId);
-      onChanged(updated);
+      onChanged(await updatePost(post.id, editText, post.imageAssetId));
       setEditing(false);
     } finally {
       setBusy(false);
@@ -60,20 +59,23 @@ export function PostCard({
   }
 
   return (
-    <article className="rounded-token border border-border bg-surface p-4">
-      <header className="mb-2 flex items-center justify-between">
-        <div className="text-sm">
-          <span className="font-semibold text-primary">{post.author.displayName}</span>
-          <span className="text-text-muted"> · {formatDate(post.createdAt)}</span>
-          {post.edited && <span className="text-text-muted"> · modifié</span>}
+    <article className="card animate-fade-up overflow-hidden p-4">
+      <header className="mb-3 flex items-center gap-3">
+        <Avatar name={post.author.displayName} size={42} />
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-semibold">{post.author.displayName}</p>
+          <p className="text-xs text-text-muted">
+            {timeAgo(post.createdAt)}
+            {post.edited && " · modifié"}
+          </p>
         </div>
         {isOwn && !editing && (
-          <div className="flex gap-2 text-xs">
-            <button onClick={() => setEditing(true)} className="text-text-muted hover:underline">
-              Éditer
+          <div className="flex gap-1">
+            <button onClick={() => setEditing(true)} aria-label="Éditer" className="grid h-8 w-8 place-items-center rounded-token-sm text-text-muted hover:text-text press">
+              <Icon name="sliders" size={17} />
             </button>
-            <button onClick={remove} className="text-text-muted hover:text-danger">
-              Supprimer
+            <button onClick={remove} aria-label="Supprimer" className="grid h-8 w-8 place-items-center rounded-token-sm text-text-muted hover:text-danger press">
+              <Icon name="trash" size={17} />
             </button>
           </div>
         )}
@@ -86,40 +88,26 @@ export function PostCard({
             onChange={(e) => setEditText(e.target.value)}
             maxLength={2000}
             rows={3}
-            className="w-full resize-none rounded-token border border-border bg-surface px-3 py-2 outline-none focus:border-primary"
+            className="w-full resize-none rounded-token border border-border bg-bg-2/60 px-3 py-2 outline-none focus:border-primary/70"
           />
           <div className="mt-2 flex gap-2">
-            <button
-              onClick={saveEdit}
-              disabled={busy}
-              className="rounded-token bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-            >
+            <button onClick={saveEdit} disabled={busy} className="btn-brand rounded-token px-3 py-1.5 text-sm font-semibold disabled:opacity-50 press">
               Enregistrer
             </button>
-            <button
-              onClick={() => {
-                setEditing(false);
-                setEditText(post.text);
-              }}
-              className="rounded-token border border-border px-3 py-1.5 text-sm"
-            >
+            <button onClick={() => { setEditing(false); setEditText(post.text); }} className="rounded-token border border-border px-3 py-1.5 text-sm press">
               Annuler
             </button>
           </div>
         </div>
       ) : (
-        <p className="whitespace-pre-wrap text-text">{post.text}</p>
+        <p className="whitespace-pre-wrap leading-relaxed">{post.text}</p>
       )}
 
       {post.imageAssetId && (
-        <AssetImage
-          assetId={post.imageAssetId}
-          className="mt-3 max-h-96 w-full rounded-token object-cover"
-        />
+        <AssetImage assetId={post.imageAssetId} className="mt-3 max-h-[28rem] w-full rounded-token border border-border object-cover" />
       )}
 
-      {/* Reactions */}
-      <div className="mt-3 flex flex-wrap gap-1">
+      <div className="mt-4 flex flex-wrap gap-1.5">
         {emojis.map((emoji) => {
           const summary = post.reactions.find((r) => r.emoji === emoji);
           const active = summary?.reactedByMe ?? false;
@@ -127,13 +115,16 @@ export function PostCard({
             <button
               key={emoji}
               onClick={() => toggleReaction(emoji)}
-              className={`rounded-token border px-2 py-1 text-sm transition-colors ${
-                active ? "border-primary bg-primary/10" : "border-border hover:bg-bg"
-              }`}
+              className={
+                "flex items-center gap-1 rounded-full border px-2.5 py-1 text-sm transition press " +
+                (active
+                  ? "border-primary/60 bg-primary/15 text-text shadow-glow"
+                  : "border-border bg-bg-2/40 hover:border-primary/40")
+              }
             >
               <span>{emoji}</span>
               {summary && summary.count > 0 && (
-                <span className="ml-1 text-xs text-text-muted">{summary.count}</span>
+                <span className="text-xs font-semibold text-text-muted">{summary.count}</span>
               )}
             </button>
           );
@@ -142,14 +133,13 @@ export function PostCard({
 
       <button
         onClick={() => setShowComments((s) => !s)}
-        className="mt-3 text-sm text-text-muted hover:underline"
+        className="mt-3 flex items-center gap-1.5 text-sm text-text-muted transition hover:text-text press"
       >
-        💬 {commentCount} commentaire{commentCount > 1 ? "s" : ""}
+        <Icon name="chat" size={16} />
+        {commentCount} commentaire{commentCount > 1 ? "s" : ""}
       </button>
 
-      {showComments && (
-        <Comments postId={post.id} onCountChange={(d) => setCommentCount((c) => c + d)} />
-      )}
+      {showComments && <Comments postId={post.id} onCountChange={(d) => setCommentCount((c) => c + d)} />}
     </article>
   );
 }
