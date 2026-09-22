@@ -33,6 +33,6 @@ export function buildThemeStyle(theme: Theme): CSSProperties {
     "--color-surface": theme.colors.surface,
     "--color-primary": theme.colors.primary,
     "--color-text": theme.colors.text,
-    "--font-sans": FONT_STACKS[theme.font],
+    "--font-body": FONT_STACKS[theme.font],
   } as CSSProperties;
 }

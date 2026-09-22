@@ -1,95 +1,103 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Skeleton } from "../../components/ui/Skeleton";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { useAuth } from "../auth/useAuth";
 import { getReactionEmojis, listPosts } from "./api";
-import { Composer } from "./Composer";
+import { Composer, type ComposerSeed } from "./Composer";
+import { MomentsBar, type Moment } from "./MomentsBar";
 import { PostCard } from "./PostCard";
-import type { Page, Post } from "./types";
+import type { Post } from "./types";
 
 export function FeedPage() {
   const { user } = useAuth();
-  const [data, setData] = useState<Page<Post> | null>(null);
+  const [items, setItems] = useState<Post[] | null>(null);
   const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [emojis, setEmojis] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [seed, setSeed] = useState<ComposerSeed | undefined>();
+  const nonce = useRef(0);
 
   useEffect(() => {
     getReactionEmojis().then(setEmojis).catch(() => {});
   }, []);
 
-  const load = useCallback(() => {
-    listPosts(page, 10)
-      .then(setData)
-      .catch(() => setError("Impossible de charger le fil."));
-  }, [page]);
+  const load = useCallback(async (pageNum: number) => {
+    setLoading(true);
+    try {
+      const p = await listPosts(pageNum, 10);
+      setTotalPages(p.totalPages);
+      setPage(p.page);
+      setItems((prev) => (pageNum === 0 || !prev ? p.content : [...prev, ...p.content]));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    load();
+    load(0);
   }, [load]);
 
-  function handleCreated() {
-    if (page !== 0) setPage(0);
-    else load();
-  }
+  const hasMore = page + 1 < totalPages;
+  const sentinel = useInfiniteScroll<HTMLDivElement>(() => {
+    if (!loading && hasMore) load(page + 1);
+  }, !loading && hasMore);
 
-  function handleChanged(updated: Post) {
-    setData((d) =>
-      d ? { ...d, content: d.content.map((p) => (p.id === updated.id ? updated : p)) } : d,
-    );
-  }
-
-  function handleDeleted() {
-    load();
+  function pickMoment(m: Moment) {
+    nonce.current += 1;
+    setSeed({ text: m.text, wantImage: m.wantImage, nonce: nonce.current });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <Link to="/" className="text-sm text-text-muted hover:underline">
-          ← Accueil
-        </Link>
-        <h1 className="text-xl font-bold text-primary">Notre fil</h1>
-      </div>
+    <div className="flex flex-col gap-4">
+      <header className="animate-fade-up">
+        <p className="text-text-muted">Coucou {user?.displayName} 👋</p>
+        <h1 className="font-display text-2xl font-bold">Votre fil</h1>
+      </header>
 
-      <Composer onCreated={handleCreated} />
+      <MomentsBar onPick={pickMoment} />
+      <Composer onCreated={() => load(0)} seed={seed} />
 
-      {error && <p className="mt-4 text-danger">{error}</p>}
-
-      <div className="mt-4 flex flex-col gap-4">
-        {data?.content.length === 0 && (
-          <p className="text-center text-text-muted">Aucun post pour l'instant. À toi de commencer 💌</p>
-        )}
-        {data?.content.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            currentUserId={user?.id}
-            emojis={emojis}
-            onChanged={handleChanged}
-            onDeleted={handleDeleted}
-          />
-        ))}
-      </div>
-
-      {data && data.totalPages > 1 && (
-        <div className="mt-6 flex items-center justify-center gap-4">
-          <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={page === 0}
-            className="rounded-token border border-border px-3 py-1.5 text-sm disabled:opacity-40"
-          >
-            ← Précédent
-          </button>
-          <span className="text-sm text-text-muted">
-            Page {page + 1} / {data.totalPages}
-          </span>
-          <button
-            onClick={() => setPage((p) => (p + 1 < data.totalPages ? p + 1 : p))}
-            disabled={page + 1 >= data.totalPages}
-            className="rounded-token border border-border px-3 py-1.5 text-sm disabled:opacity-40"
-          >
-            Suivant →
-          </button>
+      {items === null ? (
+        <div className="flex flex-col gap-4">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="card p-4">
+              <div className="flex gap-3">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-3 w-32" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+              </div>
+              <Skeleton className="mt-3 h-4 w-full" />
+              <Skeleton className="mt-2 h-4 w-3/4" />
+            </div>
+          ))}
+        </div>
+      ) : items.length === 0 ? (
+        <div className="card flex flex-col items-center gap-2 p-10 text-center">
+          <span className="text-4xl">💌</span>
+          <p className="font-display text-xl font-bold">Rien encore ici</p>
+          <p className="text-text-muted">Touche un « moment » ci-dessus ou écris le tout premier post.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {items.map((post) => (
+            <PostCard
+              key={post.id}
+              post={post}
+              currentUserId={user?.id}
+              emojis={emojis}
+              onChanged={(u) => setItems((prev) => prev?.map((p) => (p.id === u.id ? u : p)) ?? prev)}
+              onDeleted={(id) => setItems((prev) => prev?.filter((p) => p.id !== id) ?? prev)}
+            />
+          ))}
+          {hasMore && (
+            <div ref={sentinel} className="py-4 text-center text-sm text-text-muted">
+              {loading ? "Chargement…" : ""}
+            </div>
+          )}
         </div>
       )}
     </div>
