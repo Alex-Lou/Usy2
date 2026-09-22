@@ -33,6 +33,9 @@ export function ProfilePage() {
   if (!profile) return <Loader />;
 
   const isOwn = user?.id === profile.userId;
+  // "custom" applies the profile's saved colors; otherwise the panel follows the
+  // app's light/dark theme (tokens flow through untouched).
+  const custom = profile.theme.mode === "custom";
   const widgets = profile.widgets.map((w, i) => <WidgetRenderer key={i} widget={w} />);
 
   return (
@@ -48,8 +51,8 @@ export function ProfilePage() {
         </div>
       )}
 
-      {/* Themed panel: the profile's own colors/font scoped to this container. */}
-      <div style={buildThemeStyle(profile.theme)} className="card overflow-hidden bg-bg p-6 font-sans text-text animate-fade-up">
+      {/* Themed panel: custom colors scoped here, or the app theme when following it. */}
+      <div style={custom ? buildThemeStyle(profile.theme) : undefined} className="card overflow-hidden bg-bg p-6 font-sans text-text animate-fade-up">
         <div className="mb-6 flex items-center gap-4">
           <Avatar name={profile.displayName} size={64} />
           <div>

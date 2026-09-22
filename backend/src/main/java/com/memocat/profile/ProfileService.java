@@ -28,7 +28,8 @@ public class ProfileService {
                     "primary", "#b5476b",
                     "text", "#2b2a28"),
             "trebuchet",
-            "classic");
+            "classic",
+            "app");
 
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
