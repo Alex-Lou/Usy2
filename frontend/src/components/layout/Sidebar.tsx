@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
+import { CompanionPicker } from "../ui/CompanionPicker";
 import { Icon } from "../ui/Icon";
 import { navItems } from "./nav";
 import { ThemeToggle } from "./ThemeToggle";
@@ -49,6 +50,7 @@ export function Sidebar() {
       </nav>
 
       <div className="mt-auto flex flex-col gap-3">
+        <CompanionPicker compact />
         <ThemeToggle />
         <div className="flex items-center gap-3 rounded-token border border-border bg-bg-2/50 p-2">
           <Avatar name={user?.displayName ?? "?"} size={38} />
