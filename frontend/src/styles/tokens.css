@@ -1,0 +1,23 @@
+/*
+ * Design tokens — the single source of truth for MemoCat styling.
+ * Components never hard-code colors/fonts; they use Tailwind semantic names
+ * that map to these variables. Profile theming (Tranche 2) will override
+ * these same variables at runtime.
+ */
+:root {
+  /* Colors — retro, MySpace-ish base palette */
+  --color-bg: #f4f1ea;
+  --color-surface: #ffffff;
+  --color-border: #e2ddd0;
+  --color-text: #2b2a28;
+  --color-text-muted: #7a756b;
+  --color-primary: #b5476b;
+  --color-primary-foreground: #ffffff;
+  --color-danger: #c0392b;
+
+  /* Typography */
+  --font-sans: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+
+  /* Shape */
+  --radius: 10px;
+}
