@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Skeleton } from "../../components/ui/Skeleton";
+import { EmptyState } from "../../components/ui/states";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { useAuth } from "../auth/useAuth";
 import { getReactionEmojis, listPosts } from "./api";
@@ -76,11 +77,7 @@ export function FeedPage() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="card flex flex-col items-center gap-2 p-10 text-center">
-          <span className="text-4xl">💌</span>
-          <p className="font-display text-xl font-bold">Rien encore ici</p>
-          <p className="text-text-muted">Touche un « moment » ci-dessus ou écris le tout premier post.</p>
-        </div>
+        <EmptyState title="Rien encore ici" subtitle="Touche un « moment » ci-dessus ou écris le tout premier post." />
       ) : (
         <div className="flex flex-col gap-4">
           {items.map((post) => (

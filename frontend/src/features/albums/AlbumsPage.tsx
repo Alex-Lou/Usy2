@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
 import { Skeleton } from "../../components/ui/Skeleton";
+import { EmptyState } from "../../components/ui/states";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { createAlbum, listAlbums } from "./api";
 import type { Album } from "./types";
@@ -78,11 +79,7 @@ export function AlbumsPage() {
           {[0, 1, 2, 3, 4, 5].map((i) => <Skeleton key={i} className="aspect-square" />)}
         </div>
       ) : items.length === 0 ? (
-        <div className="card flex flex-col items-center gap-2 p-10 text-center">
-          <span className="text-4xl">📸</span>
-          <p className="font-display text-xl font-bold">Aucun album</p>
-          <p className="text-text-muted">Créez le premier et remplissez-le de souvenirs.</p>
-        </div>
+        <EmptyState title="Aucun album" subtitle="Créez le premier et remplissez-le de souvenirs." />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">

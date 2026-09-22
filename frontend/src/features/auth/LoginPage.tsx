@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCompanion } from "../../app/companion";
+import { AnimalCharm } from "../../components/ui/animals";
 import { Button } from "../../components/ui/Button";
-import { CatCharm } from "../../components/ui/CatCharm";
+import { CompanionPicker } from "../../components/ui/CompanionPicker";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
 import { ThemeToggle } from "../../components/layout/ThemeToggle";
@@ -10,6 +12,7 @@ import { useAuth } from "./useAuth";
 
 export function LoginPage() {
   const { login } = useAuth();
+  const { companion } = useCompanion();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +50,7 @@ export function LoginPage() {
           </span>
           <div className="relative inline-block">
             <h1 className="font-display text-4xl font-bold text-grad">MemoCat</h1>
-            <CatCharm width={52} className="pointer-events-none absolute -right-8 -top-6 z-10" />
+            <AnimalCharm species={companion} width={54} className="pointer-events-none absolute -right-9 -top-6 z-10" />
           </div>
           <p className="mt-14 text-text-muted">Notre petit coin, rien qu'à nous deux 💫</p>
         </div>
@@ -91,6 +94,13 @@ export function LoginPage() {
 
         <div className="mt-6 flex justify-center">
           <ThemeToggle />
+        </div>
+
+        <div className="mt-5">
+          <p className="mb-2 text-center text-xs font-medium uppercase tracking-wide text-text-muted">
+            Choisis ton compagnon
+          </p>
+          <CompanionPicker />
         </div>
       </div>
     </div>
