@@ -1,0 +1,27 @@
+# Java / Maven
+backend/target/
+*.class
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/node_modules/
+
+# Tauri / Rust
+frontend/src-tauri/target/
+frontend/src-tauri/gen/
+
+# Env / secrets
+.env
+*.local
+
+# Uploads (local file storage)
+data/uploads/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
