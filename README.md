@@ -4,9 +4,11 @@ Réseau social privé « à deux » (couple), esprit MySpace : profils personnal
 fil de posts, albums photo, messagerie privée. Application de bureau native
 (Tauri 2 + React) sur backend Spring Boot / PostgreSQL.
 
-> **État : Tranche 1 (fondations + authentification).**
-> Le schéma DB complet est en place ; le code applicatif couvre pour l'instant
-> l'auth. Les fonctionnalités (profil, posts, albums, chat) arrivent par tranches.
+> **État : Tranche 2 (profil personnalisable : thème + widgets).**
+> Le schéma DB complet est en place. Le code applicatif couvre l'auth (T1) et le
+> profil personnalisable (T2). Les fonctionnalités suivantes (posts, albums, chat)
+> arrivent par tranches. Les widgets image (bannière, sticker) sont prévus en T3
+> avec l'upload de fichiers.
 
 ## Structure
 
@@ -76,9 +78,20 @@ npm run dev            # web (http://localhost:1420)
 npm run tauri dev      # génère d'abord les icônes : npm run tauri icon <source.png>
 ```
 
-## API (Tranche 1)
+## API
 
 | Méthode | Endpoint | Auth | Description |
 |---|---|---|---|
 | POST | `/api/auth/login` | non | `{username, password}` → `{token, expiresAt, user}` |
 | GET | `/api/auth/me` | JWT | Utilisateur courant |
+| GET | `/api/profiles/me` | JWT | Mon profil (créé par défaut si absent) |
+| PUT | `/api/profiles/me` | JWT | MAJ de mon thème + widgets (validé côté serveur) |
+| GET | `/api/profiles/{userId}` | JWT | Profil d'un utilisateur |
+
+### Contrat de personnalisation (validé par allowlist serveur)
+
+- **Couleurs** : clés `bg`, `surface`, `primary`, `text` — valeurs hex `#rrggbb` uniquement.
+- **Police** : `trebuchet`, `georgia`, `courier`, `comic`, `system`.
+- **Disposition** : `classic`, `sidebar-left`.
+- **Widgets** (liste ordonnée, max 20) : `marquee`/`quote` (`text`, ≤ 280),
+  `mood` (`emoji` ≤ 8, `label` ≤ 40 optionnel). Texte échappé à l'affichage.

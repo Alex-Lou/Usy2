@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./features/auth/LoginPage";
 import { HomePage } from "./features/home/HomePage";
+import { ProfileEditPage } from "./features/profile/ProfileEditPage";
+import { ProfilePage } from "./features/profile/ProfilePage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 
 export function App() {
@@ -12,6 +14,22 @@ export function App() {
         element={
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile/edit"
+        element={
+          <ProtectedRoute>
+            <ProfileEditPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile/:userId"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />
