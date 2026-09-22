@@ -17,6 +17,7 @@ frontend/src-tauri/gen/
 
 # Uploads (local file storage)
 data/uploads/
+backend/data/
 
 # IDE
 .idea/

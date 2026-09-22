@@ -4,11 +4,12 @@ Réseau social privé « à deux » (couple), esprit MySpace : profils personnal
 fil de posts, albums photo, messagerie privée. Application de bureau native
 (Tauri 2 + React) sur backend Spring Boot / PostgreSQL.
 
-> **État : Tranche 2 (profil personnalisable : thème + widgets).**
-> Le schéma DB complet est en place. Le code applicatif couvre l'auth (T1) et le
-> profil personnalisable (T2). Les fonctionnalités suivantes (posts, albums, chat)
-> arrivent par tranches. Les widgets image (bannière, sticker) sont prévus en T3
-> avec l'upload de fichiers.
+> **État : Tranche 3 (fil de posts).**
+> Le schéma DB complet est en place. Le code applicatif couvre l'auth (T1),
+> le profil personnalisable (T2) et le fil de posts avec upload d'images,
+> réactions et commentaires (T3). Les fonctionnalités suivantes (albums, chat)
+> arrivent par tranches. Les widgets image de profil (bannière, sticker)
+> pourront réutiliser l'infra d'upload de la T3.
 
 ## Structure
 
@@ -87,6 +88,15 @@ npm run tauri dev      # génère d'abord les icônes : npm run tauri icon <sour
 | GET | `/api/profiles/me` | JWT | Mon profil (créé par défaut si absent) |
 | PUT | `/api/profiles/me` | JWT | MAJ de mon thème + widgets (validé côté serveur) |
 | GET | `/api/profiles/{userId}` | JWT | Profil d'un utilisateur |
+| POST | `/api/assets` | JWT | Upload image (multipart `file`) → asset |
+| GET | `/api/assets/{id}` | JWT | Sert le fichier (récupéré en blob authentifié côté front) |
+| GET | `/api/posts?page=&size=` | JWT | Fil paginé (récent → ancien) |
+| POST | `/api/posts` | JWT | Créer un post (texte + image optionnelle) |
+| PUT/DELETE | `/api/posts/{id}` | JWT | Éditer / supprimer (le sien) |
+| PUT/DELETE | `/api/posts/{id}/reactions` | JWT | Poser / retirer une réaction emoji |
+| GET/POST | `/api/posts/{id}/comments?page=&size=` | JWT | Lister / commenter |
+| DELETE | `/api/comments/{id}` | JWT | Supprimer un commentaire (le sien) |
+| GET | `/api/reactions/emojis` | JWT | Set d'emojis de réaction autorisés |
 
 ### Contrat de personnalisation (validé par allowlist serveur)
 

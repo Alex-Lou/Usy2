@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./features/auth/LoginPage";
+import { FeedPage } from "./features/feed/FeedPage";
 import { HomePage } from "./features/home/HomePage";
 import { ProfileEditPage } from "./features/profile/ProfileEditPage";
 import { ProfilePage } from "./features/profile/ProfilePage";
@@ -14,6 +15,14 @@ export function App() {
         element={
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/feed"
+        element={
+          <ProtectedRoute>
+            <FeedPage />
           </ProtectedRoute>
         }
       />
