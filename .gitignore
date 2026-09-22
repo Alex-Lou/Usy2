@@ -7,6 +7,9 @@ node_modules/
 frontend/dist/
 frontend/node_modules/
 
+# Frontend build embedded into the backend at image build time (never committed)
+backend/src/main/resources/static/
+
 # Tauri / Rust
 frontend/src-tauri/target/
 frontend/src-tauri/gen/

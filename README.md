@@ -80,6 +80,27 @@ npm run dev            # web (http://localhost:1420)
 npm run tauri dev      # génère d'abord les icônes : npm run tauri icon <source.png>
 ```
 
+## Déploiement en ligne (Render, depuis un téléphone)
+
+Le repo contient un `Dockerfile` (service unique : Spring Boot sert le front buildé
++ l'API, même origine → pas de CORS/WebSocket cross-origin) et un `render.yaml`
+(blueprint : 1 service web Docker + 1 PostgreSQL managé).
+
+Depuis le navigateur de ton téléphone :
+1. Crée un compte sur https://render.com et connecte ton GitHub.
+2. **New → Blueprint**, choisis le repo `Alex-Lou/Usy2` (branche voulue).
+3. Render lit `render.yaml` : il crée la base `memocat-db` et le service `memocat`.
+   Renseigne les 6 variables des 2 comptes quand il les demande :
+   `MEMOCAT_USER1_USERNAME/PASSWORD/DISPLAY_NAME` et `MEMOCAT_USER2_*`.
+   (`MEMOCAT_JWT_SECRET` est auto-généré ; la connexion DB est câblée automatiquement.)
+4. **Apply** → build de l'image → l'app est servie sur l'URL `…onrender.com`,
+   ouvrable directement sur le téléphone.
+
+⚠️ Tier gratuit : le service « dort » après inactivité (réveil ~30 s) et la base
+gratuite expire ~30 jours. Le stockage des photos est en `/tmp` (pas de disque
+persistant en gratuit) → les images uploadées disparaissent à chaque redémarrage.
+Pour de la persistance : disque payant Render ou stockage objet.
+
 ## API
 
 | Méthode | Endpoint | Auth | Description |

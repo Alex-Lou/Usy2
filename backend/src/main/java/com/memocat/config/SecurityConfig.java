@@ -39,7 +39,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         // WebSocket handshake; auth is enforced at the STOMP CONNECT frame.
                         .requestMatchers("/ws/**").permitAll()
-                        .anyRequest().authenticated())
+                        // All other API endpoints require a valid JWT.
+                        .requestMatchers("/api/**").authenticated()
+                        // Everything else is the static SPA shell (HTML/JS/CSS) — public,
+                        // like any web app; the API above stays protected.
+                        .anyRequest().permitAll())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -55,7 +59,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(corsProperties.getAllowedOrigins());
+        // Patterns (not exact origins) so a wildcard stays valid alongside allowCredentials.
+        config.setAllowedOriginPatterns(corsProperties.getAllowedOrigins());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
