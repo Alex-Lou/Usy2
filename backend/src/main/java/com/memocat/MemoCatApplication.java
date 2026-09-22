@@ -3,14 +3,12 @@ package com.memocat;
 import com.memocat.config.AccountsProperties;
 import com.memocat.config.CorsProperties;
 import com.memocat.config.JwtProperties;
-import com.memocat.config.StorageProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties({JwtProperties.class, AccountsProperties.class, CorsProperties.class,
-        StorageProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, AccountsProperties.class, CorsProperties.class})
 public class MemoCatApplication {
 
     public static void main(String[] args) {
