@@ -27,7 +27,7 @@ const WIDGET_TYPES: WidgetType[] = [
 function defaultWidget(type: WidgetType): Widget {
   switch (type) {
     case "marquee":
-      return { type: "marquee", text: "Nouveau texte défilant" };
+      return { type: "marquee", text: "Bienvenue sur mon espace 💕" };
     case "quote":
       return { type: "quote", text: "Une citation" };
     case "richtext":
@@ -299,6 +299,12 @@ function WidgetEditor({
 }) {
   switch (widget.type) {
     case "marquee":
+      return (
+        <div>
+          <Input value={widget.text} maxLength={280} onChange={(e) => onPatch({ text: e.target.value })} />
+          <p className="mt-1 text-[11px] text-text-muted">Petit bandeau qui défile en haut de ton profil (mot de bienvenue, humeur du moment…).</p>
+        </div>
+      );
     case "quote":
       return <Input value={widget.text} maxLength={280} onChange={(e) => onPatch({ text: e.target.value })} />;
     case "richtext":

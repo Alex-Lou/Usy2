@@ -15,7 +15,7 @@ export const SVG_LABELS: Record<string, string> = {
 
 // Human labels for the widget picker (kept here so renderer + editor agree).
 export const WIDGET_LABELS: Record<WidgetType, string> = {
-  marquee: "Texte défilant",
+  marquee: "Bandeau défilant",
   quote: "Citation",
   richtext: "Texte enrichi",
   mood: "Humeur",

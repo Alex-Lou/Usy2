@@ -69,6 +69,14 @@ public class ProfileService {
         return toDto(getOrCreate(user));
     }
 
+    /** All profiles (both members of the couple) — used by the home "us" strip. */
+    @Transactional
+    public List<ProfileDto> getAllProfiles() {
+        return userRepository.findAll().stream()
+                .map(u -> toDto(getOrCreate(u)))
+                .toList();
+    }
+
     @Transactional
     public ProfileDto updateMyProfile(String username, ProfileUpdateRequest request) {
         themeValidator.validate(request.theme());

@@ -5,6 +5,7 @@ import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { useAuth } from "../auth/useAuth";
 import { getReactionEmojis, listPosts } from "./api";
 import { Composer, type ComposerSeed } from "./Composer";
+import { CoupleStrip } from "./CoupleStrip";
 import { MomentsBar, type Moment } from "./MomentsBar";
 import { PostCard } from "./PostCard";
 import type { Post } from "./types";
@@ -57,6 +58,7 @@ export function FeedPage() {
         <h1 className="font-display text-2xl font-bold">Votre fil</h1>
       </header>
 
+      <CoupleStrip />
       <MomentsBar onPick={pickMoment} />
       <Composer onCreated={() => load(0)} seed={seed} />
 
