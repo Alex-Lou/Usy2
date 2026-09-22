@@ -74,6 +74,18 @@
   .press {
     @apply transition-transform active:scale-95;
   }
+  /* Slow keychain-like pendulum swing, pivoting from the ring at the top. */
+  .animate-swing {
+    animation: swing 3.6s ease-in-out infinite;
+    transform-origin: 50% 6px;
+    transform-box: view-box;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-swing {
+    animation: none;
+  }
 }
 
 @keyframes fade-up {
@@ -111,5 +123,15 @@
   }
   50% {
     transform: translate(0, -24px);
+  }
+}
+
+@keyframes swing {
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(8deg);
   }
 }
