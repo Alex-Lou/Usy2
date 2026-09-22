@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
+import { CatCharm } from "../../components/ui/CatCharm";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
 import { ThemeToggle } from "../../components/layout/ThemeToggle";
@@ -44,8 +45,11 @@ export function LoginPage() {
           <span className="grid h-16 w-16 place-items-center rounded-token btn-brand animate-pop">
             <Icon name="heart" size={30} />
           </span>
-          <h1 className="font-display text-4xl font-bold text-grad">MemoCat</h1>
-          <p className="text-text-muted">Notre petit coin, rien qu'à nous deux 💫</p>
+          <div className="relative inline-block">
+            <h1 className="font-display text-4xl font-bold text-grad">MemoCat</h1>
+            <CatCharm width={52} className="pointer-events-none absolute -right-8 -top-6 z-10" />
+          </div>
+          <p className="mt-14 text-text-muted">Notre petit coin, rien qu'à nous deux 💫</p>
         </div>
 
         <form onSubmit={handleSubmit} className="card p-6 shadow-glow">
