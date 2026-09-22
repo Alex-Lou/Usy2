@@ -55,7 +55,6 @@ export function FeedPage() {
     <div className="flex flex-col gap-4">
       <header className="animate-fade-up">
         <p className="text-text-muted">Coucou {user?.displayName} 👋</p>
-        <h1 className="font-display text-2xl font-bold">Votre fil</h1>
       </header>
 
       <CoupleStrip />
