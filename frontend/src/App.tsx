@@ -5,6 +5,9 @@ import { FeedPage } from "./features/feed/FeedPage";
 import { AlbumsPage } from "./features/albums/AlbumsPage";
 import { AlbumPage } from "./features/albums/AlbumPage";
 import { ChatPage } from "./features/chat/ChatPage";
+import { GamesHub } from "./features/games/GamesHub";
+import { MorpionPage } from "./features/games/MorpionPage";
+import { SnakePage } from "./features/games/SnakePage";
 import { ProfilePage } from "./features/profile/ProfilePage";
 import { ProfileEditPage } from "./features/profile/ProfileEditPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
@@ -24,6 +27,9 @@ export function App() {
         <Route path="/albums" element={<AlbumsPage />} />
         <Route path="/albums/:id" element={<AlbumPage />} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/jeux" element={<GamesHub />} />
+        <Route path="/jeux/morpion" element={<MorpionPage />} />
+        <Route path="/jeux/snake" element={<SnakePage />} />
         <Route path="/profile/edit" element={<ProfileEditPage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
       </Route>
