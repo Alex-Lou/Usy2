@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { App } from "./App";
 import { AppThemeProvider } from "./app/theme";
 import { CompanionProvider } from "./app/companion";
+import { NotificationsProvider } from "./app/notifications";
 import { AuthProvider } from "./features/auth/AuthContext";
 import "./styles/global.css";
 
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <CompanionProvider>
         <BrowserRouter>
           <AuthProvider>
-            <App />
+            <NotificationsProvider>
+              <App />
+            </NotificationsProvider>
           </AuthProvider>
         </BrowserRouter>
       </CompanionProvider>
