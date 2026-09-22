@@ -18,6 +18,9 @@ export function HomePage() {
           <Link to="/feed">
             <Button>Notre fil</Button>
           </Link>
+          <Link to="/albums">
+            <Button>Nos albums</Button>
+          </Link>
           {user && (
             <>
               <Link to={`/profile/${user.id}`}>
