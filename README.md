@@ -4,12 +4,13 @@ Réseau social privé « à deux » (couple), esprit MySpace : profils personnal
 fil de posts, albums photo, messagerie privée. Application de bureau native
 (Tauri 2 + React) sur backend Spring Boot / PostgreSQL.
 
-> **État : Tranche 3 (fil de posts).**
+> **État : Tranche 4 (albums photo).**
 > Le schéma DB complet est en place. Le code applicatif couvre l'auth (T1),
-> le profil personnalisable (T2) et le fil de posts avec upload d'images,
-> réactions et commentaires (T3). Les fonctionnalités suivantes (albums, chat)
-> arrivent par tranches. Les widgets image de profil (bannière, sticker)
-> pourront réutiliser l'infra d'upload de la T3.
+> le profil personnalisable (T2), le fil de posts (T3) et les albums photo
+> partagés (T4). Reste la messagerie temps réel (T5) pour finir la V1.
+> Côté mobile : la sélection/prise de photos passe par le sélecteur natif de
+> l'OS via le webview (`<input type="file" ... capture>`), qui donne accès à la
+> galerie, aux dossiers existants et à l'appareil photo.
 
 ## Structure
 
@@ -97,6 +98,15 @@ npm run tauri dev      # génère d'abord les icônes : npm run tauri icon <sour
 | GET/POST | `/api/posts/{id}/comments?page=&size=` | JWT | Lister / commenter |
 | DELETE | `/api/comments/{id}` | JWT | Supprimer un commentaire (le sien) |
 | GET | `/api/reactions/emojis` | JWT | Set d'emojis de réaction autorisés |
+| GET | `/api/albums?page=&size=` | JWT | Albums paginés (récent → ancien) |
+| POST | `/api/albums` | JWT | Créer un album |
+| GET/PUT/DELETE | `/api/albums/{id}` | JWT | Voir / éditer / supprimer un album |
+| GET | `/api/albums/{id}/photos?page=&size=` | JWT | Photos paginées d'un album |
+| POST | `/api/albums/{id}/photos` | JWT | Ajouter une photo (asset + légende) |
+| PUT/DELETE | `/api/albums/{id}/photos/{photoId}` | JWT | Légende / suppression d'une photo |
+| PUT | `/api/albums/{id}/photos/order` | JWT | Réordonner les photos |
+
+Albums **partagés** : les deux comptes voient et gèrent tous les albums.
 
 ### Contrat de personnalisation (validé par allowlist serveur)
 

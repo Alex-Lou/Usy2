@@ -1,4 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { AlbumPage } from "./features/albums/AlbumPage";
+import { AlbumsPage } from "./features/albums/AlbumsPage";
 import { LoginPage } from "./features/auth/LoginPage";
 import { FeedPage } from "./features/feed/FeedPage";
 import { HomePage } from "./features/home/HomePage";
@@ -23,6 +25,22 @@ export function App() {
         element={
           <ProtectedRoute>
             <FeedPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/albums"
+        element={
+          <ProtectedRoute>
+            <AlbumsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/albums/:id"
+        element={
+          <ProtectedRoute>
+            <AlbumPage />
           </ProtectedRoute>
         }
       />
