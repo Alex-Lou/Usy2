@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { Client } from "@stomp/stompjs";
+import { useCompanion } from "../../app/companion";
+import { Animal } from "../../components/ui/animals";
 import { Avatar } from "../../components/ui/Avatar";
 import { Icon } from "../../components/ui/Icon";
 import { useAuth } from "../auth/useAuth";
@@ -13,6 +15,7 @@ function formatTime(iso: string): string {
 
 export function ChatPage() {
   const { user } = useAuth();
+  const { companion } = useCompanion();
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
   const [connected, setConnected] = useState(false);
@@ -80,7 +83,7 @@ export function ChatPage() {
         )}
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
-            <span className="text-4xl">💬</span>
+            <Animal species={companion} size={76} />
             <p className="text-text-muted">Aucun message. Dis coucou !</p>
           </div>
         ) : (

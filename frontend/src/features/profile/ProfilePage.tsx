@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
+import { Loader } from "../../components/ui/states";
 import { useAuth } from "../auth/useAuth";
 import { getProfile } from "./api";
 import { buildThemeStyle } from "./theme";
@@ -29,7 +30,7 @@ export function ProfilePage() {
   }, [id]);
 
   if (error) return <div className="p-8 text-danger">{error}</div>;
-  if (!profile) return <div className="p-8 text-text-muted">Chargement…</div>;
+  if (!profile) return <Loader />;
 
   const isOwn = user?.id === profile.userId;
   const widgets = profile.widgets.map((w, i) => <WidgetRenderer key={i} widget={w} />);
