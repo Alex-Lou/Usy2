@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { NotificationsListener } from "../../features/notifications/NotificationsListener";
 import { BottomTabBar } from "./BottomTabBar";
+import { MobileMenu } from "./MobileMenu";
 import { NotificationBell } from "./NotificationBell";
 import { Sidebar } from "./Sidebar";
 
@@ -20,11 +21,13 @@ export function AppLayout() {
       </div>
 
       <Sidebar />
+      <MobileMenu />
       <NotificationBell />
       <NotificationsListener />
 
       <main className="lg:pl-64">
-        <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-5 lg:pb-12 lg:pt-8">
+        {/* Extra top padding on mobile clears the fixed burger + bell (top-4, h-11). */}
+        <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-20 lg:pb-12 lg:pt-8">
           <Outlet />
         </div>
       </main>
