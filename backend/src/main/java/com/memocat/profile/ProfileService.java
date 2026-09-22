@@ -11,15 +11,21 @@ import com.memocat.profile.dto.ThemeDto;
 import com.memocat.profile.dto.WidgetDto;
 import com.memocat.repository.ProfileRepository;
 import com.memocat.repository.UserRepository;
+import com.memocat.web.ContentValidationException;
 import com.memocat.web.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ProfileService {
+
+    static final Set<String> COMPANIONS = Set.of(
+            "cat", "dog", "wolf", "rabbit", "lizard", "raccoon", "capybara", "robin", "parrot");
+    private static final int MAX_BIO = 200;
 
     private static final ThemeDto DEFAULT_THEME = new ThemeDto(
             Map.of(
@@ -70,10 +76,35 @@ public class ProfileService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (request.avatarAssetId() != null && request.avatarAssetId() <= 0) {
+            throw new ContentValidationException("Invalid avatar");
+        }
+        String bio = request.bio() == null ? null : request.bio().strip();
+        if (bio != null && bio.length() > MAX_BIO) {
+            throw new ContentValidationException("Bio too long (max " + MAX_BIO + ")");
+        }
+
+        user.setAvatarAssetId(request.avatarAssetId());
+        userRepository.save(user);
+
         Profile profile = getOrCreate(user);
         profile.setThemeJson(writeJson(request.theme()));
         profile.setWidgetsJson(writeJson(request.widgets()));
+        profile.setBio(bio == null || bio.isBlank() ? null : bio);
         return toDto(profileRepository.save(profile));
+    }
+
+    @Transactional
+    public ProfileDto updateCompanion(String username, String companion) {
+        if (companion == null || !COMPANIONS.contains(companion)) {
+            throw new ContentValidationException("Unknown companion: " + companion);
+        }
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setCompanion(companion);
+        userRepository.save(user);
+        return toDto(getOrCreate(user));
     }
 
     private Profile getOrCreate(User user) {
@@ -87,9 +118,13 @@ public class ProfileService {
         });
         List<WidgetDto> widgets = readJson(profile.getWidgetsJson(), new TypeReference<>() {
         });
+        User user = profile.getUser();
         return new ProfileDto(
-                profile.getUser().getId(),
-                profile.getUser().getDisplayName(),
+                user.getId(),
+                user.getDisplayName(),
+                user.getAvatarAssetId(),
+                user.getCompanion(),
+                profile.getBio(),
                 theme,
                 widgets);
     }

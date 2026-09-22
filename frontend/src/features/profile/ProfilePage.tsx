@@ -54,10 +54,11 @@ export function ProfilePage() {
       {/* Themed panel: custom colors scoped here, or the app theme when following it. */}
       <div style={custom ? buildThemeStyle(profile.theme) : undefined} className="card overflow-hidden bg-bg p-6 font-sans text-text animate-fade-up">
         <div className="mb-6 flex items-center gap-4">
-          <Avatar name={profile.displayName} size={64} />
-          <div>
+          <Avatar name={profile.displayName} size={72} assetId={profile.avatarAssetId} species={profile.companion} />
+          <div className="min-w-0">
             <h1 className="font-display text-3xl font-bold text-primary">{profile.displayName}</h1>
             <p className="text-text-muted">@{isOwn ? user?.username : "profil"}</p>
+            {profile.bio && <p className="mt-1 text-sm text-text">{profile.bio}</p>}
           </div>
         </div>
 

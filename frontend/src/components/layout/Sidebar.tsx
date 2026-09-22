@@ -53,7 +53,7 @@ export function Sidebar() {
         <CompanionPicker compact />
         <ThemeToggle />
         <div className="flex items-center gap-3 rounded-token border border-border bg-bg-2/50 p-2">
-          <Avatar name={user?.displayName ?? "?"} size={38} />
+          <Avatar name={user?.displayName ?? "?"} size={38} assetId={user?.avatarAssetId} species={user?.companion} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold">{user?.displayName}</p>
             <p className="truncate text-xs text-text-muted">@{user?.username}</p>

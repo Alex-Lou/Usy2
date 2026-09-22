@@ -61,7 +61,7 @@ export function Composer({
   return (
     <form onSubmit={submit} className="card p-4">
       <div className="flex gap-3">
-        <Avatar name={user?.displayName ?? "?"} size={40} />
+        <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} species={user?.companion} />
         <div className="flex-1">
           <textarea
             ref={textareaRef}
@@ -87,17 +87,30 @@ export function Composer({
       {error && <p role="alert" className="mt-2 text-sm text-danger">{error}</p>}
 
       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-        <label className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
-          <Icon name="camera" size={18} />
-          Photo
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            className="hidden"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          />
-        </label>
+        <div className="flex items-center gap-1">
+          <label className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
+            <Icon name="images" size={18} />
+            Galerie
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            />
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
+            <Icon name="camera" size={18} />
+            Caméra
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            />
+          </label>
+        </div>
         <Button type="submit" disabled={busy || !text.trim()}>
           <Icon name="send" size={16} />
           {busy ? "Envoi…" : "Publier"}

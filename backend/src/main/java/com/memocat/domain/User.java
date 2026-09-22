@@ -30,6 +30,14 @@ public class User {
     @Column(name = "display_name", nullable = false)
     private String displayName;
 
+    /** Optional profile photo (an {@code asset} id), shown as the avatar. */
+    @Column(name = "avatar_asset_id")
+    private Long avatarAssetId;
+
+    /** Chosen companion animal, shown as an avatar badge / fallback. */
+    @Column(nullable = false)
+    private String companion = "cat";
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -64,6 +72,22 @@ public class User {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public Long getAvatarAssetId() {
+        return avatarAssetId;
+    }
+
+    public void setAvatarAssetId(Long avatarAssetId) {
+        this.avatarAssetId = avatarAssetId;
+    }
+
+    public String getCompanion() {
+        return companion;
+    }
+
+    public void setCompanion(String companion) {
+        this.companion = companion;
     }
 
     public Instant getCreatedAt() {

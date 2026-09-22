@@ -60,7 +60,7 @@ export function MobileMenu() {
             </div>
 
             <div className="flex items-center gap-3 rounded-token border border-border bg-surface-2 p-2">
-              <Avatar name={user?.displayName ?? "?"} size={40} />
+              <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} species={user?.companion} />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold">{user?.displayName}</p>
                 <p className="truncate text-xs text-text-muted">@{user?.username}</p>

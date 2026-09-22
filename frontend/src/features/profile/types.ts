@@ -31,6 +31,9 @@ export type WidgetType = Widget["type"];
 export interface Profile {
   userId: number;
   displayName: string;
+  avatarAssetId?: number | null;
+  companion?: string;
+  bio?: string | null;
   theme: Theme;
   widgets: Widget[];
 }

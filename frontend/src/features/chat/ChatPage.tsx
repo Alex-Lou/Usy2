@@ -92,7 +92,7 @@ export function ChatPage() {
               const mine = m.sender.id === user?.id;
               return (
                 <div key={m.id} className={`flex items-end gap-2 ${mine ? "flex-row-reverse" : ""}`}>
-                  {!mine && <Avatar name={m.sender.displayName} size={30} />}
+                  {!mine && <Avatar name={m.sender.displayName} size={30} assetId={m.sender.avatarAssetId} species={m.sender.companion} />}
                   <div
                     className={
                       "max-w-[78%] rounded-token px-3.5 py-2 animate-pop " +

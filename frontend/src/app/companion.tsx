@@ -1,12 +1,5 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback } from "react";
+import { useAuth } from "../features/auth/useAuth";
 
 export const SPECIES = [
   "cat",
@@ -34,43 +27,18 @@ export const SPECIES_LABELS: Record<Species, string> = {
   parrot: "Perroquet",
 };
 
-const KEY = "memocat.companion";
-
-function readInitial(): Species {
-  try {
-    const v = localStorage.getItem(KEY) as Species | null;
-    if (v && SPECIES.includes(v)) return v;
-  } catch {
-    /* ignore */
-  }
-  return "cat";
+function valid(value: string | null | undefined): Species {
+  return value && (SPECIES as readonly string[]).includes(value) ? (value as Species) : "cat";
 }
 
-interface CompanionValue {
-  companion: Species;
-  setCompanion: (s: Species) => void;
-}
-
-const CompanionContext = createContext<CompanionValue | null>(null);
-
-export function CompanionProvider({ children }: { children: ReactNode }) {
-  const [companion, setCompanionState] = useState<Species>(readInitial);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(KEY, companion);
-    } catch {
-      /* ignore */
-    }
-  }, [companion]);
-
-  const setCompanion = useCallback((s: Species) => setCompanionState(s), []);
-  const value = useMemo(() => ({ companion, setCompanion }), [companion, setCompanion]);
-  return <CompanionContext.Provider value={value}>{children}</CompanionContext.Provider>;
-}
-
-export function useCompanion(): CompanionValue {
-  const ctx = useContext(CompanionContext);
-  if (!ctx) throw new Error("useCompanion must be used within CompanionProvider");
-  return ctx;
+/**
+ * The companion animal is now part of the user's identity (stored server-side),
+ * so it shows next to the name everywhere and the partner sees it too. Reads
+ * from the authenticated user; changes persist optimistically via auth.
+ */
+export function useCompanion(): { companion: Species; setCompanion: (s: Species) => void } {
+  const { user, updateCompanion } = useAuth();
+  const companion = valid(user?.companion);
+  const setCompanion = useCallback((s: Species) => updateCompanion(s), [updateCompanion]);
+  return { companion, setCompanion };
 }
