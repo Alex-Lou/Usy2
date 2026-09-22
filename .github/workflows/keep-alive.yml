@@ -1,13 +1,22 @@
 name: keep-alive
 
 # Pings the deployed app on a schedule so the Render free instance doesn't sleep.
-# Set a repository *variable* RENDER_URL to your app URL (e.g. https://memocat.onrender.com):
-#   Repo → Settings → Secrets and variables → Actions → Variables → New repository variable.
-# Note: scheduled workflows only run from the repository's DEFAULT branch.
+#
+# TWO settings are REQUIRED for this to work (both in the repo Settings, once):
+#   1. Default branch MUST be `main` — scheduled (cron) workflows ONLY run from
+#      the repository's DEFAULT branch. Settings → General → Default branch → main.
+#   2. Set a repository *variable* RENDER_URL to your app URL
+#      (e.g. https://memocat.onrender.com):
+#      Settings → Secrets and variables → Actions → Variables → New repository variable.
+#
+# Runs every 5 min: Render free instances sleep after ~15 min idle, and GitHub's
+# cron is best-effort (can lag), so a tight interval leaves margin. For a fully
+# reliable ping independent of GitHub, add an external monitor (cron-job.org or
+# UptimeRobot) hitting the same URL every 5 min.
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch: {}
 
 permissions:

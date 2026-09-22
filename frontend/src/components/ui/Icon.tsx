@@ -25,7 +25,9 @@ export type IconName =
   | "trash"
   | "gamepad"
   | "trophy"
-  | "bell";
+  | "bell"
+  | "menu"
+  | "chevronDown";
 
 const PATHS: Record<IconName, JSX.Element> = {
   home: (
@@ -139,6 +141,8 @@ const PATHS: Record<IconName, JSX.Element> = {
       <path d="M13.7 21a2 2 0 0 1-3.4 0" />
     </>
   ),
+  menu: <path d="M3 6h18M3 12h18M3 18h18" />,
+  chevronDown: <path d="m6 9 6 6 6-6" />,
 };
 
 export function Icon({
