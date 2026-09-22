@@ -19,6 +19,7 @@ public class ThemeValidator {
     static final Set<String> COLOR_KEYS = Set.of("bg", "surface", "primary", "text");
     static final Set<String> FONTS = Set.of("trebuchet", "georgia", "courier", "comic", "system");
     static final Set<String> LAYOUTS = Set.of("classic", "sidebar-left");
+    static final Set<String> MODES = Set.of("app", "custom");
     private static final Pattern HEX = Pattern.compile("^#[0-9a-fA-F]{6}$");
 
     public void validate(ThemeDto theme) {
@@ -32,6 +33,11 @@ public class ThemeValidator {
         }
         if (theme.layout() == null || !LAYOUTS.contains(theme.layout())) {
             throw new ContentValidationException("Unsupported layout: " + theme.layout());
+        }
+        // Null mode means "app" (backward compatible with profiles saved before
+        // the follow-app-theme option existed).
+        if (theme.mode() != null && !MODES.contains(theme.mode())) {
+            throw new ContentValidationException("Unsupported theme mode: " + theme.mode());
         }
     }
 

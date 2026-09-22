@@ -18,4 +18,39 @@
       transform: translateX(-100%);
     }
   }
+
+  /* Animated SVG widget effects. */
+  .mc-heartbeat {
+    animation: mc-heartbeat 1.2s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes mc-heartbeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.2); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.14); }
+  }
+  .mc-twinkle {
+    animation: mc-twinkle 2s ease-in-out infinite;
+  }
+  @keyframes mc-twinkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  .mc-float {
+    animation: mc-float 3.5s ease-in-out infinite;
+  }
+  @keyframes mc-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-marquee__inner,
+  .mc-heartbeat,
+  .mc-twinkle,
+  .mc-float {
+    animation: none;
+  }
 }
