@@ -6,6 +6,7 @@ import { AppThemeProvider } from "./app/theme";
 import { CompanionProvider } from "./app/companion";
 import { NotificationsProvider } from "./app/notifications";
 import { AuthProvider } from "./features/auth/AuthContext";
+import { registerServiceWorker } from "./registerSW";
 import "./styles/global.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -23,3 +24,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </AppThemeProvider>
   </React.StrictMode>,
 );
+
+registerServiceWorker();
