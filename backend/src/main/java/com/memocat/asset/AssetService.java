@@ -2,30 +2,41 @@ package com.memocat.asset;
 
 import com.memocat.asset.dto.AssetDto;
 import com.memocat.domain.Asset;
+import com.memocat.domain.AssetContent;
 import com.memocat.domain.User;
+import com.memocat.repository.AssetContentRepository;
 import com.memocat.repository.AssetRepository;
 import com.memocat.repository.UserRepository;
+import com.memocat.web.ContentValidationException;
 import com.memocat.web.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.UUID;
+
+/**
+ * Uploads and serves image assets. Bytes are stored in the database (see
+ * {@link AssetContent}) so they survive restarts on hosts with an ephemeral
+ * local disk. Validation is centralized in {@link ImageUploadValidator}.
+ */
 @Service
 public class AssetService {
 
     private final AssetRepository assetRepository;
+    private final AssetContentRepository assetContentRepository;
     private final UserRepository userRepository;
-    private final StorageService storageService;
     private final ImageUploadValidator imageUploadValidator;
 
     public AssetService(AssetRepository assetRepository,
+                        AssetContentRepository assetContentRepository,
                         UserRepository userRepository,
-                        StorageService storageService,
                         ImageUploadValidator imageUploadValidator) {
         this.assetRepository = assetRepository;
+        this.assetContentRepository = assetContentRepository;
         this.userRepository = userRepository;
-        this.storageService = storageService;
         this.imageUploadValidator = imageUploadValidator;
     }
 
@@ -35,23 +46,33 @@ public class AssetService {
         User uploader = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        String key = storageService.store(file, extension);
+        byte[] bytes;
+        try {
+            bytes = file.getBytes();
+        } catch (IOException e) {
+            throw new ContentValidationException("Could not read uploaded file");
+        }
+
+        // Logical key kept unique for the asset row; no longer a filesystem path.
+        String key = UUID.randomUUID() + "." + extension;
         String originalName = StringUtils.getFilename(file.getOriginalFilename());
-        Asset asset = new Asset(
+        Asset asset = assetRepository.save(new Asset(
                 key,
                 originalName != null ? originalName : key,
                 file.getContentType(),
-                file.getSize(),
-                uploader);
-        return AssetDto.from(assetRepository.save(asset));
+                bytes.length,
+                uploader));
+        assetContentRepository.save(new AssetContent(asset.getId(), bytes));
+        return AssetDto.from(asset);
     }
 
     @Transactional(readOnly = true)
     public ServedFile serve(Long assetId) {
         Asset asset = assetRepository.findById(assetId)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found"));
-        byte[] content = storageService.read(asset.getStorageKey());
-        return new ServedFile(content, asset.getContentType());
+        AssetContent content = assetContentRepository.findById(assetId)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset content not found"));
+        return new ServedFile(content.getBytes(), asset.getContentType());
     }
 
     public record ServedFile(byte[] content, String contentType) {
