@@ -41,6 +41,10 @@ public class Profile {
     @Column(name = "widgets_json", nullable = false)
     private String widgetsJson;
 
+    /** Short free-text bio shown in the profile hero. */
+    @Column(name = "bio")
+    private String bio;
+
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
@@ -82,6 +86,14 @@ public class Profile {
 
     public void setWidgetsJson(String widgetsJson) {
         this.widgetsJson = widgetsJson;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
     public Instant getUpdatedAt() {

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AssetImage } from "../../components/AssetImage";
+import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
 import { ApiError } from "../../lib/api/client";
+import { useAuth } from "../auth/useAuth";
 import { getMyProfile, updateMyProfile, uploadWidgetImage } from "./api";
 import { buildThemeStyle, FONT_LABELS, LAYOUT_LABELS } from "./theme";
 import type { FontKey, LayoutKey, Theme, ThemeColors, ThemeMode, Widget, WidgetType } from "./types";
@@ -48,8 +50,11 @@ const selectClass =
 
 export function ProfileEditPage() {
   const navigate = useNavigate();
+  const { user, refreshUser } = useAuth();
   const [theme, setTheme] = useState<Theme | null>(null);
   const [widgets, setWidgets] = useState<Widget[]>([]);
+  const [avatarAssetId, setAvatarAssetId] = useState<number | null>(null);
+  const [bio, setBio] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -60,6 +65,8 @@ export function ProfileEditPage() {
         if (!cancelled) {
           setTheme({ ...p.theme, mode: p.theme.mode ?? "app" });
           setWidgets(p.widgets);
+          setAvatarAssetId(p.avatarAssetId ?? null);
+          setBio(p.bio ?? "");
         }
       })
       .catch(() => !cancelled && setError("Impossible de charger le profil."));
@@ -67,6 +74,16 @@ export function ProfileEditPage() {
       cancelled = true;
     };
   }, []);
+
+  async function uploadAvatar(file: File) {
+    setError(null);
+    try {
+      const asset = await uploadWidgetImage(file);
+      setAvatarAssetId(asset.id);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Envoi de la photo impossible.");
+    }
+  }
 
   function setColor(key: keyof ThemeColors, value: string) {
     setTheme((t) => (t ? { ...t, colors: { ...t.colors, [key]: value } } : t));
@@ -109,7 +126,8 @@ export function ProfileEditPage() {
     setSaving(true);
     setError(null);
     try {
-      const saved = await updateMyProfile(theme, widgets);
+      const saved = await updateMyProfile(theme, widgets, avatarAssetId, bio.trim() || null);
+      await refreshUser(); // header/avatar reflect the new photo
       navigate(`/profile/${saved.userId}`, { replace: true });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Enregistrement impossible.");
@@ -126,6 +144,43 @@ export function ProfileEditPage() {
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <div className="flex flex-col gap-4">
         <h1 className="font-display text-2xl font-bold animate-fade-up">Personnaliser mon profil</h1>
+
+        <section className="card p-4">
+          <h2 className="mb-3 flex items-center gap-2 font-semibold"><Icon name="user" size={18} /> Identité</h2>
+          <div className="flex items-center gap-4">
+            <Avatar name={user?.displayName ?? "?"} size={64} assetId={avatarAssetId} species={user?.companion} />
+            <div className="flex flex-wrap gap-2">
+              <label className="chip cursor-pointer press hover:border-primary/50">
+                <Icon name="camera" size={14} /> {avatarAssetId ? "Changer la photo" : "Ajouter une photo"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) uploadAvatar(f);
+                  }}
+                />
+              </label>
+              {avatarAssetId && (
+                <button type="button" onClick={() => setAvatarAssetId(null)} className="chip press text-danger hover:border-danger/50">
+                  Retirer
+                </button>
+              )}
+            </div>
+          </div>
+          <label className="mt-3 block text-sm">
+            <span className="mb-1 block text-text-muted">Bio</span>
+            <textarea
+              value={bio}
+              maxLength={200}
+              rows={2}
+              placeholder="Un mot sur toi… 💫"
+              onChange={(e) => setBio(e.target.value)}
+              className="w-full resize-none rounded-token border border-border bg-bg-2/60 px-3 py-2 text-text outline-none focus:border-primary/70"
+            />
+          </label>
+        </section>
 
         <section className="card p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold"><Icon name="sparkles" size={18} /> Apparence</h2>
@@ -288,7 +343,7 @@ function WidgetEditor({
               <Icon name="camera" size={14} /> {widget.assetId > 0 ? "Changer" : "Ajouter une image"}
               <input
                 type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
+                accept="image/*"
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0];

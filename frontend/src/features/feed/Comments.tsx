@@ -68,7 +68,7 @@ export function Comments({
       <div className="flex flex-col gap-3">
         {items.map((c) => (
           <div key={c.id} className="flex items-start gap-2.5">
-            <Avatar name={c.author.displayName} size={30} />
+            <Avatar name={c.author.displayName} size={30} assetId={c.author.avatarAssetId} species={c.author.companion} />
             <div className="flex-1 rounded-token rounded-tl-sm bg-bg-2/50 px-3 py-2">
               <div className="flex items-baseline justify-between gap-2">
                 <span className="text-sm font-semibold text-primary">{c.author.displayName}</span>

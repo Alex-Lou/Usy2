@@ -61,7 +61,7 @@ export function PostCard({
   return (
     <article className="card animate-fade-up overflow-hidden p-4">
       <header className="mb-3 flex items-center gap-3">
-        <Avatar name={post.author.displayName} size={42} />
+        <Avatar name={post.author.displayName} size={42} assetId={post.author.avatarAssetId} species={post.author.companion} />
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold">{post.author.displayName}</p>
           <p className="text-xs text-text-muted">

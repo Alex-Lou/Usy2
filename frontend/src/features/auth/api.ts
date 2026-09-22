@@ -4,6 +4,8 @@ export interface User {
   id: number;
   username: string;
   displayName: string;
+  avatarAssetId?: number | null;
+  companion?: string;
 }
 
 export interface LoginResponse {

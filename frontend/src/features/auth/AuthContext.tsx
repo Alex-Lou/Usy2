@@ -6,7 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { clearToken, getToken, setToken } from "../../lib/api/client";
+import { apiRequest, clearToken, getToken, setToken } from "../../lib/api/client";
 import { fetchMe, login as loginRequest, type User } from "./api";
 
 interface AuthContextValue {
@@ -14,6 +14,8 @@ interface AuthContextValue {
   loading: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
+  updateCompanion: (species: string) => void;
+  refreshUser: () => Promise<void>;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -61,9 +63,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  // Optimistic local update + persist to the server so the partner sees it too.
+  const updateCompanion = useCallback((companion: string) => {
+    setUser((u) => (u ? { ...u, companion } : u));
+    apiRequest("/api/profiles/me/companion", { method: "PUT", body: { companion } }).catch(() => {
+      /* keep optimistic value; will reconcile on next load */
+    });
+  }, []);
+
+  const refreshUser = useCallback(async () => {
+    try {
+      setUser(await fetchMe());
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const value = useMemo<AuthContextValue>(
-    () => ({ user, loading, login, logout }),
-    [user, loading, login, logout],
+    () => ({ user, loading, login, logout, updateCompanion, refreshUser }),
+    [user, loading, login, logout, updateCompanion, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

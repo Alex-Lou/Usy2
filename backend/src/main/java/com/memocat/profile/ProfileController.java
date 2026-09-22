@@ -1,5 +1,6 @@
 package com.memocat.profile;
 
+import com.memocat.profile.dto.CompanionRequest;
 import com.memocat.profile.dto.ProfileDto;
 import com.memocat.profile.dto.ProfileUpdateRequest;
 import jakarta.validation.Valid;
@@ -31,6 +32,11 @@ public class ProfileController {
     public ProfileDto updateMyProfile(Principal principal,
                                       @Valid @RequestBody ProfileUpdateRequest request) {
         return profileService.updateMyProfile(principal.getName(), request);
+    }
+
+    @PutMapping("/me/companion")
+    public ProfileDto updateCompanion(Principal principal, @RequestBody CompanionRequest request) {
+        return profileService.updateCompanion(principal.getName(), request.companion());
     }
 
     @GetMapping("/{userId}")
