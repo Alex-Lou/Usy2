@@ -1,6 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { AlbumPage } from "./features/albums/AlbumPage";
+import { AlbumsPage } from "./features/albums/AlbumsPage";
 import { LoginPage } from "./features/auth/LoginPage";
+import { ChatPage } from "./features/chat/ChatPage";
+import { FeedPage } from "./features/feed/FeedPage";
 import { HomePage } from "./features/home/HomePage";
+import { ProfileEditPage } from "./features/profile/ProfileEditPage";
+import { ProfilePage } from "./features/profile/ProfilePage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 
 export function App() {
@@ -12,6 +18,54 @@ export function App() {
         element={
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/feed"
+        element={
+          <ProtectedRoute>
+            <FeedPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/albums"
+        element={
+          <ProtectedRoute>
+            <AlbumsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/albums/:id"
+        element={
+          <ProtectedRoute>
+            <AlbumPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/chat"
+        element={
+          <ProtectedRoute>
+            <ChatPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile/edit"
+        element={
+          <ProtectedRoute>
+            <ProfileEditPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile/:userId"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />
