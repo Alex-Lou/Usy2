@@ -1,5 +1,7 @@
 import { Outlet } from "react-router-dom";
+import { NotificationsListener } from "../../features/notifications/NotificationsListener";
 import { BottomTabBar } from "./BottomTabBar";
+import { NotificationBell } from "./NotificationBell";
 import { Sidebar } from "./Sidebar";
 
 export function AppLayout() {
@@ -18,6 +20,8 @@ export function AppLayout() {
       </div>
 
       <Sidebar />
+      <NotificationBell />
+      <NotificationsListener />
 
       <main className="lg:pl-64">
         <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-5 lg:pb-12 lg:pt-8">

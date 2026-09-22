@@ -24,7 +24,8 @@ export type IconName =
   | "music"
   | "trash"
   | "gamepad"
-  | "trophy";
+  | "trophy"
+  | "bell";
 
 const PATHS: Record<IconName, JSX.Element> = {
   home: (
@@ -130,6 +131,12 @@ const PATHS: Record<IconName, JSX.Element> = {
     <>
       <path d="M8 4h8v5a4 4 0 0 1-8 0z" />
       <path d="M8 6H5a2 2 0 0 0 0 4h1M16 6h3a2 2 0 0 1 0 4h-1M10 14h4M9 20h6M12 14v6" />
+    </>
+  ),
+  bell: (
+    <>
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.7 21a2 2 0 0 1-3.4 0" />
     </>
   ),
 };
