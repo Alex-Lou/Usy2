@@ -80,11 +80,30 @@
     transform-origin: 50% 6px;
     transform-box: view-box;
   }
+  /* A single confetti piece falling + spinning; caller sets left/color/delay. */
+  .animate-confetti {
+    animation: confetti-fall 1.8s linear forwards;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-swing {
     animation: none;
+  }
+  .animate-confetti {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-10%) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(320px) rotate(540deg);
+    opacity: 0;
   }
 }
 

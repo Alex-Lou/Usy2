@@ -22,7 +22,9 @@ export type IconName =
   | "clock"
   | "gift"
   | "music"
-  | "trash";
+  | "trash"
+  | "gamepad"
+  | "trophy";
 
 const PATHS: Record<IconName, JSX.Element> = {
   home: (
@@ -116,6 +118,18 @@ const PATHS: Record<IconName, JSX.Element> = {
   trash: (
     <>
       <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14" />
+    </>
+  ),
+  gamepad: (
+    <>
+      <path d="M6 8h12a4 4 0 0 1 4 4v4a3 3 0 0 1-5.2 2l-1.3-1.3a2 2 0 0 0-1.4-.6H9.9a2 2 0 0 0-1.4.6L7.2 18A3 3 0 0 1 2 16v-4a4 4 0 0 1 4-4z" />
+      <path d="M8 11v3M6.5 12.5h3M15 12h.01M17.5 14h.01" />
+    </>
+  ),
+  trophy: (
+    <>
+      <path d="M8 4h8v5a4 4 0 0 1-8 0z" />
+      <path d="M8 6H5a2 2 0 0 0 0 4h1M16 6h3a2 2 0 0 1 0 4h-1M10 14h4M9 20h6M12 14v6" />
     </>
   ),
 };
