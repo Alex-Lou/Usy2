@@ -15,6 +15,9 @@ export function HomePage() {
         <p className="mb-6 text-text-muted">Ton petit coin à deux.</p>
 
         <div className="flex flex-wrap gap-3">
+          <Link to="/feed">
+            <Button>Notre fil</Button>
+          </Link>
           {user && (
             <>
               <Link to={`/profile/${user.id}`}>
