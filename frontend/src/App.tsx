@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AlbumPage } from "./features/albums/AlbumPage";
 import { AlbumsPage } from "./features/albums/AlbumsPage";
 import { LoginPage } from "./features/auth/LoginPage";
+import { ChatPage } from "./features/chat/ChatPage";
 import { FeedPage } from "./features/feed/FeedPage";
 import { HomePage } from "./features/home/HomePage";
 import { ProfileEditPage } from "./features/profile/ProfileEditPage";
@@ -41,6 +42,14 @@ export function App() {
         element={
           <ProtectedRoute>
             <AlbumPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/chat"
+        element={
+          <ProtectedRoute>
+            <ChatPage />
           </ProtectedRoute>
         }
       />

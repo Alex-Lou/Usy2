@@ -4,13 +4,13 @@ Réseau social privé « à deux » (couple), esprit MySpace : profils personnal
 fil de posts, albums photo, messagerie privée. Application de bureau native
 (Tauri 2 + React) sur backend Spring Boot / PostgreSQL.
 
-> **État : Tranche 4 (albums photo).**
-> Le schéma DB complet est en place. Le code applicatif couvre l'auth (T1),
-> le profil personnalisable (T2), le fil de posts (T3) et les albums photo
-> partagés (T4). Reste la messagerie temps réel (T5) pour finir la V1.
+> **État : V1 complète (T1 → T5).**
+> Auth (T1), profil personnalisable (T2), fil de posts (T3), albums photo
+> partagés (T4) et messagerie temps réel (T5). Le schéma DB complet est en place.
 > Côté mobile : la sélection/prise de photos passe par le sélecteur natif de
 > l'OS via le webview (`<input type="file" ... capture>`), qui donne accès à la
-> galerie, aux dossiers existants et à l'appareil photo.
+> galerie, aux dossiers existants et à l'appareil photo. Le build natif mobile
+> (`tauri android/ios init`) reste à lancer sur un poste équipé du SDK.
 
 ## Structure
 
@@ -107,6 +107,18 @@ npm run tauri dev      # génère d'abord les icônes : npm run tauri icon <sour
 | PUT | `/api/albums/{id}/photos/order` | JWT | Réordonner les photos |
 
 Albums **partagés** : les deux comptes voient et gèrent tous les albums.
+
+### Messagerie temps réel (T5)
+
+| Type | Endpoint | Rôle |
+|---|---|---|
+| WebSocket | `/ws` (STOMP) | Handshake ; auth JWT au frame `CONNECT` (header `Authorization: Bearer …`) |
+| STOMP send | `/app/chat.send` | `{content}` → persisté → diffusé |
+| STOMP sub | `/topic/messages` | Réception des nouveaux messages |
+| GET | `/api/messages?page=&size=` | Historique paginé (récent → ancien) |
+
+Une seule conversation entre les 2 comptes (destinataire implicite). Pas de
+suppression. `read_at` réservé pour d'éventuels accusés de lecture (non utilisé en V1).
 
 ### Contrat de personnalisation (validé par allowlist serveur)
 
