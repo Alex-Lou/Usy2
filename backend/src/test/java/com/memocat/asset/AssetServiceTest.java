@@ -83,4 +83,14 @@ class AssetServiceTest {
         assertThat(name).hasSize(120).endsWith(".docx");
         assertThat(AssetService.safeName("/", "fallback")).isEqualTo("fallback");
     }
+
+    @Test
+    void photoEffectsComeFromAClosedList() {
+        assertThat(PhotoEffects.validate(null)).isNull();
+        assertThat(PhotoEffects.validate("hearts")).isEqualTo("hearts");
+        assertThatThrownBy(() -> PhotoEffects.validate("<script>")).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.upload("lou", new MockMultipartFile("file", "a.png", "image/png",
+                new byte[]{(byte) 0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A}), "explode"))
+                .isInstanceOf(ContentValidationException.class);
+    }
 }

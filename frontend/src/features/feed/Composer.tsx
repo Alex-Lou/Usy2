@@ -5,6 +5,8 @@ import { Icon } from "../../components/ui/Icon";
 import { ApiError } from "../../lib/api/client";
 import { useAuth } from "../auth/useAuth";
 import { uploadImage } from "../../lib/api/assets";
+import { EffectLayer } from "../../components/photo/EffectLayer";
+import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { createPost } from "./api";
 
 export interface ComposerSeed {
@@ -23,6 +25,8 @@ export function Composer({
   const { user } = useAuth();
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [effect, setEffect] = useState<string | null>(null);
+  const [studio, setStudio] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -42,6 +46,7 @@ export function Composer({
 
   function pick(input: HTMLInputElement) {
     setFile(input.files?.[0] ?? null);
+    setEffect(null);
     input.value = ""; // allow picking the same file again
   }
 
@@ -65,12 +70,13 @@ export function Composer({
     try {
       let imageAssetId: number | null = null;
       if (file) {
-        const asset = await uploadImage(file);
+        const asset = await uploadImage(file, effect);
         imageAssetId = asset.id;
       }
       await createPost(text, imageAssetId);
       setText("");
       setFile(null);
+      setEffect(null);
       onCreated();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Publication impossible.");
@@ -95,21 +101,46 @@ export function Composer({
           />
           {preview && (
             <div className="relative mt-2 inline-block">
-              <img src={preview} alt="Aperçu de la photo" className="max-h-48 rounded-token border border-border object-cover" />
+              <EffectLayer effect={effect} className="rounded-token">
+                <img src={preview} alt="Aperçu de la photo" className="max-h-48 rounded-token border border-border object-cover" />
+              </EffectLayer>
               <button
                 type="button"
-                onClick={() => setFile(null)}
+                onClick={() => {
+                  setFile(null);
+                  setEffect(null);
+                }}
                 aria-label="Retirer la photo"
                 className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/60 text-white press"
               >
                 <Icon name="x" size={14} />
               </button>
+              {file && file.type !== "image/gif" && (
+                <button
+                  type="button"
+                  onClick={() => setStudio(true)}
+                  className="absolute bottom-1.5 left-1.5 flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-xs font-semibold text-white press"
+                >
+                  <Icon name="sparkles" size={13} /> Retoucher
+                </button>
+              )}
             </div>
           )}
         </div>
       </div>
 
       {error && <p role="alert" className="mt-2 text-sm text-danger">{error}</p>}
+      {studio && file && (
+        <PhotoStudio
+          file={file}
+          onCancel={() => setStudio(false)}
+          onDone={(edited, fx) => {
+            setFile(edited);
+            setEffect(fx);
+            setStudio(false);
+          }}
+        />
+      )}
 
       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
         <div className="flex items-center gap-1">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AssetImage } from "../../components/AssetImage";
+import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Icon } from "../../components/ui/Icon";
 import type { Asset } from "../../lib/api/assets";
 import { formatSize, isImage, openDocument } from "./attachments";
@@ -11,7 +12,9 @@ export function AttachmentView({ asset, onOpenImage, mine }: { asset: Asset; onO
   if (isImage(asset)) {
     return (
       <button type="button" onClick={() => onOpenImage(asset)} className="block overflow-hidden rounded-token press" aria-label="Agrandir la photo">
-        <AssetImage assetId={asset.id} className="max-h-72 w-full min-w-40 object-cover" />
+        <EffectLayer effect={asset.effect}>
+          <AssetImage assetId={asset.id} className="max-h-72 w-full min-w-40 object-cover" />
+        </EffectLayer>
       </button>
     );
   }

@@ -42,6 +42,10 @@ public class Asset {
     @JoinColumn(name = "uploader_id", nullable = false)
     private User uploader;
 
+    /** Animated effect replayed when the photo is shown (see PhotoEffects), or null. */
+    @Column
+    private String effect;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -91,5 +95,13 @@ public class Asset {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public String getEffect() {
+        return effect;
+    }
+
+    public void setEffect(String effect) {
+        this.effect = effect;
     }
 }

@@ -6,14 +6,16 @@ export interface Asset {
   contentType: string;
   sizeBytes: number;
   originalFilename: string;
+  effect?: string | null; // animated effect of a studio photo
 }
 
 /**
  * Single entry point for every image upload (feed, albums, avatar, widgets):
  * the photo is compressed on the device first, then sent to the API.
  */
-export async function uploadImage(file: File): Promise<Asset> {
-  return uploadFile<Asset>("/api/assets", await compressImage(file));
+export async function uploadImage(file: File, effect: string | null = null): Promise<Asset> {
+  const query = effect ? `?effect=${encodeURIComponent(effect)}` : "";
+  return uploadFile<Asset>(`/api/assets${query}`, await compressImage(file));
 }
 
 /** PDF, office or text file (max 10 MB), stored as-is. */

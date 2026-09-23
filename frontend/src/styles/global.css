@@ -2,6 +2,7 @@
 @import "./widgets.css";
 @import "./rich.css";
 @import "./pet.css";
+@import "./photo.css";
 
 @tailwind base;
 @tailwind components;

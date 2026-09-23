@@ -51,15 +51,15 @@ public class AssetService {
     }
 
     @Transactional
-    public AssetDto upload(String username, MultipartFile file) {
+    public AssetDto upload(String username, MultipartFile file, String effect) {
         String extension = imageUploadValidator.validate(file);
-        return store(username, file, extension, file.getContentType());
+        return store(username, file, extension, file.getContentType(), PhotoEffects.validate(effect));
     }
 
     @Transactional
     public AssetDto uploadDocument(String username, MultipartFile file) {
         DocumentUploadValidator.DocumentType type = documentUploadValidator.validate(file);
-        return store(username, file, type.extension(), type.contentType());
+        return store(username, file, type.extension(), type.contentType(), null);
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +67,7 @@ public class AssetService {
         return new StorageUsageDto(assetRepository.totalSizeBytes(), quotaBytes);
     }
 
-    private AssetDto store(String username, MultipartFile file, String extension, String contentType) {
+    private AssetDto store(String username, MultipartFile file, String extension, String contentType, String effect) {
         User uploader = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (assetRepository.totalSizeBytes() + file.getSize() > quotaBytes) {
@@ -89,6 +89,7 @@ public class AssetService {
                 contentType,
                 bytes.length,
                 uploader));
+        asset.setEffect(effect);
         assetContentRepository.save(new AssetContent(asset.getId(), bytes));
         return AssetDto.from(asset);
     }

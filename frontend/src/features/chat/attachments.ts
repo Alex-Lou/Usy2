@@ -27,8 +27,8 @@ export function checkFile(file: File): string | null {
 }
 
 /** Photos are compressed on the device (GIFs kept animated); documents go as-is. */
-export function uploadAttachment(file: File): Promise<Asset> {
-  return isImageFile(file) ? uploadImage(file) : uploadDocument(file);
+export function uploadAttachment(file: File, effect: string | null = null): Promise<Asset> {
+  return isImageFile(file) ? uploadImage(file, effect) : uploadDocument(file);
 }
 
 function saveBlobUrl(url: string, filename: string): void {

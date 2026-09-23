@@ -10,6 +10,7 @@ public record PostDto(
         UserDto author,
         String text,
         Long imageAssetId,
+        String imageEffect,
         Instant createdAt,
         Instant updatedAt,
         boolean edited,
