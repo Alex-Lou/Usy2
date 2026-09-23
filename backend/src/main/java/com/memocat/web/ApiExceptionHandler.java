@@ -36,7 +36,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, Object>> handleTooLarge(
             org.springframework.web.multipart.MaxUploadSizeExceededException ex) {
-        return error(HttpStatus.BAD_REQUEST, "File too large (max 5 MB)");
+        return error(HttpStatus.BAD_REQUEST, "Image trop lourde (max 5 Mo)");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

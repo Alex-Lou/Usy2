@@ -27,19 +27,19 @@ public class ImageUploadValidator {
     /** @return the canonical file extension for the validated image. */
     public String validate(MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            throw new ContentValidationException("File is required");
+            throw new ContentValidationException("Aucune image reçue");
         }
         if (file.getSize() > MAX_SIZE_BYTES) {
-            throw new ContentValidationException("File too large (max 5 MB)");
+            throw new ContentValidationException("Image trop lourde (max 5 Mo)");
         }
         String contentType = file.getContentType();
         if (contentType == null || !EXTENSIONS.containsKey(contentType)) {
-            throw new ContentValidationException("Unsupported image type: " + contentType);
+            throw new ContentValidationException("Format d'image non supporté (JPEG, PNG, WebP ou GIF)");
         }
 
         byte[] header = readHeader(file);
         if (!magicMatches(contentType, header)) {
-            throw new ContentValidationException("File content does not match its declared type");
+            throw new ContentValidationException("Le contenu ne correspond pas à une image valide");
         }
         return EXTENSIONS.get(contentType);
     }
@@ -49,7 +49,7 @@ public class ImageUploadValidator {
             byte[] all = file.getBytes();
             return Arrays.copyOf(all, Math.min(all.length, 16));
         } catch (Exception e) {
-            throw new ContentValidationException("Could not read uploaded file");
+            throw new ContentValidationException("Lecture de l'image impossible");
         }
     }
 

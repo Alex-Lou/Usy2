@@ -1,5 +1,6 @@
 package com.memocat.feed;
 
+import com.memocat.domain.Asset;
 import com.memocat.domain.Post;
 import com.memocat.domain.User;
 import com.memocat.feed.dto.PostDto;
@@ -18,6 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -52,6 +54,22 @@ class PostServiceTest {
         assertThatThrownBy(() -> postService.create("lou", "   ", null))
                 .isInstanceOf(ContentValidationException.class);
         verify(postRepository, never()).save(any());
+    }
+
+    @Test
+    void createAcceptsPhotoWithoutText() {
+        User author = user(1L, "lou");
+        Asset photo = new Asset("k.jpg", "p.jpg", "image/jpeg", 10, author);
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(author));
+        when(assetRepository.findById(5L)).thenReturn(Optional.of(photo));
+        when(postRepository.save(any(Post.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        postService.create("lou", "  ", 5L);
+
+        org.mockito.ArgumentCaptor<Post> saved = org.mockito.ArgumentCaptor.forClass(Post.class);
+        verify(postRepository).save(saved.capture());
+        assertThat(saved.getValue().getText()).isEmpty();
+        assertThat(saved.getValue().getImageAsset()).isSameAs(photo);
     }
 
     @Test

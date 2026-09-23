@@ -49,7 +49,8 @@ public class PostService {
     @Transactional
     public PostDto create(String username, String text, Long imageAssetId) {
         User author = requireUser(username);
-        Post post = new Post(author, validateText(text), resolveAsset(imageAssetId));
+        Asset image = resolveAsset(imageAssetId);
+        Post post = new Post(author, validateText(text, image != null), image);
         return postMapper.toDto(postRepository.save(post), author.getId());
     }
 
@@ -59,8 +60,9 @@ public class PostService {
         Post post = requirePost(postId);
         requireOwner(post, user);
 
-        post.setText(validateText(text));
-        post.setImageAsset(resolveAsset(imageAssetId));
+        Asset image = resolveAsset(imageAssetId);
+        post.setText(validateText(text, image != null));
+        post.setImageAsset(image);
         post.setEdited(true);
         return postMapper.toDto(postRepository.save(post), user.getId());
     }
@@ -79,8 +81,12 @@ public class PostService {
         }
     }
 
-    private String validateText(String text) {
+    /** Text is optional when the post carries a photo (a photo alone is a valid post). */
+    private String validateText(String text, boolean hasImage) {
         if (text == null || text.isBlank()) {
+            if (hasImage) {
+                return "";
+            }
             throw new ContentValidationException("Post text is required");
         }
         if (text.length() > MAX_TEXT) {

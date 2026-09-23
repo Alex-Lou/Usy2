@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Icon } from "../../components/ui/Icon";
 import { ApiError } from "../../lib/api/client";
-import { addPhoto, uploadImage } from "./api";
+import { uploadImage } from "../../lib/api/assets";
+import { addPhoto } from "./api";
 
 /**
  * Adds photos to an album via the OS-native file picker in the webview:
@@ -45,7 +46,7 @@ export function PhotoUploader({
         <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-token btn-brand px-4 py-3 font-semibold press">
           <Icon name="images" size={18} />
           Choisir des photos
-          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple className="hidden" disabled={busy} onChange={(e) => handleFiles(e.target.files)} />
+          <input type="file" accept="image/*" multiple className="hidden" disabled={busy} onChange={(e) => handleFiles(e.target.files)} />
         </label>
         <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-token border border-primary/60 px-4 py-3 font-semibold text-primary press hover:bg-primary/10">
           <Icon name="camera" size={18} />

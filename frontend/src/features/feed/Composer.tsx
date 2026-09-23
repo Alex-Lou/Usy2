@@ -4,7 +4,8 @@ import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { ApiError } from "../../lib/api/client";
 import { useAuth } from "../auth/useAuth";
-import { createPost, uploadImage } from "./api";
+import { uploadImage } from "../../lib/api/assets";
+import { createPost } from "./api";
 
 export interface ComposerSeed {
   text: string;
@@ -24,8 +25,28 @@ export function Composer({
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Local thumbnail of the picked/taken photo (revoked when it changes).
+  useEffect(() => {
+    if (!file) {
+      setPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  function pick(input: HTMLInputElement) {
+    setFile(input.files?.[0] ?? null);
+    input.value = ""; // allow picking the same file again
+  }
+
+  // A photo alone is a valid post; text alone too.
+  const canPublish = !busy && (text.trim().length > 0 || file !== null);
 
   // React to a picked "moment": prefill + focus, optionally open the picker.
   useEffect(() => {
@@ -38,7 +59,7 @@ export function Composer({
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!canPublish) return;
     setBusy(true);
     setError(null);
     try {
@@ -72,12 +93,16 @@ export function Composer({
             rows={2}
             className="w-full resize-none bg-transparent text-text placeholder:text-text-muted outline-none"
           />
-          {file && (
-            <div className="mt-1 flex items-center gap-2 text-sm text-text-muted">
-              <Icon name="images" size={16} />
-              <span className="truncate">{file.name}</span>
-              <button type="button" onClick={() => setFile(null)} className="text-danger hover:underline">
-                retirer
+          {preview && (
+            <div className="relative mt-2 inline-block">
+              <img src={preview} alt="Aperçu de la photo" className="max-h-48 rounded-token border border-border object-cover" />
+              <button
+                type="button"
+                onClick={() => setFile(null)}
+                aria-label="Retirer la photo"
+                className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/60 text-white press"
+              >
+                <Icon name="x" size={14} />
               </button>
             </div>
           )}
@@ -96,7 +121,7 @@ export function Composer({
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              onChange={(e) => pick(e.target)}
             />
           </label>
           <label className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
@@ -107,11 +132,11 @@ export function Composer({
               accept="image/*"
               capture="environment"
               className="hidden"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              onChange={(e) => pick(e.target)}
             />
           </label>
         </div>
-        <Button type="submit" disabled={busy || !text.trim()}>
+        <Button type="submit" disabled={!canPublish}>
           <Icon name="send" size={16} />
           {busy ? "Envoi…" : "Publier"}
         </Button>

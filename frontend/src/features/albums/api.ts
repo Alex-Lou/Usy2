@@ -1,6 +1,5 @@
-import { apiRequest, uploadFile } from "../../lib/api/client";
+import { apiRequest } from "../../lib/api/client";
 import type { Album, Page, Photo } from "./types";
-import type { Asset } from "../feed/types";
 
 export function listAlbums(page = 0, size = 12): Promise<Page<Album>> {
   return apiRequest<Page<Album>>(`/api/albums?page=${page}&size=${size}`);
@@ -49,8 +48,4 @@ export function reorderPhotos(albumId: number, photoIds: number[]): Promise<void
     method: "PUT",
     body: { photoIds },
   });
-}
-
-export function uploadImage(file: File): Promise<Asset> {
-  return uploadFile<Asset>("/api/assets", file);
 }
