@@ -14,7 +14,7 @@ import type { FontKey, LayoutKey, Theme, ThemeColors, ThemeMode, Widget, WidgetT
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
 import { PinsEditor } from "./widgets/PinsEditor";
 import { normalizePinUrl } from "./widgets/pinSuggestions";
-import { SVG_LABELS, SVG_VARIANTS, WIDGET_LABELS } from "./widgets/registry";
+import { SVG_GROUPS, SVG_LABELS, WIDGET_LABELS } from "./widgets/registry";
 
 const COLOR_FIELDS: { key: keyof ThemeColors; label: string }[] = [
   { key: "bg", label: "Fond" },
@@ -301,6 +301,15 @@ export function ProfileEditPage() {
                   </div>
                 </div>
                 <WidgetEditor widget={w} onPatch={(p) => updateWidget(i, p)} onUpload={(f) => uploadForWidget(i, f)} />
+                <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-text-muted">
+                  <input
+                    type="checkbox"
+                    checked={!!w.home}
+                    onChange={(e) => updateWidget(i, { home: e.target.checked })}
+                    className="h-4 w-4 accent-[var(--color-primary)]"
+                  />
+                  Aussi sur l'accueil
+                </label>
               </div>
             ))}
           </div>
@@ -411,7 +420,11 @@ function WidgetEditor({
       return (
         <div className="flex flex-col gap-2 sm:flex-row">
           <select value={widget.variant} onChange={(e) => onPatch({ variant: e.target.value })} className={selectClass + " sm:w-44"}>
-            {SVG_VARIANTS.map((v) => <option key={v} value={v}>{SVG_LABELS[v] ?? v}</option>)}
+            {SVG_GROUPS.map((g) => (
+              <optgroup key={g.group} label={g.group}>
+                {g.items.map((v) => <option key={v} value={v}>{SVG_LABELS[v] ?? v}</option>)}
+              </optgroup>
+            ))}
           </select>
           <Input value={widget.label ?? ""} maxLength={40} placeholder="légende (optionnel)" onChange={(e) => onPatch({ label: e.target.value })} />
         </div>

@@ -16,7 +16,7 @@ export interface Theme {
   mode?: ThemeMode; // "app" (follow app light/dark) by default, or "custom" colors
 }
 
-export type Widget =
+export type Widget = (
   | { type: "marquee"; text: string }
   | { type: "quote"; text: string }
   | { type: "richtext"; text: string }
@@ -25,7 +25,10 @@ export type Widget =
   | { type: "countdown"; date: string; label?: string }
   | { type: "image"; assetId: number; label?: string }
   | { type: "svg"; variant: string; label?: string }
-  | { type: "pins"; label?: string; pins: Pin[] };
+  | { type: "pins"; label?: string; pins: Pin[] }
+) & {
+  home?: boolean; // also shown at the top of the home feed
+};
 
 /** A pinned web page (quick access): its address and an optional short name. */
 export interface Pin {

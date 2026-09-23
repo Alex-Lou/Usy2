@@ -156,4 +156,14 @@ class WidgetValidatorTest {
         assertThatThrownBy(() -> validator.validate(java.util.List.of(pins(new WidgetDto.PinDto("https://a.fr", "x".repeat(41))))))
                 .isInstanceOf(ContentValidationException.class);
     }
+
+    @Test
+    void newScenesAreAcceptedAndAnyWidgetCanBeOnTheHomeFeed() {
+        validator.validate(java.util.List.of(
+                new WidgetDto("svg", null, null, "Nuit", null, null, "aurora", null, true),
+                new WidgetDto("svg", null, null, null, null, null, "triquetra"),
+                new WidgetDto("quote", "Sláinte", null, null, null, null, null, null, false)));
+        assertThatThrownBy(() -> validator.validate(java.util.List.of(new WidgetDto("svg", null, null, null, null, null, "dragon"))))
+                .isInstanceOf(ContentValidationException.class);
+    }
 }
