@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AssetImage } from "../../components/AssetImage";
+import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Avatar } from "../../components/ui/Avatar";
 import { Icon } from "../../components/ui/Icon";
 import { deletePost, react, unreact, updatePost } from "./api";
@@ -104,7 +105,9 @@ export function PostCard({
       )}
 
       {post.imageAssetId && (
-        <AssetImage assetId={post.imageAssetId} className="mt-3 max-h-[28rem] w-full rounded-token border border-border object-cover" />
+        <EffectLayer effect={post.imageEffect} className="mt-3 rounded-token">
+          <AssetImage assetId={post.imageAssetId} className="max-h-[28rem] w-full rounded-token border border-border object-cover" />
+        </EffectLayer>
       )}
 
       <div className="mt-4 flex flex-wrap gap-1.5">

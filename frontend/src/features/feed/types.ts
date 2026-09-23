@@ -11,6 +11,7 @@ export interface Post {
   author: User;
   text: string;
   imageAssetId: number | null;
+  imageEffect?: string | null; // animated effect from the photo studio
   createdAt: string;
   updatedAt: string;
   edited: boolean;

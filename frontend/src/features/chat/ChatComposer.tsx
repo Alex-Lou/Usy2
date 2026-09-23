@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 
 import { RichPicker } from "../../components/rich/RichPicker";
 import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useRichInput";
 import { Icon } from "../../components/ui/Icon";
+import { EffectLayer } from "../../components/photo/EffectLayer";
+import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { getStorageUsage, type Asset, type StorageUsage } from "../../lib/api/assets";
 import { checkFile, DOCUMENT_ACCEPT, formatSize, uploadAttachment } from "./attachments";
 
@@ -10,6 +12,7 @@ const MAX_TEXT = 2000;
 interface Pending {
   file: File;
   preview: string | null; // object URL for images
+  effect: string | null; // animated effect chosen in the studio
 }
 
 /**
@@ -30,6 +33,7 @@ export function ChatComposer({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [usage, setUsage] = useState<StorageUsage | null>(null);
+  const [studio, setStudio] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useAutoGrow(ref, text);
@@ -58,7 +62,7 @@ export function ChatComposer({
     }
     setError(null);
     const preview = file.type.startsWith("image/") ? URL.createObjectURL(file) : null;
-    setPending({ file, preview });
+    setPending({ file, preview, effect: null });
     ref.current?.focus();
   }
 
@@ -69,7 +73,7 @@ export function ChatComposer({
     setSending(true);
     setError(null);
     try {
-      const asset = pending ? await uploadAttachment(pending.file) : null;
+      const asset = pending ? await uploadAttachment(pending.file, pending.effect) : null;
       onSend(value, asset);
       setText("");
       setPending(null);
@@ -94,7 +98,9 @@ export function ChatComposer({
       {pending && (
         <div className="flex items-center gap-3 rounded-token border border-border bg-surface p-2 animate-pop">
           {pending.preview ? (
-            <img src={pending.preview} alt="" className="h-16 w-16 rounded-token-sm object-cover" />
+            <EffectLayer effect={pending.effect} className="rounded-token-sm">
+              <img src={pending.preview} alt="" className="h-16 w-16 rounded-token-sm object-cover" />
+            </EffectLayer>
           ) : (
             <span className="grid h-16 w-12 place-items-center text-text-muted">
               <Icon name="file" size={32} strokeWidth={1.5} />
@@ -106,6 +112,15 @@ export function ChatComposer({
               {sending ? "Envoi…" : `${formatSize(pending.file.size)} · ajoute un message si tu veux`}
             </span>
           </span>
+          {pending.preview && pending.file.type !== "image/gif" && !sending && (
+            <button
+              type="button"
+              onClick={() => setStudio(true)}
+              className="flex shrink-0 items-center gap-1 rounded-full border border-border px-2.5 py-1.5 text-xs font-semibold text-text press hover:border-primary/50"
+            >
+              <Icon name="sparkles" size={13} /> Retoucher
+            </button>
+          )}
           <button
             type="button"
             onClick={() => {
@@ -121,6 +136,17 @@ export function ChatComposer({
         </div>
       )}
       {error && <p className="px-2 text-sm text-danger">{error}</p>}
+      {studio && pending && (
+        <PhotoStudio
+          file={pending.file}
+          onCancel={() => setStudio(false)}
+          onDone={(edited, fx) => {
+            if (pending.preview) URL.revokeObjectURL(pending.preview);
+            setPending({ file: edited, preview: URL.createObjectURL(edited), effect: fx });
+            setStudio(false);
+          }}
+        />
+      )}
 
       <div className="flex items-end gap-1.5">
         <div ref={menuRef} className="relative">

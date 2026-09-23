@@ -37,6 +37,7 @@ public class PostMapper {
                 UserDto.from(post.getAuthor()),
                 post.getText(),
                 imageAssetId,
+                post.getImageAsset() != null ? post.getImageAsset().getEffect() : null,
                 post.getCreatedAt(),
                 post.getUpdatedAt(),
                 post.isEdited(),

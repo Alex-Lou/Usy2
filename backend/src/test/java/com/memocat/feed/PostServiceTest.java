@@ -81,7 +81,7 @@ class PostServiceTest {
         when(userRepository.findByUsername("lou")).thenReturn(Optional.of(author));
         when(postRepository.save(any(Post.class))).thenAnswer(inv -> inv.getArgument(0));
         when(postMapper.toDto(any(Post.class), anyLong()))
-                .thenReturn(new PostDto(null, null, "hi", null, null, null, false, List.of(), 0));
+                .thenReturn(new PostDto(null, null, "hi", null, null, null, null, false, List.of(), 0));
 
         postService.create("lou", "hi", null);
 

@@ -30,8 +30,9 @@ public class AssetController {
     }
 
     @PostMapping
-    public AssetDto upload(Principal principal, @RequestParam("file") MultipartFile file) {
-        return assetService.upload(principal.getName(), file);
+    public AssetDto upload(Principal principal, @RequestParam("file") MultipartFile file,
+                           @RequestParam(value = "effect", required = false) String effect) {
+        return assetService.upload(principal.getName(), file, effect);
     }
 
     @PostMapping("/documents")
