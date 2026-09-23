@@ -41,6 +41,12 @@ public class PostService {
         this.events = events;
     }
 
+    /** One post (e.g. opened from a notification); 404 when it was deleted. */
+    @Transactional(readOnly = true)
+    public PostDto get(String username, Long postId) {
+        return postMapper.toDto(requirePost(postId), requireUser(username).getId());
+    }
+
     @Transactional(readOnly = true)
     public PageResponse<PostDto> list(String username, int page, int size) {
         Long currentUserId = requireUser(username).getId();

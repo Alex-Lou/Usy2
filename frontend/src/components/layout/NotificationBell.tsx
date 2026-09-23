@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../app/notifications";
 import { needsHomeScreenInstall } from "../../features/notifications/push";
 import { enableSystemNotifications, systemPermission } from "../../features/notifications/systemNotify";
@@ -14,6 +15,7 @@ function timeLabel(at: number): string {
 export function NotificationBell() {
   const { items, unread, markAllRead, clear } = useNotifications();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const [permission, setPermission] = useState(systemPermission);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -89,9 +91,25 @@ export function NotificationBell() {
           ) : (
             <ul className="max-h-80 overflow-y-auto">
               {items.map((n) => (
-                <li key={n.id} className="flex flex-col gap-0.5 border-b border-border/60 px-3 py-2.5 last:border-0">
-                  <span className="text-sm">{n.text}</span>
-                  <span className="text-[11px] text-text-muted">{timeLabel(n.at)}</span>
+                <li key={n.id} className="border-b border-border/60 last:border-0">
+                  {n.url && /^\/(?!\/)/.test(n.url) ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        navigate(n.url!);
+                      }}
+                      className="flex w-full flex-col gap-0.5 px-3 py-2.5 text-left press hover:bg-surface-2"
+                    >
+                      <span className="text-sm">{n.text}</span>
+                      <span className="text-[11px] text-text-muted">{timeLabel(n.at)}</span>
+                    </button>
+                  ) : (
+                    <div className="flex flex-col gap-0.5 px-3 py-2.5">
+                      <span className="text-sm">{n.text}</span>
+                      <span className="text-[11px] text-text-muted">{timeLabel(n.at)}</span>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>

@@ -71,7 +71,9 @@ public class PushNotifier {
                 default -> null;
             };
             if (body != null) {
-                notify(recipient, new PushPayload(TITLE, body, "/", "post-" + a.postId()), false);
+                // Opens that very post (with its comments for a comment).
+                String url = "/posts/" + a.postId() + (FeedActivity.COMMENT.equals(a.kind()) ? "?comments=1" : "");
+                notify(recipient, new PushPayload(TITLE, body, url, "post-" + a.postId()), false);
             }
         }
     }

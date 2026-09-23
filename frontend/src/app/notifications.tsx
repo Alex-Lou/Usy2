@@ -12,6 +12,7 @@ export interface Notif {
   text: string;
   at: number; // epoch ms
   read: boolean;
+  url?: string; // in-app page it opens (e.g. /posts/12)
 }
 
 const KEY = "memocat.notifs";
@@ -38,7 +39,7 @@ function persist(items: Notif[]) {
 interface NotificationsValue {
   items: Notif[];
   unread: number;
-  add: (text: string) => void;
+  add: (text: string, url?: string) => void;
   markAllRead: () => void;
   clear: () => void;
 }
@@ -48,10 +49,10 @@ const NotificationsContext = createContext<NotificationsValue | null>(null);
 export function NotificationsProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<Notif[]>(readInitial);
 
-  const add = useCallback((text: string) => {
+  const add = useCallback((text: string, url?: string) => {
     setItems((prev) => {
       const next = [
-        { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, text, at: Date.now(), read: false },
+        { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, text, at: Date.now(), read: false, url },
         ...prev,
       ].slice(0, MAX);
       persist(next);

@@ -8,6 +8,7 @@ import { ChatPage } from "./features/chat/ChatPage";
 import { GamesHub } from "./features/games/GamesHub";
 import { MorpionPage } from "./features/games/MorpionPage";
 import { SnakePage } from "./features/games/SnakePage";
+import { PostPage } from "./features/feed/PostPage";
 import { FishingPage } from "./features/pet/games/FishingPage";
 import { PetHousePage } from "./features/pet/house/PetHousePage";
 import { ProfilePage } from "./features/profile/ProfilePage";
@@ -26,6 +27,7 @@ export function App() {
         }
       >
         <Route path="/" element={<FeedPage />} />
+        <Route path="/posts/:id" element={<PostPage />} />
         <Route path="/albums" element={<AlbumsPage />} />
         <Route path="/albums/:id" element={<AlbumPage />} />
         <Route path="/chat" element={<ChatPage />} />

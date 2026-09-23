@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "../../components/ui/Icon";
 import type { SharedContent } from "./sharedContent";
@@ -24,30 +24,39 @@ export function ShareChoice({
   }, [onCancel]);
 
   const summary = shared.text || shared.file?.name || "";
+  const [thumb, setThumb] = useState<string | null>(null);
+  useEffect(() => {
+    if (!shared.file || !shared.file.type.startsWith("image/")) return;
+    const url = URL.createObjectURL(shared.file);
+    setThumb(url);
+    return () => URL.revokeObjectURL(url);
+  }, [shared.file]);
+
+  // A small centred popup: what was shared, then "post" or "message".
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 animate-fade-up lg:pl-64" onClick={onCancel}>
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4 animate-fade-up" onClick={onCancel}>
       <div
         role="dialog"
         aria-label="Partager dans MemoCat"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-t-3xl border border-b-0 border-border bg-surface p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] animate-sheet-up"
+        className="w-[min(20rem,100%)] rounded-3xl border border-border bg-surface p-4 shadow-card animate-pop"
       >
-        <h2 className="font-display text-lg font-bold">Partager dans MemoCat</h2>
-        <p className="mt-1 line-clamp-2 break-all text-sm text-text-muted">
-          {shared.file && "📷 "}
-          {summary}
-        </p>
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <button type="button" onClick={onPost} className="flex flex-col items-center gap-2 rounded-token border border-border bg-bg-2/40 px-3 py-4 font-semibold press hover:border-primary/50">
-            <Icon name="home" size={26} className="text-primary" />
+        <h2 className="text-center font-display text-base font-bold">Partager dans MemoCat</h2>
+        <div className="mt-3 flex items-center gap-3 rounded-token bg-bg-2/60 p-2">
+          {thumb && <img src={thumb} alt="" className="h-12 w-12 shrink-0 rounded-token-sm object-cover" />}
+          <p className="line-clamp-3 min-w-0 break-words text-xs text-text-muted">{summary || "Photo"}</p>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <button type="button" onClick={onPost} className="flex flex-col items-center gap-1 rounded-token border border-border bg-bg-2/40 px-2 py-3 text-sm font-semibold press hover:border-primary/50">
+            <Icon name="home" size={22} className="text-primary" />
             En post
           </button>
-          <button type="button" onClick={onMessage} className="flex flex-col items-center gap-2 rounded-token border border-border bg-bg-2/40 px-3 py-4 font-semibold press hover:border-primary/50">
-            <Icon name="chat" size={26} className="text-primary" />
-            {partnerName ? `En message à ${partnerName}` : "En message"}
+          <button type="button" onClick={onMessage} className="flex flex-col items-center gap-1 rounded-token border border-border bg-bg-2/40 px-2 py-3 text-sm font-semibold press hover:border-primary/50">
+            <Icon name="chat" size={22} className="text-primary" />
+            {partnerName ? `Message à ${partnerName}` : "En message"}
           </button>
         </div>
-        <button type="button" onClick={onCancel} className="mt-3 w-full py-2 text-sm text-text-muted press hover:text-text">
+        <button type="button" onClick={onCancel} className="mt-2 w-full py-1.5 text-xs text-text-muted press hover:text-text">
           Annuler
         </button>
       </div>

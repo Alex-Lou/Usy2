@@ -42,6 +42,11 @@ public class PostController {
         return postService.list(principal.getName(), page, size);
     }
 
+    @GetMapping("/{id}")
+    public PostDto get(Principal principal, @PathVariable Long id) {
+        return postService.get(principal.getName(), id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PostDto create(Principal principal, @RequestBody PostRequests.CreatePost request) {
