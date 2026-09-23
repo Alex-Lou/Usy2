@@ -39,9 +39,9 @@ class PushNotifierTest {
     private PushNotifier notifier;
 
     private final User lou = user(1, "lou", "Lou");
-    private final User mimi = user(2, "mimi", "Mimi");
-    private final PushSubscription phone = new PushSubscription(mimi, "https://fcm.googleapis.com/a", "k", "s");
-    private final PushSubscription oldLaptop = new PushSubscription(mimi, "https://fcm.googleapis.com/b", "k", "s");
+    private final User sam = user(2, "sam", "Sam");
+    private final PushSubscription phone = new PushSubscription(sam, "https://fcm.googleapis.com/a", "k", "s");
+    private final PushSubscription oldLaptop = new PushSubscription(sam, "https://fcm.googleapis.com/b", "k", "s");
 
     private static User user(long id, String username, String name) {
         User u = new User(username, "hash", name);
@@ -52,7 +52,7 @@ class PushNotifierTest {
     @BeforeEach
     void setUp() {
         notifier = new PushNotifier(subscriptions, users, presence, sender, json);
-        when(users.findAll()).thenReturn(List.of(lou, mimi));
+        when(users.findAll()).thenReturn(List.of(lou, sam));
         lenient().when(subscriptions.findByUserIdOrderByCreatedAtAsc(2L)).thenReturn(List.of(phone, oldLaptop));
     }
 
@@ -80,7 +80,7 @@ class PushNotifierTest {
 
     @Test
     void skipsSomeoneAlreadyLookingAtTheApp() {
-        presence.report("session", "mimi", true);
+        presence.report("session", "sam", true);
 
         notifier.onChatMessage(new ChatMessageSent(1L, "Lou"));
 
@@ -93,7 +93,7 @@ class PushNotifierTest {
         verify(sender, never()).send(any(), any(), anyBoolean());
 
         when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
-        notifier.onFeedActivity(new FeedActivity(FeedActivity.REACTION, 1L, "Lou", 8L, 2L, "😍")); // Mimi's post
+        notifier.onFeedActivity(new FeedActivity(FeedActivity.REACTION, 1L, "Lou", 8L, 2L, "😍")); // Sam's post
 
         JsonNode payload = sentPayload(phone);
         assertThat(payload.get("body").asText()).isEqualTo("Lou a réagi 😍 à ton post");

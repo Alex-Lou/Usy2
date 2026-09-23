@@ -67,8 +67,8 @@ class PushSubscriptionServiceTest {
 
     @Test
     void sameDeviceIsReboundInsteadOfDuplicated() {
-        User mimi = withId(new User("mimi", "hash", "Mimi"), 2L);
-        PushSubscription existing = new PushSubscription(mimi, ENDPOINT, "old", "old");
+        User sam = withId(new User("sam", "hash", "Sam"), 2L);
+        PushSubscription existing = new PushSubscription(sam, ENDPOINT, "old", "old");
         when(users.findByUsername("lou")).thenReturn(Optional.of(lou));
         when(subscriptions.findByEndpoint(ENDPOINT)).thenReturn(Optional.of(existing));
 

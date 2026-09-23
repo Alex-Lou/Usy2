@@ -18,7 +18,7 @@ class PresenceRegistryTest {
         registry.report("s1", "lou", true);
         registry.report("s2", "lou", false);
         assertThat(registry.isLookingAtApp("lou")).isTrue();
-        assertThat(registry.isLookingAtApp("mimi")).isFalse();
+        assertThat(registry.isLookingAtApp("sam")).isFalse();
 
         registry.report("s1", "lou", false); // app went to background
         assertThat(registry.isLookingAtApp("lou")).isFalse();
