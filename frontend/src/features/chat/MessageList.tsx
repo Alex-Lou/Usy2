@@ -7,6 +7,7 @@ import { ProfileLink } from "../../components/ui/ProfileLink";
 import type { Asset } from "../../lib/api/assets";
 import { AttachmentView } from "./AttachmentView";
 import { LongPress, ReactionBar, ReactionPills } from "./MessageReactions";
+import { Quote } from "./Quote";
 import type { Message } from "./types";
 
 const GROUP_GAP_MS = 5 * 60_000;
@@ -53,12 +54,14 @@ export function MessageList({
   emojis,
   onOpenImage,
   onReact,
+  onReply,
 }: {
   messages: Message[];
   myId: number | undefined;
   emojis: string[];
   onOpenImage: (a: Asset) => void;
   onReact: (messageId: number, emoji: string | null) => void;
+  onReply: (m: Message) => void;
 }) {
   const [menu, setMenu] = useState<{ message: Message; anchor: DOMRect } | null>(null);
   const myReaction = (m: Message) => m.reactions.find((r) => r.userId === myId)?.emoji ?? null;
@@ -95,8 +98,9 @@ export function MessageList({
                 </span>
               )}
               <div className={`flex max-w-[80%] flex-col gap-1 animate-pop ${mine ? "items-end" : "items-start"}`}>
-                <LongPress onLongPress={(anchor) => setMenu({ message: m, anchor })}>
+                <LongPress onLongPress={(anchor) => setMenu({ message: m, anchor })} onSwipe={() => onReply(m)}>
                 <div className={`flex flex-col gap-1 ${mine ? "items-end" : "items-start"}`}>
+                {m.replyTo && <Quote reply={m.replyTo} myId={myId} />}
                 {m.attachment && <AttachmentView asset={m.attachment} mine={mine} onOpenImage={onOpenImage} />}
                 {hasText && (
                   <div
@@ -136,6 +140,7 @@ export function MessageList({
           emojis={emojis}
           current={myReaction(menu.message)}
           copyText={menu.message.content.trim() ? menu.message.content : null}
+          onReply={() => onReply(menu.message)}
           onPick={(emoji) => {
             onReact(menu.message.id, myReaction(menu.message) === emoji ? null : emoji);
             setMenu(null);

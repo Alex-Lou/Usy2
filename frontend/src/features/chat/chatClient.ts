@@ -37,7 +37,10 @@ export function createChatClient(
   return client;
 }
 
-/** `attachmentAssetId`: a photo/GIF/document uploaded first (see attachments.ts). */
-export function sendMessage(client: Client, content: string, attachmentAssetId: number | null = null): void {
-  client.publish({ destination: "/app/chat.send", body: JSON.stringify({ content, attachmentAssetId }) });
+/**
+ * `attachmentAssetId`: a photo/GIF/document uploaded first (see attachments.ts);
+ * `replyToId`: the earlier message this one answers.
+ */
+export function sendMessage(client: Client, content: string, attachmentAssetId: number | null = null, replyToId: number | null = null): void {
+  client.publish({ destination: "/app/chat.send", body: JSON.stringify({ content, attachmentAssetId, replyToId }) });
 }

@@ -35,6 +35,8 @@ class CommentServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private com.memocat.repository.CommentReactionRepository reactionRepository;
+    @Mock
     private ApplicationEventPublisher events;
 
     @InjectMocks

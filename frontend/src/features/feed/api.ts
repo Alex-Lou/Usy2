@@ -1,5 +1,5 @@
 import { apiRequest } from "../../lib/api/client";
-import type { Comment, Page, Post } from "./types";
+import type { Comment, CommentReaction, Page, Post } from "./types";
 
 export function listPosts(page = 0, size = 10): Promise<Page<Post>> {
   return apiRequest<Page<Post>>(`/api/posts?page=${page}&size=${size}`);
@@ -54,4 +54,9 @@ export function deleteComment(id: number): Promise<void> {
 
 export function getReactionEmojis(): Promise<string[]> {
   return apiRequest<string[]>("/api/reactions/emojis");
+}
+
+/** Sets my emoji on a comment; the same emoji again (or null) removes it. */
+export function reactToComment(commentId: number, emoji: string | null): Promise<{ commentId: number; reactions: CommentReaction[] }> {
+  return apiRequest(`/api/comments/${commentId}/reaction`, { method: "PUT", body: { emoji } });
 }

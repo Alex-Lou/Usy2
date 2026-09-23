@@ -125,4 +125,39 @@ class MessageServiceTest {
         assertThat(page.content().get(0).reactions()).isEmpty();
         assertThat(page.content().get(1).reactions()).extracting("emoji").containsExactly("❤️");
     }
+
+    @Test
+    void replyQuotesTheEarlierMessage() {
+        User lou = new User("lou", "h", "Lou");
+        org.springframework.test.util.ReflectionTestUtils.setField(lou, "id", 1L);
+        Message earlier = new Message(lou, "On se voit à 20h ?", null);
+        org.springframework.test.util.ReflectionTestUtils.setField(earlier, "id", 5L);
+        when(userRepository.findByUsername("lou")).thenReturn(java.util.Optional.of(lou));
+        when(messageRepository.findById(5L)).thenReturn(java.util.Optional.of(earlier));
+        when(messageRepository.save(any(Message.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var dto = messageService.send("lou", "Oui !", null, 5L);
+
+        assertThat(dto.replyTo().id()).isEqualTo(5L);
+        assertThat(dto.replyTo().senderName()).isEqualTo("Lou");
+        assertThat(dto.replyTo().excerpt()).isEqualTo("On se voit à 20h ?");
+        assertThat(dto.replyTo().attachment()).isNull();
+    }
+
+    @Test
+    void replyToAMissingMessageIsRefused() {
+        User lou = new User("lou", "h", "Lou");
+        when(userRepository.findByUsername("lou")).thenReturn(java.util.Optional.of(lou));
+        when(messageRepository.findById(99L)).thenReturn(java.util.Optional.empty());
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> messageService.send("lou", "Oui", null, 99L))
+                .isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
+    void longQuotesAreShortened() {
+        User lou = new User("lou", "h", "Lou");
+        Message m = new Message(lou, "x".repeat(500), null);
+        assertThat(com.memocat.chat.dto.ReplyPreviewDto.from(m).excerpt()).hasSize(140).endsWith("…");
+    }
 }

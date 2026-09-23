@@ -161,7 +161,7 @@ export function PostCard({
         {commentCount} commentaire{commentCount > 1 ? "s" : ""}
       </button>
 
-      {showComments && <Comments postId={post.id} onCountChange={(d) => setCommentCount((c) => c + d)} />}
+      {showComments && <Comments postId={post.id} emojis={emojis} onCountChange={(d) => setCommentCount((c) => c + d)} />}
     </article>
   );
 }

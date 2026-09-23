@@ -8,6 +8,16 @@ export interface Message {
   attachment: Asset | null;
   createdAt: string;
   reactions: MessageReaction[]; // one emoji per person, oldest first
+  replyTo: ReplyPreview | null; // the earlier message this one answers
+}
+
+/** The quoted message shown above a reply. */
+export interface ReplyPreview {
+  id: number;
+  senderId: number;
+  senderName: string;
+  excerpt: string;
+  attachment: "image" | "file" | null;
 }
 
 export interface MessageReaction {

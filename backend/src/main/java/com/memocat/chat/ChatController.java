@@ -25,6 +25,7 @@ public class ChatController {
     @MessageMapping("/chat.send")
     @SendTo("/topic/messages")
     public MessageDto send(SendMessageRequest request, Principal principal) {
-        return messageService.send(principal.getName(), request.content(), request.attachmentAssetId());
+        return messageService.send(principal.getName(), request.content(), request.attachmentAssetId(),
+                request.replyToId());
     }
 }

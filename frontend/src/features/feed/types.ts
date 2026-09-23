@@ -24,6 +24,12 @@ export interface Comment {
   author: User;
   text: string;
   createdAt: string;
+  reactions: CommentReaction[]; // one emoji per person, oldest first
+}
+
+export interface CommentReaction {
+  userId: number;
+  emoji: string;
 }
 
 export interface Page<T> {

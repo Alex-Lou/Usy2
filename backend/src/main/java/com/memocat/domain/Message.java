@@ -44,14 +44,28 @@ public class Message {
     @JoinColumn(name = "attachment_asset_id")
     private Asset attachment;
 
+    /** Optional earlier message this one answers. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reply_to_id")
+    private Message replyTo;
+
     protected Message() {
         // for JPA
     }
 
     public Message(User sender, String content, Asset attachment) {
+        this(sender, content, attachment, null);
+    }
+
+    public Message(User sender, String content, Asset attachment, Message replyTo) {
         this.sender = sender;
         this.content = content;
         this.attachment = attachment;
+        this.replyTo = replyTo;
+    }
+
+    public Message getReplyTo() {
+        return replyTo;
     }
 
     @PrePersist
