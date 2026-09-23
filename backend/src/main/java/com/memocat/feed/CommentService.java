@@ -12,6 +12,7 @@ import com.memocat.web.ContentValidationException;
 import com.memocat.web.ForbiddenException;
 import com.memocat.web.PageResponse;
 import com.memocat.web.ResourceNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,16 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher events;
 
     public CommentService(CommentRepository commentRepository,
                           PostRepository postRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          ApplicationEventPublisher events) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.events = events;
     }
 
     @Transactional(readOnly = true)
@@ -48,8 +52,9 @@ public class CommentService {
     public CommentDto create(String username, Long postId, String text) {
         User author = requireUser(username);
         Post post = requirePost(postId);
-        Comment comment = new Comment(post, author, validateText(text));
-        return toDto(commentRepository.save(comment));
+        Comment comment = commentRepository.save(new Comment(post, author, validateText(text)));
+        events.publishEvent(FeedActivity.comment(author, post));
+        return toDto(comment);
     }
 
     @Transactional

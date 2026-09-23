@@ -10,6 +10,7 @@ import com.memocat.web.ContentValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.springframework.context.ApplicationEventPublisher;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -35,6 +36,8 @@ class ReactionServiceTest {
     private UserRepository userRepository;
     @Mock
     private PostMapper postMapper;
+    @Mock
+    private ApplicationEventPublisher events;
 
     @InjectMocks
     private ReactionService reactionService;
@@ -64,6 +67,7 @@ class ReactionServiceTest {
         reactionService.react("lou", 1L, "❤️");
 
         verify(reactionRepository).save(any(Reaction.class));
+        verify(events).publishEvent(any(FeedActivity.class));
     }
 
     @Test
@@ -78,5 +82,6 @@ class ReactionServiceTest {
         reactionService.react("lou", 1L, "❤️");
 
         verify(reactionRepository, never()).save(any());
+        verify(events, never()).publishEvent(any(Object.class)); // no re-notification
     }
 }

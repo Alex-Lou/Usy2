@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNotifications } from "../../app/notifications";
+import { enableSystemNotifications, systemPermission } from "../../features/notifications/systemNotify";
 import { Icon } from "../ui/Icon";
 
 function timeLabel(at: number): string {
@@ -12,7 +13,12 @@ function timeLabel(at: number): string {
 export function NotificationBell() {
   const { items, unread, markAllRead, clear } = useNotifications();
   const [open, setOpen] = useState(false);
+  const [permission, setPermission] = useState(systemPermission);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  async function enableAlerts() {
+    setPermission(await enableSystemNotifications());
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -62,6 +68,16 @@ export function NotificationBell() {
               </button>
             )}
           </div>
+          {permission === "default" && (
+            <button onClick={enableAlerts} className="flex w-full items-center gap-2 border-b border-border bg-primary/10 px-3 py-2 text-left text-xs font-semibold text-primary press">
+              <Icon name="bell" size={14} /> Activer les alertes sur cet appareil
+            </button>
+          )}
+          {permission === "denied" && (
+            <p className="border-b border-border px-3 py-2 text-[11px] text-text-muted">
+              Alertes bloquées pour ce site : réautorise-les dans les réglages du navigateur.
+            </p>
+          )}
           {items.length === 0 ? (
             <p className="px-3 py-6 text-center text-sm text-text-muted">Rien pour l'instant 💤</p>
           ) : (
