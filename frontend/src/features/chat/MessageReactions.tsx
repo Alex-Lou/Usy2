@@ -210,7 +210,7 @@ export function ReactionPills({ reactions, myId, onOpen }: { reactions: MessageR
       type="button"
       onClick={onOpen}
       aria-label={`Réactions : ${reactions.map((r) => r.emoji).join(" ")}`}
-      className={`-mt-2 flex items-center gap-0.5 rounded-full border bg-surface px-1.5 py-0.5 text-sm leading-none shadow-sm press ${minePicked ? "border-primary/50" : "border-border"}`}
+      className={`relative z-[1] mx-2.5 -mt-1.5 flex items-center gap-0.5 rounded-full border bg-surface px-1.5 py-0.5 text-sm leading-none shadow-sm press ${minePicked ? "border-primary/50" : "border-border"}`}
     >
       {[...counts].map(([emoji, n]) => (
         <span key={emoji} className="flex items-center">

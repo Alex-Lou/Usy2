@@ -24,6 +24,7 @@
     background: var(--app-bg);
     background-attachment: fixed;
     min-height: 100vh;
+    min-height: 100dvh; /* 100vh counts Chrome's hidden address bar: pages would scroll by its height */
     @apply text-text font-sans antialiased;
     -webkit-tap-highlight-color: transparent;
   }
