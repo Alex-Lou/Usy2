@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Icon } from "../../components/ui/Icon";
 import { Skeleton } from "../../components/ui/Skeleton";
 import { EmptyState } from "../../components/ui/states";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { useAuth } from "../auth/useAuth";
+import { getAllProfiles } from "../profile/api";
 import { onFeedActivity } from "./activity";
 import { getReactionEmojis, listPosts } from "./api";
 import { Composer, type ComposerSeed } from "./Composer";
 import { CoupleStrip } from "./CoupleStrip";
 import { MomentsBar, type Moment } from "./MomentsBar";
 import { PostCard } from "./PostCard";
-import { takeSharedContent } from "./sharedContent";
+import { ShareChoice } from "./ShareChoice";
+import { handToChat, takeSharedContent, type SharedContent } from "./sharedContent";
 import type { Post } from "./types";
 
 export function FeedPage() {
@@ -22,22 +25,41 @@ export function FeedPage() {
   const [emojis, setEmojis] = useState<string[]>([]);
   const [seed, setSeed] = useState<ComposerSeed | undefined>();
   const [freshFrom, setFreshFrom] = useState<string | null>(null); // partner posted while here
+  const [shared, setShared] = useState<SharedContent | null>(null); // waiting for "post or message?"
+  const [partnerName, setPartnerName] = useState<string | null>(null);
   const nonce = useRef(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getReactionEmojis().then(setEmojis).catch(() => {});
   }, []);
 
-  // Opened from another app's "Share" menu: pre-fill a post with what was shared.
+  // Opened from another app's "Share" menu: ask whether it becomes a post or a message.
   useEffect(() => {
-    takeSharedContent().then((shared) => {
+    takeSharedContent().then((content) => {
       if (window.location.search.includes("share=")) window.history.replaceState(null, "", "/");
-      if (!shared) return;
-      nonce.current += 1;
-      setSeed({ text: shared.text, file: shared.file, nonce: nonce.current });
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (!content) return;
+      setShared(content);
+      getAllProfiles()
+        .then((all) => setPartnerName(all.find((p) => p.userId !== user?.id)?.displayName ?? null))
+        .catch(() => {});
     });
-  }, []);
+  }, [user?.id]);
+
+  function shareAsPost() {
+    if (!shared) return;
+    nonce.current += 1;
+    setSeed({ text: shared.text, file: shared.file, nonce: nonce.current });
+    setShared(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function shareAsMessage() {
+    if (!shared) return;
+    handToChat(shared);
+    setShared(null);
+    navigate("/chat");
+  }
 
   const load = useCallback(async (pageNum: number) => {
     setLoading(true);
@@ -91,6 +113,9 @@ export function FeedPage() {
       <CoupleStrip />
       <MomentsBar onPick={pickMoment} />
       <Composer onCreated={() => load(0)} seed={seed} />
+      {shared && (
+        <ShareChoice shared={shared} partnerName={partnerName} onPost={shareAsPost} onMessage={shareAsMessage} onCancel={() => setShared(null)} />
+      )}
 
       {items === null ? (
         <div className="flex flex-col gap-4">
