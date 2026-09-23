@@ -12,6 +12,7 @@ import com.memocat.web.ForbiddenException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.springframework.context.ApplicationEventPublisher;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -38,6 +39,8 @@ class PostServiceTest {
     private AssetRepository assetRepository;
     @Mock
     private PostMapper postMapper;
+    @Mock
+    private ApplicationEventPublisher events;
 
     @InjectMocks
     private PostService postService;
@@ -83,6 +86,7 @@ class PostServiceTest {
         postService.create("lou", "hi", null);
 
         verify(postRepository).save(any(Post.class));
+        verify(events).publishEvent(any(FeedActivity.class));
     }
 
     @Test

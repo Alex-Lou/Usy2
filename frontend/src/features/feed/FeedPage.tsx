@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Icon } from "../../components/ui/Icon";
 import { Skeleton } from "../../components/ui/Skeleton";
 import { EmptyState } from "../../components/ui/states";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { useAuth } from "../auth/useAuth";
+import { onFeedActivity } from "./activity";
 import { getReactionEmojis, listPosts } from "./api";
 import { Composer, type ComposerSeed } from "./Composer";
 import { CoupleStrip } from "./CoupleStrip";
@@ -18,6 +20,7 @@ export function FeedPage() {
   const [loading, setLoading] = useState(false);
   const [emojis, setEmojis] = useState<string[]>([]);
   const [seed, setSeed] = useState<ComposerSeed | undefined>();
+  const [freshFrom, setFreshFrom] = useState<string | null>(null); // partner posted while here
   const nonce = useRef(0);
 
   useEffect(() => {
@@ -35,6 +38,14 @@ export function FeedPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => onFeedActivity((a) => a.kind === "post" && setFreshFrom(a.actorName)), []);
+
+  function showFresh() {
+    setFreshFrom(null);
+    void load(0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   useEffect(() => {
     load(0);
@@ -57,6 +68,14 @@ export function FeedPage() {
         <p className="text-text-muted">Coucou {user?.displayName} 👋</p>
       </header>
 
+      {freshFrom && (
+        <button
+          onClick={showFresh}
+          className="sticky top-16 z-20 mx-auto flex items-center gap-2 rounded-full btn-brand px-4 py-2 text-sm shadow-glow animate-pop lg:top-4"
+        >
+          <Icon name="sparkles" size={16} /> Nouveau post de {freshFrom} — Afficher
+        </button>
+      )}
       <CoupleStrip />
       <MomentsBar onPick={pickMoment} />
       <Composer onCreated={() => load(0)} seed={seed} />

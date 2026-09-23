@@ -9,6 +9,7 @@ import com.memocat.repository.ReactionRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
 import com.memocat.web.ResourceNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,15 +20,18 @@ public class ReactionService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostMapper postMapper;
+    private final ApplicationEventPublisher events;
 
     public ReactionService(ReactionRepository reactionRepository,
                            PostRepository postRepository,
                            UserRepository userRepository,
-                           PostMapper postMapper) {
+                           PostMapper postMapper,
+                           ApplicationEventPublisher events) {
         this.reactionRepository = reactionRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.postMapper = postMapper;
+        this.events = events;
     }
 
     @Transactional
@@ -41,6 +45,7 @@ public class ReactionService {
         // Idempotent: one reaction per (post, user, emoji).
         if (reactionRepository.findByPostIdAndUserIdAndEmoji(postId, user.getId(), emoji).isEmpty()) {
             reactionRepository.save(new Reaction(post, user, emoji));
+            events.publishEvent(FeedActivity.reaction(user, post, emoji));
         }
         return postMapper.toDto(post, user.getId());
     }

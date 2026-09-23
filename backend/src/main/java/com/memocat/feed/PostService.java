@@ -13,6 +13,7 @@ import com.memocat.web.PageResponse;
 import com.memocat.web.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +27,18 @@ public class PostService {
     private final UserRepository userRepository;
     private final AssetRepository assetRepository;
     private final PostMapper postMapper;
+    private final ApplicationEventPublisher events;
 
     public PostService(PostRepository postRepository,
                        UserRepository userRepository,
                        AssetRepository assetRepository,
-                       PostMapper postMapper) {
+                       PostMapper postMapper,
+                       ApplicationEventPublisher events) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.assetRepository = assetRepository;
         this.postMapper = postMapper;
+        this.events = events;
     }
 
     @Transactional(readOnly = true)
@@ -50,8 +54,9 @@ public class PostService {
     public PostDto create(String username, String text, Long imageAssetId) {
         User author = requireUser(username);
         Asset image = resolveAsset(imageAssetId);
-        Post post = new Post(author, validateText(text, image != null), image);
-        return postMapper.toDto(postRepository.save(post), author.getId());
+        Post post = postRepository.save(new Post(author, validateText(text, image != null), image));
+        events.publishEvent(FeedActivity.post(author, post));
+        return postMapper.toDto(post, author.getId());
     }
 
     @Transactional
