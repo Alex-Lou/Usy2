@@ -2,6 +2,8 @@ import { useState } from "react";
 import { AssetImage } from "../../components/AssetImage";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Avatar } from "../../components/ui/Avatar";
+import { LinkPreview } from "../../components/rich/LinkPreview";
+import { firstUrl, linkify } from "../../components/rich/links";
 import { Icon } from "../../components/ui/Icon";
 import { ImageViewer } from "../chat/ImageViewer";
 import { deletePost, react, unreact, updatePost } from "./api";
@@ -103,8 +105,10 @@ export function PostCard({
           </div>
         </div>
       ) : (
-        <p className="whitespace-pre-wrap leading-relaxed">{post.text}</p>
+        <p className="whitespace-pre-wrap break-words leading-relaxed">{linkify(post.text)}</p>
       )}
+
+      {!editing && !post.imageAssetId && firstUrl(post.text) && <LinkPreview url={firstUrl(post.text)!} className="mt-3" />}
 
       {post.imageAssetId && (
         <button type="button" onClick={() => setViewing(true)} className="mt-3 block w-full press" aria-label="Agrandir la photo">

@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from "react";
+import { linkify } from "./links";
 import { LiveSticker } from "./LiveSticker";
 import { findSticker, type Sticker } from "./stickers";
 
@@ -40,7 +41,7 @@ function renderInline(text: string): ReactNode[] {
   while ((m = TOKEN.exec(text)) !== null) {
     const sticker = findSticker(m[1]);
     if (!sticker) continue; // unknown token: left as plain text
-    if (m.index > last) out.push(text.slice(last, m.index));
+    if (m.index > last) out.push(...linkify(text.slice(last, m.index)));
     out.push(
       <LiveSticker key={key++} className="mx-0.5 inline-block align-middle">
         {sticker.render(40)}
@@ -48,13 +49,13 @@ function renderInline(text: string): ReactNode[] {
     );
     last = m.index + m[0].length;
   }
-  if (last < text.length) out.push(text.slice(last));
+  if (last < text.length) out.push(...linkify(text.slice(last)));
   return out;
 }
 
 /**
  * Renders a comment/message body: a lone sticker or a few emojis are shown big;
- * otherwise text (escaped by React) with inline stickers. Never injects HTML.
+ * otherwise text (escaped by React) with inline stickers and clickable links. Never injects HTML.
  */
 export function RichBody({ text, className = "" }: { text: string; className?: string }) {
   const sticker = stickerOnly(text);
