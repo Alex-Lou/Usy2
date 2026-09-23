@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { isBare, RichBody } from "../../components/rich/RichBody";
 import { LinkPreview } from "../../components/rich/LinkPreview";
 import { firstUrl } from "../../components/rich/links";
@@ -6,6 +6,7 @@ import { Avatar } from "../../components/ui/Avatar";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import type { Asset } from "../../lib/api/assets";
 import { AttachmentView } from "./AttachmentView";
+import { LongPress, ReactionBar, ReactionPills } from "./MessageReactions";
 import type { Message } from "./types";
 
 const GROUP_GAP_MS = 5 * 60_000;
@@ -44,8 +45,24 @@ function sameRun(a: Message | undefined, b: Message | undefined): boolean {
 /**
  * The conversation: day separators, messages grouped by sender (avatar and time
  * on the last one of a run), text bubbles, big stickers/emojis, attachments.
+ * A long press on a message opens the emoji bar to react to it.
  */
-export function MessageList({ messages, myId, onOpenImage }: { messages: Message[]; myId: number | undefined; onOpenImage: (a: Asset) => void }) {
+export function MessageList({
+  messages,
+  myId,
+  emojis,
+  onOpenImage,
+  onReact,
+}: {
+  messages: Message[];
+  myId: number | undefined;
+  emojis: string[];
+  onOpenImage: (a: Asset) => void;
+  onReact: (messageId: number, emoji: string | null) => void;
+}) {
+  const [menu, setMenu] = useState<{ message: Message; anchor: DOMRect } | null>(null);
+  const myReaction = (m: Message) => m.reactions.find((r) => r.userId === myId)?.emoji ?? null;
+
   return (
     <div className="flex flex-col">
       {messages.map((m, i) => {
@@ -67,7 +84,7 @@ export function MessageList({ messages, myId, onOpenImage }: { messages: Message
                 </span>
               </div>
             )}
-            <div className={`mc-offscreen-skip flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-3" : "mt-0.5"}`}>
+            <div id={`msg-${m.id}`} className={`mc-offscreen-skip flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-3" : "mt-0.5"}`}>
               {!mine && (
                 <span className="w-[30px] shrink-0">
                   {lastOfRun && (
@@ -78,6 +95,8 @@ export function MessageList({ messages, myId, onOpenImage }: { messages: Message
                 </span>
               )}
               <div className={`flex max-w-[80%] flex-col gap-1 animate-pop ${mine ? "items-end" : "items-start"}`}>
+                <LongPress onLongPress={(anchor) => setMenu({ message: m, anchor })}>
+                <div className={`flex flex-col gap-1 ${mine ? "items-end" : "items-start"}`}>
                 {m.attachment && <AttachmentView asset={m.attachment} mine={mine} onOpenImage={onOpenImage} />}
                 {hasText && (
                   <div
@@ -93,6 +112,16 @@ export function MessageList({ messages, myId, onOpenImage }: { messages: Message
                     <RichBody text={m.content} />
                   </div>
                 )}
+                </div>
+                </LongPress>
+                <ReactionPills
+                  reactions={m.reactions}
+                  myId={myId}
+                  onOpen={() => {
+                    const el = document.getElementById(`msg-${m.id}`);
+                    if (el) setMenu({ message: m, anchor: el.getBoundingClientRect() });
+                  }}
+                />
                 {hasText && !m.attachment && firstUrl(m.content) && <LinkPreview url={firstUrl(m.content)!} className="w-72 max-w-full" />}
                 {lastOfRun && <span className="px-1 text-[10px] text-text-muted">{time(m.createdAt)}</span>}
               </div>
@@ -100,6 +129,20 @@ export function MessageList({ messages, myId, onOpenImage }: { messages: Message
           </Fragment>
         );
       })}
+      {menu && (
+        <ReactionBar
+          anchor={menu.anchor}
+          mine={menu.message.sender.id === myId}
+          emojis={emojis}
+          current={myReaction(menu.message)}
+          copyText={menu.message.content.trim() ? menu.message.content : null}
+          onPick={(emoji) => {
+            onReact(menu.message.id, myReaction(menu.message) === emoji ? null : emoji);
+            setMenu(null);
+          }}
+          onClose={() => setMenu(null)}
+        />
+      )}
     </div>
   );
 }

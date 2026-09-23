@@ -7,16 +7,17 @@ import { Avatar } from "../../components/ui/Avatar";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import type { Asset } from "../../lib/api/assets";
 import { useAuth } from "../auth/useAuth";
+import { getReactionEmojis } from "../feed/api";
 import { PetStage } from "../pet/PetStage";
 import { usePet } from "../pet/usePet";
 import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
-import { getHistory } from "./api";
+import { getHistory, reactToMessage } from "./api";
 import { ChatComposer } from "./ChatComposer";
 import { createChatClient, sendMessage } from "./chatClient";
 import { ImageViewer } from "./ImageViewer";
 import { MessageList } from "./MessageList";
-import type { Message } from "./types";
+import type { Message, MessageReaction } from "./types";
 
 /** Adds messages not seen yet, keeping chronological (id) order. */
 function mergeById(prev: Message[], fresh: Message[]): Message[] {
@@ -33,6 +34,7 @@ export function ChatPage() {
   const [hasOlder, setHasOlder] = useState(false);
   const [partner, setPartner] = useState<Profile | null>(null);
   const [viewing, setViewing] = useState<Asset | null>(null);
+  const [emojis, setEmojis] = useState<string[]>([]);
   const clientRef = useRef<Client | null>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -40,6 +42,29 @@ export function ChatPage() {
   const stickToBottom = useRef(true);
   const { pet, setPet, pose, caption, act, onActivity, onMessage, noteHistory } = usePet(user?.id);
   const [petOpen, setPetOpen] = useState(() => readPetOpen());
+
+  useEffect(() => {
+    getReactionEmojis().then(setEmojis).catch(() => {});
+  }, []);
+
+  const setReactions = useCallback((messageId: number, reactions: MessageReaction[]) => {
+    setMessages((prev) => prev.map((m) => (m.id === messageId ? { ...m, reactions } : m)));
+  }, []);
+
+  // Optimistic: my emoji shows at once, and goes back if the server refuses.
+  const react = useCallback(
+    (messageId: number, emoji: string | null) => {
+      const me = user?.id;
+      if (me == null) return;
+      const before = messages.find((m) => m.id === messageId)?.reactions ?? [];
+      const others = before.filter((r) => r.userId !== me);
+      setReactions(messageId, emoji ? [...others, { userId: me, emoji }] : others);
+      reactToMessage(messageId, emoji)
+        .then((r) => setReactions(r.messageId, r.reactions))
+        .catch(() => setReactions(messageId, before));
+    },
+    [messages, user?.id, setReactions],
+  );
 
   useEffect(() => {
     getAllProfiles()
@@ -72,6 +97,7 @@ export function ChatPage() {
       },
       setConnected,
       (a) => onActivityRef.current(a),
+      (r) => setReactions(r.messageId, r.reactions),
     );
     clientRef.current = client;
     return () => {
@@ -180,7 +206,7 @@ export function ChatPage() {
               <p className="text-text-muted">Aucun message. Dis coucou !</p>
             </div>
           ) : (
-            <MessageList messages={messages} myId={user?.id} onOpenImage={setViewing} />
+            <MessageList messages={messages} myId={user?.id} emojis={emojis} onOpenImage={setViewing} onReact={react} />
           )}
           <div className="h-2 shrink-0" />
         </div>

@@ -5,16 +5,26 @@ import com.memocat.auth.dto.UserDto;
 import com.memocat.domain.Message;
 
 import java.time.Instant;
+import java.util.List;
 
-/** A chat message; {@code attachment} is null for text-only messages. */
-public record MessageDto(Long id, UserDto sender, String content, AssetDto attachment, Instant createdAt) {
+/**
+ * A chat message; {@code attachment} is null for text-only messages,
+ * {@code reactions} lists each person's emoji on it (oldest first).
+ */
+public record MessageDto(Long id, UserDto sender, String content, AssetDto attachment, Instant createdAt,
+                         List<MessageReactionDto> reactions) {
 
     public static MessageDto from(Message message) {
+        return from(message, List.of());
+    }
+
+    public static MessageDto from(Message message, List<MessageReactionDto> reactions) {
         return new MessageDto(
                 message.getId(),
                 UserDto.from(message.getSender()),
                 message.getContent(),
                 message.getAttachment() == null ? null : AssetDto.from(message.getAttachment()),
-                message.getCreatedAt());
+                message.getCreatedAt(),
+                reactions);
     }
 }
