@@ -41,7 +41,7 @@ function saveBlobUrl(url: string, filename: string): void {
 }
 
 /** Saves the file on the device under its original name. */
-export async function downloadAsset(asset: Asset): Promise<void> {
+export async function downloadAsset(asset: Pick<Asset, "id" | "originalFilename">): Promise<void> {
   const url = await fetchBlobUrl(`/api/assets/${asset.id}`);
   saveBlobUrl(url, asset.originalFilename);
   setTimeout(() => URL.revokeObjectURL(url), 60_000);

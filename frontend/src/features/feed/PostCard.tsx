@@ -3,6 +3,7 @@ import { AssetImage } from "../../components/AssetImage";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Avatar } from "../../components/ui/Avatar";
 import { Icon } from "../../components/ui/Icon";
+import { ImageViewer } from "../chat/ImageViewer";
 import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
 import type { Post } from "./types";
@@ -36,6 +37,7 @@ export function PostCard({
   const [showComments, setShowComments] = useState(false);
   const [commentCount, setCommentCount] = useState(post.commentCount);
   const [busy, setBusy] = useState(false);
+  const [viewing, setViewing] = useState(false);
 
   async function toggleReaction(emoji: string) {
     const summary = post.reactions.find((r) => r.emoji === emoji);
@@ -105,9 +107,17 @@ export function PostCard({
       )}
 
       {post.imageAssetId && (
-        <EffectLayer effect={post.imageEffect} className="mt-3 rounded-token">
-          <AssetImage assetId={post.imageAssetId} className="max-h-[28rem] w-full rounded-token border border-border object-cover" />
-        </EffectLayer>
+        <button type="button" onClick={() => setViewing(true)} className="mt-3 block w-full press" aria-label="Agrandir la photo">
+          <EffectLayer effect={post.imageEffect} className="rounded-token">
+            <AssetImage assetId={post.imageAssetId} className="max-h-[28rem] w-full rounded-token border border-border object-cover" />
+          </EffectLayer>
+        </button>
+      )}
+      {viewing && post.imageAssetId && (
+        <ImageViewer
+          asset={{ id: post.imageAssetId, originalFilename: `memocat-${post.id}.jpg` }}
+          onClose={() => setViewing(false)}
+        />
       )}
 
       <div className="mt-4 flex flex-wrap gap-1.5">
