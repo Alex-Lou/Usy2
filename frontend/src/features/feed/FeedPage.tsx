@@ -10,6 +10,7 @@ import { Composer, type ComposerSeed } from "./Composer";
 import { CoupleStrip } from "./CoupleStrip";
 import { MomentsBar, type Moment } from "./MomentsBar";
 import { PostCard } from "./PostCard";
+import { takeSharedContent } from "./sharedContent";
 import type { Post } from "./types";
 
 export function FeedPage() {
@@ -25,6 +26,17 @@ export function FeedPage() {
 
   useEffect(() => {
     getReactionEmojis().then(setEmojis).catch(() => {});
+  }, []);
+
+  // Opened from another app's "Share" menu: pre-fill a post with what was shared.
+  useEffect(() => {
+    takeSharedContent().then((shared) => {
+      if (window.location.search.includes("share=")) window.history.replaceState(null, "", "/");
+      if (!shared) return;
+      nonce.current += 1;
+      setSeed({ text: shared.text, file: shared.file, nonce: nonce.current });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   }, []);
 
   const load = useCallback(async (pageNum: number) => {

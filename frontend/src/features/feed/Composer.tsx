@@ -12,6 +12,7 @@ import { createPost } from "./api";
 export interface ComposerSeed {
   text: string;
   wantImage?: boolean;
+  file?: File | null; // e.g. a photo shared from another app
   nonce: number;
 }
 
@@ -57,6 +58,10 @@ export function Composer({
   useEffect(() => {
     if (!seed) return;
     setText(seed.text);
+    if (seed.file) {
+      setFile(seed.file);
+      setEffect(null);
+    }
     textareaRef.current?.focus();
     if (seed.wantImage) fileRef.current?.click();
     // eslint-disable-next-line react-hooks/exhaustive-deps
