@@ -3,6 +3,7 @@ import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
 import { CompanionPicker } from "../ui/CompanionPicker";
 import { Icon } from "../ui/Icon";
+import { HomeWidgets } from "../../features/feed/HomeWidgets";
 import { navItems } from "./nav";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -11,7 +12,7 @@ export function Sidebar() {
   const items = navItems(user?.id);
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-2 border-r border-border glass px-4 py-6 lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-2 overflow-y-auto border-r border-border glass px-4 py-6 lg:flex">
       <div className="mb-4 flex items-center gap-2 px-2">
         <span className="grid h-10 w-10 place-items-center rounded-token btn-brand">
           <Icon name="heart" size={20} />
@@ -48,6 +49,10 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
+
+      <div className="mt-4">
+        <HomeWidgets />
+      </div>
 
       <div className="mt-auto flex flex-col gap-3">
         <CompanionPicker compact />

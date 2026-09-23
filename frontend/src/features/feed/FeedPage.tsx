@@ -10,7 +10,6 @@ import { onFeedActivity } from "./activity";
 import { getReactionEmojis, listPosts } from "./api";
 import { Composer, type ComposerSeed } from "./Composer";
 import { CoupleStrip } from "./CoupleStrip";
-import { HomeWidgets } from "./HomeWidgets";
 import { MomentsBar, type Moment } from "./MomentsBar";
 import { PostCard } from "./PostCard";
 import { ShareChoice } from "./ShareChoice";
@@ -112,7 +111,6 @@ export function FeedPage() {
         </button>
       )}
       <CoupleStrip />
-      <HomeWidgets />
       <MomentsBar onPick={pickMoment} />
       <Composer onCreated={() => load(0)} seed={seed} />
       {shared && (

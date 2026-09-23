@@ -308,7 +308,7 @@ export function ProfileEditPage() {
                     onChange={(e) => updateWidget(i, { home: e.target.checked })}
                     className="h-4 w-4 accent-[var(--color-primary)]"
                   />
-                  Aussi sur l'accueil
+                  Dans le menu latéral
                 </label>
               </div>
             ))}
