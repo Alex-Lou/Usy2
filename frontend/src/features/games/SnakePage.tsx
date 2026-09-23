@@ -6,7 +6,7 @@ import { Icon } from "../../components/ui/Icon";
 const GRID = 15; // cells per side
 const SIZE = 360; // logical canvas px
 const CELL = SIZE / GRID;
-const TICK_MS = 130;
+const TICK_MS = 163; // 20% slower than the original 130 ms
 const BEST_KEY = "memocat.snake.best";
 
 type Pt = { x: number; y: number };
@@ -111,11 +111,14 @@ export function SnakePage() {
   const tick = useCallback(() => {
     dirRef.current = nextDirRef.current;
     const snake = snakeRef.current;
-    const head = { x: snake[0].x + dirRef.current.x, y: snake[0].y + dirRef.current.y };
+    // No walls: leaving one side comes back in on the opposite side.
+    const head = {
+      x: (snake[0].x + dirRef.current.x + GRID) % GRID,
+      y: (snake[0].y + dirRef.current.y + GRID) % GRID,
+    };
 
-    const hitWall = head.x < 0 || head.y < 0 || head.x >= GRID || head.y >= GRID;
-    const hitSelf = snake.some((s) => eq(s, head));
-    if (hitWall || hitSelf) {
+    // Only biting yourself ends the game.
+    if (snake.some((s) => eq(s, head))) {
       endGame();
       return;
     }
@@ -223,7 +226,7 @@ export function SnakePage() {
       </div>
 
       {/* On-screen controls for mobile */}
-      <div className="mx-auto mt-4 grid w-40 grid-cols-3 gap-2">
+      <div className="mx-auto mt-5 grid w-72 max-w-full grid-cols-3 gap-4">
         <span />
         <DPad onPress={() => steer(0, -1)} icon="arrowUp" label="Haut" />
         <span />
@@ -248,11 +251,16 @@ function DPad({
 }) {
   return (
     <button
-      onClick={onPress}
+      // Reacts on touch-down (no wait for the finger to lift); keyboard still works via click.
+      onPointerDown={(e) => {
+        e.preventDefault();
+        onPress();
+      }}
+      onClick={(e) => e.detail === 0 && onPress()}
       aria-label={label}
-      className="grid h-12 place-items-center rounded-token border border-border bg-surface-2 press hover:border-primary/60"
+      className="grid h-20 touch-none select-none place-items-center rounded-2xl border border-border bg-surface-2 press hover:border-primary/60 active:border-primary"
     >
-      <Icon name={icon} size={20} className={flip ? "rotate-180" : ""} />
+      <Icon name={icon} size={32} className={flip ? "rotate-180" : ""} />
     </button>
   );
 }
