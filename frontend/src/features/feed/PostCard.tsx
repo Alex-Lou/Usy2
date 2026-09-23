@@ -3,6 +3,7 @@ import { AssetImage } from "../../components/AssetImage";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Avatar } from "../../components/ui/Avatar";
 import { Icon } from "../../components/ui/Icon";
+import { ProfileLink } from "../../components/ui/ProfileLink";
 import { ImageViewer } from "../chat/ImageViewer";
 import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
@@ -64,9 +65,13 @@ export function PostCard({
   return (
     <article className="card animate-fade-up overflow-hidden p-4">
       <header className="mb-3 flex items-center gap-3">
-        <Avatar name={post.author.displayName} size={42} assetId={post.author.avatarAssetId} species={post.author.companion} />
+        <ProfileLink userId={post.author.id} className="shrink-0 rounded-full">
+          <Avatar name={post.author.displayName} size={42} assetId={post.author.avatarAssetId} species={post.author.companion} />
+        </ProfileLink>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold">{post.author.displayName}</p>
+          <ProfileLink userId={post.author.id} className="block truncate font-semibold hover:underline">
+            {post.author.displayName}
+          </ProfileLink>
           <p className="text-xs text-text-muted">
             {timeAgo(post.createdAt)}
             {post.edited && " · modifié"}

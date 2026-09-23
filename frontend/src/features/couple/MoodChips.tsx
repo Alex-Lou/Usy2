@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Avatar } from "../../components/ui/Avatar";
+import { ProfileLink } from "../../components/ui/ProfileLink";
 import type { Profile } from "../profile/types";
 import { MoodPicker } from "./MoodPicker";
 import type { Mood } from "./types";
@@ -53,9 +54,9 @@ export function MoodChips({
               {content}
             </button>
           ) : (
-            <div key={p.userId} className="flex min-w-0 items-center gap-2 rounded-full border border-border bg-surface py-1 pl-1 pr-3">
+            <ProfileLink key={p.userId} userId={p.userId} className="flex min-w-0 items-center gap-2 rounded-full border border-border bg-surface py-1 pl-1 pr-3 hover:border-primary/50">
               {content}
-            </div>
+            </ProfileLink>
           );
         })}
       </div>

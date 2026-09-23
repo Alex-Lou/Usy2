@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { isBare, RichBody } from "../../components/rich/RichBody";
 import { Avatar } from "../../components/ui/Avatar";
+import { ProfileLink } from "../../components/ui/ProfileLink";
 import type { Asset } from "../../lib/api/assets";
 import { AttachmentView } from "./AttachmentView";
 import type { Message } from "./types";
@@ -67,7 +68,11 @@ export function MessageList({ messages, myId, onOpenImage }: { messages: Message
             <div className={`mc-offscreen-skip flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-3" : "mt-0.5"}`}>
               {!mine && (
                 <span className="w-[30px] shrink-0">
-                  {lastOfRun && <Avatar name={m.sender.displayName} size={30} assetId={m.sender.avatarAssetId} species={m.sender.companion} />}
+                  {lastOfRun && (
+                    <ProfileLink userId={m.sender.id} className="block rounded-full">
+                      <Avatar name={m.sender.displayName} size={30} assetId={m.sender.avatarAssetId} species={m.sender.companion} />
+                    </ProfileLink>
+                  )}
                 </span>
               )}
               <div className={`flex max-w-[80%] flex-col gap-1 animate-pop ${mine ? "items-end" : "items-start"}`}>

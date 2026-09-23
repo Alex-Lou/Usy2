@@ -4,6 +4,7 @@ import { useCompanion } from "../../app/companion";
 import { Animal } from "../../components/ui/animals";
 import { Icon } from "../../components/ui/Icon";
 import { Avatar } from "../../components/ui/Avatar";
+import { ProfileLink } from "../../components/ui/ProfileLink";
 import type { Asset } from "../../lib/api/assets";
 import { useAuth } from "../auth/useAuth";
 import { PetStage } from "../pet/PetStage";
@@ -123,9 +124,21 @@ export function ChatPage() {
   return (
     <div className="flex h-[calc(100dvh-var(--topbar-h)-max(var(--tabbar-h),var(--picker-h,0px))-2rem)] flex-col gap-3 lg:h-[calc(100dvh-2rem-max(2rem,var(--picker-h,0px))-1rem)]">
       <header className="flex items-center gap-3 animate-fade-up">
-        {partner && <Avatar name={partner.displayName} size={40} assetId={partner.avatarAssetId} species={partner.companion} />}
+        {partner && (
+          <ProfileLink userId={partner.userId} className="shrink-0 rounded-full">
+            <Avatar name={partner.displayName} size={40} assetId={partner.avatarAssetId} species={partner.companion} />
+          </ProfileLink>
+        )}
         <div className="min-w-0">
-          <h1 className="truncate font-display text-xl font-bold leading-tight">{partner?.displayName ?? "Messages"}</h1>
+          <h1 className="truncate font-display text-xl font-bold leading-tight">
+            {partner ? (
+              <ProfileLink userId={partner.userId} className="hover:underline">
+                {partner.displayName}
+              </ProfileLink>
+            ) : (
+              "Messages"
+            )}
+          </h1>
           <p className="flex items-center gap-1.5 text-xs text-text-muted">
             <span className={`inline-block h-2 w-2 rounded-full ${connected ? "bg-accent shadow-glow" : "bg-text-muted"}`} />
             {connected ? "Connecté" : "Connexion…"}
