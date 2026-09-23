@@ -31,6 +31,7 @@ class MessageServiceTest {
     @Mock private MessageRepository messageRepository;
     @Mock private UserRepository userRepository;
     @Mock private AssetRepository assetRepository;
+    @Mock private com.memocat.repository.MessageReactionRepository reactionRepository;
     @Mock private ApplicationEventPublisher events;
 
     @InjectMocks private MessageService messageService;
@@ -103,5 +104,25 @@ class MessageServiceTest {
         assertThatThrownBy(() -> messageService.send("lou", "tiens", 9L)).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> messageService.send("lou", "tiens", 10L)).isInstanceOf(ContentValidationException.class);
         verify(messageRepository, never()).save(any());
+    }
+
+    @Test
+    void historyCarriesEachMessageReactions() {
+        User lou = new User("lou", "h", "Lou");
+        org.springframework.test.util.ReflectionTestUtils.setField(lou, "id", 1L);
+        Message a = new Message(lou, "coucou", null);
+        Message b = new Message(lou, "ça va ?", null);
+        org.springframework.test.util.ReflectionTestUtils.setField(a, "id", 10L);
+        org.springframework.test.util.ReflectionTestUtils.setField(b, "id", 11L);
+        when(messageRepository.findAllByOrderByCreatedAtDesc(any()))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(java.util.List.of(b, a)));
+        when(reactionRepository.findByMessageIdInOrderByCreatedAtAsc(java.util.List.of(11L, 10L)))
+                .thenReturn(java.util.List.of(new com.memocat.domain.MessageReaction(10L, 2L, "❤️")));
+
+        var page = messageService.history(0, 30);
+
+        assertThat(page.content()).hasSize(2);
+        assertThat(page.content().get(0).reactions()).isEmpty();
+        assertThat(page.content().get(1).reactions()).extracting("emoji").containsExactly("❤️");
     }
 }

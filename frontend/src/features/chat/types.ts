@@ -7,6 +7,18 @@ export interface Message {
   content: string; // may be empty when an attachment is sent alone
   attachment: Asset | null;
   createdAt: string;
+  reactions: MessageReaction[]; // one emoji per person, oldest first
+}
+
+export interface MessageReaction {
+  userId: number;
+  emoji: string;
+}
+
+/** Broadcast on /topic/message-reactions and returned by reactToMessage. */
+export interface MessageReactions {
+  messageId: number;
+  reactions: MessageReaction[];
 }
 
 export interface Page<T> {
