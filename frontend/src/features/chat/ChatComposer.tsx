@@ -5,6 +5,7 @@ import { Icon } from "../../components/ui/Icon";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { getStorageUsage, type Asset, type StorageUsage } from "../../lib/api/assets";
+import { takeForChat } from "../feed/sharedContent";
 import { checkFile, DOCUMENT_ACCEPT, formatSize, uploadAttachment } from "./attachments";
 
 const MAX_TEXT = 2000;
@@ -37,6 +38,14 @@ export function ChatComposer({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useAutoGrow(ref, text);
+
+  // Content shared from another app, sent here from the feed's "post or message?" choice (once, on arrival).
+  useEffect(() => {
+    const shared = takeForChat();
+    if (!shared) return;
+    if (shared.text) setText(shared.text);
+    if (shared.file) pick(shared.file);
+  }, []);
 
   useEffect(() => () => {
     if (pending?.preview) URL.revokeObjectURL(pending.preview);

@@ -1,7 +1,8 @@
 /**
  * Content shared to MemoCat from another app (Android "Share" menu). The
  * service worker parks it in a cache (see public/sw.js); the feed takes it
- * once to pre-fill a post. Nothing is sent anywhere until the user publishes.
+ * once, then the user picks where it goes: a post (pre-filled composer) or a
+ * message (pre-filled chat box). Nothing is sent until the user sends it.
  */
 const SHARE_CACHE = "memocat-share";
 const MAX_AGE_MS = 60 * 60_000; // an old, forgotten share is not reused
@@ -41,4 +42,17 @@ export async function takeSharedContent(): Promise<SharedContent | null> {
   } catch {
     return null;
   }
+}
+
+// Hand-off from the feed to the chat when "Message" is chosen (in memory: same tab, one use).
+let forChat: SharedContent | null = null;
+
+export function handToChat(content: SharedContent): void {
+  forChat = content;
+}
+
+export function takeForChat(): SharedContent | null {
+  const c = forChat;
+  forChat = null;
+  return c;
 }
