@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 /** The couple's shared cat (single row, id = 1). */
 @Entity
@@ -28,6 +29,22 @@ public class Pet {
 
     @Column(nullable = false)
     private short happiness;
+
+    @Column(nullable = false)
+    private short cleanliness;
+
+    @Column(nullable = false)
+    private short energy;
+
+    /** Shared purse, earned by caring for the cat. */
+    @Column(nullable = false)
+    private int coins;
+
+    @Column(name = "coins_today", nullable = false)
+    private int coinsToday;
+
+    @Column(name = "coins_day")
+    private LocalDate coinsDay;
 
     /** When satiety/happiness were last computed (they decay from there). */
     @Column(name = "stats_at", nullable = false)
@@ -67,10 +84,39 @@ public class Pet {
         return statsAt;
     }
 
-    public void setStats(int satiety, int happiness, Instant at) {
+    public int getCleanliness() {
+        return cleanliness;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setStats(int satiety, int happiness, int cleanliness, int energy, Instant at) {
         this.satiety = (short) satiety;
         this.happiness = (short) happiness;
+        this.cleanliness = (short) cleanliness;
+        this.energy = (short) energy;
         this.statsAt = at;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    /** Coins earned so far on {@code day} (resets when the day changes). */
+    public int coinsEarnedOn(LocalDate day) {
+        return day.equals(coinsDay) ? coinsToday : 0;
+    }
+
+    public void earn(int amount, LocalDate day) {
+        this.coinsToday = coinsEarnedOn(day) + amount;
+        this.coinsDay = day;
+        this.coins += amount;
+    }
+
+    public void spend(int amount) {
+        this.coins -= amount;
     }
 
     public String getLastAction() {

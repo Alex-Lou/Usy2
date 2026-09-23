@@ -5,8 +5,12 @@ import type { CatPose } from "./CatSprite";
 import type { Pet, PetAction, PetActivity } from "./types";
 
 const SLEEP_AFTER_MS = 3 * 60_000; // nobody wrote or played for 3 min
-const REACTION_MS: Record<PetAction | "startle", number> = { pet: 2600, feed: 3200, play: 3600, startle: 1100 };
-const POSE_OF: Record<PetAction, CatPose> = { pet: "purr", feed: "eat", play: "play" };
+export const REACTION_MS: Record<PetAction | "startle", number> = {
+  pet: 2600, feed: 3200, play: 3600, brush: 2600, bath: 3000, nap: 4500, laser: 3000, startle: 1100,
+};
+export const POSE_OF: Record<PetAction, CatPose> = {
+  pet: "purr", feed: "eat", play: "play", brush: "purr", bath: "bath", nap: "sleep", laser: "play",
+};
 // A message with one of these makes the cat purr instead of jump.
 const LOVE = /❤|💕|💖|💗|💓|💞|💘|😍|🥰|😘|🩷|\[\[s:(coeur|coeur-bat|je-t-aime|bisou|amoureux|coeurs)\]\]/u;
 
@@ -14,6 +18,10 @@ const CAPTION: Record<PetAction, (who: string, name: string) => string> = {
   pet: (who, name) => `${who} a caressé ${name}`,
   feed: (who, name) => `${who} a donné des croquettes à ${name}`,
   play: (who, name) => `${who} joue à la balle avec ${name}`,
+  brush: (who, name) => `${who} a brossé ${name}`,
+  bath: (who, name) => `${who} a donné un bain à ${name}`,
+  nap: (who, name) => `${who} a mis ${name} à la sieste`,
+  laser: (who, name) => `${who} joue au laser avec ${name}`,
 };
 
 /**
@@ -60,11 +68,16 @@ export function usePet(myId: number | undefined) {
     captionTimer.current = window.setTimeout(() => setCaption(null), 3500);
   }, []);
 
-  /** My own tap/button: animate at once, then sync the needs from the server. */
+  /** My own care: animate at once, then sync the needs (and coins) from the server. */
   const act = useCallback(
-    (action: PetAction) => {
+    (action: PetAction): Promise<Pet | null> => {
       react(POSE_OF[action], REACTION_MS[action]);
-      actOnPet(action).then(setPet).catch(() => {});
+      return actOnPet(action)
+        .then((p) => {
+          setPet(p);
+          return p;
+        })
+        .catch(() => null);
     },
     [react],
   );
@@ -73,7 +86,7 @@ export function usePet(myId: number | undefined) {
   const onActivity = useCallback(
     (a: PetActivity) => {
       setPet(a.pet);
-      if (a.actorId === myId || a.action === "rename") return;
+      if (a.actorId === myId || a.action === "rename" || a.action === "shop") return;
       react(POSE_OF[a.action], REACTION_MS[a.action]);
       say(CAPTION[a.action](a.actorName, a.pet.name));
     },
@@ -99,5 +112,5 @@ export function usePet(myId: number | undefined) {
   const asleep = lastActivity > 0 && now - lastActivity > SLEEP_AFTER_MS;
   const pose: CatPose = reaction ?? (asleep ? "sleep" : pet?.mood === "hungry" ? "hungry" : "idle");
 
-  return { pet, setPet, pose, caption, act, onActivity, onMessage, noteHistory };
+  return { pet, setPet, pose, caption, act, react, onActivity, onMessage, noteHistory };
 }

@@ -13,6 +13,13 @@ interface GameCard {
 
 const GAMES: GameCard[] = [
   {
+    to: "/jeux/chat",
+    title: "La maison du chat",
+    tagline: "Nourrissez-le, brossez-le, jouez au laser… et offrez-lui des accessoires.",
+    mode: "À deux · en direct",
+    emoji: "🐱",
+  },
+  {
     to: "/jeux/morpion",
     title: "Morpion",
     tagline: "Alignez vos compagnons, à deux, en temps réel.",

@@ -1,14 +1,8 @@
 import { useState } from "react";
 import { renamePet } from "./api";
 import { CatSprite, type CatPose } from "./CatSprite";
-import type { Pet, PetAction } from "./types";
+import { MOOD_TEXT, wornItems, type Pet, type PetAction } from "./types";
 
-const MOOD_TEXT: Record<Pet["mood"], string> = {
-  hungry: "a faim",
-  bored: "s'ennuie un peu",
-  happy: "est aux anges",
-  content: "va bien",
-};
 
 const ACTIONS: { id: PetAction; label: string; hint: string; icon: string }[] = [
   { id: "pet", label: "Câlin", hint: "Caresser", icon: "🤲" },
@@ -68,7 +62,7 @@ export function PetStage({
         aria-label={`Toucher ${pet.name}`}
         className="relative shrink-0 rounded-token press"
       >
-        <CatSprite pose={pose} size={104} />
+        <CatSprite pose={pose} size={104} wearing={wornItems(pet)} />
       </button>
 
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
