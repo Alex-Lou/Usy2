@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { ProfileLink } from "../../components/ui/ProfileLink";
 import type { Client } from "@stomp/stompjs";
 import { useCompanion } from "../../app/companion";
 import { SPECIES, type Species } from "../../app/companion";
@@ -202,7 +203,9 @@ function Scoreboard({ scores, game, me }: { scores: ScoreDto[]; game: GamesState
           >
             <div className="min-w-0">
               <p className="flex items-center gap-1 truncate text-sm font-semibold">
-                {s.displayName}
+                <ProfileLink userId={s.userId} className="truncate hover:underline">
+                  {s.displayName}
+                </ProfileLink>
                 {s.userId === me && <span className="text-[10px] text-text-muted">(toi)</span>}
               </p>
               <p className="flex items-center gap-1 text-[11px] text-text-muted">

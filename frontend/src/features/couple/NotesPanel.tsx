@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "../../components/ui/Icon";
+import { ProfileLink } from "../../components/ui/ProfileLink";
 import { onCoupleActivity } from "./activity";
 import { deleteNote, listNotes } from "./api";
 import { NoteComposer } from "./NoteComposer";
@@ -45,7 +46,10 @@ export function NotesPanel({ myId }: { myId: number | undefined }) {
           <div className="min-w-0 flex-1">
             <p className="whitespace-pre-wrap break-words text-text">{n.text}</p>
             <p className="text-[11px] text-text-muted">
-              {n.author.displayName} · {ago(n.createdAt)}
+              <ProfileLink userId={n.author.id} className="hover:underline">
+                {n.author.displayName}
+              </ProfileLink>{" "}
+              · {ago(n.createdAt)}
             </p>
           </div>
           {n.author.id === myId && (

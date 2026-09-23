@@ -1,18 +1,22 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { AssetImage } from "../../components/AssetImage";
 import { Icon } from "../../components/ui/Icon";
 import type { Asset } from "../../lib/api/assets";
 import { downloadAsset } from "./attachments";
 
-/** Full-screen photo/GIF viewer with a download button. Esc or tap outside closes. */
-export function ImageViewer({ asset, onClose }: { asset: Asset; onClose: () => void }) {
+/**
+ * Full-screen photo/GIF viewer (chat and feed) with a download button. Esc or tap outside closes.
+ * Rendered on <body>: an animated (transformed) card would otherwise trap `position: fixed`.
+ */
+export function ImageViewer({ asset, onClose }: { asset: Pick<Asset, "id" | "originalFilename">; onClose: () => void }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -46,6 +50,7 @@ export function ImageViewer({ asset, onClose }: { asset: Asset; onClose: () => v
           <AssetImage assetId={asset.id} className="max-h-[80dvh] max-w-full rounded-token object-contain" />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
