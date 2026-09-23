@@ -48,6 +48,21 @@
   }
 }
 
+/* Off-screen stickers stop animating (see LiveSticker). */
+.mc-live {
+  contain: layout paint;
+}
+.mc-paused,
+.mc-paused * {
+  animation-play-state: paused !important;
+}
+
+/* Long conversations: rows far off screen are not laid out or painted. */
+.mc-offscreen-skip {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 64px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mc-wiggle,
   .mc-hop,

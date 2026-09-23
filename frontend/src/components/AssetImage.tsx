@@ -1,29 +1,26 @@
 import { useEffect, useState } from "react";
-import { fetchBlobUrl } from "../lib/api/client";
+import { useInView } from "../hooks/useInView";
+import { getAssetUrl } from "../lib/api/blobCache";
 
-// Loads a protected image via authenticated fetch -> object URL.
+// Loads a protected image (authenticated fetch -> object URL) only once it
+// comes near the screen, through the shared cache (see blobCache.ts).
 export function AssetImage({ assetId, className }: { assetId: number; className?: string }) {
+  const [ref, inView] = useInView<HTMLDivElement>();
   const [src, setSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    let url: string | null = null;
+    if (!inView || src) return;
     let cancelled = false;
-    fetchBlobUrl(`/api/assets/${assetId}`)
-      .then((u) => {
-        url = u;
-        if (!cancelled) setSrc(u);
-      })
+    getAssetUrl(assetId)
+      .then((url) => !cancelled && setSrc(url))
       .catch(() => {
         /* leave placeholder */
       });
     return () => {
       cancelled = true;
-      if (url) URL.revokeObjectURL(url);
     };
-  }, [assetId]);
+  }, [assetId, inView, src]);
 
-  if (!src) {
-    return <div className={`animate-pulse bg-border ${className ?? ""}`} />;
-  }
-  return <img src={src} alt="" className={className} />;
+  if (!src) return <div ref={ref} className={`animate-pulse bg-border ${className ?? ""}`} />;
+  return <img src={src} alt="" decoding="async" className={className} />;
 }

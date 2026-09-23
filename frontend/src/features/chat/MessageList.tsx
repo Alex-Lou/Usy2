@@ -64,7 +64,7 @@ export function MessageList({ messages, myId, onOpenImage }: { messages: Message
                 </span>
               </div>
             )}
-            <div className={`flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-3" : "mt-0.5"}`}>
+            <div className={`mc-offscreen-skip flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-3" : "mt-0.5"}`}>
               {!mine && (
                 <span className="w-[30px] shrink-0">
                   {lastOfRun && <Avatar name={m.sender.displayName} size={30} assetId={m.sender.avatarAssetId} species={m.sender.companion} />}

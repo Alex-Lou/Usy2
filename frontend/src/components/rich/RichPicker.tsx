@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "../ui/Icon";
 import { EMOJI_GROUPS } from "./emojiData";
+import { LiveSticker } from "./LiveSticker";
 import { STICKERS, stickerToken, type StickerKind } from "./stickers";
 
 type Tab = "emoji" | StickerKind;
@@ -195,7 +196,7 @@ export function RichPicker({ onEmoji, onSticker }: { onEmoji: (emoji: string) =>
                       aria-label={s.label}
                       className="flex h-24 flex-col items-center justify-center gap-1 rounded-token transition hover:bg-surface-2 press"
                     >
-                      <span className="grid h-16 place-items-center overflow-hidden">{s.render(56)}</span>
+                      <LiveSticker className="grid h-16 place-items-center overflow-hidden">{s.render(56)}</LiveSticker>
                       <span className="text-[10px] text-text-muted">{s.label}</span>
                     </button>
                   ))}
