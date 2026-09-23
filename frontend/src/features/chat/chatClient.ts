@@ -29,6 +29,7 @@ export function createChatClient(
   return client;
 }
 
-export function sendMessage(client: Client, content: string): void {
-  client.publish({ destination: "/app/chat.send", body: JSON.stringify({ content }) });
+/** `attachmentAssetId`: a photo/GIF/document uploaded first (see attachments.ts). */
+export function sendMessage(client: Client, content: string, attachmentAssetId: number | null = null): void {
+  client.publish({ destination: "/app/chat.send", body: JSON.stringify({ content, attachmentAssetId }) });
 }

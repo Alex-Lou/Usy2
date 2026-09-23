@@ -71,7 +71,7 @@ export function FeedPage() {
       {freshFrom && (
         <button
           onClick={showFresh}
-          className="sticky top-16 z-20 mx-auto flex items-center gap-2 rounded-full btn-brand px-4 py-2 text-sm shadow-glow animate-pop lg:top-4"
+          className="sticky top-[calc(var(--topbar-h)+0.5rem)] z-20 mx-auto flex items-center gap-2 rounded-full btn-brand px-4 py-2 text-sm shadow-glow animate-pop lg:top-4"
         >
           <Icon name="sparkles" size={16} /> Nouveau post de {freshFrom} — Afficher
         </button>
