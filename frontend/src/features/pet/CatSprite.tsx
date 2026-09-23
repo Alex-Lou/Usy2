@@ -3,7 +3,7 @@
 // parts (eyes, mouth, props); all motion is CSS (styles/pet.css), so it stays
 // light and stops entirely for people who prefer reduced motion.
 
-export type CatPose = "idle" | "sleep" | "purr" | "eat" | "play" | "startle" | "hungry";
+export type CatPose = "idle" | "sleep" | "purr" | "eat" | "play" | "startle" | "hungry" | "bath";
 
 const OUTLINE = "#4a3b33";
 const FUR = "#fff4e6";
@@ -13,7 +13,7 @@ const PINK = "#ff86b8";
 const BLUSH = "#ffb0d6";
 const EYE = "#3a3350";
 
-function Eyes({ pose }: { pose: CatPose }) {
+function Eyes({ pose, look }: { pose: CatPose; look?: { x: number; y: number } }) {
   switch (pose) {
     case "sleep":
       return (
@@ -30,6 +30,13 @@ function Eyes({ pose }: { pose: CatPose }) {
           <path d="M87 64 q6 -7 12 0" />
         </g>
       );
+    case "bath":
+      return (
+        <g stroke={EYE} strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M62 58 l8 4 l-8 4" />
+          <path d="M98 58 l-8 4 l8 4" />
+        </g>
+      );
     case "startle":
       return (
         <g>
@@ -41,7 +48,7 @@ function Eyes({ pose }: { pose: CatPose }) {
       );
     default:
       return (
-        <g className="pet-eyes">
+        <g className="pet-eyes" transform={look ? `translate(${look.x} ${look.y})` : undefined}>
           <ellipse cx="67" cy="62" rx="5.2" ry="5.8" fill={EYE} />
           <ellipse cx="93" cy="62" rx="5.2" ry="5.8" fill={EYE} />
           <circle cx="69" cy="59.6" r="1.9" fill="#fff" />
@@ -62,6 +69,7 @@ function Eyes({ pose }: { pose: CatPose }) {
 function Mouth({ pose }: { pose: CatPose }) {
   if (pose === "startle") return <ellipse cx="80" cy="76.5" rx="2.6" ry="3" fill={OUTLINE} />;
   if (pose === "eat") return <ellipse cx="80" cy="76" rx="3.2" ry="2.4" fill="#d9577f" stroke={OUTLINE} strokeWidth="1.2" />;
+  if (pose === "bath") return <path d="M75 76.5 q2.5 -2 5 0 q2.5 2 5 0" stroke={OUTLINE} strokeWidth="1.7" fill="none" strokeLinecap="round" />;
   if (pose === "hungry") return <path d="M75.5 77 q4.5 -2.6 9 0" stroke={OUTLINE} strokeWidth="1.7" fill="none" strokeLinecap="round" />;
   return <path d="M80 73.6 q-3 3.4 -6.4 1.4 M80 73.6 q3 3.4 6.4 1.4" stroke={OUTLINE} strokeWidth="1.8" fill="none" strokeLinecap="round" />;
 }
@@ -116,6 +124,18 @@ function Props({ pose }: { pose: CatPose }) {
           <path d="M144 118 q8 4 4 12 q-3 5 4 8" stroke={PINK} strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </g>
       );
+    case "bath":
+      return (
+        <g className="pet-bubbles" fill="#dff4ff" stroke="#7cc6e8" strokeWidth="1.4">
+          {[
+            [44, 40, 7], [118, 34, 6], [36, 86, 8], [124, 92, 7], [60, 20, 5], [100, 16, 6], [80, 96, 9], [56, 112, 6], [106, 114, 7],
+          ].map(([x, y, r], i) => (
+            <g key={i} transform={`translate(${x} ${y})`}>
+              <circle r={r} style={{ animationDelay: `${(i % 5) * 0.25}s` }} />
+            </g>
+          ))}
+        </g>
+      );
     case "startle":
       return (
         <g fill="#f5b83d" stroke={OUTLINE} strokeWidth="1.6" strokeLinejoin="round">
@@ -128,17 +148,97 @@ function Props({ pose }: { pose: CatPose }) {
   }
 }
 
-/** The cat in a given pose. Decorative: the caller provides the accessible label. */
-export function CatSprite({ pose, size = 120 }: { pose: CatPose; size?: number }) {
+// Accessories, drawn on the cat so they follow its head and body.
+function NeckItem({ id }: { id: string }) {
+  if (id === "collar")
+    return (
+      <g>
+        <path d="M57 84 q23 11 46 0" stroke="#d94a6a" strokeWidth="5" fill="none" strokeLinecap="round" />
+        <circle cx="80" cy="92" r="4" fill="#f2c14e" stroke={OUTLINE} strokeWidth="1.3" />
+        <path d="M78 93 h4" stroke={OUTLINE} strokeWidth="1" />
+      </g>
+    );
+  if (id === "bow")
+    return (
+      <g fill="#ff86b8" stroke={OUTLINE} strokeWidth="1.5" strokeLinejoin="round">
+        <path d="M80 89 L66 82 L66 96 Z" />
+        <path d="M80 89 L94 82 L94 96 Z" />
+        <circle cx="80" cy="89" r="3.6" />
+      </g>
+    );
+  if (id === "scarf")
+    return (
+      <g stroke={OUTLINE} strokeWidth="1.5" strokeLinejoin="round">
+        <path d="M55 82 q25 13 50 0 l0 6 q-25 13 -50 0 z" fill="#4fb3a9" />
+        <path d="M92 90 l6 20 l-9 1 l-3 -19 z" fill="#4fb3a9" />
+        <path d="M60 86 q20 9 40 0" stroke="#fff" strokeWidth="1.2" fill="none" opacity="0.6" />
+      </g>
+    );
+  return null;
+}
+
+function HeadItems({ wearing }: { wearing: string[] }) {
+  return (
+    <>
+      {wearing.includes("glasses") && (
+        <g stroke={OUTLINE} strokeWidth="1.8" fill="rgba(255,255,255,0.18)">
+          <circle cx="67" cy="62" r="9" />
+          <circle cx="93" cy="62" r="9" />
+          <path d="M76 61 q4 -3 8 0" fill="none" />
+        </g>
+      )}
+      {wearing.includes("beret") && (
+        <g stroke={OUTLINE} strokeWidth="1.8">
+          <ellipse cx="84" cy="32" rx="24" ry="8.5" fill="#7a5bb5" transform="rotate(-8 84 32)" />
+          <path d="M88 22 l2 -5" strokeLinecap="round" />
+        </g>
+      )}
+      {wearing.includes("crown") && (
+        <path
+          d="M64 34 L66 18 L73 27 L80 14 L87 27 L94 18 L96 34 Z"
+          fill="#f2c14e"
+          stroke={OUTLINE}
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+      )}
+    </>
+  );
+}
+
+/**
+ * The cat in a given pose, wearing its accessories. `look` nudges the pupils
+ * (e.g. following a laser dot). Decorative: the caller provides the label.
+ */
+export function CatSprite({
+  pose,
+  size = 120,
+  wearing = [],
+  look,
+  fluid = false,
+}: {
+  pose: CatPose;
+  size?: number;
+  wearing?: string[];
+  look?: { x: number; y: number };
+  /** Fill the parent's width instead of a fixed size (e.g. inside the house scene). */
+  fluid?: boolean;
+}) {
   return (
     <svg
-      width={size}
-      height={size * 0.875}
+      width={fluid ? "100%" : size}
+      height={fluid ? undefined : size * 0.875}
       viewBox="0 0 160 140"
       className={`pet pet--${pose}`}
       aria-hidden="true"
       overflow="visible"
     >
+      {wearing.includes("cushion") && (
+        <g stroke={OUTLINE} strokeWidth="2" strokeLinejoin="round">
+          <rect x="30" y="116" width="100" height="22" rx="11" fill="#e98fb0" />
+          <path d="M44 124 h72" stroke="#fff" strokeWidth="1.4" opacity="0.5" />
+        </g>
+      )}
       <ellipse cx="80" cy="131" rx="40" ry="5" fill="#000" opacity="0.16" className="pet-shadow" />
       <g className="pet-all">
         {/* Tail: a two-tone tube (outline under fur) swaying from its base. */}
@@ -152,6 +252,9 @@ export function CatSprite({ pose, size = 120 }: { pose: CatPose; size?: number }
           <ellipse cx="80" cy="104" rx="31" ry="25" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
           <ellipse cx="80" cy="109" rx="17" ry="15" fill={BELLY} />
           <path d="M53 100 q5 -3 9 1 M55 108 q5 -3 8 1" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          {wearing.map((id) => (
+            <NeckItem key={id} id={id} />
+          ))}
         </g>
 
         <ellipse cx="67" cy="127" rx="9" ry="5.4" fill={FUR} stroke={OUTLINE} strokeWidth="2.2" />
@@ -170,7 +273,7 @@ export function CatSprite({ pose, size = 120 }: { pose: CatPose; size?: number }
           </g>
           <ellipse cx="80" cy="60" rx="35" ry="30" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
           <path d="M74 33 q1.5 5 0 9 M80 31.5 v10 M86 33 q-1.5 5 0 9" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
-          <Eyes pose={pose} />
+          <Eyes pose={pose} look={look} />
           <ellipse cx="57" cy="72" rx="5.4" ry="3.2" fill={BLUSH} opacity="0.75" />
           <ellipse cx="103" cy="72" rx="5.4" ry="3.2" fill={BLUSH} opacity="0.75" />
           <path d="M77 70 L83 70 L80 73.6 Z" fill={PINK} />
@@ -179,6 +282,7 @@ export function CatSprite({ pose, size = 120 }: { pose: CatPose; size?: number }
             <path d="M50 67 L33 64 M50 72 L34 75" />
             <path d="M110 67 L127 64 M110 72 L126 75" />
           </g>
+          <HeadItems wearing={wearing} />
         </g>
       </g>
       <Props pose={pose} />

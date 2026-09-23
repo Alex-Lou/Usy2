@@ -3,6 +3,7 @@ package com.memocat.pet;
 import com.memocat.pet.dto.PetDto;
 import com.memocat.pet.dto.PetRequests;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-/** The shared cat: state, interactions (pet / feed / play) and its name. */
+/** The shared cat: state, care actions, its name and its accessories. */
 @RestController
 @RequestMapping("/api/pet")
 public class PetController {
@@ -30,6 +31,16 @@ public class PetController {
     @PostMapping("/actions")
     public PetDto act(Principal principal, @RequestBody PetRequests.Action request) {
         return pets.act(principal.getName(), request.action());
+    }
+
+    @PostMapping("/items/{item}/buy")
+    public PetDto buy(Principal principal, @PathVariable String item) {
+        return pets.buy(principal.getName(), item);
+    }
+
+    @PutMapping("/items/{item}/equipped")
+    public PetDto equip(Principal principal, @PathVariable String item, @RequestBody PetRequests.Equip request) {
+        return pets.equip(principal.getName(), item, request.equipped());
     }
 
     @PutMapping("/name")

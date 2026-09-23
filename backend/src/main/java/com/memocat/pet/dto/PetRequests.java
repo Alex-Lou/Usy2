@@ -11,4 +11,7 @@ public final class PetRequests {
 
     public record Name(String name) {
     }
+
+    public record Equip(boolean equipped) {
+    }
 }
