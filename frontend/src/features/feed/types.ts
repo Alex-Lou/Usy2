@@ -33,9 +33,3 @@ export interface Page<T> {
   totalPages: number;
 }
 
-export interface Asset {
-  id: number;
-  contentType: string;
-  sizeBytes: number;
-  originalFilename: string;
-}

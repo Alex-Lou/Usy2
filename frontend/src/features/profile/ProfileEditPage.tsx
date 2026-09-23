@@ -7,7 +7,8 @@ import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
 import { ApiError } from "../../lib/api/client";
 import { useAuth } from "../auth/useAuth";
-import { getMyProfile, updateMyProfile, uploadWidgetImage } from "./api";
+import { uploadImage } from "../../lib/api/assets";
+import { getMyProfile, updateMyProfile } from "./api";
 import { buildThemeStyle, FONT_LABELS, LAYOUT_LABELS } from "./theme";
 import type { FontKey, LayoutKey, Theme, ThemeColors, ThemeMode, Widget, WidgetType } from "./types";
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
@@ -78,7 +79,7 @@ export function ProfileEditPage() {
   async function uploadAvatar(file: File) {
     setError(null);
     try {
-      const asset = await uploadWidgetImage(file);
+      const asset = await uploadImage(file);
       setAvatarAssetId(asset.id);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Envoi de la photo impossible.");
@@ -110,7 +111,7 @@ export function ProfileEditPage() {
   async function uploadForWidget(index: number, file: File) {
     setError(null);
     try {
-      const asset = await uploadWidgetImage(file);
+      const asset = await uploadImage(file);
       updateWidget(index, { assetId: asset.id });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Envoi de l'image impossible.");

@@ -1,5 +1,5 @@
-import { apiRequest, uploadFile } from "../../lib/api/client";
-import type { Asset, Comment, Page, Post } from "./types";
+import { apiRequest } from "../../lib/api/client";
+import type { Comment, Page, Post } from "./types";
 
 export function listPosts(page = 0, size = 10): Promise<Page<Post>> {
   return apiRequest<Page<Post>>(`/api/posts?page=${page}&size=${size}`);
@@ -50,10 +50,6 @@ export function addComment(postId: number, text: string): Promise<Comment> {
 
 export function deleteComment(id: number): Promise<void> {
   return apiRequest<void>(`/api/comments/${id}`, { method: "DELETE" });
-}
-
-export function uploadImage(file: File): Promise<Asset> {
-  return uploadFile<Asset>("/api/assets", file);
 }
 
 export function getReactionEmojis(): Promise<string[]> {
