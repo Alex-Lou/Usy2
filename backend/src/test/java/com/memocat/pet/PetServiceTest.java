@@ -65,6 +65,41 @@ class PetServiceTest {
     }
 
     @Test
+    void fishingRoundFeedsTheCatAndEarnsCoins() {
+        PetDto dto = service.playRound("lou", PetService.FISH, 12);
+        assertThat(dto.satiety()).isEqualTo(50 + 24);  // 2 per fish
+        assertThat(dto.happiness()).isEqualTo(60);
+        assertThat(dto.energy()).isEqualTo(44);
+        assertThat(dto.coins()).isEqualTo(4);          // 1 per 3 fish
+        assertThat(dto.lastAction()).isEqualTo("fish");
+
+        ArgumentCaptor<PetActivity> event = ArgumentCaptor.forClass(PetActivity.class);
+        verify(events).publishEvent(event.capture());
+        assertThat(event.getValue().action()).isEqualTo("fish");
+    }
+
+    @Test
+    void bigRoundIsCappedPerRoundAndPerDay() {
+        PetDto dto = service.playRound("lou", PetService.FISH, 80);
+        assertThat(dto.satiety()).isEqualTo(90);       // at most +40 food per round
+        assertThat(dto.coins()).isEqualTo(10);         // at most 10 coins per round
+
+        for (int i = 0; i < 10; i++) {
+            dto = service.playRound("lou", PetService.FISH, 80);
+        }
+        assertThat(dto.coins()).isEqualTo(PetService.DAILY_COINS);
+        assertThat(dto.coinsLeftToday()).isZero();
+    }
+
+    @Test
+    void unknownGamesAndImpossibleScoresAreRefused() {
+        assertThatThrownBy(() -> service.playRound("lou", "poker", 3)).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.playRound("lou", PetService.FISH, 81)).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.playRound("lou", PetService.FISH, -1)).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.playRound("lou", PetService.FISH, null)).isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
     void needsGoDownSlowlyWithTime() {
         clock.now = t0.plusSeconds(10 * 3600); // 10 h later
         PetDto dto = service.state();

@@ -6,10 +6,10 @@ import type { Pet, PetAction, PetActivity } from "./types";
 
 const SLEEP_AFTER_MS = 3 * 60_000; // nobody wrote or played for 3 min
 export const REACTION_MS: Record<PetAction | "startle", number> = {
-  pet: 2600, feed: 3200, play: 3600, brush: 2600, bath: 3000, nap: 4500, laser: 3000, startle: 1100,
+  pet: 2600, feed: 3200, play: 3600, brush: 2600, bath: 3000, nap: 4500, laser: 3000, fish: 3200, startle: 1100,
 };
 export const POSE_OF: Record<PetAction, CatPose> = {
-  pet: "purr", feed: "eat", play: "play", brush: "purr", bath: "bath", nap: "sleep", laser: "play",
+  pet: "purr", feed: "eat", play: "play", brush: "purr", bath: "bath", nap: "sleep", laser: "play", fish: "eat",
 };
 // A message with one of these makes the cat purr instead of jump.
 const LOVE = /❤|💕|💖|💗|💓|💞|💘|😍|🥰|😘|🩷|\[\[s:(coeur|coeur-bat|je-t-aime|bisou|amoureux|coeurs)\]\]/u;
@@ -22,6 +22,7 @@ const CAPTION: Record<PetAction, (who: string, name: string) => string> = {
   bath: (who, name) => `${who} a donné un bain à ${name}`,
   nap: (who, name) => `${who} a mis ${name} à la sieste`,
   laser: (who, name) => `${who} joue au laser avec ${name}`,
+  fish: (who, name) => `${who} a pêché des poissons pour ${name}`,
 };
 
 /**

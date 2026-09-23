@@ -20,3 +20,8 @@ export function buyItem(item: string): Promise<Pet> {
 export function wearItem(item: string, equipped: boolean): Promise<Pet> {
   return apiRequest<Pet>(`/api/pet/items/${encodeURIComponent(item)}/equipped`, { method: "PUT", body: { equipped } });
 }
+
+/** End of a mini-game round: the score feeds the cat and earns coins. */
+export function playRound(game: "fish", score: number): Promise<Pet> {
+  return apiRequest<Pet>(`/api/pet/games/${game}/rounds`, { method: "POST", body: { score } });
+}

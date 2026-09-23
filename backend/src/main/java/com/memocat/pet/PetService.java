@@ -43,6 +43,7 @@ public class PetService {
     public static final String LASER = "laser";
     public static final String RENAME = "rename";
     public static final String SHOP = "shop";
+    public static final String FISH = "fish";
 
     /** Points lost per hour: satiety, happiness, cleanliness, energy. */
     static final double[] DECAY_PER_HOUR = {3.0, 2.0, 1.5, 2.0};
@@ -62,6 +63,17 @@ public class PetService {
             BRUSH, new Effect(0, 5, 25, 0, 2),
             BATH, new Effect(0, -6, 100, 0, 2), // cats forgive, eventually
             NAP, new Effect(0, 0, 0, 45, 2));
+
+    /**
+     * A mini-game round: the score (checked against a plausible maximum) feeds
+     * the cat and earns coins, within the same daily cap as care.
+     */
+    private record Game(int maxScore, int satietyPerPoint, int maxSatiety, int happiness, int energy,
+                        int pointsPerCoin, int maxCoins) {
+    }
+
+    private static final Map<String, Game> GAMES = Map.of(
+            FISH, new Game(80, 2, 40, 10, -6, 3, 10)); // each fish caught is a snack
 
     private final PetRepository pets;
     private final PetItemRepository items;
@@ -116,6 +128,33 @@ public class PetService {
         pet.setStats(clamp(needs[0]), clamp(needs[1]), clamp(needs[2]), clamp(needs[3]), now);
         pet.recordAction(action, actor, now);
         return publish(action, actor, pet);
+    }
+
+    @Transactional
+    public PetDto playRound(String username, String gameId, Integer score) {
+        Game game = GAMES.get(gameId);
+        if (game == null) {
+            throw new ContentValidationException("Jeu inconnu");
+        }
+        if (score == null || score < 0 || score > game.maxScore()) {
+            throw new ContentValidationException("Score invalide");
+        }
+        User actor = requireUser(username);
+        Pet pet = requirePet();
+        Instant now = clock.instant();
+        int[] needs = needsNow(pet, now);
+        needs[0] += Math.min(game.maxSatiety(), score * game.satietyPerPoint());
+        needs[1] += game.happiness();
+        needs[3] += game.energy();
+        LocalDate today = today();
+        int earned = Math.min(Math.min(game.maxCoins(), score / game.pointsPerCoin()),
+                DAILY_COINS - pet.coinsEarnedOn(today));
+        if (earned > 0) {
+            pet.earn(earned, today);
+        }
+        pet.setStats(clamp(needs[0]), clamp(needs[1]), clamp(needs[2]), clamp(needs[3]), now);
+        pet.recordAction(gameId, actor, now);
+        return publish(gameId, actor, pet);
     }
 
     @Transactional
