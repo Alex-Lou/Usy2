@@ -48,11 +48,19 @@ public class MessageService {
 
     @Transactional
     public MessageDto send(String username, String content, Long attachmentAssetId) {
+        return send(username, content, attachmentAssetId, null);
+    }
+
+    /** {@code replyToId}: the earlier message this one answers (optional, must exist). */
+    @Transactional
+    public MessageDto send(String username, String content, Long attachmentAssetId, Long replyToId) {
         User sender = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Asset attachment = resolveAttachment(sender, attachmentAssetId);
+        Message replyTo = replyToId == null ? null : messageRepository.findById(replyToId)
+                .orElseThrow(() -> new ContentValidationException("Le message cité n'existe plus"));
         Message message = messageRepository.save(
-                new Message(sender, validateContent(content, attachment != null), attachment));
+                new Message(sender, validateContent(content, attachment != null), attachment, replyTo));
         events.publishEvent(new ChatMessageSent(sender.getId(), sender.getDisplayName()));
         return MessageDto.from(message);
     }

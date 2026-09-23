@@ -3,22 +3,36 @@ import { createPortal } from "react-dom";
 import type { MessageReaction } from "./types";
 
 const HOLD_MS = 450;
-const MOVE_TOLERANCE = 10; // px: more than this is a scroll, not a press
+const MOVE_TOLERANCE = 10; // px: more than this is a scroll (or a swipe), not a press
+const SWIPE_REPLY = 60; // px to the right to answer the message
+const SWIPE_MAX = 80;
 
 /**
  * Wraps a message: a long press (or right-click on a computer) opens the
- * reaction bar; the click that ends a long press is swallowed, so a photo
- * does not also open in full screen.
+ * reaction bar; a swipe to the right answers it (like WhatsApp). The click
+ * that ends either gesture is swallowed, so a photo does not also open.
  */
-export function LongPress({ onLongPress, children }: { onLongPress: (anchor: DOMRect) => void; children: ReactNode }) {
+export function LongPress({
+  onLongPress,
+  onSwipe,
+  children,
+}: {
+  onLongPress: (anchor: DOMRect) => void;
+  onSwipe?: () => void;
+  children: ReactNode;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const timer = useRef<number>();
   const start = useRef<{ x: number; y: number } | null>(null);
   const fired = useRef(false);
+  const [dx, setDx] = useState(0); // current swipe offset
+  const swiping = useRef(false);
 
   const cancel = () => {
     window.clearTimeout(timer.current);
     start.current = null;
+    swiping.current = false;
+    setDx(0);
   };
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
@@ -31,7 +45,8 @@ export function LongPress({ onLongPress, children }: { onLongPress: (anchor: DOM
   return (
     <div
       ref={ref}
-      className="[-webkit-touch-callout:none] select-none"
+      className="relative [-webkit-touch-callout:none] select-none"
+      style={{ touchAction: "pan-y" }} // vertical scroll stays native; horizontal moves come to us
       onPointerDown={(e: PointerEvent) => {
         if (e.button !== 0) return;
         fired.current = false;
@@ -40,11 +55,31 @@ export function LongPress({ onLongPress, children }: { onLongPress: (anchor: DOM
       }}
       onPointerMove={(e: PointerEvent) => {
         const s = start.current;
-        if (s && Math.hypot(e.clientX - s.x, e.clientY - s.y) > MOVE_TOLERANCE) cancel();
+        if (!s) return;
+        const mx = e.clientX - s.x;
+        const my = e.clientY - s.y;
+        if (!swiping.current && Math.hypot(mx, my) > MOVE_TOLERANCE) {
+          window.clearTimeout(timer.current);
+          if (onSwipe && mx > 0 && Math.abs(mx) > Math.abs(my) * 1.5) {
+            swiping.current = true;
+            (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+          } else {
+            cancel(); // a scroll
+            return;
+          }
+        }
+        if (swiping.current) setDx(Math.max(0, Math.min(SWIPE_MAX, mx)));
       }}
-      onPointerUp={cancel}
+      onPointerUp={() => {
+        if (swiping.current && dx >= SWIPE_REPLY && onSwipe) {
+          fired.current = true; // no click after the swipe
+          navigator.vibrate?.(10);
+          onSwipe();
+        }
+        cancel();
+      }}
       onPointerCancel={cancel}
-      onPointerLeave={cancel}
+      onPointerLeave={() => !swiping.current && cancel()}
       onContextMenu={(e: MouseEvent) => {
         e.preventDefault();
         cancel();
@@ -57,7 +92,18 @@ export function LongPress({ onLongPress, children }: { onLongPress: (anchor: DOM
         e.stopPropagation();
       }}
     >
-      {children}
+      {onSwipe && dx > 0 && (
+        <span
+          className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-lg text-primary"
+          style={{ opacity: Math.min(1, dx / SWIPE_REPLY), transform: `translate(${dx / 2 - 24}px, -50%)` }}
+          aria-hidden="true"
+        >
+          ↩
+        </span>
+      )}
+      <div style={{ transform: dx ? `translateX(${dx}px)` : undefined, transition: dx ? "none" : "transform 0.2s ease-out" }}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -70,6 +116,7 @@ export function ReactionBar({
   current,
   copyText,
   onPick,
+  onReply,
   onClose,
 }: {
   anchor: DOMRect;
@@ -78,6 +125,7 @@ export function ReactionBar({
   current: string | null;
   copyText: string | null;
   onPick: (emoji: string) => void;
+  onReply?: () => void;
   onClose: () => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -89,7 +137,8 @@ export function ReactionBar({
   }, [onClose]);
 
   const barH = 52;
-  const width = Math.min(window.innerWidth - 16, emojis.length * 44 + (copyText ? 64 : 0) + 16);
+  const extras = (copyText ? 1 : 0) + (onReply ? 1 : 0);
+  const width = Math.min(window.innerWidth - 16, emojis.length * 44 + extras * 64 + 16);
   const above = anchor.top - barH - 8 > 72; // keep clear of the top bar
   const top = above ? anchor.top - barH - 8 : Math.min(window.innerHeight - barH - 8, anchor.bottom + 8);
   const left = Math.max(8, Math.min(window.innerWidth - width - 8, mine ? anchor.right - width : anchor.left));
@@ -120,6 +169,18 @@ export function ReactionBar({
             {e}
           </button>
         ))}
+        {onReply && (
+          <button
+            type="button"
+            onClick={() => {
+              onReply();
+              onClose();
+            }}
+            className="ml-auto shrink-0 rounded-full px-2 py-1 text-xs font-semibold text-text-muted press hover:text-text"
+          >
+            Répondre
+          </button>
+        )}
         {copyText && (
           <button
             type="button"

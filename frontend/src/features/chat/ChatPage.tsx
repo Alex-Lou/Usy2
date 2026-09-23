@@ -35,6 +35,9 @@ export function ChatPage() {
   const [partner, setPartner] = useState<Profile | null>(null);
   const [viewing, setViewing] = useState<Asset | null>(null);
   const [emojis, setEmojis] = useState<string[]>([]);
+  const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const replyRef = useRef<Message | null>(null);
+  replyRef.current = replyTo;
   const clientRef = useRef<Client | null>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -144,7 +147,8 @@ export function ChatPage() {
     const client = clientRef.current;
     if (!client) return;
     stickToBottom.current = true;
-    sendMessage(client, text, attachment?.id ?? null);
+    sendMessage(client, text, attachment?.id ?? null, replyRef.current?.id ?? null);
+    setReplyTo(null);
   }, []);
 
   return (
@@ -206,13 +210,13 @@ export function ChatPage() {
               <p className="text-text-muted">Aucun message. Dis coucou !</p>
             </div>
           ) : (
-            <MessageList messages={messages} myId={user?.id} emojis={emojis} onOpenImage={setViewing} onReact={react} />
+            <MessageList messages={messages} myId={user?.id} emojis={emojis} onOpenImage={setViewing} onReact={react} onReply={setReplyTo} />
           )}
           <div className="h-2 shrink-0" />
         </div>
       </div>
 
-      <ChatComposer connected={connected} onSend={send} />
+      <ChatComposer connected={connected} onSend={send} replyTo={replyTo} myId={user?.id} onCancelReply={() => setReplyTo(null)} />
 
       {viewing && <ImageViewer asset={viewing} onClose={() => setViewing(null)} />}
     </div>

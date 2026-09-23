@@ -7,6 +7,8 @@ import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { getStorageUsage, type Asset, type StorageUsage } from "../../lib/api/assets";
 import { takeForChat } from "../feed/sharedContent";
 import { checkFile, DOCUMENT_ACCEPT, formatSize, uploadAttachment } from "./attachments";
+import { quoteText } from "./Quote";
+import type { Message } from "./types";
 
 const MAX_TEXT = 2000;
 
@@ -24,9 +26,16 @@ interface Pending {
 export function ChatComposer({
   connected,
   onSend,
+  replyTo = null,
+  myId,
+  onCancelReply,
 }: {
   connected: boolean;
   onSend: (text: string, attachment: Asset | null) => void;
+  /** The message being answered (shown above the box, sent with the next message). */
+  replyTo?: Message | null;
+  myId?: number;
+  onCancelReply?: () => void;
 }) {
   const { text, setText, ref, insert, rememberCaret } = useRichInput<HTMLTextAreaElement>();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -38,6 +47,11 @@ export function ChatComposer({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useAutoGrow(ref, text);
+
+  // Choosing "reply" puts the cursor in the box, ready to type.
+  useEffect(() => {
+    if (replyTo) ref.current?.focus();
+  }, [replyTo, ref]);
 
   // Content shared from another app, sent here from the feed's "post or message?" choice (once, on arrival).
   useEffect(() => {
@@ -104,6 +118,19 @@ export function ChatComposer({
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2">
+      {replyTo && (
+        <div className="flex items-center gap-2 rounded-token border-l-4 border-primary bg-surface px-3 py-2 animate-pop">
+          <span className="min-w-0 flex-1">
+            <span className="block text-xs font-semibold text-primary">
+              Réponse à {replyTo.sender.id === myId ? "toi" : replyTo.sender.displayName}
+            </span>
+            <span className="block truncate text-sm text-text-muted">{quoteText(replyTo)}</span>
+          </span>
+          <button type="button" onClick={onCancelReply} aria-label="Annuler la réponse" className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">
+            <Icon name="x" size={16} />
+          </button>
+        </div>
+      )}
       {pending && (
         <div className="flex items-center gap-3 rounded-token border border-border bg-surface p-2 animate-pop">
           {pending.preview ? (

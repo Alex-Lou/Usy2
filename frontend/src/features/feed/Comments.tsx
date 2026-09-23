@@ -6,18 +6,38 @@ import { Avatar } from "../../components/ui/Avatar";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import { Icon } from "../../components/ui/Icon";
 import { useAuth } from "../auth/useAuth";
-import { addComment, deleteComment, listComments } from "./api";
-import type { Comment } from "./types";
+import { LongPress, ReactionBar, ReactionPills } from "../chat/MessageReactions";
+import { addComment, deleteComment, listComments, reactToComment } from "./api";
+import type { Comment, CommentReaction } from "./types";
 
 export function Comments({
   postId,
+  emojis,
   onCountChange,
 }: {
   postId: number;
+  emojis: string[];
   onCountChange: (delta: number) => void;
 }) {
   const { user } = useAuth();
   const [items, setItems] = useState<Comment[]>([]);
+  const [menu, setMenu] = useState<{ comment: Comment; anchor: DOMRect } | null>(null);
+  const myReaction = (c: Comment) => (c.reactions ?? []).find((r) => r.userId === user?.id)?.emoji ?? null;
+
+  const setReactions = (commentId: number, reactions: CommentReaction[]) =>
+    setItems((list) => list.map((c) => (c.id === commentId ? { ...c, reactions } : c)));
+
+  // Optimistic: my emoji shows at once, and goes back if the server refuses.
+  function react(commentId: number, emoji: string | null) {
+    const me = user?.id;
+    if (me == null) return;
+    const before = items.find((c) => c.id === commentId)?.reactions ?? [];
+    const others = before.filter((r) => r.userId !== me);
+    setReactions(commentId, emoji ? [...others, { userId: me, emoji }] : others);
+    reactToComment(commentId, emoji)
+      .then((r) => setReactions(r.commentId, r.reactions))
+      .catch(() => setReactions(commentId, before));
+  }
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const { text, setText, ref, insert, rememberCaret } = useRichInput<HTMLTextAreaElement>();
@@ -105,7 +125,9 @@ export function Comments({
             <ProfileLink userId={c.author.id} className="shrink-0 rounded-full">
               <Avatar name={c.author.displayName} size={30} assetId={c.author.avatarAssetId} species={c.author.companion} />
             </ProfileLink>
-            <div className="flex-1 rounded-token rounded-tl-sm bg-bg-2/50 px-3 py-2">
+            <div id={`comment-${c.id}`} className="flex min-w-0 flex-1 flex-col items-start">
+            <LongPress onLongPress={(anchor) => setMenu({ comment: c, anchor })}>
+            <div className="rounded-token rounded-tl-sm bg-bg-2/50 px-3 py-2">
               <div className="flex items-baseline justify-between gap-2">
                 <ProfileLink userId={c.author.id} className="text-sm font-semibold text-primary hover:underline">
                   {c.author.displayName}
@@ -118,6 +140,16 @@ export function Comments({
               </div>
               <RichBody text={c.text} className="text-sm" />
             </div>
+            </LongPress>
+            <ReactionPills
+              reactions={c.reactions ?? []}
+              myId={user?.id}
+              onOpen={() => {
+                const el = document.getElementById(`comment-${c.id}`);
+                if (el) setMenu({ comment: c, anchor: el.getBoundingClientRect() });
+              }}
+            />
+            </div>
           </div>
         ))}
         {page + 1 < totalPages && (
@@ -127,6 +159,20 @@ export function Comments({
         )}
       </div>
 
+      {menu && (
+        <ReactionBar
+          anchor={menu.anchor}
+          mine={false}
+          emojis={emojis}
+          current={myReaction(menu.comment)}
+          copyText={menu.comment.text}
+          onPick={(emoji) => {
+            react(menu.comment.id, myReaction(menu.comment) === emoji ? null : emoji);
+            setMenu(null);
+          }}
+          onClose={() => setMenu(null)}
+        />
+      )}
     </div>
   );
 }

@@ -72,3 +72,7 @@
     animation: none;
   }
 }
+
+/* A quoted message's original, briefly highlighted after a tap on the quote. */
+.mc-flash { animation: mc-flash 1.2s ease-out; border-radius: 12px; }
+@keyframes mc-flash { 0%, 40% { background: color-mix(in srgb, var(--color-primary) 22%, transparent); } 100% { background: transparent; } }
