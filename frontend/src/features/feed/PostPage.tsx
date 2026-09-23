@@ -41,13 +41,14 @@ export function PostPage() {
         <p className="card p-6 text-center text-text-muted">Ce post n'existe plus.</p>
       ) : post ? (
         <PostCard
-          key={`${post.id}-${params.get("comments") ?? ""}`} // another notification of the same post starts fresh
+          key={`${post.id}-${params.get("comments") ?? ""}-${params.get("comment") ?? ""}`} // another notification of the same post starts fresh
           post={post}
           currentUserId={user?.id}
           emojis={emojis}
           onChanged={setPost}
           onDeleted={() => navigate("/")}
           initialShowComments={params.get("comments") === "1"}
+          highlightCommentId={Number(params.get("comment")) || null}
         />
       ) : (
         <Skeleton className="h-64" />

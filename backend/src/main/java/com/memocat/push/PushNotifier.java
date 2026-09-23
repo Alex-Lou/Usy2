@@ -7,6 +7,7 @@ import com.memocat.couple.CoupleActivity;
 import com.memocat.domain.PushSubscription;
 import com.memocat.domain.User;
 import com.memocat.feed.FeedActivity;
+import com.memocat.feed.ReactionAdded;
 import com.memocat.push.dto.PushPayload;
 import com.memocat.repository.PushSubscriptionRepository;
 import com.memocat.repository.UserRepository;
@@ -86,16 +87,37 @@ public class PushNotifier {
         }
     }
 
+    /** Only the owner of the message or comment hears about it; the link opens that very one. */
+    @Async(PushConfig.EXECUTOR)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onReactionAdded(ReactionAdded r) {
+        boolean message = ReactionAdded.MESSAGE.equals(r.target());
+        String body = r.actorName() + " a réagi " + r.emoji() + (message ? " à ton message" : " à ton commentaire");
+        String url = message ? "/chat?m=" + r.refId() : "/posts/" + r.postId() + "?comments=1&comment=" + r.refId();
+        PushPayload payload = new PushPayload(TITLE, body, url, r.target() + "-reaction-" + r.refId());
+        for (User recipient : othersThan(r.actorId())) {
+            if (recipient.getId().equals(r.ownerId())) {
+                notify(recipient, payload, false);
+            }
+        }
+    }
+
     @Async(PushConfig.EXECUTOR)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onCoupleActivity(CoupleActivity a) {
+        if (CoupleActivity.LIST.equals(a.kind())) {
+            if (firstInAWhile(a.refId())) {
+                for (User recipient : othersThan(a.actorId())) {
+                    // Opens that list, in the "Nous" tab of the recipient's own profile.
+                    notify(recipient, new PushPayload(TITLE, a.actorName() + " a mis à jour la liste « " + a.detail() + " »",
+                            "/profile/" + recipient.getId() + "?tab=nous&list=" + a.refId(), "list-" + a.refId()), false);
+                }
+            }
+            return;
+        }
         PushPayload payload = switch (a.kind()) {
             case CoupleActivity.MOOD -> new PushPayload(TITLE, a.actorName() + " a changé d'humeur : " + a.detail(), "/", "mood");
             case CoupleActivity.NOTE -> new PushPayload(TITLE, a.actorName() + " t'a laissé un mot", "/", "note");
-            case CoupleActivity.LIST -> firstInAWhile(a.refId())
-                    ? new PushPayload(TITLE, a.actorName() + " a mis à jour la liste « " + a.detail() + " »", "/",
-                    "list-" + a.refId())
-                    : null;
             default -> null; // sync-only changes
         };
         if (payload == null) {

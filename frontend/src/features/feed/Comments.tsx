@@ -1,10 +1,11 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { RichBody } from "../../components/rich/RichBody";
 import { RichPicker } from "../../components/rich/RichPicker";
 import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useRichInput";
 import { Avatar } from "../../components/ui/Avatar";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import { Icon } from "../../components/ui/Icon";
+import { flashElement } from "../../lib/flash";
 import { useAuth } from "../auth/useAuth";
 import { LongPress, ReactionBar, ReactionPills } from "../chat/MessageReactions";
 import { onCommentReactions } from "./activity";
@@ -15,14 +16,23 @@ export function Comments({
   postId,
   emojis,
   onCountChange,
+  highlightId = null,
 }: {
   postId: number;
   emojis: string[];
   onCountChange: (delta: number) => void;
+  /** Comment a notification points to: brought into view once loaded. */
+  highlightId?: number | null;
 }) {
   const { user } = useAuth();
   const [items, setItems] = useState<Comment[]>([]);
   const [menu, setMenu] = useState<{ comment: Comment; anchor: DOMRect } | null>(null);
+  const highlightedRef = useRef(false);
+  useEffect(() => {
+    if (highlightId == null || highlightedRef.current || !items.some((c) => c.id === highlightId)) return;
+    highlightedRef.current = true;
+    requestAnimationFrame(() => flashElement(`comment-${highlightId}`));
+  }, [highlightId, items]);
   const myReaction = (c: Comment) => (c.reactions ?? []).find((r) => r.userId === user?.id)?.emoji ?? null;
 
   const setReactions = (commentId: number, reactions: CommentReaction[]) =>

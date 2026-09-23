@@ -1,6 +1,8 @@
 package com.memocat.chat;
 
+import com.memocat.domain.Message;
 import com.memocat.domain.MessageReaction;
+import com.memocat.feed.ReactionAdded;
 import com.memocat.domain.User;
 import com.memocat.repository.MessageReactionRepository;
 import com.memocat.repository.MessageRepository;
@@ -35,14 +37,17 @@ class MessageReactionServiceTest {
     @Mock private UserRepository users;
     @Mock private ApplicationEventPublisher events;
     private MessageReactionService service;
+    private User lou;
+    private final User sam = new User("sam", "h", "Sam");
 
     @BeforeEach
     void setUp() {
         service = new MessageReactionService(reactions, messages, users, events);
-        User lou = new User("lou", "h", "Lou");
+        lou = new User("lou", "h", "Lou");
         ReflectionTestUtils.setField(lou, "id", 1L);
+        ReflectionTestUtils.setField(sam, "id", 2L);
         lenient().when(users.findByUsername("lou")).thenReturn(Optional.of(lou));
-        lenient().when(messages.existsById(7L)).thenReturn(true);
+        lenient().when(messages.findById(7L)).thenReturn(Optional.of(new Message(sam, "Coucou", null))); // Sam's message
     }
 
     @Test
@@ -58,6 +63,20 @@ class MessageReactionServiceTest {
         assertThat(change.messageId()).isEqualTo(7L);
         assertThat(change.reactions()).extracting("emoji").containsExactly("😂");
         verify(events).publishEvent(change);
+        verify(events).publishEvent(new ReactionAdded(ReactionAdded.MESSAGE, 1L, "Lou", 2L, "😂", 7L, null));
+    }
+
+    @Test
+    void removingOrReactingToMyOwnMessageTellsNobody() {
+        MessageReaction mine = new MessageReaction(7L, 1L, "😂");
+        when(reactions.findByMessageIdAndUserId(7L, 1L)).thenReturn(Optional.of(mine));
+        service.react("lou", 7L, null);
+
+        when(messages.findById(8L)).thenReturn(Optional.of(new Message(lou, "Moi", null)));
+        when(reactions.findByMessageIdAndUserId(8L, 1L)).thenReturn(Optional.empty());
+        service.react("lou", 8L, "❤️");
+
+        verify(events, never()).publishEvent(any(ReactionAdded.class));
     }
 
     @Test

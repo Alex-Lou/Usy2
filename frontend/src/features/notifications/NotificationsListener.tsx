@@ -5,7 +5,7 @@ import { useNotifications } from "../../app/notifications";
 import { useAuth } from "../auth/useAuth";
 import { emitCoupleActivity } from "../couple/activity";
 import type { CoupleActivity } from "../couple/types";
-import { emitCommentReactions, emitFeedActivity, type FeedActivity } from "../feed/activity";
+import { emitCommentReactions, emitFeedActivity, type FeedActivity, type ReactionAdded } from "../feed/activity";
 import { createNotifClient, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
 import { showSystemNotification } from "./systemNotify";
@@ -71,7 +71,20 @@ export function NotificationsListener() {
       } else if (a.kind === "list" && a.refId != null) {
         const last = lastListNotifRef.current.get(a.refId) ?? 0;
         lastListNotifRef.current.set(a.refId, Date.now());
-        if (Date.now() - last >= LIST_QUIET_MS) notify(`${a.actorName} a mis à jour la liste « ${a.detail ?? ""} »`);
+        if (Date.now() - last >= LIST_QUIET_MS) {
+          notify(`${a.actorName} a mis à jour la liste « ${a.detail ?? ""} »`, `/profile/${myId}?tab=nous&list=${a.refId}`);
+        }
+      }
+    };
+
+    // Only the owner of the message/comment hears about it; the link opens that very one.
+    const onReaction = (r: ReactionAdded) => {
+      if (r.ownerId !== myId || r.actorId === myId) return;
+      if (r.target === "message") {
+        if (window.location.pathname.startsWith("/chat") && document.visibilityState === "visible") return; // sees it live
+        notify(`${r.actorName} a réagi ${r.emoji} à ton message`, `/chat?m=${r.refId}`);
+      } else if (r.postId != null) {
+        notify(`${r.actorName} a réagi ${r.emoji} à ton commentaire`, `/posts/${r.postId}?comments=1&comment=${r.refId}`);
       }
     };
 
@@ -102,6 +115,7 @@ export function NotificationsListener() {
       onFeed,
       onCouple,
       emitCommentReactions, // open comment lists update live
+      onReaction,
     );
     clientRef.current = client;
     const onVisibility = () => reportPresence(client);

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import type { Client } from "@stomp/stompjs";
 import { useCompanion } from "../../app/companion";
 import { Animal } from "../../components/ui/animals";
@@ -6,6 +7,7 @@ import { Icon } from "../../components/ui/Icon";
 import { Avatar } from "../../components/ui/Avatar";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import type { Asset } from "../../lib/api/assets";
+import { flashElement } from "../../lib/flash";
 import { useAuth } from "../auth/useAuth";
 import { getReactionEmojis } from "../feed/api";
 import { PetStage } from "../pet/PetStage";
@@ -133,6 +135,35 @@ export function ChatPage() {
     observer.observe(scroller);
     return () => observer.disconnect();
   }, []);
+
+  // From a notification (/chat?m=42): bring that message into view, loading
+  // older pages as needed (bounded), instead of landing on the newest one.
+  const [params] = useSearchParams();
+  const target = Number(params.get("m")) || null;
+  const seek = useRef<{ id: number; pages: number; done: boolean; busy: boolean } | null>(null);
+  const [seekTick, setSeekTick] = useState(0); // re-checks once an older page has arrived
+  useEffect(() => {
+    if (!target || messages.length === 0) return;
+    if (seek.current?.id !== target) seek.current = { id: target, pages: 0, done: false, busy: false };
+    const s = seek.current;
+    if (s.done || s.busy) return;
+    if (messages.some((m) => m.id === target)) {
+      s.done = true;
+      stickToBottom.current = false;
+      requestAnimationFrame(() => flashElement(`msg-${target}`));
+    } else if (hasOlder && s.pages < 10) {
+      s.pages++;
+      s.busy = true;
+      loadOlder()
+        .catch(() => (s.done = true))
+        .finally(() => {
+          s.busy = false;
+          setSeekTick((t) => t + 1);
+        });
+    } else {
+      s.done = true; // too old or deleted: stay on the newest messages
+    }
+  }, [target, messages, hasOlder, seekTick]);
 
   async function loadOlder() {
     const next = page + 1;

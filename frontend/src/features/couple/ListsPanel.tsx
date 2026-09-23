@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { flashElement } from "../../lib/flash";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
@@ -12,6 +14,9 @@ export function ListsPanel() {
   const [openId, setOpenId] = useState<number | null>(null);
   const [newName, setNewName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [params] = useSearchParams();
+  const wanted = Number(params.get("list")) || null; // from a notification: open that list
+  const shownRef = useRef<number | null>(null);
 
   const reload = useCallback(() => {
     getLists()
@@ -25,6 +30,13 @@ export function ListsPanel() {
       if (a.kind === "list" || a.kind === "list-change") reload();
     });
   }, [reload]);
+
+  useEffect(() => {
+    if (!wanted || !lists || shownRef.current === wanted || !lists.some((l) => l.id === wanted)) return;
+    shownRef.current = wanted;
+    setOpenId(wanted);
+    requestAnimationFrame(() => flashElement(`list-${wanted}`));
+  }, [wanted, lists]);
 
   const replace = (updated: SharedList) =>
     setLists((prev) => prev?.map((l) => (l.id === updated.id ? updated : l)) ?? prev);
@@ -136,7 +148,7 @@ function ListCard({
   }
 
   return (
-    <div className="rounded-token border border-border bg-surface">
+    <div id={`list-${list.id}`} className="rounded-token border border-border bg-surface">
       <button type="button" onClick={onToggle} className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left">
         <span className="font-semibold text-text">{list.name}</span>
         <span className="text-sm text-text-muted">
