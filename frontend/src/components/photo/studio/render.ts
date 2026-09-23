@@ -1,4 +1,5 @@
 import { applyAdjust, type Adjust } from "./adjust";
+import { sharpen, SIGMA_OF_WIDTH } from "./sharpen";
 
 export interface Frame {
   rotation: 0 | 90 | 180 | 270;
@@ -68,9 +69,13 @@ function loadSvg(svg: SVGSVGElement, size: number): Promise<HTMLImageElement> {
 
 const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 
+const MAX_LONG = 1600;
+
 /**
- * Flattens everything into a JPEG: framed photo, colour adjustments (pixel
- * maths identical to the preview), then stickers/emojis/text on top.
+ * Flattens everything into a JPEG: framed photo, sharpening and colour
+ * adjustments (same maths as the preview), then stickers/emojis/text on top.
+ * When sharpening, a small photo is first enlarged (up to 2×, smooth
+ * resampling) so it does not stay pixelated.
  * `stickerSvg` returns the on-screen SVG of a sticker layer.
  */
 export async function exportPhoto(
@@ -78,11 +83,12 @@ export async function exportPhoto(
   frame: Frame,
   aspect: number,
   adjust: Adjust,
+  sharpness: number,
   layers: Layer[],
   stickerSvg: (id: number) => SVGSVGElement | null,
 ): Promise<Blob> {
   const { w, h } = rotatedSize(src, frame.rotation);
-  const long = Math.min(1600, Math.max(w, h));
+  const long = Math.min(MAX_LONG, Math.max(w, h) * (sharpness > 0 ? 2 : 1));
   const W = Math.round(aspect >= 1 ? long : long * aspect);
   const H = Math.round(aspect >= 1 ? long / aspect : long);
   const canvas = document.createElement("canvas");
@@ -90,8 +96,10 @@ export async function exportPhoto(
   canvas.height = H;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("canvas");
+  ctx.imageSmoothingQuality = "high";
   drawPhoto(ctx, src, frame, W, H);
   const pixels = ctx.getImageData(0, 0, W, H);
+  sharpen(pixels, sharpness, SIGMA_OF_WIDTH * W);
   applyAdjust(pixels, adjust);
   ctx.putImageData(pixels, 0, 0);
 
