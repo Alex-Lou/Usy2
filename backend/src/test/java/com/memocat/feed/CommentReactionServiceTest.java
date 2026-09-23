@@ -32,11 +32,12 @@ class CommentReactionServiceTest {
     @Mock private CommentReactionRepository reactions;
     @Mock private CommentRepository messages;
     @Mock private UserRepository users;
+    @Mock private org.springframework.context.ApplicationEventPublisher events;
     private CommentReactionService service;
 
     @BeforeEach
     void setUp() {
-        service = new CommentReactionService(reactions, messages, users);
+        service = new CommentReactionService(reactions, messages, users, events);
         User lou = new User("lou", "h", "Lou");
         ReflectionTestUtils.setField(lou, "id", 1L);
         lenient().when(users.findByUsername("lou")).thenReturn(Optional.of(lou));
@@ -55,6 +56,7 @@ class CommentReactionServiceTest {
         assertThat(saved.getValue().getEmoji()).isEqualTo("😂");
         assertThat(change.commentId()).isEqualTo(7L);
         assertThat(change.reactions()).extracting("emoji").containsExactly("😂");
+        verify(events).publishEvent(change);
     }
 
     @Test
@@ -84,5 +86,6 @@ class CommentReactionServiceTest {
     void unknownEmojiOrMessageIsRefused() {
         assertThatThrownBy(() -> service.react("lou", 7L, "<b>")).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> service.react("lou", 99L, "😂")).isInstanceOf(ResourceNotFoundException.class);
+        verify(events, never()).publishEvent(any());
     }
 }

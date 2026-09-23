@@ -97,7 +97,7 @@ self.addEventListener("push", (event) => {
   const options = {
     body: data.body || "Du nouveau sur MemoCat 💕",
     icon: "/icons/icon-192.png",
-    badge: "/icons/icon-192.png",
+    badge: "/icons/badge-96.png", // Android status bar: white silhouette on transparent
     data: { url: typeof data.url === "string" && /^\/(?!\/)/.test(data.url) ? data.url : "/" },
   };
   if (data.tag) {

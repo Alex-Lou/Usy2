@@ -21,3 +21,21 @@ export function onFeedActivity(listener: (activity: FeedActivity) => void): () =
   window.addEventListener(EVENT, handler);
   return () => window.removeEventListener(EVENT, handler);
 }
+
+/** A comment's reactions changed (broadcast on /topic/comment-reactions). */
+export interface CommentReactionsChange {
+  commentId: number;
+  reactions: { userId: number; emoji: string }[];
+}
+
+const REACTIONS_EVENT = "memocat:comment-reactions";
+
+export function emitCommentReactions(change: CommentReactionsChange): void {
+  window.dispatchEvent(new CustomEvent<CommentReactionsChange>(REACTIONS_EVENT, { detail: change }));
+}
+
+export function onCommentReactions(listener: (change: CommentReactionsChange) => void): () => void {
+  const handler = (e: Event) => listener((e as CustomEvent<CommentReactionsChange>).detail);
+  window.addEventListener(REACTIONS_EVENT, handler);
+  return () => window.removeEventListener(REACTIONS_EVENT, handler);
+}
