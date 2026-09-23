@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { RichBody } from "../../components/rich/RichBody";
 import { RichPicker } from "../../components/rich/RichPicker";
-import { useRichInput } from "../../components/rich/useRichInput";
+import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useRichInput";
 import { Avatar } from "../../components/ui/Avatar";
 import { Icon } from "../../components/ui/Icon";
 import { useAuth } from "../auth/useAuth";
@@ -19,7 +19,8 @@ export function Comments({
   const [items, setItems] = useState<Comment[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const { text, setText, ref, insert } = useRichInput<HTMLInputElement>();
+  const { text, setText, ref, insert, rememberCaret } = useRichInput<HTMLTextAreaElement>();
+  useAutoGrow(ref, text, 120);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -73,7 +74,31 @@ export function Comments({
 
   return (
     <div className="mt-3 border-t border-border pt-3">
-      <div className="flex flex-col gap-3">
+      {/* The box comes first: nothing moves when the comments finish loading. */}
+      <form onSubmit={submit} className="flex items-end gap-1.5">
+        <textarea
+          ref={ref}
+          rows={1}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (isSendKey(e)) {
+              e.preventDefault();
+              void send(text, true);
+            }
+          }}
+          onBlur={rememberCaret}
+          maxLength={1000}
+          placeholder="Écrire un commentaire…"
+          className="min-h-10 flex-1 resize-none rounded-3xl border border-border bg-bg-2/60 px-4 py-2 text-sm leading-snug outline-none focus:border-primary/70"
+        />
+        <RichPicker onEmoji={insert} onSticker={(token) => void send(token, false)} />
+        <button type="submit" disabled={busy || !text.trim()} aria-label="Envoyer" className="grid h-10 w-10 shrink-0 place-items-center rounded-full btn-brand disabled:opacity-50 press">
+          <Icon name="send" size={16} />
+        </button>
+      </form>
+
+      <div className="mt-3 flex flex-col gap-3">
         {items.map((c) => (
           <div key={c.id} className="flex items-start gap-2.5">
             <Avatar name={c.author.displayName} size={30} assetId={c.author.avatarAssetId} species={c.author.companion} />
@@ -97,20 +122,6 @@ export function Comments({
         )}
       </div>
 
-      <form onSubmit={submit} className="mt-3 flex items-center gap-1.5">
-        <input
-          ref={ref}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          maxLength={1000}
-          placeholder="Écrire un commentaire…"
-          className="flex-1 rounded-full border border-border bg-bg-2/60 px-4 py-2 text-sm outline-none focus:border-primary/70"
-        />
-        <RichPicker onEmoji={insert} onSticker={(token) => void send(token, false)} />
-        <button type="submit" disabled={busy || !text.trim()} aria-label="Envoyer" className="grid h-10 w-10 place-items-center rounded-full btn-brand disabled:opacity-50 press">
-          <Icon name="send" size={16} />
-        </button>
-      </form>
     </div>
   );
 }

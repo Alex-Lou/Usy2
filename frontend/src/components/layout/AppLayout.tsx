@@ -28,8 +28,9 @@ export function AppLayout() {
       <NotificationsListener />
 
       <main className="lg:pl-64">
-        {/* Mobile: clears the top bar (burger + bell, below the status bar) and the tab bar. */}
-        <div className="mx-auto w-full max-w-2xl px-4 pb-[calc(var(--tabbar-h)+1rem)] pt-[calc(var(--topbar-h)+1rem)] lg:pb-12 lg:pt-8">
+        {/* Clears the top bar (burger + bell, below the status bar) and whatever covers the
+            bottom: the tab bar, or the emoji sheet while it is open (--picker-h). */}
+        <div className="mx-auto w-full max-w-2xl px-4 pb-[calc(max(var(--tabbar-h),var(--picker-h,0px))+1rem)] pt-[calc(var(--topbar-h)+1rem)] lg:pb-[calc(max(2rem,var(--picker-h,0px))+1rem)] lg:pt-8">
           <Outlet />
         </div>
       </main>

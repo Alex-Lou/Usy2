@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { RichPicker } from "../../components/rich/RichPicker";
-import { useRichInput } from "../../components/rich/useRichInput";
+import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useRichInput";
 import { Icon } from "../../components/ui/Icon";
 import { getStorageUsage, type Asset, type StorageUsage } from "../../lib/api/assets";
 import { checkFile, DOCUMENT_ACCEPT, formatSize, uploadAttachment } from "./attachments";
 
 const MAX_TEXT = 2000;
-// On phones Enter adds a line (the send button sends); with a keyboard, Enter sends.
-const touchFirst = typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches;
 
 interface Pending {
   file: File;
@@ -26,7 +24,7 @@ export function ChatComposer({
   connected: boolean;
   onSend: (text: string, attachment: Asset | null) => void;
 }) {
-  const { text, setText, ref, insert } = useRichInput<HTMLTextAreaElement>();
+  const { text, setText, ref, insert, rememberCaret } = useRichInput<HTMLTextAreaElement>();
   const [menuOpen, setMenuOpen] = useState(false);
   const [pending, setPending] = useState<Pending | null>(null);
   const [sending, setSending] = useState(false);
@@ -34,13 +32,7 @@ export function ChatComposer({
   const [usage, setUsage] = useState<StorageUsage | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Grow with the text, up to ~5 lines.
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 132)}px`;
-  }, [text, ref]);
+  useAutoGrow(ref, text);
 
   useEffect(() => () => {
     if (pending?.preview) URL.revokeObjectURL(pending.preview);
@@ -89,7 +81,7 @@ export function ChatComposer({
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey && !touchFirst && !e.nativeEvent.isComposing) {
+    if (isSendKey(e)) {
       e.preventDefault();
       void submit();
     }
@@ -161,6 +153,7 @@ export function ChatComposer({
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={onKeyDown}
+          onBlur={rememberCaret}
           onPaste={(e) => {
             const file = Array.from(e.clipboardData.files).find((f) => f.type.startsWith("image/"));
             if (file) {

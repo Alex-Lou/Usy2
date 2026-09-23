@@ -74,8 +74,8 @@ export function ChatPage() {
       .catch(() => {});
   }, [connected]);
 
-  // Stay pinned to the newest message — also while photos load and grow the
-  // list — unless the user scrolled up to read older ones.
+  // Stay pinned to the newest message — while photos load and grow the list, or
+  // when the emoji sheet shrinks the view — unless the user scrolled up.
   useEffect(() => {
     const scroller = scrollerRef.current;
     const content = contentRef.current;
@@ -84,6 +84,7 @@ export function ChatPage() {
       if (stickToBottom.current) scroller.scrollTop = scroller.scrollHeight;
     });
     observer.observe(content);
+    observer.observe(scroller);
     return () => observer.disconnect();
   }, []);
 
@@ -104,7 +105,7 @@ export function ChatPage() {
   }, []);
 
   return (
-    <div className="flex h-[calc(100dvh-var(--topbar-h)-var(--tabbar-h)-2rem)] flex-col gap-3 lg:h-[calc(100dvh-5rem)]">
+    <div className="flex h-[calc(100dvh-var(--topbar-h)-max(var(--tabbar-h),var(--picker-h,0px))-2rem)] flex-col gap-3 lg:h-[calc(100dvh-2rem-max(2rem,var(--picker-h,0px))-1rem)]">
       <header className="flex items-center gap-3 animate-fade-up">
         {partner && <Avatar name={partner.displayName} size={40} assetId={partner.avatarAssetId} species={partner.companion} />}
         <div className="min-w-0">
