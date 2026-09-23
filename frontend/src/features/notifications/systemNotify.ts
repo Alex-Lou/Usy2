@@ -28,7 +28,7 @@ export async function showSystemNotification(body: string): Promise<void> {
   if (pushActive()) return; // this device gets the server's push instead
   try {
     const reg = await navigator.serviceWorker.getRegistration();
-    const options: NotificationOptions = { body, icon: "/icons/icon-192.png", badge: "/icons/icon-192.png" };
+    const options: NotificationOptions = { body, icon: "/icons/icon-192.png", badge: "/icons/badge-96.png" };
     if (reg) await reg.showNotification("MemoCat", options);
     else new Notification("MemoCat", options);
   } catch {

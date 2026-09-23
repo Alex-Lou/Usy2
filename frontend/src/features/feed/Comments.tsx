@@ -7,6 +7,7 @@ import { ProfileLink } from "../../components/ui/ProfileLink";
 import { Icon } from "../../components/ui/Icon";
 import { useAuth } from "../auth/useAuth";
 import { LongPress, ReactionBar, ReactionPills } from "../chat/MessageReactions";
+import { onCommentReactions } from "./activity";
 import { addComment, deleteComment, listComments, reactToComment } from "./api";
 import type { Comment, CommentReaction } from "./types";
 
@@ -26,6 +27,12 @@ export function Comments({
 
   const setReactions = (commentId: number, reactions: CommentReaction[]) =>
     setItems((list) => list.map((c) => (c.id === commentId ? { ...c, reactions } : c)));
+
+  // The other person's reactions arrive live (and mine from my other devices).
+  useEffect(
+    () => onCommentReactions((c) => setItems((list) => list.map((x) => (x.id === c.commentId ? { ...x, reactions: c.reactions } : x)))),
+    [],
+  );
 
   // Optimistic: my emoji shows at once, and goes back if the server refuses.
   function react(commentId: number, emoji: string | null) {

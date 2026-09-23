@@ -9,6 +9,7 @@ import com.memocat.repository.CommentRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
 import com.memocat.web.ResourceNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +25,14 @@ public class CommentReactionService {
     private final CommentReactionRepository reactions;
     private final CommentRepository comments;
     private final UserRepository users;
+    private final ApplicationEventPublisher events;
 
-    public CommentReactionService(CommentReactionRepository reactions, CommentRepository comments, UserRepository users) {
+    public CommentReactionService(CommentReactionRepository reactions, CommentRepository comments, UserRepository users,
+                                  ApplicationEventPublisher events) {
         this.reactions = reactions;
         this.comments = comments;
         this.users = users;
+        this.events = events;
     }
 
     @Transactional
@@ -52,8 +56,9 @@ public class CommentReactionService {
             reactions.save(new CommentReaction(commentId, user.getId(), wanted));
         }
         reactions.flush();
-        return new CommentReactionsDto(commentId, reactions.findByCommentIdOrderByCreatedAtAsc(commentId).stream()
-                .map(CommentReactionDto::from)
-                .toList());
+        CommentReactionsDto change = new CommentReactionsDto(commentId,
+                reactions.findByCommentIdOrderByCreatedAtAsc(commentId).stream().map(CommentReactionDto::from).toList());
+        events.publishEvent(change); // live on the other screen, see CommentReactionBroadcaster
+        return change;
     }
 }

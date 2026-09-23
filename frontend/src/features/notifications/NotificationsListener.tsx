@@ -5,7 +5,7 @@ import { useNotifications } from "../../app/notifications";
 import { useAuth } from "../auth/useAuth";
 import { emitCoupleActivity } from "../couple/activity";
 import type { CoupleActivity } from "../couple/types";
-import { emitFeedActivity, type FeedActivity } from "../feed/activity";
+import { emitCommentReactions, emitFeedActivity, type FeedActivity } from "../feed/activity";
 import { createNotifClient, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
 import { showSystemNotification } from "./systemNotify";
@@ -100,6 +100,7 @@ export function NotificationsListener() {
       },
       onFeed,
       onCouple,
+      emitCommentReactions, // open comment lists update live
     );
     clientRef.current = client;
     const onVisibility = () => reportPresence(client);
