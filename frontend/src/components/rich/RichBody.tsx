@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from "react";
+import { LiveSticker } from "./LiveSticker";
 import { findSticker, type Sticker } from "./stickers";
 
 const TOKEN = /\[\[s:([a-z0-9-]+)\]\]/g;
@@ -41,9 +42,9 @@ function renderInline(text: string): ReactNode[] {
     if (!sticker) continue; // unknown token: left as plain text
     if (m.index > last) out.push(text.slice(last, m.index));
     out.push(
-      <span key={key++} className="mx-0.5 inline-block align-middle">
+      <LiveSticker key={key++} className="mx-0.5 inline-block align-middle">
         {sticker.render(40)}
-      </span>,
+      </LiveSticker>,
     );
     last = m.index + m[0].length;
   }
@@ -57,7 +58,7 @@ function renderInline(text: string): ReactNode[] {
  */
 export function RichBody({ text, className = "" }: { text: string; className?: string }) {
   const sticker = stickerOnly(text);
-  if (sticker) return <div className="py-1">{sticker.render(96)}</div>;
+  if (sticker) return <LiveSticker className="block py-1">{sticker.render(96)}</LiveSticker>;
   if (isEmojiOnly(text)) return <p className="mc-emoji py-0.5 text-5xl">{text.trim()}</p>;
   return (
     <p className={`whitespace-pre-wrap break-words ${className}`}>
