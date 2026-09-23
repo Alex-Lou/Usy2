@@ -22,6 +22,10 @@ public final class AlbumRequests {
     public record ReorderPhotos(@NotNull List<Long> photoIds) {
     }
 
+    /** Album cover: a photo of the album, or null for the first photo. */
+    public record Cover(Long photoId) {
+    }
+
     private AlbumRequests() {
     }
 }

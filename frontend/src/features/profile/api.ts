@@ -19,10 +19,11 @@ export function updateMyProfile(
   widgets: Widget[],
   avatarAssetId: number | null,
   bio: string | null,
+  coverAssetId: number | null = null,
 ): Promise<Profile> {
   return apiRequest<Profile>("/api/profiles/me", {
     method: "PUT",
-    body: { theme, widgets, avatarAssetId, bio },
+    body: { theme, widgets, avatarAssetId, bio, coverAssetId },
   });
 }
 

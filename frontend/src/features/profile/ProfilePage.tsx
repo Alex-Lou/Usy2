@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { SPECIES, type Species } from "../../app/companion";
+import { AssetImage } from "../../components/AssetImage";
 import { Animal } from "../../components/ui/animals";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
@@ -49,7 +50,8 @@ export function ProfilePage() {
     <div style={custom ? buildThemeStyle(profile.theme) : undefined} className="flex flex-col gap-6 font-sans">
       {/* Hero: cover band + overlapping avatar, with room to breathe. */}
       <div className="card overflow-hidden bg-bg animate-fade-up">
-        <div className="relative h-28 sm:h-36" style={{ backgroundImage: "var(--grad)" }}>
+        <div className="relative h-28 overflow-hidden sm:h-36" style={{ backgroundImage: "var(--grad)" }}>
+          {profile.coverAssetId && <AssetImage assetId={profile.coverAssetId} className="absolute inset-0 h-full w-full object-cover" />}
           {isOwn && (
             <Link to="/profile/edit" className="absolute right-3 top-3">
               <Button variant="surface" className="!px-3 !py-1.5 text-sm">

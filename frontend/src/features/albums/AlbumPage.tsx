@@ -10,6 +10,7 @@ import {
   getAlbum,
   listPhotos,
   reorderPhotos,
+  setAlbumCover,
   updateAlbum,
   updatePhotoCaption,
 } from "./api";
@@ -160,7 +161,23 @@ export function AlbumPage() {
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 animate-pop" onClick={() => setLightbox(null)}>
           <AssetImage assetId={photos[lightbox].assetId} className="max-h-[80vh] max-w-full rounded-token object-contain" />
           {photos[lightbox].caption && <p className="mt-3 text-center text-white">{photos[lightbox].caption}</p>}
-          <button className="mt-4 rounded-full btn-brand px-5 py-2 text-sm font-semibold press">Fermer</button>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {album.coverAssetId === photos[lightbox].assetId ? (
+              <span className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">✓ Couverture de l'album</span>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setAlbumCover(albumId, photos[lightbox].id).then(setAlbum).catch(() => {});
+                }}
+                className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white press hover:bg-white/25"
+              >
+                Utiliser comme couverture
+              </button>
+            )}
+            <button className="rounded-full btn-brand px-5 py-2 text-sm font-semibold press">Fermer</button>
+          </div>
         </div>
       )}
     </div>
