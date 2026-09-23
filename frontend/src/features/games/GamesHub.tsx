@@ -20,6 +20,13 @@ const GAMES: GameCard[] = [
     emoji: "🐱",
   },
   {
+    to: "/jeux/chat/peche",
+    title: "La pêche",
+    tagline: "Attrapez un max de poissons pour nourrir le chat… gare aux vieilles bottes.",
+    mode: "Solo · arcade",
+    emoji: "🎣",
+  },
+  {
     to: "/jeux/morpion",
     title: "Morpion",
     tagline: "Alignez vos compagnons, à deux, en temps réel.",

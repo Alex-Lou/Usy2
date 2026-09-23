@@ -14,4 +14,7 @@ public final class PetRequests {
 
     public record Equip(boolean equipped) {
     }
+
+    public record Round(Integer score) {
+    }
 }

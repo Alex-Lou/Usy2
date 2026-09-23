@@ -43,6 +43,12 @@ public class PetController {
         return pets.equip(principal.getName(), item, request.equipped());
     }
 
+    /** End of a mini-game round (e.g. "fish"): the score feeds the cat and earns coins. */
+    @PostMapping("/games/{game}/rounds")
+    public PetDto playRound(Principal principal, @PathVariable String game, @RequestBody PetRequests.Round request) {
+        return pets.playRound(principal.getName(), game, request.score());
+    }
+
     @PutMapping("/name")
     public PetDto rename(Principal principal, @RequestBody PetRequests.Name request) {
         return pets.rename(principal.getName(), request.name());

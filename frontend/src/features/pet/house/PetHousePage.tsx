@@ -163,6 +163,9 @@ export function PetHousePage() {
             </span>
           )}
         </span>
+        <Link to="/jeux/chat/peche" aria-label="Pêche" className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm press hover:border-primary/50">
+          🎣
+        </Link>
         <button type="button" onClick={() => setShop(true)} className="rounded-full btn-brand px-3 py-1.5 text-sm press">
           Boutique
         </button>

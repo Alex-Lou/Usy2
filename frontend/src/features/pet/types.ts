@@ -1,4 +1,4 @@
-export type PetAction = "pet" | "feed" | "play" | "brush" | "bath" | "nap" | "laser";
+export type PetAction = "pet" | "feed" | "play" | "brush" | "bath" | "nap" | "laser" | "fish";
 export type PetMood = "hungry" | "tired" | "dirty" | "bored" | "happy" | "content";
 
 export interface PetItem {

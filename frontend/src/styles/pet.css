@@ -91,3 +91,9 @@
 @keyframes coin-up { 0% { opacity: 0; transform: translateY(6px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-14px); } }
 @keyframes sparkle { 0% { opacity: 0; transform: scale(0.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(1.2) translateY(-10px); } }
 @keyframes star { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* Fishing mini-game: the pond jolts when an old boot is caught. */
+@layer utilities {
+  .animate-jolt { animation: jolt 0.3s ease-in-out both; }
+}
+@keyframes jolt { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
