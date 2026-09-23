@@ -59,6 +59,7 @@ export function ProfileEditPage() {
   const [theme, setTheme] = useState<Theme | null>(null);
   const [widgets, setWidgets] = useState<Widget[]>([]);
   const [avatarAssetId, setAvatarAssetId] = useState<number | null>(null);
+  const [coverAssetId, setCoverAssetId] = useState<number | null>(null);
   const [bio, setBio] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -71,6 +72,7 @@ export function ProfileEditPage() {
           setTheme({ ...p.theme, mode: p.theme.mode ?? "app" });
           setWidgets(p.widgets);
           setAvatarAssetId(p.avatarAssetId ?? null);
+          setCoverAssetId(p.coverAssetId ?? null);
           setBio(p.bio ?? "");
         }
       })
@@ -79,6 +81,16 @@ export function ProfileEditPage() {
       cancelled = true;
     };
   }, []);
+
+  async function uploadCover(file: File) {
+    setError(null);
+    try {
+      const asset = await uploadImage(file);
+      setCoverAssetId(asset.id);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Envoi de la photo impossible.");
+    }
+  }
 
   async function uploadAvatar(file: File) {
     setError(null);
@@ -131,7 +143,7 @@ export function ProfileEditPage() {
     setSaving(true);
     setError(null);
     try {
-      const saved = await updateMyProfile(theme, widgets.map(cleanWidget), avatarAssetId, bio.trim() || null);
+      const saved = await updateMyProfile(theme, widgets.map(cleanWidget), avatarAssetId, bio.trim() || null, coverAssetId);
       await refreshUser(); // header/avatar reflect the new photo
       navigate(`/profile/${saved.userId}`, { replace: true });
     } catch (err) {
@@ -170,6 +182,31 @@ export function ProfileEditPage() {
               {avatarAssetId && (
                 <button type="button" onClick={() => setAvatarAssetId(null)} className="chip press text-danger hover:border-danger/50">
                   Retirer
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="mt-4">
+            <span className="mb-1 block text-sm text-text-muted">Photo de couverture</span>
+            <div className="relative h-24 overflow-hidden rounded-token border border-border" style={{ backgroundImage: "var(--grad)" }}>
+              {coverAssetId && <AssetImage assetId={coverAssetId} className="h-full w-full object-cover" />}
+            </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <label className="chip cursor-pointer press hover:border-primary/50">
+                <Icon name="images" size={14} /> {coverAssetId ? "Changer la couverture" : "Ajouter une couverture"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) uploadCover(f);
+                  }}
+                />
+              </label>
+              {coverAssetId && (
+                <button type="button" onClick={() => setCoverAssetId(null)} className="chip press text-danger hover:border-danger/50">
+                  Retirer la couverture
                 </button>
               )}
             </div>

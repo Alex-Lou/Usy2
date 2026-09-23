@@ -43,4 +43,5 @@ export interface Profile {
   bio?: string | null;
   theme: Theme;
   widgets: Widget[];
+  coverAssetId?: number | null; // photo in the profile banner (else the theme gradient)
 }

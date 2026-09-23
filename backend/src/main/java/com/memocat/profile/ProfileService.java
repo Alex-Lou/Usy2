@@ -3,12 +3,14 @@ package com.memocat.profile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.memocat.domain.Asset;
 import com.memocat.domain.Profile;
 import com.memocat.domain.User;
 import com.memocat.profile.dto.ProfileDto;
 import com.memocat.profile.dto.ProfileUpdateRequest;
 import com.memocat.profile.dto.ThemeDto;
 import com.memocat.profile.dto.WidgetDto;
+import com.memocat.repository.AssetRepository;
 import com.memocat.repository.ProfileRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
@@ -42,17 +44,20 @@ public class ProfileService {
     private final ThemeValidator themeValidator;
     private final WidgetValidator widgetValidator;
     private final ObjectMapper objectMapper;
+    private final AssetRepository assetRepository;
 
     public ProfileService(ProfileRepository profileRepository,
                           UserRepository userRepository,
                           ThemeValidator themeValidator,
                           WidgetValidator widgetValidator,
-                          ObjectMapper objectMapper) {
+                          ObjectMapper objectMapper,
+                          AssetRepository assetRepository) {
         this.profileRepository = profileRepository;
         this.userRepository = userRepository;
         this.themeValidator = themeValidator;
         this.widgetValidator = widgetValidator;
         this.objectMapper = objectMapper;
+        this.assetRepository = assetRepository;
     }
 
     @Transactional
@@ -93,10 +98,20 @@ public class ProfileService {
             throw new ContentValidationException("Bio too long (max " + MAX_BIO + ")");
         }
 
+        Long cover = request.coverAssetId();
+        if (cover != null) {
+            Asset asset = assetRepository.findById(cover)
+                    .orElseThrow(() -> new ContentValidationException("Photo de couverture introuvable"));
+            if (!asset.getUploader().getId().equals(user.getId()) || !asset.getContentType().startsWith("image/")) {
+                throw new ContentValidationException("La couverture doit être une de tes photos");
+            }
+        }
+
         user.setAvatarAssetId(request.avatarAssetId());
         userRepository.save(user);
 
         Profile profile = getOrCreate(user);
+        profile.setCoverAssetId(cover);
         profile.setThemeJson(writeJson(request.theme()));
         profile.setWidgetsJson(writeJson(request.widgets()));
         profile.setBio(bio == null || bio.isBlank() ? null : bio);
@@ -134,7 +149,8 @@ public class ProfileService {
                 user.getCompanion(),
                 profile.getBio(),
                 theme,
-                widgets);
+                widgets,
+                profile.getCoverAssetId());
     }
 
     private String writeJson(Object value) {

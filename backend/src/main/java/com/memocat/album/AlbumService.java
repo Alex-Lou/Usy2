@@ -2,8 +2,10 @@ package com.memocat.album;
 
 import com.memocat.album.dto.AlbumDto;
 import com.memocat.domain.Album;
+import com.memocat.domain.Photo;
 import com.memocat.domain.User;
 import com.memocat.repository.AlbumRepository;
+import com.memocat.repository.PhotoRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
 import com.memocat.web.PageResponse;
@@ -23,13 +25,16 @@ public class AlbumService {
     private final AlbumRepository albumRepository;
     private final UserRepository userRepository;
     private final AlbumMapper albumMapper;
+    private final PhotoRepository photoRepository;
 
     public AlbumService(AlbumRepository albumRepository,
                         UserRepository userRepository,
-                        AlbumMapper albumMapper) {
+                        AlbumMapper albumMapper,
+                        PhotoRepository photoRepository) {
         this.albumRepository = albumRepository;
         this.userRepository = userRepository;
         this.albumMapper = albumMapper;
+        this.photoRepository = photoRepository;
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +60,20 @@ public class AlbumService {
         Album album = requireAlbum(albumId);
         album.setTitle(validateTitle(title));
         album.setDescription(validateDescription(description));
+        return albumMapper.toDto(albumRepository.save(album));
+    }
+
+    /** Picks the album's cover among its photos; null goes back to the first photo. */
+    @Transactional
+    public AlbumDto setCover(Long albumId, Long photoId) {
+        Album album = requireAlbum(albumId);
+        Photo cover = null;
+        if (photoId != null) {
+            cover = photoRepository.findById(photoId)
+                    .filter(p -> p.getAlbum().getId().equals(albumId))
+                    .orElseThrow(() -> new ContentValidationException("Cette photo n'est pas dans l'album"));
+        }
+        album.setCoverPhoto(cover);
         return albumMapper.toDto(albumRepository.save(album));
     }
 

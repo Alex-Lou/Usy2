@@ -19,9 +19,11 @@ public class AlbumMapper {
 
     public AlbumDto toDto(Album album) {
         long count = photoRepository.countByAlbumId(album.getId());
-        Long coverAssetId = photoRepository.findFirstByAlbumIdOrderByPositionAscIdAsc(album.getId())
-                .map(p -> p.getAsset().getId())
-                .orElse(null);
+        Long coverAssetId = album.getCoverPhoto() != null
+                ? album.getCoverPhoto().getAsset().getId()
+                : photoRepository.findFirstByAlbumIdOrderByPositionAscIdAsc(album.getId())
+                        .map(p -> p.getAsset().getId())
+                        .orElse(null);
         return new AlbumDto(
                 album.getId(),
                 album.getTitle(),

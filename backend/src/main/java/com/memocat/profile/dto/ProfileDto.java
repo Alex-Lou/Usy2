@@ -9,5 +9,6 @@ public record ProfileDto(
         String companion,
         String bio,
         ThemeDto theme,
-        List<WidgetDto> widgets) {
+        List<WidgetDto> widgets,
+        Long coverAssetId) {
 }

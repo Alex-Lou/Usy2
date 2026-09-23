@@ -49,3 +49,8 @@ export function reorderPhotos(albumId: number, photoIds: number[]): Promise<void
     body: { photoIds },
   });
 }
+
+/** Picks the album's cover among its photos; null goes back to the first photo. */
+export function setAlbumCover(albumId: number, photoId: number | null): Promise<Album> {
+  return apiRequest<Album>(`/api/albums/${albumId}/cover`, { method: "PUT", body: { photoId } });
+}

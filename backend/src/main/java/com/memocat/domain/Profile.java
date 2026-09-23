@@ -45,6 +45,10 @@ public class Profile {
     @Column(name = "bio")
     private String bio;
 
+    /** Photo shown in the profile's banner (null: the theme gradient). */
+    @Column(name = "cover_asset_id")
+    private Long coverAssetId;
+
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
@@ -98,5 +102,13 @@ public class Profile {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    public Long getCoverAssetId() {
+        return coverAssetId;
+    }
+
+    public void setCoverAssetId(Long coverAssetId) {
+        this.coverAssetId = coverAssetId;
     }
 }

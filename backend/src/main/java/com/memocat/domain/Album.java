@@ -38,6 +38,11 @@ public class Album {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    /** The photo chosen as cover (null: the album's first photo). */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cover_photo_id")
+    private Photo coverPhoto;
+
     protected Album() {
         // for JPA
     }
@@ -81,5 +86,13 @@ public class Album {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Photo getCoverPhoto() {
+        return coverPhoto;
+    }
+
+    public void setCoverPhoto(Photo coverPhoto) {
+        this.coverPhoto = coverPhoto;
     }
 }
