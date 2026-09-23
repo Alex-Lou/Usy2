@@ -25,7 +25,9 @@ public class PageFetcher {
 
     private static final Logger log = LoggerFactory.getLogger(PageFetcher.class);
     private static final int MAX_REDIRECTS = 4;
-    private static final String USER_AGENT = "Mozilla/5.0 (compatible; MemoCatPreview/1.0)";
+    // Many sites (YouTube, Instagram, news…) only hand their title/image tags to the link-preview
+    // robots they know; this is the one WhatsApp and Facebook use.
+    private static final String USER_AGENT = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)";
 
     public record Fetched(URI finalUri, String contentType, byte[] body) {
     }
