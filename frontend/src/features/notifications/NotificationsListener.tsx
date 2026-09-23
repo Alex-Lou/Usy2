@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Client } from "@stomp/stompjs";
 import { useNotifications } from "../../app/notifications";
 import { useAuth } from "../auth/useAuth";
 import { emitFeedActivity, type FeedActivity } from "../feed/activity";
-import { createNotifClient } from "./notifClient";
+import { createNotifClient, reportPresence } from "./notifClient";
+import { ensurePushSubscription } from "./push";
 import { showSystemNotification } from "./systemNotify";
 
 /**
@@ -17,8 +19,22 @@ export function NotificationsListener() {
   const { add } = useNotifications();
   const clientRef = useRef<Client | null>(null);
   const lastGameKeyRef = useRef<string>("");
+  const navigate = useNavigate();
 
   const myId = user?.id ?? -1;
+
+  // Web Push: re-sync this device's subscription, and open the right page when
+  // a notification is tapped while the app is already open (see sw.js).
+  useEffect(() => {
+    void ensurePushSubscription();
+    if (!("serviceWorker" in navigator)) return;
+    const onSwMessage = (e: MessageEvent<{ type?: string; url?: string } | null>) => {
+      const url = e.data?.url;
+      if (e.data?.type === "memocat:navigate" && url && /^\/(?!\/)/.test(url)) navigate(url); // in-app paths only
+    };
+    navigator.serviceWorker.addEventListener("message", onSwMessage);
+    return () => navigator.serviceWorker.removeEventListener("message", onSwMessage);
+  }, [navigate]);
 
   useEffect(() => {
     // Bell entry + OS banner when the app is in the background.
@@ -67,7 +83,10 @@ export function NotificationsListener() {
       onFeed,
     );
     clientRef.current = client;
+    const onVisibility = () => reportPresence(client);
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
       void client.deactivate();
     };
   }, [myId, add]);

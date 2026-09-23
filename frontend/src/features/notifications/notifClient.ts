@@ -24,8 +24,18 @@ export function createNotifClient(
       client.subscribe("/topic/messages", (f: IMessage) => onMessage(JSON.parse(f.body) as Message));
       client.subscribe("/topic/games", (f: IMessage) => onGames(JSON.parse(f.body) as GamesState));
       client.subscribe("/topic/feed", (f: IMessage) => onFeed(JSON.parse(f.body) as FeedActivity));
+      reportPresence(client);
     },
   });
   client.activate();
   return client;
+}
+
+/**
+ * Tells the server whether this page is on screen: it only sends push
+ * notifications to someone who isn't looking at the app.
+ */
+export function reportPresence(client: Client): void {
+  if (!client.connected) return;
+  client.publish({ destination: "/app/presence", body: JSON.stringify({ visible: document.visibilityState === "visible" }) });
 }

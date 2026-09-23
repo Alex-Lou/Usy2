@@ -30,6 +30,11 @@ export function MorpionPage() {
     getGame(TYPE).then(setState).catch(() => {});
   }, []);
 
+  // Moves played while disconnected (app in background): resync on every (re)connect.
+  useEffect(() => {
+    if (connected) getGame(TYPE).then(setState).catch(() => {});
+  }, [connected]);
+
   useEffect(() => {
     const client = createGameClient(setState, setConnected);
     clientRef.current = client;

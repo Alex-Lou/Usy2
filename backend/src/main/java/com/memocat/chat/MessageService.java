@@ -8,6 +8,7 @@ import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
 import com.memocat.web.PageResponse;
 import com.memocat.web.ResourceNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,18 +22,22 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher events;
 
-    public MessageService(MessageRepository messageRepository, UserRepository userRepository) {
+    public MessageService(MessageRepository messageRepository, UserRepository userRepository,
+                          ApplicationEventPublisher events) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.events = events;
     }
 
     @Transactional
     public MessageDto send(String username, String content) {
         User sender = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Message message = new Message(sender, validateContent(content));
-        return MessageDto.from(messageRepository.save(message));
+        Message message = messageRepository.save(new Message(sender, validateContent(content)));
+        events.publishEvent(new ChatMessageSent(sender.getId(), sender.getDisplayName()));
+        return MessageDto.from(message);
     }
 
     @Transactional(readOnly = true)

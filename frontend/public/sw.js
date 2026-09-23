@@ -57,13 +57,38 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
-// Tapping a MemoCat notification brings the app to the front (or opens it).
+// Web Push from the server (the app may be closed). The payload is small JSON:
+// { title, body, url, tag } — who did what, never message content.
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    /* unreadable payload: fall back to a generic banner */
+  }
+  const options = {
+    body: data.body || "Du nouveau sur MemoCat 💕",
+    icon: "/icons/icon-192.png",
+    badge: "/icons/icon-192.png",
+    data: { url: typeof data.url === "string" && /^\/(?!\/)/.test(data.url) ? data.url : "/" },
+  };
+  if (data.tag) {
+    options.tag = data.tag; // same conversation/post: replace instead of stacking
+    options.renotify = true;
+  }
+  event.waitUntil(self.registration.showNotification(data.title || "MemoCat", options));
+});
+
+// Tapping a MemoCat notification brings the app to the front on the right page
+// (or opens it there).
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || "/";
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
       const open = windows.find((w) => "focus" in w);
-      return open ? open.focus() : self.clients.openWindow("/");
+      if (!open) return self.clients.openWindow(url);
+      return open.focus().then((w) => w.postMessage({ type: "memocat:navigate", url }));
     }),
   );
 });

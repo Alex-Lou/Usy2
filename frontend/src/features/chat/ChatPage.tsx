@@ -9,6 +9,12 @@ import { getHistory } from "./api";
 import { createChatClient, sendMessage } from "./chatClient";
 import type { Message } from "./types";
 
+/** Adds messages not seen yet, keeping chronological (id) order. */
+function mergeById(prev: Message[], fresh: Message[]): Message[] {
+  const known = new Set(prev.map((m) => m.id));
+  return [...prev, ...fresh.filter((m) => !known.has(m.id))].sort((a, b) => a.id - b.id);
+}
+
 function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 }
@@ -23,6 +29,7 @@ export function ChatPage() {
   const [hasOlder, setHasOlder] = useState(false);
   const clientRef = useRef<Client | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const everConnected = useRef(false);
 
   useEffect(() => {
     getHistory(0, 30)
@@ -44,6 +51,18 @@ export function ChatPage() {
       void client.deactivate();
     };
   }, []);
+
+  // After a reconnect (e.g. the app was in the background), catch up on what was missed.
+  useEffect(() => {
+    if (!connected) return;
+    if (!everConnected.current) {
+      everConnected.current = true;
+      return;
+    }
+    getHistory(0, 30)
+      .then((p) => setMessages((prev) => mergeById(prev, [...p.content].reverse())))
+      .catch(() => {});
+  }, [connected]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
