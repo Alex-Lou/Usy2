@@ -27,7 +27,8 @@ export type IconName =
   | "trophy"
   | "bell"
   | "menu"
-  | "chevronDown";
+  | "chevronDown"
+  | "smile";
 
 const PATHS: Record<IconName, JSX.Element> = {
   home: (
@@ -143,6 +144,13 @@ const PATHS: Record<IconName, JSX.Element> = {
   ),
   menu: <path d="M3 6h18M3 12h18M3 18h18" />,
   chevronDown: <path d="m6 9 6 6 6-6" />,
+  smile: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8.5 14.5s1.3 1.8 3.5 1.8 3.5-1.8 3.5-1.8" />
+      <path d="M9 9.5h.01M15 9.5h.01" />
+    </>
+  ),
 };
 
 export function Icon({
