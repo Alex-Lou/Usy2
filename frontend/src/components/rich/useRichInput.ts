@@ -1,27 +1,58 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type RefObject } from "react";
 
 /**
- * Text state + ref for an input that can receive emojis at the caret position
- * (shared by the comment box and the chat box).
+ * Text state + ref for a box that can receive emojis at the caret position
+ * (shared by the comment box and the chat box). While the picker is open the
+ * box is not focused (the picker replaces the phone keyboard), so the caret is
+ * remembered instead of re-focusing — which would pop the keyboard back up.
  */
 export function useRichInput<T extends HTMLInputElement | HTMLTextAreaElement>() {
-  const [text, setText] = useState("");
+  const [text, setTextState] = useState("");
   const ref = useRef<T>(null);
+  const textRef = useRef(text); // latest value, also between quick successive inserts
+  const caret = useRef<number | null>(null);
 
-  const insert = useCallback((value: string) => {
-    const el = ref.current;
-    setText((current) => {
-      const start = el?.selectionStart ?? current.length;
-      const end = el?.selectionEnd ?? current.length;
-      const next = current.slice(0, start) + value + current.slice(end);
-      const caret = start + value.length;
-      requestAnimationFrame(() => {
-        el?.focus();
-        el?.setSelectionRange(caret, caret);
-      });
-      return next;
-    });
+  const setText = useCallback((value: string) => {
+    textRef.current = value;
+    setTextState(value);
   }, []);
 
-  return { text, setText, ref, insert };
+  const insert = useCallback(
+    (value: string) => {
+      const el = ref.current;
+      const current = textRef.current;
+      const focused = !!el && document.activeElement === el;
+      const start = focused ? el.selectionStart ?? current.length : Math.min(caret.current ?? current.length, current.length);
+      const end = focused ? el.selectionEnd ?? start : start;
+      const pos = start + value.length;
+      caret.current = pos;
+      setText(current.slice(0, start) + value + current.slice(end));
+      if (focused) requestAnimationFrame(() => el.setSelectionRange(pos, pos));
+    },
+    [setText],
+  );
+
+  // Typing or moving the caret by hand updates the remembered position.
+  const rememberCaret = useCallback(() => {
+    caret.current = ref.current?.selectionStart ?? null;
+  }, []);
+
+  return { text, setText, ref, insert, rememberCaret };
+}
+
+/** Grows a textarea with its content, up to `maxPx` (then it scrolls). */
+export function useAutoGrow(ref: RefObject<HTMLTextAreaElement>, text: string, maxPx = 132): void {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, maxPx)}px`;
+  }, [text, ref, maxPx]);
+}
+
+// On phones Enter adds a line (the send button sends); with a keyboard, Enter sends.
+const touchFirst = typeof window !== "undefined" && !!window.matchMedia?.("(pointer: coarse)").matches;
+
+export function isSendKey(e: KeyboardEvent<HTMLTextAreaElement>): boolean {
+  return e.key === "Enter" && !e.shiftKey && !touchFirst && !e.nativeEvent.isComposing;
 }
