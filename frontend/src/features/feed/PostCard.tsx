@@ -2,6 +2,8 @@ import { useState } from "react";
 import { AssetImage } from "../../components/AssetImage";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Avatar } from "../../components/ui/Avatar";
+import { LinkPreview } from "../../components/rich/LinkPreview";
+import { firstUrl, linkify } from "../../components/rich/links";
 import { Icon } from "../../components/ui/Icon";
 import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
@@ -101,8 +103,10 @@ export function PostCard({
           </div>
         </div>
       ) : (
-        <p className="whitespace-pre-wrap leading-relaxed">{post.text}</p>
+        <p className="whitespace-pre-wrap break-words leading-relaxed">{linkify(post.text)}</p>
       )}
+
+      {!editing && !post.imageAssetId && firstUrl(post.text) && <LinkPreview url={firstUrl(post.text)!} className="mt-3" />}
 
       {post.imageAssetId && (
         <EffectLayer effect={post.imageEffect} className="mt-3 rounded-token">

@@ -1,5 +1,7 @@
 import { Fragment } from "react";
 import { isBare, RichBody } from "../../components/rich/RichBody";
+import { LinkPreview } from "../../components/rich/LinkPreview";
+import { firstUrl } from "../../components/rich/links";
 import { Avatar } from "../../components/ui/Avatar";
 import type { Asset } from "../../lib/api/assets";
 import { AttachmentView } from "./AttachmentView";
@@ -86,6 +88,7 @@ export function MessageList({ messages, myId, onOpenImage }: { messages: Message
                     <RichBody text={m.content} />
                   </div>
                 )}
+                {hasText && !m.attachment && firstUrl(m.content) && <LinkPreview url={firstUrl(m.content)!} className="w-72 max-w-full" />}
                 {lastOfRun && <span className="px-1 text-[10px] text-text-muted">{time(m.createdAt)}</span>}
               </div>
             </div>
