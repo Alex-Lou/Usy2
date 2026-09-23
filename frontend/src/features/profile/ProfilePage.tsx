@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { SPECIES, type Species } from "../../app/companion";
 import { Animal } from "../../components/ui/animals";
 import { Avatar } from "../../components/ui/Avatar";
@@ -7,6 +7,7 @@ import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { Loader } from "../../components/ui/states";
 import { useAuth } from "../auth/useAuth";
+import { NousPanel } from "../couple/NousPanel";
 import { getProfile } from "./api";
 import { buildThemeStyle } from "./theme";
 import type { Profile } from "./types";
@@ -15,6 +16,8 @@ import { WidgetRenderer } from "./widgets/WidgetRenderer";
 export function ProfilePage() {
   const { userId } = useParams();
   const { user } = useAuth();
+  const [params, setParams] = useSearchParams();
+  const tab = params.get("tab") === "nous" ? "nous" : "profil";
   const id = Number(userId);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -66,7 +69,28 @@ export function ProfilePage() {
         </div>
       </div>
 
-      {/* Widgets — a spacious grid, marquee spans full width. */}
+      {/* Profile / shared "Nous" space (same content on both profiles). */}
+      <div role="tablist" className="flex gap-2">
+        {(["profil", "nous"] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            role="tab"
+            aria-selected={tab === t}
+            onClick={() => setParams(t === "nous" ? { tab: "nous" } : {}, { replace: true })}
+            className={
+              "chip press " + (tab === t ? "border-primary bg-surface-2 font-semibold text-text" : "text-text-muted hover:border-primary/50")
+            }
+          >
+            {t === "profil" ? "Profil" : "Nous"}
+          </button>
+        ))}
+      </div>
+
+      {tab === "nous" ? (
+        <NousPanel myId={user?.id} />
+      ) : (
+      /* Widgets — a spacious grid, marquee spans full width. */
       <section className="flex flex-col gap-3 animate-fade-up">
         <h2 className="px-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
           {isOwn ? "Mon petit monde" : `Le monde de ${profile.displayName}`}
@@ -90,12 +114,13 @@ export function ProfilePage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {profile.widgets.map((w, i) => (
               <div key={i} className={w.type === "marquee" ? "sm:col-span-2" : ""}>
-                <WidgetRenderer widget={w} />
+                <WidgetRenderer widget={w} ownerId={profile.userId} />
               </div>
             ))}
           </div>
         )}
       </section>
+      )}
     </div>
   );
 }

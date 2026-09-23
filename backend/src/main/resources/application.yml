@@ -35,6 +35,8 @@ memocat:
     # Self-ping of the public URL so the free Render instance never idles.
     # Render sets RENDER_EXTERNAL_URL automatically; empty elsewhere = disabled.
     url: ${MEMOCAT_KEEP_ALIVE_URL:${RENDER_EXTERNAL_URL:}}
+  # The couple's time zone: "today" for memories and dates (not the server's UTC).
+  timezone: ${MEMOCAT_TIMEZONE:Atlantic/Canary}
   push:
     # VAPID "subject": how browser push services can contact the operator
     # (https URL or mailto:). Render's public URL by default.

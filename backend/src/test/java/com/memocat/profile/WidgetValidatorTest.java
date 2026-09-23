@@ -80,8 +80,13 @@ class WidgetValidatorTest {
     }
 
     @Test
-    void rejectsMoodWithoutEmoji() {
-        assertThatThrownBy(() -> validator.validate(List.of(mood(null, "label"))))
+    void acceptsMoodWithoutEmojiSinceItShowsTheLiveMood() {
+        assertThatCode(() -> validator.validate(List.of(mood(null, null)))).doesNotThrowAnyException();
+    }
+
+    @Test
+    void rejectsOverlongMoodEmoji() {
+        assertThatThrownBy(() -> validator.validate(List.of(mood("x".repeat(9), null))))
                 .isInstanceOf(ContentValidationException.class);
     }
 

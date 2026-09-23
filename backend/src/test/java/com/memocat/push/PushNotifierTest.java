@@ -3,6 +3,7 @@ package com.memocat.push;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.chat.ChatMessageSent;
+import com.memocat.couple.CoupleActivity;
 import com.memocat.domain.PushSubscription;
 import com.memocat.domain.User;
 import com.memocat.feed.FeedActivity;
@@ -16,6 +17,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +29,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +58,7 @@ class PushNotifierTest {
     @BeforeEach
     void setUp() {
         notifier = new PushNotifier(subscriptions, users, presence, sender, json);
-        when(users.findAll()).thenReturn(List.of(lou, sam));
+        lenient().when(users.findAll()).thenReturn(List.of(lou, sam));
         lenient().when(subscriptions.findByUserIdOrderByCreatedAtAsc(2L)).thenReturn(List.of(phone, oldLaptop));
     }
 
@@ -107,5 +113,72 @@ class PushNotifierTest {
         notifier.onFeedActivity(new FeedActivity(FeedActivity.COMMENT, 1L, "Lou", 8L, 2L, null));
 
         assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou a commenté ton post 💬");
+    }
+
+    @Test
+    void coupleChangesUseShortNeutralTexts() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.MOOD, 1L, "Lou", "😴", null));
+        assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou a changé d'humeur : 😴");
+    }
+
+    @Test
+    void noteNotificationNeverCarriesTheText() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.NOTE, 1L, "Lou", null, 5L));
+
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("body").asText()).isEqualTo("Lou t'a laissé un mot");
+        assertThat(payload.get("tag").asText()).isEqualTo("note");
+    }
+
+    @Test
+    void listBurstNotifiesOnceThenAgainAfterAQuietWhile() {
+        MutableClock clock = new MutableClock(Instant.parse("2026-09-23T10:00:00Z"));
+        PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, json, clock);
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        CoupleActivity added = new CoupleActivity(CoupleActivity.LIST, 1L, "Lou", "Courses", 3L);
+
+        throttled.onCoupleActivity(added);
+        clock.now = clock.now.plusSeconds(60);
+        throttled.onCoupleActivity(added); // same burst: silent
+        verify(sender, times(1)).send(eq(phone), any(), eq(false));
+
+        clock.now = clock.now.plus(PushNotifier.LIST_QUIET);
+        throttled.onCoupleActivity(added);
+        verify(sender, times(2)).send(eq(phone), any(), eq(false));
+    }
+
+    @Test
+    void checkingItemsOffIsSyncOnly() {
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.LIST_CHANGE, 1L, "Lou", "Courses", 3L));
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.TOGETHER, 1L, "Lou", null, null));
+
+        verify(sender, never()).send(any(), any(), anyBoolean());
+    }
+
+    private static final class MutableClock extends Clock {
+        Instant now;
+
+        MutableClock(Instant now) {
+            this.now = now;
+        }
+
+        @Override
+        public ZoneId getZone() {
+            return ZoneOffset.UTC;
+        }
+
+        @Override
+        public Clock withZone(ZoneId zone) {
+            return this;
+        }
+
+        @Override
+        public Instant instant() {
+            return now;
+        }
     }
 }

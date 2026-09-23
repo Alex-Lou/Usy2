@@ -2,12 +2,14 @@ import type { Widget } from "../types";
 import { ClockWidget } from "./ClockWidget";
 import { CountdownWidget } from "./CountdownWidget";
 import { ImageWidget } from "./ImageWidget";
+import { MoodWidget } from "./MoodWidget";
 import { RichText } from "./RichText";
 import { SvgWidget } from "./SvgWidget";
 
 // Renders a single widget. Plain text is rendered as text nodes (React escapes
 // it) and richtext via a safe whitelist — stored content can never inject HTML.
-export function WidgetRenderer({ widget }: { widget: Widget }) {
+// `ownerId` is the profile's user: the mood widget shows their live mood.
+export function WidgetRenderer({ widget, ownerId }: { widget: Widget; ownerId?: number }) {
   switch (widget.type) {
     case "marquee":
       return (
@@ -24,12 +26,7 @@ export function WidgetRenderer({ widget }: { widget: Widget }) {
     case "richtext":
       return <RichText text={widget.text} />;
     case "mood":
-      return (
-        <div className="flex items-center gap-2 rounded-token border border-border bg-surface px-4 py-3">
-          <span className="text-2xl">{widget.emoji}</span>
-          {widget.label && <span className="text-text-muted">Humeur : {widget.label}</span>}
-        </div>
-      );
+      return <MoodWidget ownerId={ownerId} />;
     case "clock":
       return <ClockWidget label={widget.label} />;
     case "countdown":

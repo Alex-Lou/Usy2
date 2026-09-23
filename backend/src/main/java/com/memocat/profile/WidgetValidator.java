@@ -70,12 +70,11 @@ public class WidgetValidator {
         }
     }
 
+    // The mood widget now shows the live mood of the "Nous" space; a stored
+    // emoji is only a leftover from before, so it is optional.
     private void validateMood(WidgetDto widget) {
         String emoji = widget.emoji();
-        if (emoji == null || emoji.isBlank()) {
-            throw new ContentValidationException("mood requires an emoji");
-        }
-        if (emoji.length() > MAX_EMOJI) {
+        if (emoji != null && emoji.length() > MAX_EMOJI) {
             throw new ContentValidationException("mood emoji too long");
         }
         validateLabel(widget);
