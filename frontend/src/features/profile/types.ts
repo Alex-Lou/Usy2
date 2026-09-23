@@ -20,7 +20,7 @@ export type Widget =
   | { type: "marquee"; text: string }
   | { type: "quote"; text: string }
   | { type: "richtext"; text: string }
-  | { type: "mood"; emoji: string; label?: string }
+  | { type: "mood"; emoji?: string; label?: string } // shows the live mood; fields are legacy
   | { type: "clock"; label?: string }
   | { type: "countdown"; date: string; label?: string }
   | { type: "image"; assetId: number; label?: string }

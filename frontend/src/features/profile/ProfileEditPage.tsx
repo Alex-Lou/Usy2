@@ -34,7 +34,7 @@ function defaultWidget(type: WidgetType): Widget {
     case "richtext":
       return { type: "richtext", text: "**Coucou** mon amour 💕\nUn *petit* mot ici." };
     case "mood":
-      return { type: "mood", emoji: "😀", label: "" };
+      return { type: "mood" };
     case "clock":
       return { type: "clock", label: "" };
     case "countdown":
@@ -280,7 +280,7 @@ export function ProfileEditPage() {
             {widgets.length === 0 ? (
               <p className="text-text-muted">L'aperçu apparaîtra ici.</p>
             ) : (
-              widgets.map((w, i) => <WidgetRenderer key={i} widget={w} />)
+              widgets.map((w, i) => <WidgetRenderer key={i} widget={w} ownerId={user?.id} />)
             )}
           </div>
         </div>
@@ -322,12 +322,7 @@ function WidgetEditor({
         </div>
       );
     case "mood":
-      return (
-        <div className="flex gap-2">
-          <Input value={widget.emoji} maxLength={8} onChange={(e) => onPatch({ emoji: e.target.value })} className="w-20 text-center" />
-          <Input value={widget.label ?? ""} maxLength={40} placeholder="humeur (optionnel)" onChange={(e) => onPatch({ label: e.target.value })} />
-        </div>
-      );
+      return <p className="text-xs text-text-muted">Affiche ton humeur du moment. Elle se change en un geste depuis le bandeau « Nous » du fil.</p>;
     case "clock":
       return <Input value={widget.label ?? ""} maxLength={40} placeholder="titre (optionnel)" onChange={(e) => onPatch({ label: e.target.value })} />;
     case "countdown":

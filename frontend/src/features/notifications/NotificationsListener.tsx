@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import type { Client } from "@stomp/stompjs";
 import { useNotifications } from "../../app/notifications";
 import { useAuth } from "../auth/useAuth";
+import { emitCoupleActivity } from "../couple/activity";
+import type { CoupleActivity } from "../couple/types";
 import { emitFeedActivity, type FeedActivity } from "../feed/activity";
 import { createNotifClient, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
@@ -19,6 +21,7 @@ export function NotificationsListener() {
   const { add } = useNotifications();
   const clientRef = useRef<Client | null>(null);
   const lastGameKeyRef = useRef<string>("");
+  const lastListNotifRef = useRef<Map<number, number>>(new Map());
   const navigate = useNavigate();
 
   const myId = user?.id ?? -1;
@@ -56,6 +59,21 @@ export function NotificationsListener() {
       }
     };
 
+    const LIST_QUIET_MS = 10 * 60_000; // same quiet window as the server's push
+    const onCouple = (a: CoupleActivity) => {
+      emitCoupleActivity(a); // open views re-fetch (also my other devices)
+      if (a.actorId === myId) return;
+      if (a.kind === "mood") {
+        notify(`${a.actorName} a changé d'humeur : ${a.detail ?? ""}`);
+      } else if (a.kind === "note") {
+        notify(`${a.actorName} t'a laissé un mot`);
+      } else if (a.kind === "list" && a.refId != null) {
+        const last = lastListNotifRef.current.get(a.refId) ?? 0;
+        lastListNotifRef.current.set(a.refId, Date.now());
+        if (Date.now() - last >= LIST_QUIET_MS) notify(`${a.actorName} a mis à jour la liste « ${a.detail ?? ""} »`);
+      }
+    };
+
     const client = createNotifClient(
       (m) => {
         if (m.sender.id === myId) return; // my own message
@@ -81,6 +99,7 @@ export function NotificationsListener() {
         }
       },
       onFeed,
+      onCouple,
     );
     clientRef.current = client;
     const onVisibility = () => reportPresence(client);
