@@ -104,6 +104,7 @@ class PushNotifierTest {
         JsonNode payload = sentPayload(phone);
         assertThat(payload.get("body").asText()).isEqualTo("Lou a réagi 😍 à ton post");
         assertThat(payload.get("tag").asText()).isEqualTo("post-8");
+        assertThat(payload.get("url").asText()).isEqualTo("/posts/8"); // opens that very post
     }
 
     @Test
@@ -113,6 +114,7 @@ class PushNotifierTest {
         notifier.onFeedActivity(new FeedActivity(FeedActivity.COMMENT, 1L, "Lou", 8L, 2L, null));
 
         assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou a commenté ton post 💬");
+        assertThat(sentPayload(phone).get("url").asText()).isEqualTo("/posts/8?comments=1"); // with its comments open
     }
 
     @Test

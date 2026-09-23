@@ -27,17 +27,20 @@ export function PostCard({
   emojis,
   onChanged,
   onDeleted,
+  initialShowComments = false,
 }: {
   post: Post;
   currentUserId: number | undefined;
   emojis: string[];
   onChanged: (updated: Post) => void;
   onDeleted: (id: number) => void;
+  /** Opened from a comment notification: comments already shown. */
+  initialShowComments?: boolean;
 }) {
   const isOwn = post.author.id === currentUserId;
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(post.text);
-  const [showComments, setShowComments] = useState(false);
+  const [showComments, setShowComments] = useState(initialShowComments);
   const [commentCount, setCommentCount] = useState(post.commentCount);
   const [busy, setBusy] = useState(false);
   const [viewing, setViewing] = useState(false);

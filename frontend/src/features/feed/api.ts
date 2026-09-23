@@ -60,3 +60,8 @@ export function getReactionEmojis(): Promise<string[]> {
 export function reactToComment(commentId: number, emoji: string | null): Promise<{ commentId: number; reactions: CommentReaction[] }> {
   return apiRequest(`/api/comments/${commentId}/reaction`, { method: "PUT", body: { emoji } });
 }
+
+/** One post (e.g. opened from a notification). */
+export function getPost(id: number): Promise<Post> {
+  return apiRequest<Post>(`/api/posts/${id}`);
+}

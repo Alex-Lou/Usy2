@@ -41,9 +41,10 @@ export function NotificationsListener() {
 
   useEffect(() => {
     // Bell entry + OS banner when the app is in the background.
-    const notify = (text: string) => {
-      add(text);
-      void showSystemNotification(text);
+    // `url`: where a tap on the bell entry or the banner leads.
+    const notify = (text: string, url = "/") => {
+      add(text, url);
+      void showSystemNotification(text, url);
     };
 
     const onFeed = (a: FeedActivity) => {
@@ -51,11 +52,11 @@ export function NotificationsListener() {
       emitFeedActivity(a); // lets the feed show "new post" live
       const onFeedPage = window.location.pathname === "/" && document.visibilityState === "visible";
       if (a.kind === "post" && !onFeedPage) {
-        notify(`${a.actorName} a publié un nouveau post ✨`);
+        notify(`${a.actorName} a publié un nouveau post ✨`, `/posts/${a.postId}`);
       } else if (a.kind === "comment") {
-        notify(a.postAuthorId === myId ? `${a.actorName} a commenté ton post 💬` : `${a.actorName} a commenté un post 💬`);
+        notify(a.postAuthorId === myId ? `${a.actorName} a commenté ton post 💬` : `${a.actorName} a commenté un post 💬`, `/posts/${a.postId}?comments=1`);
       } else if (a.kind === "reaction" && a.postAuthorId === myId) {
-        notify(`${a.actorName} a réagi ${a.emoji ?? "❤️"} à ton post`);
+        notify(`${a.actorName} a réagi ${a.emoji ?? "❤️"} à ton post`, `/posts/${a.postId}`);
       }
     };
 
@@ -78,7 +79,7 @@ export function NotificationsListener() {
       (m) => {
         if (m.sender.id === myId) return; // my own message
         if (window.location.pathname.startsWith("/chat") && document.visibilityState === "visible") return; // already reading
-        notify(`${m.sender.displayName} t'a envoyé un message 💬`);
+        notify(`${m.sender.displayName} t'a envoyé un message 💬`, "/chat");
       },
       (state) => {
         const g = state.game;
@@ -93,9 +94,9 @@ export function NotificationsListener() {
 
         if (g.status === "finished" && !g.draw && g.winnerUserId != null && g.winnerUserId !== myId) {
           const winner = state.scores.find((s) => s.userId === g.winnerUserId)?.displayName ?? "Ton binôme";
-          notify(`${winner} a gagné au Morpion 🏆`);
+          notify(`${winner} a gagné au Morpion 🏆`, "/jeux/morpion");
         } else if (g.status === "active" && g.turnUserId === myId && filled > 0) {
-          notify("À toi de jouer au Morpion 🎮");
+          notify("À toi de jouer au Morpion 🎮", "/jeux/morpion");
         }
       },
       onFeed,
