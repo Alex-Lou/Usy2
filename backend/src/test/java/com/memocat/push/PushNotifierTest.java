@@ -7,6 +7,7 @@ import com.memocat.couple.CoupleActivity;
 import com.memocat.domain.PushSubscription;
 import com.memocat.domain.User;
 import com.memocat.feed.FeedActivity;
+import com.memocat.feed.ReactionAdded;
 import com.memocat.repository.PushSubscriptionRepository;
 import com.memocat.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,6 +116,34 @@ class PushNotifierTest {
 
         assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou a commenté ton post 💬");
         assertThat(sentPayload(phone).get("url").asText()).isEqualTo("/posts/8?comments=1"); // with its comments open
+    }
+
+    @Test
+    void reactionsOpenTheVeryMessageOrComment() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onReactionAdded(new ReactionAdded(ReactionAdded.MESSAGE, 1L, "Lou", 2L, "😂", 40L, null));
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("body").asText()).isEqualTo("Lou a réagi 😂 à ton message");
+        assertThat(payload.get("url").asText()).isEqualTo("/chat?m=40");
+    }
+
+    @Test
+    void commentReactionLinksToTheCommentInItsPost() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onReactionAdded(new ReactionAdded(ReactionAdded.COMMENT, 1L, "Lou", 2L, "❤️", 9L, 8L));
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("body").asText()).isEqualTo("Lou a réagi ❤️ à ton commentaire");
+        assertThat(payload.get("url").asText()).isEqualTo("/posts/8?comments=1&comment=9");
+    }
+
+    @Test
+    void listNotificationOpensThatList() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.LIST, 1L, "Lou", "Courses", 3L));
+        assertThat(sentPayload(phone).get("url").asText()).isEqualTo("/profile/2?tab=nous&list=3");
     }
 
     @Test

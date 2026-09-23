@@ -1,6 +1,8 @@
 package com.memocat.feed;
 
+import com.memocat.domain.Comment;
 import com.memocat.domain.CommentReaction;
+import com.memocat.domain.Post;
 import com.memocat.domain.User;
 import com.memocat.repository.CommentReactionRepository;
 import com.memocat.repository.CommentRepository;
@@ -34,14 +36,19 @@ class CommentReactionServiceTest {
     @Mock private UserRepository users;
     @Mock private org.springframework.context.ApplicationEventPublisher events;
     private CommentReactionService service;
+    private User lou;
+    private final User sam = new User("sam", "h", "Sam");
 
     @BeforeEach
     void setUp() {
         service = new CommentReactionService(reactions, messages, users, events);
-        User lou = new User("lou", "h", "Lou");
+        lou = new User("lou", "h", "Lou");
         ReflectionTestUtils.setField(lou, "id", 1L);
+        ReflectionTestUtils.setField(sam, "id", 2L);
         lenient().when(users.findByUsername("lou")).thenReturn(Optional.of(lou));
-        lenient().when(messages.existsById(7L)).thenReturn(true);
+        Post post = new Post(lou, "Balade", null);
+        ReflectionTestUtils.setField(post, "id", 5L);
+        lenient().when(messages.findById(7L)).thenReturn(Optional.of(new Comment(post, sam, "Trop beau !"))); // Sam's comment
     }
 
     @Test
@@ -57,6 +64,17 @@ class CommentReactionServiceTest {
         assertThat(change.commentId()).isEqualTo(7L);
         assertThat(change.reactions()).extracting("emoji").containsExactly("😂");
         verify(events).publishEvent(change);
+        verify(events).publishEvent(new ReactionAdded(ReactionAdded.COMMENT, 1L, "Lou", 2L, "😂", 7L, 5L));
+    }
+
+    @Test
+    void removingAReactionTellsNobody() {
+        CommentReaction mine = new CommentReaction(7L, 1L, "😂");
+        when(reactions.findByCommentIdAndUserId(7L, 1L)).thenReturn(Optional.of(mine));
+
+        service.react("lou", 7L, "😂");
+
+        verify(events, never()).publishEvent(any(ReactionAdded.class));
     }
 
     @Test

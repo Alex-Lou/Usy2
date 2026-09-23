@@ -28,6 +28,7 @@ export function PostCard({
   onChanged,
   onDeleted,
   initialShowComments = false,
+  highlightCommentId = null,
 }: {
   post: Post;
   currentUserId: number | undefined;
@@ -36,6 +37,7 @@ export function PostCard({
   onDeleted: (id: number) => void;
   /** Opened from a comment notification: comments already shown. */
   initialShowComments?: boolean;
+  highlightCommentId?: number | null;
 }) {
   const isOwn = post.author.id === currentUserId;
   const [editing, setEditing] = useState(false);
@@ -164,7 +166,7 @@ export function PostCard({
         {commentCount} commentaire{commentCount > 1 ? "s" : ""}
       </button>
 
-      {showComments && <Comments postId={post.id} emojis={emojis} onCountChange={(d) => setCommentCount((c) => c + d)} />}
+      {showComments && <Comments postId={post.id} emojis={emojis} highlightId={highlightCommentId} onCountChange={(d) => setCommentCount((c) => c + d)} />}
     </article>
   );
 }
