@@ -7,7 +7,7 @@ import { Sidebar } from "./Sidebar";
 
 export function AppLayout() {
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-dvh">
       {/* Decorative aurora (à fond) — purely visual, behind everything. */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div
