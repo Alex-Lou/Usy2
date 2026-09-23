@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNotifications } from "../../app/notifications";
+import { needsHomeScreenInstall } from "../../features/notifications/push";
 import { enableSystemNotifications, systemPermission } from "../../features/notifications/systemNotify";
 import { Icon } from "../ui/Icon";
 
@@ -72,6 +73,11 @@ export function NotificationBell() {
             <button onClick={enableAlerts} className="flex w-full items-center gap-2 border-b border-border bg-primary/10 px-3 py-2 text-left text-xs font-semibold text-primary press">
               <Icon name="bell" size={14} /> Activer les alertes sur cet appareil
             </button>
+          )}
+          {permission === "unsupported" && needsHomeScreenInstall() && (
+            <p className="border-b border-border px-3 py-2 text-[11px] text-text-muted">
+              Sur iPhone : Partager → « Sur l'écran d'accueil », puis ouvre MemoCat depuis l'icône pour activer les alertes.
+            </p>
           )}
           {permission === "denied" && (
             <p className="border-b border-border px-3 py-2 text-[11px] text-text-muted">

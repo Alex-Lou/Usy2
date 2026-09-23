@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ class MessageServiceTest {
 
     @Mock private MessageRepository messageRepository;
     @Mock private UserRepository userRepository;
+    @Mock private ApplicationEventPublisher events;
 
     @InjectMocks private MessageService messageService;
 
@@ -40,6 +42,7 @@ class MessageServiceTest {
         assertThat(dto.content()).isEqualTo("Coucou 💕");
         assertThat(dto.sender().username()).isEqualTo("lou");
         verify(messageRepository).save(any(Message.class));
+        verify(events).publishEvent(new ChatMessageSent(null, "Lou"));
     }
 
     @Test
@@ -50,6 +53,7 @@ class MessageServiceTest {
         assertThatThrownBy(() -> messageService.send("lou", "   "))
                 .isInstanceOf(ContentValidationException.class);
         verify(messageRepository, never()).save(any());
+        verify(events, never()).publishEvent(any());
     }
 
     @Test

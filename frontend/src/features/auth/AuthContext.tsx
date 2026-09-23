@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { apiRequest, clearToken, getToken, setToken } from "../../lib/api/client";
+import { unsubscribeThisDevice } from "../notifications/push";
 import { fetchMe, login as loginRequest, type User } from "./api";
 
 interface AuthContextValue {
@@ -59,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
+    void unsubscribeThisDevice(); // no more notifications for this account here
     clearToken();
     setUser(null);
   }, []);

@@ -1,9 +1,12 @@
 package com.memocat.config;
 
 import com.memocat.chat.StompAuthChannelInterceptor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -14,10 +17,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompAuthChannelInterceptor authInterceptor;
     private final CorsProperties corsProperties;
+    private final TaskScheduler heartbeatScheduler;
 
-    public WebSocketConfig(StompAuthChannelInterceptor authInterceptor, CorsProperties corsProperties) {
+    public WebSocketConfig(StompAuthChannelInterceptor authInterceptor, CorsProperties corsProperties,
+                           @Lazy @Qualifier("messageBrokerTaskScheduler") TaskScheduler heartbeatScheduler) {
         this.authInterceptor = authInterceptor;
         this.corsProperties = corsProperties;
+        this.heartbeatScheduler = heartbeatScheduler;
     }
 
     @Override
@@ -28,7 +34,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");
+        // Heartbeats: server pings every 10s and expects the client every 30s, so a
+        // phone that vanished (no clean disconnect) is dropped within ~90s — it then
+        // stops counting as "looking at the app" and gets push notifications again.
+        registry.enableSimpleBroker("/topic")
+                .setHeartbeatValue(new long[] {10_000, 30_000})
+                .setTaskScheduler(heartbeatScheduler);
         registry.setApplicationDestinationPrefixes("/app");
     }
 

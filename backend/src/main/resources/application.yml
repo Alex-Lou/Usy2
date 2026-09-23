@@ -35,6 +35,10 @@ memocat:
     # Self-ping of the public URL so the free Render instance never idles.
     # Render sets RENDER_EXTERNAL_URL automatically; empty elsewhere = disabled.
     url: ${MEMOCAT_KEEP_ALIVE_URL:${RENDER_EXTERNAL_URL:}}
+  push:
+    # VAPID "subject": how browser push services can contact the operator
+    # (https URL or mailto:). Render's public URL by default.
+    subject: ${MEMOCAT_PUSH_SUBJECT:${RENDER_EXTERNAL_URL:mailto:memocat@localhost}}
   cors:
     # Dev origins for the Tauri/Vite frontend.
     allowed-origins: ${MEMOCAT_CORS_ORIGINS:http://localhost:1420,http://localhost:5173,tauri://localhost}
