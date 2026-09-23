@@ -3,6 +3,7 @@ import { ClockWidget } from "./ClockWidget";
 import { CountdownWidget } from "./CountdownWidget";
 import { ImageWidget } from "./ImageWidget";
 import { MoodWidget } from "./MoodWidget";
+import { PinsWidget } from "./PinsWidget";
 import { RichText } from "./RichText";
 import { SvgWidget } from "./SvgWidget";
 
@@ -35,6 +36,8 @@ export function WidgetRenderer({ widget, ownerId }: { widget: Widget; ownerId?: 
       return <ImageWidget assetId={widget.assetId} label={widget.label} />;
     case "svg":
       return <SvgWidget variant={widget.variant} label={widget.label} />;
+    case "pins":
+      return <PinsWidget pins={widget.pins} label={widget.label} />;
     default:
       return null;
   }

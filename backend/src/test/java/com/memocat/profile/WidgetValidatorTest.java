@@ -125,4 +125,35 @@ class WidgetValidatorTest {
         assertThatThrownBy(() -> validator.validate(widgets))
                 .isInstanceOf(ContentValidationException.class);
     }
+
+    private static WidgetDto pins(WidgetDto.PinDto... pins) {
+        return new WidgetDto("pins", null, null, "Accès rapides", null, null, null, java.util.List.of(pins));
+    }
+
+    @Test
+    void pinsAcceptWebAddresses() {
+        validator.validate(java.util.List.of(pins(
+                new WidgetDto.PinDto("https://www.pinterest.com", "Pinterest"),
+                new WidgetDto.PinDto("http://www.duchas.ie/fr", null))));
+    }
+
+    @Test
+    void pinsRefuseScriptsAndBadAddresses() {
+        for (String bad : new String[]{"javascript:alert(1)", "data:text/html,x", "ftp://x.org", "https://", "pas une adresse",
+                "https://user:pw@evil.com"}) {
+            assertThatThrownBy(() -> validator.validate(java.util.List.of(pins(new WidgetDto.PinDto(bad, "x")))))
+                    .as(bad).isInstanceOf(ContentValidationException.class);
+        }
+    }
+
+    @Test
+    void pinsNeedOneToTwelveLinksAndShortNames() {
+        assertThatThrownBy(() -> validator.validate(java.util.List.of(pins())))
+                .isInstanceOf(ContentValidationException.class);
+        WidgetDto.PinDto p = new WidgetDto.PinDto("https://a.fr", null);
+        assertThatThrownBy(() -> validator.validate(java.util.List.of(pins(p, p, p, p, p, p, p, p, p, p, p, p, p))))
+                .isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> validator.validate(java.util.List.of(pins(new WidgetDto.PinDto("https://a.fr", "x".repeat(41))))))
+                .isInstanceOf(ContentValidationException.class);
+    }
 }

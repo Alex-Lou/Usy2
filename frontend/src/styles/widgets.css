@@ -46,7 +46,18 @@
   }
 }
 
+/* Pinned sites: cards float gently, each slightly tilted (--tilt), like pins on a board. */
+.pin-float {
+  transform: rotate(var(--tilt, 0deg));
+  animation: pin-float 4s ease-in-out infinite;
+}
+@keyframes pin-float {
+  0%, 100% { transform: rotate(var(--tilt, 0deg)) translateY(0); }
+  50% { transform: rotate(var(--tilt, 0deg)) translateY(-5px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .pin-float,
   .mc-marquee__inner,
   .mc-heartbeat,
   .mc-twinkle,

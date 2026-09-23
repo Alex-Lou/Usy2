@@ -12,6 +12,8 @@ import { getMyProfile, updateMyProfile } from "./api";
 import { buildThemeStyle, FONT_LABELS, LAYOUT_LABELS } from "./theme";
 import type { FontKey, LayoutKey, Theme, ThemeColors, ThemeMode, Widget, WidgetType } from "./types";
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
+import { PinsEditor } from "./widgets/PinsEditor";
+import { normalizePinUrl } from "./widgets/pinSuggestions";
 import { SVG_LABELS, SVG_VARIANTS, WIDGET_LABELS } from "./widgets/registry";
 
 const COLOR_FIELDS: { key: keyof ThemeColors; label: string }[] = [
@@ -22,7 +24,7 @@ const COLOR_FIELDS: { key: keyof ThemeColors; label: string }[] = [
 ];
 
 const WIDGET_TYPES: WidgetType[] = [
-  "richtext", "quote", "marquee", "mood", "clock", "countdown", "image", "svg",
+  "richtext", "quote", "marquee", "mood", "clock", "countdown", "image", "svg", "pins",
 ];
 
 function defaultWidget(type: WidgetType): Widget {
@@ -43,6 +45,8 @@ function defaultWidget(type: WidgetType): Widget {
       return { type: "image", assetId: 0, label: "" };
     case "svg":
       return { type: "svg", variant: "heart", label: "" };
+    case "pins":
+      return { type: "pins", label: "Accès rapides", pins: [{ label: "Pinterest", url: "https://www.pinterest.com" }] };
   }
 }
 
@@ -127,7 +131,7 @@ export function ProfileEditPage() {
     setSaving(true);
     setError(null);
     try {
-      const saved = await updateMyProfile(theme, widgets, avatarAssetId, bio.trim() || null);
+      const saved = await updateMyProfile(theme, widgets.map(cleanWidget), avatarAssetId, bio.trim() || null);
       await refreshUser(); // header/avatar reflect the new photo
       navigate(`/profile/${saved.userId}`, { replace: true });
     } catch (err) {
@@ -289,6 +293,15 @@ export function ProfileEditPage() {
   );
 }
 
+/** Pins: complete "site.fr" into https://site.fr, drop empty rows and empty names before saving. */
+function cleanWidget(w: Widget): Widget {
+  if (w.type !== "pins") return w;
+  const pins = w.pins
+    .map((p) => ({ url: normalizePinUrl(p.url), label: p.label?.trim() || undefined }))
+    .filter((p) => p.url);
+  return { ...w, label: w.label?.trim() || undefined, pins };
+}
+
 function WidgetEditor({
   widget,
   onPatch,
@@ -366,5 +379,7 @@ function WidgetEditor({
           <Input value={widget.label ?? ""} maxLength={40} placeholder="légende (optionnel)" onChange={(e) => onPatch({ label: e.target.value })} />
         </div>
       );
+    case "pins":
+      return <PinsEditor label={widget.label} pins={widget.pins} onChange={(p) => onPatch(p)} />;
   }
 }

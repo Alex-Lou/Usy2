@@ -4,9 +4,12 @@ import com.memocat.profile.dto.WidgetDto;
 import com.memocat.web.ContentValidationException;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -24,6 +27,8 @@ public class WidgetValidator {
     static final int MAX_RICHTEXT = 1000;
     static final int MAX_LABEL = 40;
     static final int MAX_EMOJI = 8;
+    static final int MAX_PINS = 12;
+    static final int MAX_URL = 2048;
 
     /** Curated animated SVG choices (chibi animals + a few decorative marks). */
     static final Set<String> SVG_VARIANTS = Set.of(
@@ -56,6 +61,7 @@ public class WidgetValidator {
             case "countdown" -> validateCountdown(widget);
             case "image" -> validateImage(widget);
             case "svg" -> validateSvg(widget);
+            case "pins" -> validatePins(widget);
             default -> throw new ContentValidationException("Unknown widget type: " + widget.type());
         }
     }
@@ -105,6 +111,37 @@ public class WidgetValidator {
             throw new ContentValidationException("Unsupported svg variant: " + widget.variant());
         }
         validateLabel(widget);
+    }
+
+    /** Pins open in the browser: only real http(s) addresses (never javascript:, data:…). */
+    private void validatePins(WidgetDto widget) {
+        List<WidgetDto.PinDto> pins = widget.pins();
+        if (pins == null || pins.isEmpty() || pins.size() > MAX_PINS) {
+            throw new ContentValidationException("pins requires 1 to " + MAX_PINS + " links");
+        }
+        for (WidgetDto.PinDto pin : pins) {
+            if (pin == null || !isWebAddress(pin.url())) {
+                throw new ContentValidationException("Each pin needs an http(s) address");
+            }
+            if (pin.label() != null && pin.label().length() > MAX_LABEL) {
+                throw new ContentValidationException("pin name too long (max " + MAX_LABEL + ")");
+            }
+        }
+        validateLabel(widget);
+    }
+
+    static boolean isWebAddress(String url) {
+        if (url == null || url.isBlank() || url.length() > MAX_URL) {
+            return false;
+        }
+        try {
+            URI uri = new URI(url);
+            String scheme = uri.getScheme() == null ? "" : uri.getScheme().toLowerCase(Locale.ROOT);
+            return (scheme.equals("http") || scheme.equals("https")) && uri.getHost() != null
+                    && uri.getRawUserInfo() == null;
+        } catch (URISyntaxException e) {
+            return false;
+        }
     }
 
     private void validateLabel(WidgetDto widget) {
