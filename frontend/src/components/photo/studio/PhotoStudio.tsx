@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type PointerEvent as RPointerEvent } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type PointerEvent as RPointerEvent } from "react";
 import { createPortal } from "react-dom";
 import { EMOJI_GROUPS } from "../../rich/emojiData";
 import { STICKERS } from "../../rich/stickers";
@@ -7,6 +7,8 @@ import { EffectLayer } from "../EffectLayer";
 import { PHOTO_EFFECTS } from "../effects";
 import { combine, cssFilter, NEUTRAL, PRESETS } from "./adjust";
 import { clampPan, decodeSource, drawPhoto, exportPhoto, rotatedSize, type Frame, type Layer, type Source } from "./render";
+import { ENHANCE_AMOUNT, MAX_AMOUNT } from "./sharpen";
+import { SharpenFilter } from "./SharpenFilter";
 
 type Tab = "frame" | "filters" | "stickers" | "text" | "fx";
 const TABS: { id: Tab; label: string }[] = [
@@ -50,6 +52,8 @@ export function PhotoStudio({
   const [frame, setFrame] = useState<Frame>({ rotation: 0, zoom: 1, panX: 0, panY: 0 });
   const [preset, setPreset] = useState("none");
   const [sliders, setSliders] = useState({ brightness: 1, contrast: 1, saturate: 1 });
+  const [sharpness, setSharpness] = useState(0); // 0 = off, see sharpen.ts
+  const sharpenId = `mc-sharpen-${useId().replace(/:/g, "")}`;
   const [layers, setLayers] = useState<Layer[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [text, setText] = useState("");
@@ -189,7 +193,7 @@ export function PhotoStudio({
     setSaving(true);
     try {
       const svgOf = (id: number) => frameRef.current?.querySelector<SVGSVGElement>(`[data-layer="${id}"] svg`) ?? null;
-      const blob = await exportPhoto(src, frame, aspect, adjust, layers, svgOf);
+      const blob = await exportPhoto(src, frame, aspect, adjust, sharpness, layers, svgOf);
       const name = file.name.replace(/\.[^.]+$/, "") + "-studio.jpg";
       onDone(new File([blob], name, { type: "image/jpeg", lastModified: Date.now() }), effect);
     } catch {
@@ -234,7 +238,12 @@ export function PhotoStudio({
               onPointerUp={up}
               onPointerCancel={up}
             >
-              <canvas ref={canvasRef} className="h-full w-full" style={{ filter: cssFilter(adjust) }} />
+              {sharpness > 0 && <SharpenFilter id={sharpenId} amount={sharpness} width={box.w} />}
+              <canvas
+                ref={canvasRef}
+                className="h-full w-full"
+                style={{ filter: `${sharpness > 0 ? `url(#${sharpenId}) ` : ""}${cssFilter(adjust)}` }}
+              />
               {layers.map((l) => {
                 const size = l.scale * box.w;
                 return (
@@ -346,6 +355,28 @@ export function PhotoStudio({
                     {p.label}
                   </button>
                 ))}
+              </div>
+              <div className="flex items-center gap-3 text-xs text-text-muted">
+                <button
+                  type="button"
+                  onClick={() => setSharpness((v) => (v > 0 ? 0 : ENHANCE_AMOUNT))}
+                  aria-pressed={sharpness > 0}
+                  className={"chip shrink-0 press " + (sharpness > 0 ? "border-primary text-primary" : "")}
+                >
+                  ✨ Améliorer
+                </button>
+                <label className="flex flex-1 items-center gap-3">
+                  <span className="w-14">Netteté</span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={MAX_AMOUNT}
+                    step={0.05}
+                    value={sharpness}
+                    onChange={(e) => setSharpness(Number(e.target.value))}
+                    className="flex-1 accent-[var(--color-primary)]"
+                  />
+                </label>
               </div>
               {([
                 ["brightness", "Luminosité"],
