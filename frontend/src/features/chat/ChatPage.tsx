@@ -2,9 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Client } from "@stomp/stompjs";
 import { useCompanion } from "../../app/companion";
 import { Animal } from "../../components/ui/animals";
+import { Icon } from "../../components/ui/Icon";
 import { Avatar } from "../../components/ui/Avatar";
 import type { Asset } from "../../lib/api/assets";
 import { useAuth } from "../auth/useAuth";
+import { PetStage } from "../pet/PetStage";
+import { usePet } from "../pet/usePet";
 import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
 import { getHistory } from "./api";
@@ -34,6 +37,8 @@ export function ChatPage() {
   const contentRef = useRef<HTMLDivElement>(null);
   const everConnected = useRef(false);
   const stickToBottom = useRef(true);
+  const { pet, setPet, pose, caption, act, onActivity, onMessage, noteHistory } = usePet(user?.id);
+  const [petOpen, setPetOpen] = useState(() => readPetOpen());
 
   useEffect(() => {
     getAllProfiles()
@@ -47,14 +52,25 @@ export function ChatPage() {
         setMessages([...p.content].reverse());
         setHasOlder(p.totalPages > 1);
         setPage(0);
+        noteHistory(p.content[0]?.createdAt);
       })
       .catch(() => {});
-  }, []);
+  }, [noteHistory]);
+
+  // The chat socket also carries the cat's live events (one connection).
+  const onMessageRef = useRef(onMessage);
+  const onActivityRef = useRef(onActivity);
+  onMessageRef.current = onMessage;
+  onActivityRef.current = onActivity;
 
   useEffect(() => {
     const client = createChatClient(
-      (m) => setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m])),
+      (m) => {
+        setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
+        onMessageRef.current(m);
+      },
       setConnected,
+      (a) => onActivityRef.current(a),
     );
     clientRef.current = client;
     return () => {
@@ -115,7 +131,21 @@ export function ChatPage() {
             {connected ? "Connecté" : "Connexion…"}
           </p>
         </div>
+        {pet && (
+          <button
+            type="button"
+            onClick={() => setPetOpen((o) => savePetOpen(!o))}
+            aria-expanded={petOpen}
+            aria-label={petOpen ? `Ranger ${pet.name}` : `Voir ${pet.name}`}
+            className="ml-auto flex items-center gap-1 rounded-full border border-border bg-surface py-1 pl-1 pr-2 text-xs text-text-muted press hover:border-primary/50"
+          >
+            <Animal species="cat" size={26} />
+            <Icon name="chevronDown" size={14} className={"transition-transform " + (petOpen ? "rotate-180" : "")} />
+          </button>
+        )}
       </header>
+
+      {pet && petOpen && <PetStage pet={pet} pose={pose} caption={caption} onAct={act} onRenamed={setPet} />}
 
       <div
         ref={scrollerRef}
@@ -148,4 +178,23 @@ export function ChatPage() {
       {viewing && <ImageViewer asset={viewing} onClose={() => setViewing(null)} />}
     </div>
   );
+}
+
+const PET_OPEN_KEY = "memocat.petOpen";
+
+function readPetOpen(): boolean {
+  try {
+    return localStorage.getItem(PET_OPEN_KEY) !== "0";
+  } catch {
+    return true;
+  }
+}
+
+function savePetOpen(open: boolean): boolean {
+  try {
+    localStorage.setItem(PET_OPEN_KEY, open ? "1" : "0");
+  } catch {
+    /* per-device convenience only */
+  }
+  return open;
 }

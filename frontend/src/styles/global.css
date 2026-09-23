@@ -1,6 +1,7 @@
 @import "./tokens.css";
 @import "./widgets.css";
 @import "./rich.css";
+@import "./pet.css";
 
 @tailwind base;
 @tailwind components;

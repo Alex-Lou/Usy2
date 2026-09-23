@@ -1,0 +1,73 @@
+/* The shared cat's motion (see features/pet/CatSprite.tsx). Pure CSS on SVG
+   groups; transform-box makes each origin relative to the part itself. */
+@layer components {
+  .pet g,
+  .pet path,
+  .pet ellipse {
+    transform-box: fill-box;
+  }
+
+  /* — Always: breathing, tail, blink, ear twitch — */
+  .pet-body { transform-origin: 50% 100%; animation: pet-breathe 3.2s ease-in-out infinite; }
+  .pet-head { transform-origin: 50% 90%; transition: transform 0.35s ease; }
+  .pet-tail { transform-origin: 0% 100%; animation: pet-tail 2.6s ease-in-out infinite; }
+  .pet-eyes { transform-origin: 50% 50%; animation: pet-blink 4.6s infinite; }
+  .pet-ear-r { transform-origin: 30% 100%; animation: pet-ear 7s ease-in-out infinite; }
+
+  /* — Sleep: head down, slow breath, drifting Zzz — */
+  .pet--sleep .pet-head { transform: translateY(7px) rotate(-7deg); }
+  .pet--sleep .pet-body { animation-duration: 4.8s; }
+  .pet--sleep .pet-tail { animation: pet-tail 6s ease-in-out infinite; }
+  .pet--sleep .pet-ear-r { animation: none; }
+  .pet-zzz text { animation: pet-zzz 3s ease-in-out infinite; opacity: 0; }
+  .pet-zzz text:nth-child(2) { animation-delay: 0.8s; }
+  .pet-zzz text:nth-child(3) { animation-delay: 1.6s; }
+
+  /* — Purr: soft vibration, floating hearts, lazy tail — */
+  .pet--purr .pet-all { animation: pet-purr 0.18s linear infinite; }
+  .pet--purr .pet-head { transform: rotate(-5deg); }
+  .pet--purr .pet-tail { animation-duration: 4s; }
+  .pet-heart { animation: pet-heart 1.4s ease-out infinite; opacity: 0; }
+
+  /* — Eat: head bobbing into the bowl — */
+  .pet--eat .pet-head { animation: pet-munch 0.5s ease-in-out infinite; }
+  .pet-kibble { animation: pet-kibble 1.5s steps(3) infinite; }
+
+  /* — Play: bouncing ball, paw swat, head following — */
+  .pet--play .pet-head { animation: pet-watch 0.9s ease-in-out infinite; }
+  .pet--play .pet-paw-r { transform-origin: 20% 50%; animation: pet-swat 0.9s ease-in-out infinite; }
+  .pet-ball { transform-origin: 50% 100%; animation: pet-bounce 0.9s cubic-bezier(0.3, 0, 0.5, 1) infinite; }
+  .pet--play .pet-tail { animation-duration: 0.8s; }
+
+  /* — Startle: a quick jump, ears back — */
+  .pet--startle .pet-all { animation: pet-jump 0.55s cubic-bezier(0.3, 0, 0.3, 1) 1; }
+  .pet--startle .pet-ear-l { transform: rotate(-16deg); transform-origin: 90% 100%; }
+  .pet--startle .pet-ear-r { transform: rotate(16deg); animation: none; }
+  .pet--startle .pet-tail { animation: pet-tail 0.3s linear infinite; }
+
+  /* — Hungry: droopy ears, slow tail — */
+  .pet--hungry .pet-ear-l { transform: rotate(-10deg); transform-origin: 90% 100%; }
+  .pet--hungry .pet-ear-r { transform: rotate(10deg); animation: none; }
+  .pet--hungry .pet-tail { animation-duration: 5s; }
+}
+
+@keyframes pet-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.02, 0.975); } }
+@keyframes pet-tail { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(9deg); } }
+@keyframes pet-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.08); } }
+@keyframes pet-ear { 0%, 88%, 100% { transform: rotate(0); } 91% { transform: rotate(12deg); } 94% { transform: rotate(-3deg); } }
+@keyframes pet-zzz { 0% { opacity: 0; transform: translate(0, 6px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(6px, -10px); } }
+@keyframes pet-purr { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(0.5px, -0.4px); } }
+@keyframes pet-heart { 0% { opacity: 0; transform: translateY(8px) scale(0.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-22px) scale(1); } }
+@keyframes pet-munch { 0%, 100% { transform: translateY(4px) rotate(0); } 50% { transform: translateY(10px) rotate(2deg); } }
+@keyframes pet-kibble { 0% { opacity: 1; } 100% { opacity: 0.2; } }
+@keyframes pet-watch { 0%, 100% { transform: rotate(4deg); } 50% { transform: rotate(10deg) translateY(-2px); } }
+@keyframes pet-swat { 0%, 100% { transform: translate(0, 0) rotate(0); } 45% { transform: translate(8px, -14px) rotate(-30deg); } }
+@keyframes pet-bounce { 0%, 100% { transform: translateY(0) scale(1.05, 0.92); } 45% { transform: translateY(-26px) scale(0.96, 1.04); } }
+@keyframes pet-jump { 0% { transform: translateY(0); } 35% { transform: translateY(-16px) scale(0.98, 1.04); } 70% { transform: translateY(0) scale(1.03, 0.96); } 100% { transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pet *,
+  .pet {
+    animation: none !important;
+  }
+}
