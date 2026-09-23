@@ -45,7 +45,7 @@ export function NotificationBell() {
   }
 
   return (
-    <div ref={rootRef} className="fixed right-4 top-4 z-40">
+    <div ref={rootRef} className="fixed right-4 top-[calc(var(--safe-top)+0.75rem)] z-40 lg:top-4">
       <button
         onClick={toggle}
         aria-label={unread > 0 ? `Notifications (${unread} non lues)` : "Notifications"}

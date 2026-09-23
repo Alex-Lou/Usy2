@@ -1,5 +1,5 @@
 import { compressImage } from "../image/compress";
-import { uploadFile } from "./client";
+import { apiRequest, uploadFile } from "./client";
 
 export interface Asset {
   id: number;
@@ -14,4 +14,19 @@ export interface Asset {
  */
 export async function uploadImage(file: File): Promise<Asset> {
   return uploadFile<Asset>("/api/assets", await compressImage(file));
+}
+
+/** PDF, office or text file (max 10 MB), stored as-is. */
+export function uploadDocument(file: File): Promise<Asset> {
+  return uploadFile<Asset>("/api/assets/documents", file);
+}
+
+export interface StorageUsage {
+  usedBytes: number;
+  quotaBytes: number;
+}
+
+/** Files live in the database: how full it is. */
+export function getStorageUsage(): Promise<StorageUsage> {
+  return apiRequest<StorageUsage>("/api/assets/usage");
 }

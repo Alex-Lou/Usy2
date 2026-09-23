@@ -39,13 +39,19 @@ public class Message {
     @Column(name = "read_at")
     private Instant readAt;
 
+    /** Optional photo, GIF or document sent with the message. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attachment_asset_id")
+    private Asset attachment;
+
     protected Message() {
         // for JPA
     }
 
-    public Message(User sender, String content) {
+    public Message(User sender, String content, Asset attachment) {
         this.sender = sender;
         this.content = content;
+        this.attachment = attachment;
     }
 
     @PrePersist
@@ -73,5 +79,9 @@ public class Message {
 
     public Instant getReadAt() {
         return readAt;
+    }
+
+    public Asset getAttachment() {
+        return attachment;
     }
 }

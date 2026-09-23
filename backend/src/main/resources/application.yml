@@ -19,8 +19,9 @@ spring:
     enabled: true
   servlet:
     multipart:
-      max-file-size: 5MB
-      max-request-size: 6MB
+      # Documents up to 10 MB (images are capped at 5 MB by their own validator).
+      max-file-size: 10MB
+      max-request-size: 11MB
 
 server:
   # PORT is injected by most PaaS (e.g. Render); falls back to MEMOCAT_SERVER_PORT then 8080.
@@ -35,6 +36,9 @@ memocat:
     # Self-ping of the public URL so the free Render instance never idles.
     # Render sets RENDER_EXTERNAL_URL automatically; empty elsewhere = disabled.
     url: ${MEMOCAT_KEEP_ALIVE_URL:${RENDER_EXTERNAL_URL:}}
+  storage:
+    # Files live in Postgres (1 GB on Render's free plan): uploads stop at this total.
+    quota-mb: ${MEMOCAT_STORAGE_QUOTA_MB:800}
   # The couple's time zone: "today" for memories and dates (not the server's UTC).
   timezone: ${MEMOCAT_TIMEZONE:Atlantic/Canary}
   push:

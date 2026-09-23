@@ -35,7 +35,7 @@ export function MobileMenu() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Ouvrir le menu"
-        className="fixed left-4 top-4 z-40 grid h-11 w-11 place-items-center rounded-full glass text-text press hover:text-primary lg:hidden"
+        className="fixed left-4 top-[calc(var(--safe-top)+0.75rem)] z-40 grid h-11 w-11 place-items-center rounded-full glass text-text press hover:text-primary lg:hidden"
       >
         <Icon name="menu" size={20} />
       </button>
@@ -47,7 +47,7 @@ export function MobileMenu() {
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
-          <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col gap-4 border-r border-border bg-surface px-4 py-5 shadow-card animate-fade-up">
+          <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col gap-4 border-r border-border bg-surface px-4 pb-5 pt-[calc(var(--safe-top)+1.25rem)] shadow-card animate-fade-up">
             <div className="flex items-center justify-between">
               <span className="font-display text-2xl font-bold text-grad">MemoCat</span>
               <button

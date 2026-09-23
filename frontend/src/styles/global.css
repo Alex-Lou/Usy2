@@ -7,6 +7,13 @@
 @tailwind utilities;
 
 @layer base {
+  /* Mobile chrome sizes. The installed app draws under the iPhone status bar
+     (viewport-fit=cover), so the top bar starts below the safe area. */
+  :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --topbar-h: calc(var(--safe-top) + 4.25rem);
+    --tabbar-h: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+  }
   html {
     scroll-behavior: smooth;
   }
