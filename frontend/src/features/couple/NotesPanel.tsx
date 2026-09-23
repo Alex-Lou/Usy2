@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import { LinkPreview } from "../../components/rich/LinkPreview";
+import { firstUrl, linkify } from "../../components/rich/links";
 import { Icon } from "../../components/ui/Icon";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import { onCoupleActivity } from "./activity";
@@ -44,7 +46,8 @@ export function NotesPanel({ myId }: { myId: number | undefined }) {
       {notes?.map((n) => (
         <div key={n.id} className="flex items-start gap-2 rounded-token border border-border bg-surface px-3 py-2">
           <div className="min-w-0 flex-1">
-            <p className="whitespace-pre-wrap break-words text-text">{n.text}</p>
+            <p className="whitespace-pre-wrap break-words text-text">{linkify(n.text)}</p>
+            {firstUrl(n.text) && <LinkPreview url={firstUrl(n.text)!} className="my-1.5 max-w-sm" />}
             <p className="text-[11px] text-text-muted">
               <ProfileLink userId={n.author.id} className="hover:underline">
                 {n.author.displayName}

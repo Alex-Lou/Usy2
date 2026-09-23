@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { LinkPreview } from "../../components/rich/LinkPreview";
+import { firstUrl, linkify } from "../../components/rich/links";
 import { Icon } from "../../components/ui/Icon";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import { useAuth } from "../auth/useAuth";
@@ -84,7 +86,8 @@ export function CoupleStrip() {
 
       {theirNote && (
         <div className="rounded-token border-l-4 border-primary bg-bg-2/60 px-3 py-2">
-          <p className="whitespace-pre-wrap break-words text-text">{theirNote.text}</p>
+          <p className="whitespace-pre-wrap break-words text-text">{linkify(theirNote.text)}</p>
+          {firstUrl(theirNote.text) && <LinkPreview url={firstUrl(theirNote.text)!} className="my-1.5 max-w-sm" />}
           <p className="text-[11px] text-text-muted">
             <ProfileLink userId={theirNote.author.id} className="hover:underline">
               {theirNote.author.displayName}
