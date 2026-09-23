@@ -9,8 +9,12 @@
  * - Navigations: network-first, fall back to the cached shell when offline.
  * - Hashed build assets (/assets/) and icons: cache-first (they're immutable).
  * - Bumping CACHE invalidates everything on the next load.
+ * - Share target: Android's "Share" menu POSTs to /share-target; the content is
+ *   parked in SHARE_CACHE and the app opens a pre-filled post with it.
  */
 const CACHE = "memocat-v1";
+const SHARE_CACHE = "memocat-share";
+const MAX_SHARED_FILE = 15 * 1024 * 1024;
 const SHELL = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
@@ -20,16 +24,40 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== SHARE_CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
 
+// Something shared from another app (link, text, photo): keep it for the app,
+// which turns it into a draft post, then open the app.
+async function receiveShare(req) {
+  try {
+    const form = await req.formData();
+    const field = (name) => String(form.get(name) || "").slice(0, 2000);
+    const file = form.getAll("media").find((f) => f && typeof f === "object" && f.type.startsWith("image/") && f.size <= MAX_SHARED_FILE);
+    const cache = await caches.open(SHARE_CACHE);
+    await cache.put(
+      "/shared/meta",
+      new Response(JSON.stringify({ title: field("title"), text: field("text"), url: field("url"), fileName: file ? file.name : null, at: Date.now() })),
+    );
+    if (file) await cache.put("/shared/file", new Response(file, { headers: { "Content-Type": file.type } }));
+    else await cache.delete("/shared/file");
+  } catch {
+    /* unreadable share: just open the app */
+  }
+  return Response.redirect("/?share=1", 303);
+}
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
+  const url = new URL(req.url);
+  if (req.method === "POST" && url.origin === self.location.origin && url.pathname === "/share-target") {
+    event.respondWith(receiveShare(req));
+    return;
+  }
   if (req.method !== "GET") return;
 
-  const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // let cross-origin (fonts CDN, etc.) pass through
   if (url.pathname.startsWith("/api") || url.pathname.startsWith("/ws")) return; // never cache data
 
