@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../../components/ui/Icon";
+import { ProfileLink } from "../../components/ui/ProfileLink";
 import { useAuth } from "../auth/useAuth";
 import { Memories } from "../couple/Memories";
 import { MoodChips } from "../couple/MoodChips";
@@ -85,7 +86,10 @@ export function CoupleStrip() {
         <div className="rounded-token border-l-4 border-primary bg-bg-2/60 px-3 py-2">
           <p className="whitespace-pre-wrap break-words text-text">{theirNote.text}</p>
           <p className="text-[11px] text-text-muted">
-            {theirNote.author.displayName} · {ago(theirNote.createdAt)}
+            <ProfileLink userId={theirNote.author.id} className="hover:underline">
+              {theirNote.author.displayName}
+            </ProfileLink>{" "}
+            · {ago(theirNote.createdAt)}
           </p>
         </div>
       )}

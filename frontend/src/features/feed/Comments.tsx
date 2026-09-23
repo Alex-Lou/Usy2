@@ -3,6 +3,7 @@ import { RichBody } from "../../components/rich/RichBody";
 import { RichPicker } from "../../components/rich/RichPicker";
 import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useRichInput";
 import { Avatar } from "../../components/ui/Avatar";
+import { ProfileLink } from "../../components/ui/ProfileLink";
 import { Icon } from "../../components/ui/Icon";
 import { useAuth } from "../auth/useAuth";
 import { addComment, deleteComment, listComments } from "./api";
@@ -101,10 +102,14 @@ export function Comments({
       <div className="mt-3 flex flex-col gap-3">
         {items.map((c) => (
           <div key={c.id} className="flex items-start gap-2.5">
-            <Avatar name={c.author.displayName} size={30} assetId={c.author.avatarAssetId} species={c.author.companion} />
+            <ProfileLink userId={c.author.id} className="shrink-0 rounded-full">
+              <Avatar name={c.author.displayName} size={30} assetId={c.author.avatarAssetId} species={c.author.companion} />
+            </ProfileLink>
             <div className="flex-1 rounded-token rounded-tl-sm bg-bg-2/50 px-3 py-2">
               <div className="flex items-baseline justify-between gap-2">
-                <span className="text-sm font-semibold text-primary">{c.author.displayName}</span>
+                <ProfileLink userId={c.author.id} className="text-sm font-semibold text-primary hover:underline">
+                  {c.author.displayName}
+                </ProfileLink>
                 {user?.id === c.author.id && (
                   <button onClick={() => remove(c.id)} aria-label="Supprimer" className="text-text-muted hover:text-danger press">
                     <Icon name="x" size={14} />
