@@ -1,4 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { RichBody } from "../../components/rich/RichBody";
+import { RichPicker } from "../../components/rich/RichPicker";
+import { useRichInput } from "../../components/rich/useRichInput";
 import { Avatar } from "../../components/ui/Avatar";
 import { Icon } from "../../components/ui/Icon";
 import { useAuth } from "../auth/useAuth";
@@ -16,7 +19,7 @@ export function Comments({
   const [items, setItems] = useState<Comment[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [text, setText] = useState("");
+  const { text, setText, ref, insert } = useRichInput<HTMLInputElement>();
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -43,18 +46,23 @@ export function Comments({
     setTotalPages(p.totalPages);
   }
 
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    if (!text.trim()) return;
+  // Shared by the text box and the sticker picker (a sticker is sent as-is).
+  async function send(content: string, clearInput: boolean) {
+    if (!content.trim() || busy) return;
     setBusy(true);
     try {
-      const c = await addComment(postId, text);
+      const c = await addComment(postId, content);
       setItems((prev) => [...prev, c]);
-      setText("");
+      if (clearInput) setText("");
       onCountChange(1);
     } finally {
       setBusy(false);
     }
+  }
+
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    void send(text, true);
   }
 
   async function remove(id: number) {
@@ -78,7 +86,7 @@ export function Comments({
                   </button>
                 )}
               </div>
-              <p className="text-sm">{c.text}</p>
+              <RichBody text={c.text} className="text-sm" />
             </div>
           </div>
         ))}
@@ -89,14 +97,16 @@ export function Comments({
         )}
       </div>
 
-      <form onSubmit={submit} className="mt-3 flex gap-2">
+      <form onSubmit={submit} className="mt-3 flex items-center gap-1.5">
         <input
+          ref={ref}
           value={text}
           onChange={(e) => setText(e.target.value)}
           maxLength={1000}
           placeholder="Écrire un commentaire…"
           className="flex-1 rounded-full border border-border bg-bg-2/60 px-4 py-2 text-sm outline-none focus:border-primary/70"
         />
+        <RichPicker onEmoji={insert} onSticker={(token) => void send(token, false)} />
         <button type="submit" disabled={busy || !text.trim()} aria-label="Envoyer" className="grid h-10 w-10 place-items-center rounded-full btn-brand disabled:opacity-50 press">
           <Icon name="send" size={16} />
         </button>
