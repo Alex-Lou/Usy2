@@ -3,6 +3,7 @@
 @import "./rich.css";
 @import "./pet.css";
 @import "./photo.css";
+@import "./scenes.css";
 
 @tailwind base;
 @tailwind components;

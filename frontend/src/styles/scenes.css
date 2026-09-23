@@ -1,0 +1,58 @@
+/* Animated scenes of the "SVG animé" widget (features/profile/widgets/scenes.tsx). */
+[class^="sc-"],
+[class*=" sc-"] {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sc-twinkle { animation: sc-twinkle 2.2s ease-in-out infinite; }
+.sc-glow { animation: sc-glow 3s ease-in-out infinite; }
+.sc-blink { animation: sc-blink 1.8s ease-in-out infinite; }
+.sc-flap { animation: sc-flap 0.35s ease-in-out infinite alternate; }
+.sc-drift { animation: sc-drift 4s ease-in-out infinite; }
+.sc-hover { animation: sc-hover 3.2s ease-in-out infinite; }
+.sc-wander { animation: sc-wander 5s ease-in-out infinite; }
+.sc-bloom { animation: sc-bloom 5s ease-in-out infinite; }
+.sc-rise { animation: sc-rise 3.6s ease-in infinite; }
+.sc-shoot { animation: sc-shoot 3.2s ease-in infinite; }
+.sc-sway-x { animation: sc-sway-x 6s ease-in-out infinite alternate; }
+.sc-sway { transform-origin: 50% 100%; animation: sc-sway 3.5s ease-in-out infinite; }
+.sc-unfurl { transform-origin: 0% 100%; animation: sc-unfurl 5s ease-in-out infinite; }
+.sc-fall { animation: sc-fall 5s linear infinite; }
+.sc-snow { animation: sc-snow 6s linear infinite; }
+.sc-spin-slow { animation: sc-spin 18s linear infinite; }
+.sc-trace { stroke-dasharray: 240; animation: sc-trace 6s ease-in-out infinite; }
+.sc-spore { animation: sc-spore 3s ease-out infinite; }
+.sc-drop { animation: sc-drop 1.1s linear infinite; }
+.sc-wave { animation: sc-wave 4s linear infinite; }
+.sc-wave-back { animation: sc-wave 6s linear infinite reverse; }
+.sc-flicker { transform-origin: 50% 100%; animation: sc-flicker 0.9s ease-in-out infinite alternate; }
+.sc-steam { animation: sc-steam 2.4s ease-in-out infinite; }
+
+@keyframes sc-twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@keyframes sc-glow { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; filter: drop-shadow(0 0 4px #fff3c4); } }
+@keyframes sc-blink { 0%, 100% { opacity: 0.15; } 45%, 60% { opacity: 1; } }
+@keyframes sc-flap { from { transform: scaleX(1); } to { transform: scaleX(0.35); } }
+@keyframes sc-drift { 0%, 100% { transform: translate(0, 0) rotate(-4deg); } 50% { transform: translate(6px, -8px) rotate(5deg); } }
+@keyframes sc-hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes sc-wander { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(5px, -4px); } 66% { transform: translate(-4px, 3px); } }
+@keyframes sc-bloom { 0%, 100% { transform: scale(0.55) rotate(0deg); } 50% { transform: scale(1) rotate(20deg); } }
+@keyframes sc-rise { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-80px) scale(1.1); opacity: 0; } }
+@keyframes sc-shoot { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: 1; } 45% { transform: translate(70px, 28px); opacity: 0; } 100% { transform: translate(70px, 28px); opacity: 0; } }
+@keyframes sc-sway-x { from { transform: translateX(-8px); opacity: 0.7; } to { transform: translateX(8px); opacity: 1; } }
+@keyframes sc-sway { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+@keyframes sc-unfurl { 0%, 100% { transform: scale(0.75) rotate(-12deg); } 50% { transform: scale(1) rotate(4deg); } }
+@keyframes sc-fall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(105px) rotate(260deg); opacity: 0.2; } }
+@keyframes sc-snow { 0% { transform: translate(0, -8px); opacity: 0; } 10% { opacity: 1; } 50% { transform: translate(6px, 45px); } 100% { transform: translate(-4px, 92px); opacity: 0.6; } }
+@keyframes sc-spin { to { transform: rotate(360deg); } }
+@keyframes sc-trace { 0% { stroke-dashoffset: 240; } 50%, 100% { stroke-dashoffset: 0; } }
+@keyframes sc-spore { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-30px); opacity: 0; } }
+@keyframes sc-drop { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(30px); opacity: 0; } }
+@keyframes sc-wave { from { transform: translateX(0); } to { transform: translateX(-60px); } }
+@keyframes sc-flicker { from { transform: scale(1, 1) rotate(-2deg); } to { transform: scale(0.9, 1.08) rotate(2deg); } }
+@keyframes sc-steam { 0% { opacity: 0; transform: translateY(4px); } 40% { opacity: 0.9; } 100% { opacity: 0; transform: translateY(-10px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  [class^="sc-"],
+  [class*=" sc-"] { animation: none !important; }
+}

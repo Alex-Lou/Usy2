@@ -33,6 +33,10 @@ public class WidgetValidator {
     /** Curated animated SVG choices (chibi animals + a few decorative marks). */
     static final Set<String> SVG_VARIANTS = Set.of(
             "heart", "stars", "sparkle",
+            // animated scenes (frontend widgets/scenes.tsx)
+            "butterflies", "blossom", "heart-bubbles", "moon", "shooting-stars", "aurora",
+            "fairy", "fireflies", "mushrooms", "clover", "fern", "leaves", "triquetra",
+            "rain", "waves", "standing-stones", "candle", "tea", "snow",
             "cat", "dog", "wolf", "rabbit", "lizard", "raccoon", "capybara", "robin", "parrot");
 
     private static final Pattern DATE = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}([T ]\\d{2}:\\d{2}(:\\d{2})?)?$");
