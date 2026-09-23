@@ -37,7 +37,8 @@ class AssetServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new AssetService(assets, contents, users, new ImageUploadValidator(), new DocumentUploadValidator(), 1);
+        service = new AssetService(assets, contents, users, new ImageUploadValidator(), new DocumentUploadValidator(),
+                new AudioUploadValidator(), 1);
         lenient().when(users.findByUsername("lou")).thenReturn(Optional.of(lou));
     }
 
@@ -56,6 +57,19 @@ class AssetServiceTest {
 
         assertThat(dto.contentType()).isEqualTo("application/pdf");
         assertThat(dto.originalFilename()).isEqualTo("Billets avion.pdf");
+        verify(contents).save(any(AssetContent.class));
+    }
+
+    @Test
+    void voiceMessageGetsANeutralNameAndOurContentType() {
+        when(assets.totalSizeBytes()).thenReturn(0L);
+        when(assets.save(any(Asset.class))).thenAnswer(inv -> inv.getArgument(0));
+        byte[] webm = {0x1A, 0x45, (byte) 0xDF, (byte) 0xA3, 0};
+
+        var dto = service.uploadAudio("lou", new MockMultipartFile("file", "<img src=x>.html", "text/html", webm));
+
+        assertThat(dto.contentType()).isEqualTo("audio/webm");
+        assertThat(dto.originalFilename()).isEqualTo("vocal.webm");
         verify(contents).save(any(AssetContent.class));
     }
 

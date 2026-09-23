@@ -10,6 +10,10 @@ export function isImage(asset: Pick<Asset, "contentType">): boolean {
   return asset.contentType.startsWith("image/");
 }
 
+export function isAudio(asset: Pick<Asset, "contentType">): boolean {
+  return asset.contentType.startsWith("audio/");
+}
+
 function isImageFile(file: File): boolean {
   return file.type.startsWith("image/") && file.type !== "image/svg+xml";
 }

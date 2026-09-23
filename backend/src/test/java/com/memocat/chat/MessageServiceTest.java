@@ -160,4 +160,11 @@ class MessageServiceTest {
         Message m = new Message(lou, "x".repeat(500), null);
         assertThat(com.memocat.chat.dto.ReplyPreviewDto.from(m).excerpt()).hasSize(140).endsWith("…");
     }
+
+    @Test
+    void quotedVoiceMessageSaysSo() {
+        User lou = new User("lou", "h", "Lou");
+        com.memocat.domain.Asset voice = new com.memocat.domain.Asset("k.webm", "vocal.webm", "audio/webm", 10, lou);
+        assertThat(com.memocat.chat.dto.ReplyPreviewDto.from(new Message(lou, "", voice)).attachment()).isEqualTo("audio");
+    }
 }

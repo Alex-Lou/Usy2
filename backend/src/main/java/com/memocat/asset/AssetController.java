@@ -40,6 +40,11 @@ public class AssetController {
         return assetService.uploadDocument(principal.getName(), file);
     }
 
+    @PostMapping("/audio")
+    public AssetDto uploadAudio(Principal principal, @RequestParam("file") MultipartFile file) {
+        return assetService.uploadAudio(principal.getName(), file);
+    }
+
     @GetMapping("/usage")
     public StorageUsageDto usage() {
         return assetService.usage();

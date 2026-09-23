@@ -23,6 +23,11 @@ export function uploadDocument(file: File): Promise<Asset> {
   return uploadFile<Asset>("/api/assets/documents", file);
 }
 
+/** A voice message recorded in the chat (the server checks the real format). */
+export function uploadAudio(recording: Blob): Promise<Asset> {
+  return uploadFile<Asset>("/api/assets/audio", new File([recording], "vocal", { type: recording.type }));
+}
+
 export interface StorageUsage {
   usedBytes: number;
   quotaBytes: number;

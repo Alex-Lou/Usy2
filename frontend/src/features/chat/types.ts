@@ -17,7 +17,7 @@ export interface ReplyPreview {
   senderId: number;
   senderName: string;
   excerpt: string;
-  attachment: "image" | "file" | null;
+  attachment: "image" | "audio" | "file" | null;
 }
 
 export interface MessageReaction {

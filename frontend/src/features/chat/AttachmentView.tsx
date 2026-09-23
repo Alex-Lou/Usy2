@@ -3,9 +3,10 @@ import { AssetImage } from "../../components/AssetImage";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Icon } from "../../components/ui/Icon";
 import type { Asset } from "../../lib/api/assets";
-import { formatSize, isImage, openDocument } from "./attachments";
+import { formatSize, isAudio, isImage, openDocument } from "./attachments";
+import { VoiceNote } from "./VoiceNote";
 
-/** A photo/GIF (tap to enlarge) or a document card (tap to open/download). */
+/** A photo/GIF (tap to enlarge), a voice message, or a document card (tap to open/download). */
 export function AttachmentView({ asset, onOpenImage, mine }: { asset: Asset; onOpenImage: (a: Asset) => void; mine: boolean }) {
   const [error, setError] = useState(false);
 
@@ -18,6 +19,8 @@ export function AttachmentView({ asset, onOpenImage, mine }: { asset: Asset; onO
       </button>
     );
   }
+
+  if (isAudio(asset)) return <VoiceNote asset={asset} mine={mine} />;
 
   const ext = asset.originalFilename.split(".").pop()?.toUpperCase().slice(0, 4) ?? "";
   return (

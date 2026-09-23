@@ -3,9 +3,10 @@ import type { Message, ReplyPreview } from "./types";
 /** One line for a quoted message: its text, or what it carries. */
 export function quoteText(m: Pick<Message, "content" | "attachment"> | ReplyPreview): string {
   const text = "excerpt" in m ? m.excerpt : m.content.trim();
-  const kind = "excerpt" in m ? m.attachment : m.attachment ? (m.attachment.contentType.startsWith("image/") ? "image" : "file") : null;
+  const type = "excerpt" in m ? null : m.attachment?.contentType;
+  const kind = "excerpt" in m ? m.attachment : !type ? null : type.startsWith("image/") ? "image" : type.startsWith("audio/") ? "audio" : "file";
   if (text) return text;
-  return kind === "image" ? "📷 Photo" : kind === "file" ? "📎 Fichier" : "…";
+  return kind === "image" ? "📷 Photo" : kind === "audio" ? "🎤 Message vocal" : kind === "file" ? "📎 Fichier" : "…";
 }
 
 /** The quoted message above a reply; a tap scrolls to the original when it is loaded. */
