@@ -2,6 +2,8 @@ package com.memocat.profile.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+
 /**
  * A single curated widget. Fields used depend on {@code type}:
  * - marquee / quote / richtext: {@code text}
@@ -10,11 +12,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * - countdown: {@code date} (ISO) (+ optional {@code label})
  * - image: {@code assetId} (+ optional {@code label} caption)
  * - svg: {@code variant} (+ optional {@code label})
+ * - pins: {@code pins}, quick links to web pages (+ optional {@code label} title)
  *
  * All text is stored as-is and escaped/whitelisted on display, never injected
  * as raw HTML — the widget set stays a closed, safe allowlist (no XSS vector).
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record WidgetDto(String type, String text, String emoji, String label,
-                        Long assetId, String date, String variant) {
+                        Long assetId, String date, String variant, List<PinDto> pins) {
+
+    /** Every widget type but "pins". */
+    public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant) {
+        this(type, text, emoji, label, assetId, date, variant, null);
+    }
+
+    /** A pinned web page: its address and an optional short name. */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public record PinDto(String url, String label) {
+    }
 }

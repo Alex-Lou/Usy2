@@ -24,7 +24,14 @@ export type Widget =
   | { type: "clock"; label?: string }
   | { type: "countdown"; date: string; label?: string }
   | { type: "image"; assetId: number; label?: string }
-  | { type: "svg"; variant: string; label?: string };
+  | { type: "svg"; variant: string; label?: string }
+  | { type: "pins"; label?: string; pins: Pin[] };
+
+/** A pinned web page (quick access): its address and an optional short name. */
+export interface Pin {
+  url: string;
+  label?: string;
+}
 
 export type WidgetType = Widget["type"];
 

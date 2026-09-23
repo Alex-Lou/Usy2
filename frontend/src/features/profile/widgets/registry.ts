@@ -23,4 +23,5 @@ export const WIDGET_LABELS: Record<WidgetType, string> = {
   countdown: "Compte à rebours",
   image: "Image",
   svg: "SVG animé",
+  pins: "Épingles (accès rapides)",
 };
