@@ -22,8 +22,8 @@ import java.util.UUID;
 /**
  * Uploads and serves files (images and documents). Bytes are stored in the
  * database (see {@link AssetContent}) so they survive restarts on hosts with an
- * ephemeral local disk. Validation lives in {@link ImageUploadValidator} and
- * {@link DocumentUploadValidator}; a storage quota keeps the (small, free)
+ * ephemeral local disk. Validation lives in {@link ImageUploadValidator},
+ * {@link DocumentUploadValidator} and {@link AudioUploadValidator}; a storage quota keeps the (small, free)
  * database from filling up.
  */
 @Service
@@ -34,6 +34,7 @@ public class AssetService {
     private final UserRepository userRepository;
     private final ImageUploadValidator imageUploadValidator;
     private final DocumentUploadValidator documentUploadValidator;
+    private final AudioUploadValidator audioUploadValidator;
     private final long quotaBytes;
 
     public AssetService(AssetRepository assetRepository,
@@ -41,25 +42,34 @@ public class AssetService {
                         UserRepository userRepository,
                         ImageUploadValidator imageUploadValidator,
                         DocumentUploadValidator documentUploadValidator,
+                        AudioUploadValidator audioUploadValidator,
                         @Value("${memocat.storage.quota-mb:800}") long quotaMb) {
         this.assetRepository = assetRepository;
         this.assetContentRepository = assetContentRepository;
         this.userRepository = userRepository;
         this.imageUploadValidator = imageUploadValidator;
         this.documentUploadValidator = documentUploadValidator;
+        this.audioUploadValidator = audioUploadValidator;
         this.quotaBytes = quotaMb * 1024 * 1024;
     }
 
     @Transactional
     public AssetDto upload(String username, MultipartFile file, String effect) {
         String extension = imageUploadValidator.validate(file);
-        return store(username, file, extension, file.getContentType(), PhotoEffects.validate(effect));
+        return store(username, file, file.getOriginalFilename(), extension, file.getContentType(), PhotoEffects.validate(effect));
     }
 
     @Transactional
     public AssetDto uploadDocument(String username, MultipartFile file) {
         DocumentUploadValidator.DocumentType type = documentUploadValidator.validate(file);
-        return store(username, file, type.extension(), type.contentType(), null);
+        return store(username, file, file.getOriginalFilename(), type.extension(), type.contentType(), null);
+    }
+
+    /** A voice message; stored under a neutral name, whatever the client sent. */
+    @Transactional
+    public AssetDto uploadAudio(String username, MultipartFile file) {
+        AudioUploadValidator.AudioType type = audioUploadValidator.validate(file);
+        return store(username, file, "vocal." + type.extension(), type.extension(), type.contentType(), null);
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +77,8 @@ public class AssetService {
         return new StorageUsageDto(assetRepository.totalSizeBytes(), quotaBytes);
     }
 
-    private AssetDto store(String username, MultipartFile file, String extension, String contentType, String effect) {
+    private AssetDto store(String username, MultipartFile file, String originalName, String extension,
+                           String contentType, String effect) {
         User uploader = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (assetRepository.totalSizeBytes() + file.getSize() > quotaBytes) {
@@ -85,7 +96,7 @@ public class AssetService {
         String key = UUID.randomUUID() + "." + extension;
         Asset asset = assetRepository.save(new Asset(
                 key,
-                safeName(file.getOriginalFilename(), key),
+                safeName(originalName, key),
                 contentType,
                 bytes.length,
                 uploader));

@@ -31,9 +31,20 @@ export type IconName =
   | "smile"
   | "paperclip"
   | "file"
-  | "download";
+  | "download"
+  | "mic"
+  | "play"
+  | "pause";
 
 const PATHS: Record<IconName, JSX.Element> = {
+  mic: (
+    <>
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" />
+    </>
+  ),
+  play: <path d="M7 4.5v15l12-7.5z" fill="currentColor" />,
+  pause: <path d="M8 5v14M16 5v14" strokeWidth={3.5} />,
   paperclip: <path d="m21 11.5-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9" />,
   file: (
     <>

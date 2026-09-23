@@ -4,11 +4,12 @@ import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useR
 import { Icon } from "../../components/ui/Icon";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
-import { getStorageUsage, type Asset, type StorageUsage } from "../../lib/api/assets";
+import { getStorageUsage, uploadAudio, type Asset, type StorageUsage } from "../../lib/api/assets";
 import { takeForChat } from "../feed/sharedContent";
 import { checkFile, DOCUMENT_ACCEPT, formatSize, uploadAttachment } from "./attachments";
 import { quoteText } from "./Quote";
 import type { Message } from "./types";
+import { canRecordVoice, formatDuration, MAX_VOICE_SECONDS, useVoiceRecorder } from "./useVoiceRecorder";
 
 const MAX_TEXT = 2000;
 
@@ -21,7 +22,8 @@ interface Pending {
 /**
  * The message box: multi-line text, emojis/stickers, and one attachment
  * (photo, camera, GIF or document) previewed before sending. The file is
- * uploaded first, then the message is sent with its id.
+ * uploaded first, then the message is sent with its id. With an empty box the
+ * send button becomes a microphone for a voice message (tap, then send).
  */
 export function ChatComposer({
   connected,
@@ -45,6 +47,7 @@ export function ChatComposer({
   const [usage, setUsage] = useState<StorageUsage | null>(null);
   const [studio, setStudio] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const voice = useVoiceRecorder((recording) => void sendVoice(recording));
 
   useAutoGrow(ref, text);
 
@@ -107,6 +110,18 @@ export function ChatComposer({
     }
   }
 
+  async function sendVoice(recording: Blob) {
+    setSending(true);
+    setError(null);
+    try {
+      onSend("", await uploadAudio(recording));
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : "Envoi du vocal impossible, réessaie.");
+    } finally {
+      setSending(false);
+    }
+  }
+
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (isSendKey(e)) {
       e.preventDefault();
@@ -115,6 +130,7 @@ export function ChatComposer({
   }
 
   const canSend = connected && !sending && (text.trim().length > 0 || pending !== null);
+  const showMic = canRecordVoice && text.trim().length === 0 && pending === null;
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2">
@@ -171,7 +187,8 @@ export function ChatComposer({
           </button>
         </div>
       )}
-      {error && <p className="px-2 text-sm text-danger">{error}</p>}
+      {(error ?? voice.error) && <p className="px-2 text-sm text-danger">{error ?? voice.error}</p>}
+      {sending && !pending && <p className="px-2 text-sm text-text-muted">Envoi du vocal…</p>}
       {studio && pending && (
         <PhotoStudio
           file={pending.file}
@@ -184,6 +201,35 @@ export function ChatComposer({
         />
       )}
 
+      {voice.recording ? (
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => voice.stop(false)}
+            aria-label="Annuler le message vocal"
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-border bg-surface text-text-muted press hover:text-danger"
+          >
+            <Icon name="trash" size={20} />
+          </button>
+          <div role="status" className="flex h-12 min-w-0 flex-1 items-center gap-2.5 rounded-3xl border border-border bg-surface px-4">
+            <span className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-danger" />
+            <span className="shrink-0 text-sm tabular-nums">
+              <b>{formatDuration(voice.seconds)}</b>
+              <span className="text-text-muted"> / {formatDuration(MAX_VOICE_SECONDS)}</span>
+            </span>
+            <span className="truncate text-xs text-text-muted">Enregistrement…</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => voice.stop(true)}
+            disabled={!connected}
+            aria-label="Envoyer le message vocal"
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-full btn-brand disabled:opacity-50 press"
+          >
+            <Icon name="send" size={18} />
+          </button>
+        </div>
+      ) : (
       <div className="flex items-end gap-1.5">
         <div ref={menuRef} className="relative">
           <button
@@ -228,10 +274,23 @@ export function ChatComposer({
           className="min-h-12 flex-1 resize-none rounded-3xl border border-border bg-surface px-4 py-3 leading-snug outline-none focus:border-primary/70"
         />
         <RichPicker onEmoji={insert} onSticker={(token) => connected && onSend(token, null)} />
-        <button type="submit" disabled={!canSend} aria-label="Envoyer" className="grid h-12 w-12 shrink-0 place-items-center rounded-full btn-brand disabled:opacity-50 press">
-          <Icon name="send" size={18} />
-        </button>
+        {showMic ? (
+          <button
+            type="button"
+            onClick={() => void voice.start()}
+            disabled={!connected || sending}
+            aria-label="Enregistrer un message vocal"
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-full btn-brand disabled:opacity-50 press"
+          >
+            <Icon name="mic" size={20} />
+          </button>
+        ) : (
+          <button type="submit" disabled={!canSend} aria-label="Envoyer" className="grid h-12 w-12 shrink-0 place-items-center rounded-full btn-brand disabled:opacity-50 press">
+            <Icon name="send" size={18} />
+          </button>
+        )}
       </div>
+      )}
     </form>
   );
 }
