@@ -1,14 +1,11 @@
 # Tauri icons
 
-App icons are not committed yet. Generate them from a single source PNG
-(1024×1024 recommended) with:
+Generated from the PWA icon (`public/icons/icon-512.png`) with:
 
 ```bash
 cd frontend
-npm run tauri icon path/to/source.png
+npx tauri icon public/icons/icon-512.png -o src-tauri/icons
 ```
 
-This produces `32x32.png`, `128x128.png`, `128x128@2x.png`, `icon.icns`,
-`icon.ico` (and mobile icons) in this directory, matching the paths listed
-under `bundle.icon` in `tauri.conf.json`. `tauri build` will fail until these
-files exist.
+Re-run it when the app icon changes (the `android/` folder is copied into the
+Android project by `tauri android init`).
