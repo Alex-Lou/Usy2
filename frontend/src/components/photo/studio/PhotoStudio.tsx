@@ -5,34 +5,52 @@ import { STICKERS } from "../../rich/stickers";
 import { Icon } from "../../ui/Icon";
 import { EffectLayer } from "../EffectLayer";
 import { PHOTO_EFFECTS } from "../effects";
-import { combine, cssFilter, NEUTRAL, PRESETS } from "./adjust";
+import { FONTS, loadFont } from "../../../lib/fonts";
+import type { FontKey } from "../../../features/profile/types";
+import { combine, cssFilter } from "./adjust";
+import { BORDERS, drawBorder, type BorderId } from "./borders";
+import { BRUSHES, DRAW_COLORS, strokePath, touchesStroke, type Stroke } from "./draw";
+import { LookOverlay } from "./LookOverlay";
+import { findLook, LOOKS, NO_FINISH, tintsOf, type Finish, type Look } from "./looks";
 import { clampPan, decodeSource, drawPhoto, exportPhoto, rotatedSize, type Frame, type Layer, type Source } from "./render";
 import { ENHANCE_AMOUNT, MAX_AMOUNT } from "./sharpen";
 import { SharpenFilter } from "./SharpenFilter";
+import { STUDIO_FONTS, TEXT_LOOKS, textCss, type TextLook } from "./textStyle";
 
-type Tab = "frame" | "filters" | "stickers" | "text" | "fx";
+type Tab = "frame" | "filters" | "tune" | "stickers" | "text" | "draw" | "fx";
 const TABS: { id: Tab; label: string }[] = [
-  { id: "frame", label: "Cadre" },
+  { id: "frame", label: "Recadrer" },
   { id: "filters", label: "Filtres" },
+  { id: "tune", label: "Réglages" },
   { id: "stickers", label: "Stickers" },
   { id: "text", label: "Texte" },
+  { id: "draw", label: "Dessin" },
   { id: "fx", label: "Animation" },
 ];
+const FINISH_SLIDERS: { key: keyof Finish; label: string; min: number }[] = [
+  { key: "warmth", label: "Chaleur", min: -1 },
+  { key: "fade", label: "Estompé", min: 0 },
+  { key: "vignette", label: "Vignette", min: 0 },
+  { key: "grain", label: "Grain", min: 0 },
+];
+
+const finishOf = (look: Look): Finish => ({ ...NO_FINISH, ...look.finish });
 const RATIOS: { id: string; label: string; value: number | null }[] = [
   { id: "orig", label: "Original", value: null },
   { id: "1:1", label: "Carré", value: 1 },
   { id: "4:5", label: "4:5", value: 4 / 5 },
   { id: "16:9", label: "16:9", value: 16 / 9 },
 ];
-const TEXT_COLORS = ["#ffffff", "#ffd45e", "#ff86b8", "#7cc6e8", "#9fe0a4", "#1a1530"];
+const TEXT_COLORS = ["#ffffff", "#ffd45e", "#ff86b8", "#7cc6e8", "#9fe0a4", "#b18cff", "#1a1530"];
 const SVG_STICKERS = STICKERS.filter((s) => s.kind === "sticker");
 const QUICK_EMOJIS = ["😍", "🥰", "😂", "😎", "🥳", "😘", "🤍", "❤️", "💕", "✨", "🔥", "🌸", "🌈", "⭐", "🎉", "👑", "🐱", "☕", "🌙", "☀️"];
 
 type Gesture = { target: "image" | number; points: Map<number, { x: number; y: number }>; start?: { dist: number; angle: number } };
 
 /**
- * Full-screen photo studio: framing, filters, stickers/emojis/text placed with
- * the fingers (drag, pinch to resize and turn), and an animated effect.
+ * Full-screen photo studio: framing, looks (filters, warmth, fade, vignette,
+ * grain), a border, stickers/emojis/styled text placed with the fingers (drag,
+ * pinch to resize and turn), finger drawing, and an animated effect.
  * Returns a flattened JPEG plus the chosen effect; nothing leaves the device
  * until the caller uploads it.
  */
@@ -50,7 +68,10 @@ export function PhotoStudio({
   const [tab, setTab] = useState<Tab>("frame");
   const [ratioId, setRatioId] = useState("orig");
   const [frame, setFrame] = useState<Frame>({ rotation: 0, zoom: 1, panX: 0, panY: 0 });
-  const [preset, setPreset] = useState("none");
+  const [lookId, setLookId] = useState("none");
+  const [finish, setFinish] = useState<Finish>(NO_FINISH);
+  const [border, setBorder] = useState<BorderId>("none");
+  const [thumb, setThumb] = useState<string | null>(null);
   const [sliders, setSliders] = useState({ brightness: 1, contrast: 1, saturate: 1 });
   const [sharpness, setSharpness] = useState(0); // 0 = off, see sharpen.ts
   const sharpenId = `mc-sharpen-${useId().replace(/:/g, "")}`;
@@ -58,6 +79,14 @@ export function PhotoStudio({
   const [selected, setSelected] = useState<number | null>(null);
   const [text, setText] = useState("");
   const [textColor, setTextColor] = useState(TEXT_COLORS[0]);
+  const [textFont, setTextFont] = useState<FontKey>("app");
+  const [textLook, setTextLook] = useState<TextLook>("outline");
+  const [strokes, setStrokes] = useState<Stroke[]>([]);
+  const [drawColor, setDrawColor] = useState(DRAW_COLORS[2]);
+  const [brush, setBrush] = useState(BRUSHES[1].width);
+  const [eraser, setEraser] = useState(false);
+  const drawing = useRef<number | null>(null); // id of the stroke being drawn
+  const borderRef = useRef<HTMLCanvasElement>(null);
   const [effect, setEffect] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [box, setBox] = useState({ w: 0, h: 0 });
@@ -85,15 +114,47 @@ export function PhotoStudio({
 
   const rot = src ? rotatedSize(src, frame.rotation) : { w: 1, h: 1 };
   const aspect = RATIOS.find((r) => r.id === ratioId)?.value ?? rot.w / rot.h;
-  const adjust = combine(PRESETS.find((p) => p.id === preset)?.adjust ?? NEUTRAL, sliders);
+  const look = findLook(lookId);
+  const adjust = combine(look.adjust, sliders);
+  const tints = tintsOf(look, finish);
+
+  // A small square of the photo, to preview each look on it.
+  useEffect(() => {
+    if (!src) return;
+    const c = document.createElement("canvas");
+    c.width = c.height = 96;
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+    drawPhoto(ctx, src, { rotation: 0, zoom: 1, panX: 0, panY: 0 }, 96, 96);
+    setThumb(c.toDataURL("image/jpeg", 0.8));
+  }, [src]);
+
+  // The border is drawn by the same code as the export, on a canvas over the photo.
+  useEffect(() => {
+    const c = borderRef.current;
+    if (!c || box.w === 0) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    c.width = Math.round(box.w * dpr);
+    c.height = Math.round(box.h * dpr);
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, c.width, c.height);
+    drawBorder(ctx, border, c.width, c.height);
+  }, [border, box]);
+
+  useEffect(() => {
+    STUDIO_FONTS.forEach(loadFont);
+  }, []);
 
   // Fit the frame in the available stage.
   useLayoutEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
     const fit = () => {
-      const maxW = stage.clientWidth;
-      const maxH = stage.clientHeight;
+      // clientWidth/Height include the stage's padding: keep the frame inside it.
+      const pad = getComputedStyle(stage);
+      const maxW = stage.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight);
+      const maxH = stage.clientHeight - parseFloat(pad.paddingTop) - parseFloat(pad.paddingBottom);
       const w = Math.min(maxW, maxH * aspect);
       setBox({ w, h: w / aspect });
     };
@@ -127,8 +188,62 @@ export function PhotoStudio({
     const id = nextId.current++;
     // Text starts about half the frame wide, whatever its length (then pinch to resize).
     const scale = kind === "text" ? Math.min(0.5, Math.max(0.18, 3 / Math.max(value.length, 4))) : 0.26;
-    setLayers((ls) => [...ls, { id, kind, value, color, x: 0.5, y: kind === "text" ? 0.82 : 0.5, scale, rotation: 0 }]);
+    const text = kind === "text" ? { font: textFont, look: textLook } : {};
+    setLayers((ls) => [...ls, { id, kind, value, color, ...text, x: 0.5, y: kind === "text" ? 0.82 : 0.5, scale, rotation: 0 }]);
     setSelected(id);
+  }
+
+  /** Text choices also restyle the selected text. */
+  function styleText(patch: Partial<Pick<Layer, "color" | "font" | "look">>) {
+    const target = layers.find((l) => l.id === selected && l.kind === "text");
+    if (target) patchLayer(target.id, patch);
+  }
+
+  // — Finger drawing (Dessin tab): points in 0..1 of the frame. —
+  function pointAt(e: RPointerEvent<HTMLDivElement>): [number, number] {
+    const r = e.currentTarget.getBoundingClientRect();
+    return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))];
+  }
+
+  function erase([x, y]: [number, number]) {
+    setStrokes((ss) => ss.filter((s) => !touchesStroke(s, x, y, box.w, box.h, 12)));
+  }
+
+  function drawDown(e: RPointerEvent<HTMLDivElement>) {
+    e.stopPropagation();
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    const p = pointAt(e);
+    if (eraser) {
+      drawing.current = -1;
+      erase(p);
+      return;
+    }
+    const id = nextId.current++;
+    drawing.current = id;
+    setStrokes((ss) => [...ss, { id, color: drawColor, width: brush, points: [p] }]);
+  }
+
+  function drawMove(e: RPointerEvent<HTMLDivElement>) {
+    e.stopPropagation();
+    const id = drawing.current;
+    if (id === null) return;
+    const p = pointAt(e);
+    if (id === -1) {
+      erase(p);
+      return;
+    }
+    setStrokes((ss) =>
+      ss.map((s) => {
+        if (s.id !== id) return s;
+        const [lx, ly] = s.points[s.points.length - 1];
+        return Math.hypot((p[0] - lx) * box.w, (p[1] - ly) * box.h) < 2 ? s : { ...s, points: [...s.points, p] };
+      }),
+    );
+  }
+
+  function drawUp(e: RPointerEvent<HTMLDivElement>) {
+    e.stopPropagation();
+    drawing.current = null;
   }
 
   const patchLayer = (id: number, patch: Partial<Layer>) => setLayers((ls) => ls.map((l) => (l.id === id ? { ...l, ...patch } : l)));
@@ -193,7 +308,7 @@ export function PhotoStudio({
     setSaving(true);
     try {
       const svgOf = (id: number) => frameRef.current?.querySelector<SVGSVGElement>(`[data-layer="${id}"] svg`) ?? null;
-      const blob = await exportPhoto(src, frame, aspect, adjust, sharpness, layers, svgOf);
+      const blob = await exportPhoto(src, frame, aspect, adjust, sharpness, layers, svgOf, { tints, finish, border, strokes });
       const name = file.name.replace(/\.[^.]+$/, "") + "-studio.jpg";
       onDone(new File([blob], name, { type: "image/jpeg", lastModified: Date.now() }), effect);
     } catch {
@@ -232,7 +347,7 @@ export function PhotoStudio({
             <div
               ref={frameRef}
               className="relative touch-none select-none overflow-hidden rounded-token"
-              style={{ width: box.w, height: box.h }}
+              style={{ width: box.w, height: box.h, isolation: "isolate" }}
               onPointerDown={(e) => down(e, "image")}
               onPointerMove={move}
               onPointerUp={up}
@@ -244,6 +359,8 @@ export function PhotoStudio({
                 className="h-full w-full"
                 style={{ filter: `${sharpness > 0 ? `url(#${sharpenId}) ` : ""}${cssFilter(adjust)}` }}
               />
+              <LookOverlay tints={tints} finish={finish} width={box.w} />
+              <canvas ref={borderRef} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" />
               {layers.map((l) => {
                 const size = l.scale * box.w;
                 return (
@@ -268,16 +385,32 @@ export function PhotoStudio({
                     ) : l.kind === "emoji" ? (
                       <span className="mc-emoji leading-none" style={{ fontSize: size * 0.85 }}>{l.value}</span>
                     ) : (
-                      <span
-                        className="whitespace-nowrap font-extrabold leading-none"
-                        style={{ fontSize: size * 0.3, color: l.color, WebkitTextStroke: `${size * 0.3 * 0.08}px rgba(0,0,0,0.55)`, paintOrder: "stroke" }}
-                      >
-                        {l.value}
-                      </span>
+                      <span style={textCss(l.color ?? "#ffffff", l.font, l.look ?? "outline", size * 0.3)}>{l.value}</span>
                     )}
                   </div>
                 );
               })}
+              {strokes.length > 0 && (
+                <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox={`0 0 ${box.w / box.h} 1`} preserveAspectRatio="none" aria-hidden="true">
+                  {strokes.map((st) =>
+                    st.points.length === 1 ? (
+                      <circle key={st.id} cx={st.points[0][0] * (box.w / box.h)} cy={st.points[0][1]} r={(st.width * box.w) / box.h / 2} fill={st.color} />
+                    ) : (
+                      <path key={st.id} d={strokePath(st, box.w / box.h)} fill="none" stroke={st.color} strokeWidth={(st.width * box.w) / box.h} strokeLinecap="round" strokeLinejoin="round" />
+                    ),
+                  )}
+                </svg>
+              )}
+              {tab === "draw" && (
+                <div
+                  className="absolute inset-0 cursor-crosshair"
+                  aria-label="Zone de dessin"
+                  onPointerDown={drawDown}
+                  onPointerMove={drawMove}
+                  onPointerUp={drawUp}
+                  onPointerCancel={drawUp}
+                />
+              )}
             </div>
           </EffectLayer>
         )}
@@ -309,7 +442,7 @@ export function PhotoStudio({
       )}
 
       <div className="border-t border-border bg-surface pb-[env(safe-area-inset-bottom)]">
-        <div role="tablist" className="flex">
+        <div role="tablist" className="no-scrollbar flex overflow-x-auto">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -317,7 +450,7 @@ export function PhotoStudio({
               role="tab"
               aria-selected={tab === t.id}
               onClick={() => setTab(t.id)}
-              className={"flex-1 py-2.5 text-xs font-semibold " + (tab === t.id ? "text-primary shadow-[inset_0_-2px_0_var(--color-primary)]" : "text-text-muted")}
+              className={"shrink-0 flex-1 whitespace-nowrap px-3 py-2.5 text-xs font-semibold " + (tab === t.id ? "text-primary shadow-[inset_0_-2px_0_var(--color-primary)]" : "text-text-muted")}
             >
               {t.label}
             </button>
@@ -349,13 +482,38 @@ export function PhotoStudio({
           )}
           {tab === "filters" && (
             <div className="flex flex-col gap-2">
-              <div className="flex gap-2 overflow-x-auto no-scrollbar">
-                {PRESETS.map((p) => (
-                  <button key={p.id} type="button" onClick={() => setPreset(p.id)} className={"chip shrink-0 press " + (preset === p.id ? "border-primary text-primary" : "")}>
-                    {p.label}
+              <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+                {LOOKS.map((l) => (
+                  <button
+                    key={l.id}
+                    type="button"
+                    onClick={() => {
+                      setLookId(l.id);
+                      setFinish(finishOf(l));
+                    }}
+                    aria-pressed={lookId === l.id}
+                    className={"flex w-16 shrink-0 flex-col items-center gap-1 rounded-token p-1 text-[11px] press " + (lookId === l.id ? "text-primary ring-2 ring-primary" : "text-text-muted")}
+                  >
+                    <span className="relative block h-12 w-12 overflow-hidden rounded-token-sm bg-surface-2" style={{ isolation: "isolate" }}>
+                      {thumb && <img src={thumb} alt="" className="h-full w-full object-cover" style={{ filter: cssFilter(l.adjust) }} />}
+                      <LookOverlay tints={tintsOf(l, finishOf(l))} finish={{ ...finishOf(l), grain: 0 }} width={48} />
+                    </span>
+                    <span className="w-full truncate text-center">{l.label}</span>
                   </button>
                 ))}
               </div>
+              <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Cadre">
+                <span className="text-xs text-text-muted">Cadre :</span>
+                {BORDERS.map((b) => (
+                  <button key={b.id} type="button" onClick={() => setBorder(b.id)} aria-pressed={border === b.id} className={"chip press text-xs " + (border === b.id ? "border-primary text-primary" : "")}>
+                    {b.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {tab === "tune" && (
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3 text-xs text-text-muted">
                 <button
                   type="button"
@@ -396,6 +554,20 @@ export function PhotoStudio({
                   />
                 </label>
               ))}
+              {FINISH_SLIDERS.map(({ key, label, min }) => (
+                <label key={key} className="flex items-center gap-3 text-xs text-text-muted">
+                  <span className="w-20">{label}</span>
+                  <input
+                    type="range"
+                    min={min}
+                    max={1}
+                    step={0.01}
+                    value={finish[key]}
+                    onChange={(e) => setFinish((f) => ({ ...f, [key]: Number(e.target.value) }))}
+                    className="flex-1 accent-[var(--color-primary)]"
+                  />
+                </label>
+              ))}
             </div>
           )}
           {tab === "stickers" && (
@@ -432,12 +604,94 @@ export function PhotoStudio({
                   Ajouter
                 </button>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {TEXT_COLORS.map((c) => (
-                  <button key={c} type="button" aria-label={`Couleur ${c}`} onClick={() => setTextColor(c)} className={"h-8 w-8 rounded-full border-2 press " + (textColor === c ? "border-primary" : "border-border")} style={{ background: c }} />
+                  <button
+                    key={c}
+                    type="button"
+                    aria-label={`Couleur ${c}`}
+                    onClick={() => {
+                      setTextColor(c);
+                      styleText({ color: c });
+                    }}
+                    className={"h-8 w-8 rounded-full border-2 press " + (textColor === c ? "border-primary" : "border-border")}
+                    style={{ background: c }}
+                  />
+                ))}
+              </div>
+              <div className="no-scrollbar flex gap-2 overflow-x-auto" role="group" aria-label="Style du texte">
+                {TEXT_LOOKS.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => {
+                      setTextLook(t.id);
+                      styleText({ look: t.id });
+                    }}
+                    aria-pressed={textLook === t.id}
+                    className={"chip shrink-0 press " + (textLook === t.id ? "border-primary text-primary" : "")}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <div className="no-scrollbar flex gap-2 overflow-x-auto" role="group" aria-label="Police du texte">
+                {STUDIO_FONTS.map((f) => (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => {
+                      setTextFont(f);
+                      styleText({ font: f });
+                    }}
+                    aria-pressed={textFont === f}
+                    className={"chip shrink-0 press " + (textFont === f ? "border-primary text-primary" : "")}
+                    style={{ fontFamily: f === "app" ? "ui-rounded, system-ui, sans-serif" : FONTS[f].stack ?? undefined }}
+                  >
+                    {f === "app" ? "Arrondie" : FONTS[f].label}
+                  </button>
                 ))}
               </div>
             </form>
+          )}
+          {tab === "draw" && (
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={() => setEraser(false)} aria-pressed={!eraser} className={"chip press " + (!eraser ? "border-primary text-primary" : "")}>
+                  ✏️ Pinceau
+                </button>
+                <button type="button" onClick={() => setEraser(true)} aria-pressed={eraser} className={"chip press " + (eraser ? "border-primary text-primary" : "")}>
+                  🧽 Gomme
+                </button>
+                <button type="button" onClick={() => setStrokes((ss) => ss.slice(0, -1))} disabled={strokes.length === 0} className="chip press disabled:opacity-40">
+                  ↶ Annuler
+                </button>
+                <button type="button" onClick={() => setStrokes([])} disabled={strokes.length === 0} className="chip press text-danger disabled:opacity-40">
+                  Tout effacer
+                </button>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {DRAW_COLORS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    aria-label={`Couleur ${c}`}
+                    onClick={() => {
+                      setDrawColor(c);
+                      setEraser(false);
+                    }}
+                    className={"h-8 w-8 rounded-full border-2 press " + (drawColor === c && !eraser ? "border-primary" : "border-border")}
+                    style={{ background: c }}
+                  />
+                ))}
+                {BRUSHES.map((b) => (
+                  <button key={b.id} type="button" onClick={() => setBrush(b.width)} aria-pressed={brush === b.width} aria-label={`Trait ${b.label}`} className={"grid h-8 w-8 place-items-center rounded-full border-2 press " + (brush === b.width ? "border-primary" : "border-border")}>
+                    <span className="block rounded-full bg-text" style={{ width: 4 + b.width * 300, height: 4 + b.width * 300 }} />
+                  </button>
+                ))}
+              </div>
+              <p className="text-[11px] text-text-muted">Dessine avec le doigt sur la photo.</p>
+            </div>
           )}
           {tab === "fx" && (
             <div className="flex flex-wrap gap-2">
