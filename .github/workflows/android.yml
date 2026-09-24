@@ -6,7 +6,7 @@ name: android
 #   - Actions must be enabled (Settings → Actions → General → Allow all actions).
 #   - Variable RENDER_URL = the server URL, e.g. https://memocat.onrender.com
 #     (Settings → Secrets and variables → Actions → Variables). The app calls
-#     this server; the build fails without it.
+#     this server; without it only pull requests build (as a check).
 #   - Signing (so each new APK installs over the previous one), as secrets:
 #       ANDROID_KEYSTORE_BASE64   base64 of a .jks keystore
 #       ANDROID_KEYSTORE_PASSWORD its password
@@ -45,11 +45,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The server the app talks to. A pull request still builds without it
+      # (build check only: that APK cannot reach any server).
       - name: Check the server URL
         env:
           RENDER_URL: ${{ vars.RENDER_URL }}
         run: |
-          if [ -z "$RENDER_URL" ]; then
+          if [ -n "$RENDER_URL" ]; then
+            echo "API_URL=$RENDER_URL" >> "$GITHUB_ENV"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "::warning::Repository variable RENDER_URL is not set: build check only, this APK cannot reach the server."
+            echo "API_URL=https://memocat.invalid" >> "$GITHUB_ENV"
+          else
             echo "::error::Repository variable RENDER_URL is not set (e.g. https://memocat.onrender.com)."
             exit 1
           fi
@@ -83,9 +90,8 @@ jobs:
           npx tauri android init --ci
 
       - name: Build the APK (arm64)
-        env:
-          VITE_API_URL: ${{ vars.RENDER_URL }}
         run: |
+          export VITE_API_URL="$API_URL"
           export NDK_HOME="$ANDROID_NDK_LATEST_HOME"
           npx tauri android build --apk --target aarch64 --ci
 
