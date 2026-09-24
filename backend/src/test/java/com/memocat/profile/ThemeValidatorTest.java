@@ -114,4 +114,14 @@ class ThemeValidatorTest {
         assertThatThrownBy(() -> validator.validate(theme))
                 .isInstanceOf(ContentValidationException.class);
     }
+
+    @Test
+    void widgetGapIsOneOfThreeSizes() {
+        for (String gap : new String[] {null, "s", "m", "l"}) {
+            assertThatCode(() -> validator.validate(new ThemeDto(validColors(), "trebuchet", "classic", "app", null, "app", gap)))
+                    .doesNotThrowAnyException();
+        }
+        assertThatThrownBy(() -> validator.validate(new ThemeDto(validColors(), "trebuchet", "classic", "app", null, "app", "xl")))
+                .isInstanceOf(ContentValidationException.class);
+    }
 }

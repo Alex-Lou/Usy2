@@ -30,6 +30,7 @@ public class ThemeValidator {
     static final Set<String> FONT_SCOPES = Set.of("profile", "app");
     static final Set<String> LAYOUTS = Set.of("classic", "sidebar-left");
     static final Set<String> MODES = Set.of("app", "custom");
+    static final Set<String> GAPS = Set.of("s", "m", "l");
     private static final Pattern HEX = Pattern.compile("^#[0-9a-fA-F]{6}$");
 
     public void validate(ThemeDto theme) {
@@ -54,6 +55,9 @@ public class ThemeValidator {
         // the follow-app-theme option existed).
         if (theme.mode() != null && !MODES.contains(theme.mode())) {
             throw new ContentValidationException("Unsupported theme mode: " + theme.mode());
+        }
+        if (theme.widgetGap() != null && !GAPS.contains(theme.widgetGap())) {
+            throw new ContentValidationException("Unsupported widget gap: " + theme.widgetGap());
         }
     }
 
