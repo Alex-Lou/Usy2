@@ -46,6 +46,14 @@ public class User {
     @Column(nullable = false)
     private String companion = "cat";
 
+    /** Font this person reads the messages in (a ThemeValidator font key; null: the app's). */
+    @Column(name = "reading_font")
+    private String readingFont;
+
+    /** Message text size for this person: s, m, l or xl (null: m). */
+    @Column(name = "reading_size")
+    private String readingSize;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -104,6 +112,19 @@ public class User {
 
     public void setCompanion(String companion) {
         this.companion = companion;
+    }
+
+    public String getReadingFont() {
+        return readingFont;
+    }
+
+    public String getReadingSize() {
+        return readingSize;
+    }
+
+    public void setReading(String font, String size) {
+        this.readingFont = font;
+        this.readingSize = size;
     }
 
     public Instant getCreatedAt() {
