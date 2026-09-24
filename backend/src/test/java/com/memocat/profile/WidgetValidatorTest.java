@@ -32,8 +32,6 @@ class WidgetValidatorTest {
                 text("richtext", "**Coucou** mon amour"),
                 mood("😻", "amoureuse"),
                 new WidgetDto("clock", null, null, "Paris", null, null, null),
-                new WidgetDto("calendar", null, null, "Nos dates", null, null, null),
-                new WidgetDto("music", null, null, null, null, null, null),
                 new WidgetDto("countdown", null, null, "Vacances", null, "2026-12-24", null),
                 new WidgetDto("image", null, null, "nous", 7L, null, null),
                 new WidgetDto("svg", null, null, null, null, null, "heart"));

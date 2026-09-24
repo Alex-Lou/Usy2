@@ -10,7 +10,7 @@ import { useDates } from "./useDates";
 
 const WEEKDAYS = ["L", "M", "M", "J", "V", "S", "D"];
 
-/** "Nos dates": the shared calendar, editable by both, with the countdown widgets. */
+/** The shared calendar (its own menu entry), editable by both, with the countdown widgets. */
 export function DatesPage() {
   const { events, setEvents, countdowns, error: loadError, reload } = useDates();
   const now = today();
@@ -78,8 +78,8 @@ export function DatesPage() {
     <div className="mx-auto flex max-w-5xl flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold">Nos dates</h1>
-          <p className="text-sm text-text-muted">Rendez-vous, anniversaires et comptes à rebours, pour vous deux. Rappel la veille à 19h.</p>
+          <h1 className="font-display text-2xl font-bold">Calendrier</h1>
+          <p className="text-sm text-text-muted">Vos dates à deux : rendez-vous, anniversaires et comptes à rebours. Rappel la veille à 19h.</p>
         </div>
         <Button onClick={() => open(null)}>
           <Icon name="plus" size={16} /> Ajouter

@@ -34,8 +34,6 @@ export type Widget = (
   | { type: "mood"; emoji?: string; label?: string } // shows the live mood; fields are legacy
   | { type: "clock"; label?: string }
   | { type: "countdown"; date: string; label?: string }
-  | { type: "calendar"; label?: string } // the next shared dates ("Nos dates")
-  | { type: "music"; label?: string } // the latest songs of the shared playlists
   | { type: "image"; assetId: number; label?: string }
   | { type: "svg"; variant: string; label?: string }
   | { type: "pins"; label?: string; pins: Pin[] }
