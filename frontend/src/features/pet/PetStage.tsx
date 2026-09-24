@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { renamePet } from "./api";
-import { CatSprite, type CatPose } from "./CatSprite";
+import type { CatPose } from "./CatSprite";
+import { LivingCat } from "./rig/LivingCat";
 import { MOOD_TEXT, wornItems, type Pet, type PetAction } from "./types";
 
 
@@ -56,14 +57,9 @@ export function PetStage({
 
   return (
     <section className="card relative flex items-center gap-3 overflow-hidden px-3 py-2 animate-fade-up" aria-label={`${pet.name}, le chat`}>
-      <button
-        type="button"
-        onClick={() => onAct("pet")}
-        aria-label={`Toucher ${pet.name}`}
-        className="relative shrink-0 rounded-token press"
-      >
-        <CatSprite pose={pose} size={104} wearing={wornItems(pet)} />
-      </button>
+      <div className="relative shrink-0">
+        <LivingCat mode="stage" size={104} pose={pose} wearing={wornItems(pet)} onTap={() => onAct("pet")} label={`Toucher ${pet.name}`} />
+      </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex items-baseline gap-1.5">
