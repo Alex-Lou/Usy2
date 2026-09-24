@@ -55,9 +55,25 @@ export interface SharedWidgets {
   version: number;
 }
 
+/** A date on the shared calendar (see CoupleEventService.java). */
+export interface CoupleEvent {
+  id: number;
+  title: string;
+  date: string; // YYYY-MM-DD
+  time: string | null; // HH:mm[:ss], null = all day
+  emoji: string | null;
+  note: string | null;
+  yearly: boolean;
+  createdById: number;
+  createdAt: string;
+}
+
+/** What is sent to create or change a date. */
+export type CoupleEventInput = Pick<CoupleEvent, "title" | "date" | "time" | "emoji" | "note" | "yearly">;
+
 /** Broadcast on /topic/couple (see CoupleActivity.java). */
 export interface CoupleActivity {
-  kind: "mood" | "note" | "list" | "list-change" | "together" | "widgets";
+  kind: "mood" | "note" | "list" | "list-change" | "together" | "widgets" | "events";
   actorId: number;
   actorName: string;
   detail: string | null;

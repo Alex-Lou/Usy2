@@ -1,6 +1,6 @@
 import { apiRequest } from "../../lib/api/client";
 import type { Widget } from "../profile/types";
-import type { CoupleOverview, Memory, Mood, Note, Page, SharedList, SharedWidgets } from "./types";
+import type { CoupleEvent, CoupleEventInput, CoupleOverview, Memory, Mood, Note, Page, SharedList, SharedWidgets } from "./types";
 
 export function getCouple(): Promise<CoupleOverview> {
   return apiRequest<CoupleOverview>("/api/couple");
@@ -73,4 +73,20 @@ export function saveSharedWidgets(widgets: Widget[], version: number): Promise<S
 /** Adds a copy of one widget at the end of the shared list. */
 export function addSharedWidget(widget: Widget): Promise<SharedWidgets> {
   return apiRequest<SharedWidgets>("/api/couple/widgets", { method: "POST", body: { widget } });
+}
+
+export function getEvents(): Promise<CoupleEvent[]> {
+  return apiRequest<CoupleEvent[]>("/api/couple/events");
+}
+
+export function createEvent(input: CoupleEventInput): Promise<CoupleEvent> {
+  return apiRequest<CoupleEvent>("/api/couple/events", { method: "POST", body: input });
+}
+
+export function updateEvent(id: number, input: CoupleEventInput): Promise<CoupleEvent> {
+  return apiRequest<CoupleEvent>(`/api/couple/events/${id}`, { method: "PUT", body: input });
+}
+
+export function deleteEvent(id: number): Promise<void> {
+  return apiRequest<void>(`/api/couple/events/${id}`, { method: "DELETE" });
 }

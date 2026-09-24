@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.chat.ChatMessageSent;
 import com.memocat.couple.CoupleActivity;
+import com.memocat.couple.EventReminder;
 import com.memocat.domain.PushSubscription;
 import com.memocat.domain.User;
 import com.memocat.feed.FeedActivity;
@@ -128,6 +129,18 @@ public class PushNotifier {
         }
     }
 
+    /** A shared date is tomorrow: both people hear about it, even with the app open. */
+    @Async(PushConfig.EXECUTOR)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onEventReminder(EventReminder r) {
+        String body = "Demain : " + (r.emoji() == null ? "" : r.emoji() + " ") + r.title()
+                + (r.time() == null ? "" : " à " + String.format("%02dh%02d", r.time().getHour(), r.time().getMinute()));
+        PushPayload payload = new PushPayload(TITLE, body, "/dates", "event-" + r.eventId());
+        for (User recipient : users.findAll()) {
+            send(recipient, payload, false);
+        }
+    }
+
     private boolean firstInAWhile(Long listId) {
         Instant now = clock.instant();
         Instant previous = lastListPush.put(listId, now);
@@ -142,6 +155,10 @@ public class PushNotifier {
         if (presence.isLookingAtApp(recipient.getUsername())) {
             return;
         }
+        send(recipient, payload, urgent);
+    }
+
+    private void send(User recipient, PushPayload payload, boolean urgent) {
         byte[] bytes;
         try {
             bytes = json.writeValueAsBytes(payload);

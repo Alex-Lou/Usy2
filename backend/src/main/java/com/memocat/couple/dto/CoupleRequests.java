@@ -3,6 +3,7 @@ package com.memocat.couple.dto;
 import com.memocat.profile.dto.WidgetDto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 /** Request bodies of the "Nous" API. Content rules are checked in the services. */
@@ -33,5 +34,10 @@ public final class CoupleRequests {
 
     /** One widget added at the end of the shared list (e.g. shared from a profile). */
     public record AddWidgetRequest(WidgetDto widget) {
+    }
+
+    /** A date on the shared calendar; {@code time} null = all day. */
+    public record EventRequest(String title, LocalDate date, LocalTime time, String emoji, String note,
+                               boolean yearly) {
     }
 }
