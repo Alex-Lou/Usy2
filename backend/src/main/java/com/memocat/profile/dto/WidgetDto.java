@@ -10,7 +10,6 @@ import java.util.List;
  * - mood: {@code emoji} (+ optional {@code label})
  * - clock: optional {@code label}
  * - countdown: {@code date} (ISO) (+ optional {@code label})
- * - calendar: the next shared dates ("Nos dates"), optional {@code label}
  * - music: the latest songs of the shared playlists, optional {@code label}
  * - image: {@code assetId} (+ optional {@code label} caption)
  * - svg: {@code variant} (+ optional {@code label})

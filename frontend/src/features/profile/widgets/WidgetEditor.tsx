@@ -15,7 +15,7 @@ import { SVG_GROUPS, SVG_LABELS, WIDGET_LABELS } from "./registry";
  */
 
 export const WIDGET_TYPES: WidgetType[] = [
-  "richtext", "quote", "marquee", "mood", "clock", "countdown", "calendar", "music", "image", "svg", "pins",
+  "richtext", "quote", "marquee", "mood", "clock", "countdown", "image", "svg", "pins",
 ];
 
 export function defaultWidget(type: WidgetType): Widget {
@@ -30,10 +30,6 @@ export function defaultWidget(type: WidgetType): Widget {
       return { type: "mood" };
     case "clock":
       return { type: "clock", label: "" };
-    case "calendar":
-      return { type: "calendar", label: "" };
-    case "music":
-      return { type: "music", label: "" };
     case "countdown":
       return { type: "countdown", date: "2026-12-25", label: "" };
     case "image":
@@ -91,8 +87,6 @@ export function WidgetEditor({
     case "mood":
       return <p className="text-xs text-text-muted">Affiche ton humeur du moment. Elle se change en un geste depuis le bandeau « Nous » du fil.</p>;
     case "clock":
-    case "calendar":
-    case "music":
       return <Input value={widget.label ?? ""} maxLength={40} placeholder="titre (optionnel)" onChange={(e) => onPatch({ label: e.target.value })} />;
     case "countdown":
       return (
