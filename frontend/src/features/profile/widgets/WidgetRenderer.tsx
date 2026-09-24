@@ -1,4 +1,5 @@
 import type { Widget } from "../types";
+import { CalendarWidget } from "./CalendarWidget";
 import { ClockWidget } from "./ClockWidget";
 import { CountdownWidget } from "./CountdownWidget";
 import { ImageWidget } from "./ImageWidget";
@@ -32,6 +33,8 @@ export function WidgetRenderer({ widget, ownerId }: { widget: Widget; ownerId?: 
       return <ClockWidget label={widget.label} />;
     case "countdown":
       return <CountdownWidget date={widget.date} label={widget.label} />;
+    case "calendar":
+      return <CalendarWidget label={widget.label} />;
     case "image":
       return <ImageWidget assetId={widget.assetId} label={widget.label} />;
     case "svg":

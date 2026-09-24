@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
+import { DateList } from "./DateList";
+import { today, upcoming } from "./dates";
 import { ListsPanel } from "./ListsPanel";
 import { Memories } from "./Memories";
 import { MoodChips } from "./MoodChips";
 import { NotesPanel } from "./NotesPanel";
 import { TogetherSince } from "./TogetherSince";
 import { useCouple } from "./useCouple";
+import { useDates } from "./useDates";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -40,6 +44,9 @@ export function NousPanel({ myId }: { myId: number | undefined }) {
         />
         <Memories />
       </Section>
+      <Section title="Nos dates">
+        <NextDates />
+      </Section>
       <Section title="Petits mots">
         <NotesPanel myId={myId} />
       </Section>
@@ -47,5 +54,23 @@ export function NousPanel({ myId }: { myId: number | undefined }) {
         <ListsPanel />
       </Section>
     </div>
+  );
+}
+
+/** The next few shared dates, and the way to the calendar. */
+function NextDates() {
+  const { events, countdowns } = useDates();
+  const next = upcoming(events ?? [], countdowns, today(), 3);
+  return (
+    <>
+      {events === null ? (
+        <div className="h-12 animate-pulse rounded-token bg-border/50" />
+      ) : next.length ? (
+        <DateList entries={next} compact />
+      ) : (
+        <p className="text-sm text-text-muted">Aucune date à venir.</p>
+      )}
+      <Link to="/dates" className="chip press self-start text-sm hover:border-primary/50">Ouvrir le calendrier</Link>
+    </>
   );
 }

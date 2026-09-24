@@ -19,6 +19,8 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     public static final String TOGETHER = "together";
     /** The shared side-menu widgets changed: sync only, no notification. */
     public static final String WIDGETS = "widgets";
+    /** A date on the shared calendar was added, changed or removed: sync only. */
+    public static final String EVENTS = "events";
 
     public static CoupleActivity of(String kind, User actor, String detail, Long refId) {
         return new CoupleActivity(kind, actor.getId(), actor.getDisplayName(), detail, refId);

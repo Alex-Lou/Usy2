@@ -61,7 +61,7 @@ public class WidgetValidator {
             case "marquee", "quote" -> requireText(widget, MAX_TEXT);
             case "richtext" -> requireText(widget, MAX_RICHTEXT);
             case "mood" -> validateMood(widget);
-            case "clock" -> validateLabel(widget);
+            case "clock", "calendar" -> validateLabel(widget);
             case "countdown" -> validateCountdown(widget);
             case "image" -> validateImage(widget);
             case "svg" -> validateSvg(widget);

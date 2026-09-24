@@ -30,6 +30,7 @@ export const WIDGET_LABELS: Record<WidgetType, string> = {
   mood: "Humeur",
   clock: "Horloge",
   countdown: "Compte à rebours",
+  calendar: "Calendrier (nos dates)",
   image: "Image",
   svg: "SVG animé",
   pins: "Épingles (accès rapides)",

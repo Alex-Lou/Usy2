@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 /**
  * "Today" for the couple, in their time zone (memocat.timezone), so memories
@@ -34,5 +35,10 @@ public class CoupleClock {
 
     public LocalDate today() {
         return LocalDate.now(clock.withZone(zone));
+    }
+
+    /** The couple's current date and time. */
+    public ZonedDateTime now() {
+        return ZonedDateTime.now(clock.withZone(zone));
     }
 }

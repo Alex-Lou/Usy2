@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.chat.ChatMessageSent;
 import com.memocat.couple.CoupleActivity;
+import com.memocat.couple.EventReminder;
 import com.memocat.domain.PushSubscription;
 import com.memocat.domain.User;
 import com.memocat.feed.FeedActivity;
@@ -20,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -188,6 +190,21 @@ class PushNotifierTest {
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.TOGETHER, 1L, "Lou", null, null));
 
         verify(sender, never()).send(any(), any(), anyBoolean());
+    }
+
+    @Test
+    void dateReminderReachesBothEvenWithTheAppOpen() throws Exception {
+        PushSubscription louPhone = new PushSubscription(lou, "https://fcm.googleapis.com/c", "k", "s");
+        when(subscriptions.findByUserIdOrderByCreatedAtAsc(1L)).thenReturn(List.of(louPhone));
+        presence.report("session", "sam", true);
+
+        notifier.onEventReminder(new EventReminder(4L, "Resto", "🍝", LocalTime.of(20, 30)));
+
+        verify(sender).send(eq(louPhone), any(), eq(false));
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("body").asText()).isEqualTo("Demain : 🍝 Resto à 20h30");
+        assertThat(payload.get("url").asText()).isEqualTo("/dates");
+        assertThat(payload.get("tag").asText()).isEqualTo("event-4");
     }
 
     private static final class MutableClock extends Clock {
