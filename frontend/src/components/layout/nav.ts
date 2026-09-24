@@ -15,7 +15,6 @@ export function navItems(myUserId?: number): NavItem[] {
     { to: "/jeux", label: "Jeux", icon: "gamepad" },
     { to: "/chat", label: "Messages", icon: "chat" },
     { to: "/dates", label: "Calendrier", icon: "calendar" },
-    { to: "/musique", label: "Musique", icon: "music" },
     { to: myUserId ? `/profile/${myUserId}` : "/profile/edit", label: "Profil", icon: "user" },
   ];
 }

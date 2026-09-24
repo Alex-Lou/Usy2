@@ -144,7 +144,7 @@ public class WidgetValidator {
         validateLabel(widget);
     }
 
-    public static boolean isWebAddress(String url) {
+    static boolean isWebAddress(String url) {
         if (url == null || url.isBlank() || url.length() > MAX_URL) {
             return false;
         }

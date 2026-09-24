@@ -40,16 +40,4 @@ public final class CoupleRequests {
     public record EventRequest(String title, LocalDate date, LocalTime time, String emoji, String note,
                                boolean yearly) {
     }
-
-    /** A playlist's name and optional emoji. */
-    public record PlaylistRequest(String name, String emoji) {
-    }
-
-    /** A song: title required; artist, web link and note optional. */
-    public record TrackRequest(String title, String artist, String url, String note) {
-    }
-
-    /** Every track of the playlist, in the wanted order. */
-    public record TrackOrderRequest(List<Long> trackIds) {
-    }
 }
