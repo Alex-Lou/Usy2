@@ -33,7 +33,7 @@ export function WidgetRenderer({ widget, ownerId }: { widget: Widget; ownerId?: 
     case "countdown":
       return <CountdownWidget date={widget.date} label={widget.label} />;
     case "image":
-      return <ImageWidget assetId={widget.assetId} label={widget.label} />;
+      return <ImageWidget assetId={widget.assetId} label={widget.label} fill={widget.h !== undefined} />;
     case "svg":
       return <SvgWidget variant={widget.variant} label={widget.label} />;
     case "pins":

@@ -13,11 +13,17 @@ import java.util.Map;
  * fontScope: "profile" (fonts on the profile page) or "app" (also the whole
  *       app for its owner). Null = saved before this choice existed: the font
  *       then only applies with custom colors, as it always did.
+ * widgetGap: space between the profile's widgets, "s", "m" or "l" (null: "m").
  */
 public record ThemeDto(Map<String, String> colors, String font, String layout, String mode,
-                       String headingFont, String fontScope) {
+                       String headingFont, String fontScope, String widgetGap) {
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode) {
-        this(colors, font, layout, mode, null, null);
+        this(colors, font, layout, mode, null, null, null);
+    }
+
+    public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
+                    String headingFont, String fontScope) {
+        this(colors, font, layout, mode, headingFont, fontScope, null);
     }
 }

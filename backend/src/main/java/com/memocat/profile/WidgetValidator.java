@@ -29,6 +29,7 @@ public class WidgetValidator {
     static final int MAX_EMOJI = 8;
     static final int MAX_PINS = 12;
     static final int MAX_URL = 2048;
+    static final int MAX_CELLS = 4;
 
     /** Curated animated SVG choices (chibi animals + a few decorative marks). */
     static final Set<String> SVG_VARIANTS = Set.of(
@@ -57,6 +58,8 @@ public class WidgetValidator {
         if (widget == null || widget.type() == null) {
             throw new ContentValidationException("widget type is required");
         }
+        validateCells(widget.w(), "width");
+        validateCells(widget.h(), "height");
         switch (widget.type()) {
             case "marquee", "quote" -> requireText(widget, MAX_TEXT);
             case "richtext" -> requireText(widget, MAX_RICHTEXT);
@@ -67,6 +70,13 @@ public class WidgetValidator {
             case "svg" -> validateSvg(widget);
             case "pins" -> validatePins(widget);
             default -> throw new ContentValidationException("Unknown widget type: " + widget.type());
+        }
+    }
+
+    /** A size on the profile grid: absent, or 1 to MAX_CELLS cells. */
+    private void validateCells(Integer cells, String what) {
+        if (cells != null && (cells < 1 || cells > MAX_CELLS)) {
+            throw new ContentValidationException("widget " + what + " must be 1 to " + MAX_CELLS + " cells");
         }
     }
 

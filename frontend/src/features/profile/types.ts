@@ -10,6 +10,7 @@ export type FontKey =
 export type FontScope = "profile" | "app";
 export type LayoutKey = "classic" | "sidebar-left";
 export type ThemeMode = "app" | "custom";
+export type WidgetGap = "s" | "m" | "l";
 
 export interface ThemeColors {
   bg: string;
@@ -25,6 +26,7 @@ export interface Theme {
   mode?: ThemeMode; // "app" (follow app light/dark) by default, or "custom" colors
   headingFont?: FontKey | null; // titles; null = the app's title font
   fontScope?: FontScope | null; // null = saved before fonts had a scope (see fontsApply)
+  widgetGap?: WidgetGap | null; // space between the profile's widgets (null = "m")
 }
 
 export type Widget = (
@@ -39,6 +41,8 @@ export type Widget = (
   | { type: "pins"; label?: string; pins: Pin[] }
 ) & {
   home?: boolean; // also shown at the top of the home feed
+  w?: number; // width on the profile grid, 1..4 cells (default: half, marquee full)
+  h?: number; // height, 1..4 rows (default: follows the content)
 };
 
 /** A pinned web page (quick access): its address and an optional short name. */

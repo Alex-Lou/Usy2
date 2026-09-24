@@ -166,4 +166,16 @@ class WidgetValidatorTest {
         assertThatThrownBy(() -> validator.validate(java.util.List.of(new WidgetDto("svg", null, null, null, null, null, "dragon"))))
                 .isInstanceOf(ContentValidationException.class);
     }
+
+    @Test
+    void aWidgetMaySpanOneToFourCellsEachWay() {
+        assertThatCode(() -> validator.validate(java.util.List.of(
+                new WidgetDto("quote", "Hi", null, null, null, null, null, null, null, 1, 4),
+                new WidgetDto("quote", "Hi", null, null, null, null, null, null, null, 4, null)))).doesNotThrowAnyException();
+        for (int[] bad : new int[][] {{0, 1}, {5, 1}, {1, 0}, {1, 9}}) {
+            assertThatThrownBy(() -> validator.validate(java.util.List.of(
+                    new WidgetDto("quote", "Hi", null, null, null, null, null, null, null, bad[0], bad[1]))))
+                    .isInstanceOf(ContentValidationException.class);
+        }
+    }
 }

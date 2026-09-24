@@ -9,11 +9,11 @@ import { Icon } from "../../components/ui/Icon";
 import { Loader } from "../../components/ui/states";
 import { useAuth } from "../auth/useAuth";
 import { NousPanel } from "../couple/NousPanel";
-import { getProfile } from "./api";
+import { getProfile, updateMyProfile } from "./api";
 import { useFonts } from "../../lib/fonts";
 import { buildThemeStyle, fontsApply } from "./theme";
-import type { Profile } from "./types";
-import { WidgetRenderer } from "./widgets/WidgetRenderer";
+import { GAPS, ProfileGrid } from "./ProfileGrid";
+import type { Profile, Widget, WidgetGap } from "./types";
 
 export function ProfilePage() {
   const { userId } = useParams();
@@ -23,11 +23,16 @@ export function ProfilePage() {
   const id = Number(userId);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Arranging my widgets: a draft of their sizes and spacing, saved on demand.
+  const [draft, setDraft] = useState<{ widgets: Widget[]; gap: WidgetGap } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setProfile(null);
     setError(null);
+    setDraft(null);
     getProfile(id)
       .then((p) => !cancelled && setProfile(p))
       .catch(() => !cancelled && setError("Profil introuvable."));
@@ -43,6 +48,29 @@ export function ProfilePage() {
   if (!profile) return <Loader />;
 
   const isOwn = user?.id === profile.userId;
+
+  async function saveLayout() {
+    if (!profile || !draft) return;
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const saved = await updateMyProfile(
+        { ...profile.theme, widgetGap: draft.gap === "m" ? null : draft.gap },
+        draft.widgets,
+        profile.avatarAssetId ?? null,
+        profile.bio ?? null,
+        profile.coverAssetId ?? null,
+        profile.avatarFraming ?? null,
+        profile.coverFraming ?? null,
+      );
+      setProfile(saved);
+      setDraft(null);
+    } catch (e) {
+      setSaveError(e instanceof Error && e.message ? e.message : "Enregistrement impossible.");
+    } finally {
+      setSaving(false);
+    }
+  }
   const companion: Species =
     profile.companion && (SPECIES as readonly string[]).includes(profile.companion)
       ? (profile.companion as Species)
@@ -97,11 +125,42 @@ export function ProfilePage() {
       {tab === "nous" ? (
         <NousPanel myId={user?.id} />
       ) : (
-      /* Widgets — a spacious grid, marquee spans full width. */
+      /* Widgets — a grid; each widget has its own size (see ProfileGrid). */
       <section className="flex flex-col gap-3 animate-fade-up">
-        <h2 className="px-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
-          {isOwn ? "Mon petit monde" : `Le monde de ${profile.displayName}`}
-        </h2>
+        <div className="flex flex-wrap items-center gap-2 px-1">
+          <h2 className="mr-auto text-xs font-semibold uppercase tracking-wide text-text-muted">
+            {isOwn ? "Mon petit monde" : `Le monde de ${profile.displayName}`}
+          </h2>
+          {isOwn && profile.widgets.length > 0 && !draft && (
+            <button type="button" onClick={() => setDraft({ widgets: profile.widgets, gap: profile.theme.widgetGap ?? "m" })} className="chip press inline-flex items-center gap-1 text-xs hover:border-primary/50">
+              <Icon name="sliders" size={13} /> Arranger
+            </button>
+          )}
+        </div>
+        {draft && (
+          <div className="sticky top-2 z-20 flex flex-wrap items-center gap-2 rounded-token border border-primary/40 bg-surface/95 p-2 shadow-card backdrop-blur">
+            <span className="text-xs text-text-muted">Tire le coin <strong>↘</strong> d'un cadre pour l'agrandir ou le rétrécir.</span>
+            <span className="flex items-center gap-1 text-xs text-text-muted" role="group" aria-label="Écart entre les cadres">
+              Écart :
+              {GAPS.map((g) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  onClick={() => setDraft({ ...draft, gap: g.id })}
+                  aria-pressed={draft.gap === g.id}
+                  className={"chip press !py-0.5 text-xs " + (draft.gap === g.id ? "border-primary text-primary" : "")}
+                >
+                  {g.label}
+                </button>
+              ))}
+            </span>
+            <span className="ml-auto flex gap-2">
+              <Button type="button" variant="ghost" onClick={() => setDraft(null)} className="!px-3 !py-1.5 text-sm">Annuler</Button>
+              <Button type="button" onClick={saveLayout} disabled={saving} className="!px-3 !py-1.5 text-sm">{saving ? "…" : "Enregistrer"}</Button>
+            </span>
+            {saveError && <p role="alert" className="w-full text-xs text-danger">{saveError}</p>}
+          </div>
+        )}
 
         {profile.widgets.length === 0 ? (
           <div className="card flex flex-col items-center gap-3 p-8 text-center">
@@ -118,13 +177,15 @@ export function ProfilePage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {profile.widgets.map((w, i) => (
-              <div key={i} className={w.type === "marquee" ? "sm:col-span-2" : ""}>
-                <WidgetRenderer widget={w} ownerId={profile.userId} />
-              </div>
-            ))}
-          </div>
+          <ProfileGrid
+            widgets={draft?.widgets ?? profile.widgets}
+            ownerId={profile.userId}
+            gap={draft?.gap ?? profile.theme.widgetGap}
+            arranging={!!draft}
+            onResize={(index, size) =>
+              setDraft((d) => d && { ...d, widgets: d.widgets.map((w, i) => (i === index ? { ...w, w: size.w, h: size.h } : w)) })
+            }
+          />
         )}
       </section>
       )}
