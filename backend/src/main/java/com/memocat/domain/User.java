@@ -1,6 +1,9 @@
 package com.memocat.domain;
 
+import com.memocat.asset.Framing;
+import com.memocat.asset.FramingConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,6 +36,11 @@ public class User {
     /** Optional profile photo (an {@code asset} id), shown as the avatar. */
     @Column(name = "avatar_asset_id")
     private Long avatarAssetId;
+
+    /** Which part of the profile photo shows in the round avatar (null: centred). */
+    @Convert(converter = FramingConverter.class)
+    @Column(name = "avatar_framing")
+    private Framing avatarFraming;
 
     /** Chosen companion animal, shown as an avatar badge / fallback. */
     @Column(nullable = false)
@@ -80,6 +88,14 @@ public class User {
 
     public void setAvatarAssetId(Long avatarAssetId) {
         this.avatarAssetId = avatarAssetId;
+    }
+
+    public Framing getAvatarFraming() {
+        return avatarFraming;
+    }
+
+    public void setAvatarFraming(Framing avatarFraming) {
+        this.avatarFraming = avatarFraming;
     }
 
     public String getCompanion() {

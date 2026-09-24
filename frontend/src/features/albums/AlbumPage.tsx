@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AssetImage } from "../../components/AssetImage";
+import { FramingEditor } from "../../components/photo/FramingEditor";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
@@ -40,6 +41,7 @@ export function AlbumPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [framingPhoto, setFramingPhoto] = useState<Photo | null>(null); // cover being framed
 
   const refresh = useCallback(() => {
     getAlbum(albumId)
@@ -162,23 +164,36 @@ export function AlbumPage() {
           <AssetImage assetId={photos[lightbox].assetId} className="max-h-[80vh] max-w-full rounded-token object-contain" />
           {photos[lightbox].caption && <p className="mt-3 text-center text-white">{photos[lightbox].caption}</p>}
           <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {album.coverAssetId === photos[lightbox].assetId ? (
+            {album.coverAssetId === photos[lightbox].assetId && (
               <span className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">✓ Couverture de l'album</span>
-            ) : (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setAlbumCover(albumId, photos[lightbox].id).then(setAlbum).catch(() => {});
-                }}
-                className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white press hover:bg-white/25"
-              >
-                Utiliser comme couverture
-              </button>
             )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setFramingPhoto(photos[lightbox]); // choose the part shown on the album tile
+              }}
+              className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white press hover:bg-white/25"
+            >
+              {album.coverAssetId === photos[lightbox].assetId ? "Recadrer la couverture" : "Utiliser comme couverture"}
+            </button>
             <button className="rounded-full btn-brand px-5 py-2 text-sm font-semibold press">Fermer</button>
           </div>
         </div>
+      )}
+
+      {framingPhoto && (
+        <FramingEditor
+          assetId={framingPhoto.assetId}
+          aspect={1} // album tiles are square
+          initial={album.coverAssetId === framingPhoto.assetId ? album.coverFraming : null}
+          title="Cadrer la couverture de l'album"
+          onCancel={() => setFramingPhoto(null)}
+          onSave={(f) => {
+            setAlbumCover(albumId, framingPhoto.id, f).then(setAlbum).catch(() => {});
+            setFramingPhoto(null);
+          }}
+        />
       )}
     </div>
   );

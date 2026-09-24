@@ -1,4 +1,5 @@
 import { SPECIES, type Species } from "../../app/companion";
+import type { Framing } from "../../lib/framing";
 import { AssetImage } from "../AssetImage";
 import { Animal } from "./animals";
 
@@ -31,12 +32,15 @@ export function Avatar({
   className = "",
   assetId,
   species,
+  framing,
 }: {
   name: string;
   size?: number;
   className?: string;
   assetId?: number | null;
   species?: string | null;
+  /** Which part of the photo shows in the circle (null: centred). */
+  framing?: Framing | null;
 }) {
   const animal = asSpecies(species);
   const h = hash(name || "?");
@@ -46,7 +50,9 @@ export function Avatar({
   return (
     <span className={`relative inline-flex shrink-0 ${className}`} style={{ width: size, height: size }} aria-hidden="true">
       {assetId ? (
-        <AssetImage assetId={assetId} className="h-full w-full rounded-full object-cover" />
+        <span className="block h-full w-full overflow-hidden rounded-full">
+          <AssetImage assetId={assetId} framing={framing} className="h-full w-full rounded-full object-cover" />
+        </span>
       ) : animal ? (
         <span className="grid h-full w-full place-items-center rounded-full bg-surface-2" style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,.15)" }}>
           <Animal species={animal} size={Math.round(size * 0.86)} />

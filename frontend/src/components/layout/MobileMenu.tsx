@@ -4,6 +4,7 @@ import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
 import { CompanionPicker } from "../ui/CompanionPicker";
 import { Icon } from "../ui/Icon";
+import { HomeWidgets } from "../../features/feed/HomeWidgets";
 import { navItems } from "./nav";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -47,7 +48,7 @@ export function MobileMenu() {
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
-          <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col gap-4 border-r border-border bg-surface px-4 pb-5 pt-[calc(var(--safe-top)+1.25rem)] shadow-card animate-fade-up">
+          <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col gap-4 overflow-y-auto border-r border-border bg-surface px-4 pb-5 pt-[calc(var(--safe-top)+1.25rem)] shadow-card animate-fade-up">
             <div className="flex items-center justify-between">
               <span className="font-display text-2xl font-bold text-grad">MemoCat</span>
               <button
@@ -60,7 +61,7 @@ export function MobileMenu() {
             </div>
 
             <div className="flex items-center gap-3 rounded-token border border-border bg-surface-2 p-2">
-              <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} species={user?.companion} />
+              <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold">{user?.displayName}</p>
                 <p className="truncate text-xs text-text-muted">@{user?.username}</p>
@@ -83,6 +84,8 @@ export function MobileMenu() {
                 </NavLink>
               ))}
             </nav>
+
+            <HomeWidgets />
 
             <div className="mt-auto flex flex-col gap-3">
               <div>

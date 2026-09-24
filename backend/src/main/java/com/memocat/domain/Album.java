@@ -1,6 +1,9 @@
 package com.memocat.domain;
 
+import com.memocat.asset.Framing;
+import com.memocat.asset.FramingConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -42,6 +45,11 @@ public class Album {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cover_photo_id")
     private Photo coverPhoto;
+
+    /** Which part of the cover photo shows on the album tile (null: centred). */
+    @Convert(converter = FramingConverter.class)
+    @Column(name = "cover_framing")
+    private Framing coverFraming;
 
     protected Album() {
         // for JPA
@@ -94,5 +102,13 @@ public class Album {
 
     public void setCoverPhoto(Photo coverPhoto) {
         this.coverPhoto = coverPhoto;
+    }
+
+    public Framing getCoverFraming() {
+        return coverFraming;
+    }
+
+    public void setCoverFraming(Framing coverFraming) {
+        this.coverFraming = coverFraming;
     }
 }

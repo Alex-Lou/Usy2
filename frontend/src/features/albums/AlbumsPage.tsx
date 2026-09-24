@@ -90,7 +90,9 @@ export function AlbumsPage() {
                 className="group relative aspect-square overflow-hidden rounded-token border border-border bg-surface-2 shadow-card press"
               >
                 {album.coverAssetId ? (
-                  <AssetImage assetId={album.coverAssetId} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+                  <div className="h-full w-full overflow-hidden transition duration-300 group-hover:scale-105">
+                    <AssetImage assetId={album.coverAssetId} framing={album.coverFraming} className="h-full w-full object-cover" />
+                  </div>
                 ) : (
                   <div className="grid h-full w-full place-items-center text-text-muted">
                     <Icon name="images" size={34} />

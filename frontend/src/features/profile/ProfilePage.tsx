@@ -54,7 +54,9 @@ export function ProfilePage() {
       {/* Hero: cover band + overlapping avatar, with room to breathe. */}
       <div className="card overflow-hidden bg-bg animate-fade-up">
         <div className="relative h-28 overflow-hidden sm:h-36" style={{ backgroundImage: "var(--grad)" }}>
-          {profile.coverAssetId && <AssetImage assetId={profile.coverAssetId} className="absolute inset-0 h-full w-full object-cover" />}
+          {profile.coverAssetId && (
+            <AssetImage assetId={profile.coverAssetId} framing={profile.coverFraming} className="absolute inset-0 h-full w-full object-cover" />
+          )}
           {isOwn && (
             <Link to="/profile/edit" className="absolute right-3 top-3">
               <Button variant="surface" className="!px-3 !py-1.5 text-sm">
@@ -66,7 +68,7 @@ export function ProfilePage() {
 
         <div className="px-6 pb-6">
           <div className="-mt-12 mb-3 rounded-full ring-4 ring-bg inline-block">
-            <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} species={profile.companion} />
+            <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} species={profile.companion} />
           </div>
           <h1 className="font-display text-3xl font-bold text-primary">{profile.displayName}</h1>
           <p className="text-text-muted">@{isOwn ? user?.username : "profil"}</p>

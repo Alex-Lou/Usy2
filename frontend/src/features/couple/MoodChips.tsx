@@ -32,7 +32,7 @@ export function MoodChips({
           const isMe = p.userId === myId;
           const content = (
             <>
-              <Avatar name={p.displayName} size={28} assetId={p.avatarAssetId} species={p.companion} />
+              <Avatar name={p.displayName} size={28} assetId={p.avatarAssetId} framing={p.avatarFraming} species={p.companion} />
               <span className="text-2xl leading-none">{mood?.emoji ?? (isMe ? "＋" : "…")}</span>
               <span className="flex min-w-0 flex-col text-left leading-tight">
                 <span className="truncate text-sm text-text">
