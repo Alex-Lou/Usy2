@@ -2,7 +2,9 @@ import { useCallback, useEffect, useRef, useState, type PointerEvent } from "rea
 import { Link } from "react-router-dom";
 import { Icon } from "../../../components/ui/Icon";
 import { useAuth } from "../../auth/useAuth";
-import { CatSprite } from "../CatSprite";
+import type { CatPose } from "../CatSprite";
+import { HOUSE, LivingCat } from "../rig/LivingCat";
+import { setSoundEnabled, soundEnabled } from "../rig/sound";
 import { MOOD_TEXT, wornItems, type PetAction } from "../types";
 import { usePet } from "../usePet";
 import { createPetClient } from "./petClient";
@@ -48,11 +50,11 @@ export function PetHousePage() {
   const [gain, setGain] = useState<{ n: number; key: number } | null>(null);
   const [progress, setProgress] = useState(0); // brush / laser progress 0..1
   const [dot, setDot] = useState<{ x: number; y: number } | null>(null);
-  const [look, setLook] = useState<{ x: number; y: number } | undefined>();
+  const [sound, setSound] = useState(soundEnabled);
   const [sparkles, setSparkles] = useState<{ x: number; y: number; id: number }[]>([]);
   const [night] = useState(() => isNight());
   const stageRef = useRef<HTMLDivElement>(null);
-  const catRef = useRef<HTMLDivElement>(null);
+  const catRef = useRef<SVGGElement>(null);
   const travelled = useRef(0);
   const last = useRef<{ x: number; y: number } | null>(null);
   const sparkleId = useRef(0);
@@ -77,7 +79,6 @@ export function PetHousePage() {
     travelled.current = 0;
     setProgress(0);
     setDot(null);
-    setLook(undefined);
     if (id === "brush" || id === "laser") {
       setTool((t) => (t === id ? null : id));
       return;
@@ -100,16 +101,7 @@ export function PetHousePage() {
     const step = prev ? Math.hypot(p.x - prev.x, p.y - prev.y) : 0;
 
     if (tool === "laser") {
-      setDot({ x: p.x, y: p.y });
-      const cat = catRef.current?.getBoundingClientRect();
-      const stage = stageRef.current?.getBoundingClientRect();
-      if (cat && stage) {
-        const cx = cat.left - stage.left + cat.width / 2;
-        const cy = cat.top - stage.top + cat.height * 0.4;
-        const d = Math.hypot(p.x - cx, p.y - cy) || 1;
-        setLook({ x: ((p.x - cx) / d) * 3, y: ((p.y - cy) / d) * 2.5 });
-      }
-      if (step > 12) react("play", 700); // it pounces when the dot moves fast
+      setDot({ x: p.x, y: p.y }); // the cat runs after it, stalks and pounces (see rig/brain.ts)
       advance(step, LASER_GOAL, "laser");
     } else {
       // Brush: only rubbing on the cat counts.
@@ -141,7 +133,10 @@ export function PetHousePage() {
     return <p className="p-8 text-center text-text-muted">Chargement…</p>;
   }
 
-  const napping = pose === "sleep" && pet.lastAction === "nap";
+  // While the laser dot is out, the cat plays with it (whatever else is going on).
+  const box = stageRef.current?.getBoundingClientRect();
+  const sceneDot = tool === "laser" && dot && box ? { x: (dot.x / box.width) * HOUSE.width, y: (dot.y / box.height) * HOUSE.height } : null;
+  const shownPose: CatPose = sceneDot ? "play" : pose;
   const hint =
     tool === "brush" ? `Frotte ${pet.name} avec ton doigt` : tool === "laser" ? "Promène le point rouge dans la pièce" : null;
 
@@ -163,6 +158,18 @@ export function PetHousePage() {
             </span>
           )}
         </span>
+        <button
+          type="button"
+          onClick={() => {
+            setSoundEnabled(!sound);
+            setSound(!sound);
+          }}
+          aria-pressed={sound}
+          aria-label={sound ? "Couper les sons" : "Activer les sons"}
+          className="rounded-full border border-border bg-surface px-2.5 py-1.5 text-sm press hover:border-primary/50"
+        >
+          {sound ? "🔈" : "🔇"}
+        </button>
         <Link to="/jeux/chat/peche" aria-label="Pêche" className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm press hover:border-primary/50">
           🎣
         </Link>
@@ -192,21 +199,16 @@ export function PetHousePage() {
         className={"relative aspect-[4/3] w-full touch-none select-none overflow-hidden rounded-token border border-border " + (tool ? "cursor-none" : "")}
       >
         <Room night={night} />
-        <div
-          ref={catRef}
-          className="absolute bottom-[6%] transition-[left] duration-700 ease-out"
-          style={{ left: napping ? "61%" : "30%", width: "40%" }}
-        >
-          <button
-            type="button"
-            onClick={() => !tool && void care("pet")}
-            aria-label={`Toucher ${pet.name}`}
-            className="block w-full"
-            tabIndex={tool ? -1 : 0}
-          >
-            <CatSprite pose={pose} fluid wearing={wornItems(pet)} look={tool === "laser" ? look : undefined} />
-          </button>
-        </div>
+        <LivingCat
+          mode="house"
+          pose={shownPose}
+          wearing={wornItems(pet)}
+          pointer={sceneDot}
+          sound={sound}
+          catRef={catRef}
+          onTap={tool ? undefined : () => void care("pet")}
+          label={`Toucher ${pet.name}`}
+        />
 
         {sparkles.map((s) => (
           <span key={s.id} className="pointer-events-none absolute text-lg animate-sparkle" style={{ left: s.x - 8, top: s.y - 12 }}>
