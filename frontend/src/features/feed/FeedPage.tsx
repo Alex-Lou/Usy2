@@ -13,7 +13,7 @@ import { CoupleStrip } from "./CoupleStrip";
 import { MomentsBar, type Moment } from "./MomentsBar";
 import { PostCard } from "./PostCard";
 import { ShareChoice } from "./ShareChoice";
-import { handToChat, takeSharedContent, type SharedContent } from "./sharedContent";
+import { firstLink, handToChat, handToMusic, takeSharedContent, type SharedContent } from "./sharedContent";
 import type { Post } from "./types";
 
 export function FeedPage() {
@@ -59,6 +59,13 @@ export function FeedPage() {
     handToChat(shared);
     setShared(null);
     navigate("/chat");
+  }
+
+  function shareToPlaylist() {
+    if (!shared) return;
+    handToMusic(shared);
+    setShared(null);
+    navigate("/musique");
   }
 
   const load = useCallback(async (pageNum: number) => {
@@ -114,7 +121,7 @@ export function FeedPage() {
       <MomentsBar onPick={pickMoment} />
       <Composer onCreated={() => load(0)} seed={seed} />
       {shared && (
-        <ShareChoice shared={shared} partnerName={partnerName} onPost={shareAsPost} onMessage={shareAsMessage} onCancel={() => setShared(null)} />
+        <ShareChoice shared={shared} partnerName={partnerName} onPost={shareAsPost} onMessage={shareAsMessage} onPlaylist={shared && firstLink(shared.text) ? shareToPlaylist : undefined} onCancel={() => setShared(null)} />
       )}
 
       {items === null ? (

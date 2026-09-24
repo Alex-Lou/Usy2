@@ -4,12 +4,12 @@ import { Avatar } from "../ui/Avatar";
 import { CompanionPicker } from "../ui/CompanionPicker";
 import { Icon } from "../ui/Icon";
 import { HomeWidgets } from "../../features/feed/HomeWidgets";
-import { navItems } from "./nav";
+import { menuItems } from "./nav";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Sidebar() {
   const { user, logout } = useAuth();
-  const items = navItems(user?.id);
+  const items = menuItems(user?.id);
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-2 overflow-y-auto border-r border-border glass px-4 py-6 lg:flex">

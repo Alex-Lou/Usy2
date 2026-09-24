@@ -15,6 +15,7 @@ import { ProfilePage } from "./features/profile/ProfilePage";
 import { ProfileEditPage } from "./features/profile/ProfileEditPage";
 import { SharedWidgetsPage } from "./features/couple/SharedWidgetsPage";
 import { DatesPage } from "./features/couple/DatesPage";
+import { MusicPage } from "./features/music/MusicPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 
 export function App() {
@@ -41,6 +42,7 @@ export function App() {
         <Route path="/profile/edit" element={<ProfileEditPage />} />
         <Route path="/widgets" element={<SharedWidgetsPage />} />
         <Route path="/dates" element={<DatesPage />} />
+        <Route path="/musique" element={<MusicPage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

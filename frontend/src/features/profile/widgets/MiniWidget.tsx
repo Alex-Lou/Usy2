@@ -6,12 +6,13 @@ import { HeartMark, SparkleMarks } from "../../../components/ui/decor";
 import { useCouple } from "../../couple/useCouple";
 import type { Widget } from "../types";
 import { MiniCalendar } from "./CalendarWidget";
+import { MiniMusic } from "./MusicWidget";
 import { domainOf, isWebAddress } from "./pinSuggestions";
 import { SCENES } from "./scenes";
 
 /** Text-like widgets take the whole row; the others are small square-ish tiles. */
 export function isWideMini(widget: Widget): boolean {
-  return ["marquee", "quote", "richtext", "pins", "calendar"].includes(widget.type);
+  return ["marquee", "quote", "richtext", "pins", "calendar", "music"].includes(widget.type);
 }
 
 const TILE = "flex h-full min-h-16 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-2xl bg-surface-2/60 p-1.5 text-center";
@@ -38,6 +39,8 @@ export function MiniWidget({ widget, ownerId }: { widget: Widget; ownerId?: numb
       return <MiniCountdown date={widget.date} label={widget.label} />;
     case "calendar":
       return <MiniCalendar label={widget.label} />;
+    case "music":
+      return <MiniMusic label={widget.label} />;
     case "image":
       return <AssetImage assetId={widget.assetId} className="aspect-square w-full rounded-2xl object-cover" />;
     case "svg":

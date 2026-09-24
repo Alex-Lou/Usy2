@@ -11,6 +11,7 @@ import java.util.List;
  * - clock: optional {@code label}
  * - countdown: {@code date} (ISO) (+ optional {@code label})
  * - calendar: the next shared dates ("Nos dates"), optional {@code label}
+ * - music: the latest songs of the shared playlists, optional {@code label}
  * - image: {@code assetId} (+ optional {@code label} caption)
  * - svg: {@code variant} (+ optional {@code label})
  * - pins: {@code pins}, quick links to web pages (+ optional {@code label} title)

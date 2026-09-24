@@ -73,7 +73,7 @@ export type CoupleEventInput = Pick<CoupleEvent, "title" | "date" | "time" | "em
 
 /** Broadcast on /topic/couple (see CoupleActivity.java). */
 export interface CoupleActivity {
-  kind: "mood" | "note" | "list" | "list-change" | "together" | "widgets" | "events";
+  kind: "mood" | "note" | "list" | "list-change" | "together" | "widgets" | "events" | "music";
   actorId: number;
   actorName: string;
   detail: string | null;
