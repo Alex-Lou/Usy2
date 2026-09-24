@@ -92,6 +92,23 @@ class ThemeValidatorTest {
     }
 
     @Test
+    void acceptsNewFontsForTextAndTitlesAndBothScopes() {
+        validator.validate(new ThemeDto(validColors(), "nunito", "classic", "app", "uncial", "app"));
+        validator.validate(new ThemeDto(validColors(), "app", "classic", "custom", "playfair", "profile"));
+        validator.validate(new ThemeDto(validColors(), "trebuchet", "classic", "app", null, null)); // saved before
+    }
+
+    @Test
+    void rejectsUnknownHeadingFontOrScope() {
+        assertThatThrownBy(() -> validator.validate(new ThemeDto(validColors(), "nunito", "classic", "app", "wingdings", "app")))
+                .isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> validator.validate(new ThemeDto(validColors(), "nunito", "classic", "app", "lora", "everyone")))
+                .isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> validator.validate(new ThemeDto(validColors(), "Comic Sans\"; x", "classic", "app", null, "app")))
+                .isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
     void rejectsUnknownLayout() {
         ThemeDto theme = new ThemeDto(validColors(), "trebuchet", "free", "app");
         assertThatThrownBy(() -> validator.validate(theme))

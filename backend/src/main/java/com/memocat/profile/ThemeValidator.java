@@ -17,7 +17,17 @@ import java.util.regex.Pattern;
 public class ThemeValidator {
 
     static final Set<String> COLOR_KEYS = Set.of("bg", "surface", "primary", "text");
-    static final Set<String> FONTS = Set.of("trebuchet", "georgia", "courier", "comic", "system");
+    static final Set<String> FONTS = Set.of(
+            "app", "trebuchet", "georgia", "courier", "comic", "system",
+            // Rounded
+            "nunito", "quicksand", "comfortaa", "baloo", "fredoka",
+            // Handwritten
+            "dancing", "pacifico", "satisfy", "indie", "patrick", "caveat",
+            // Celtic / fairy
+            "uncial", "medieval", "cinzel", "almendra", "imfell",
+            // Elegant serif
+            "playfair", "lora", "cormorant", "garamond");
+    static final Set<String> FONT_SCOPES = Set.of("profile", "app");
     static final Set<String> LAYOUTS = Set.of("classic", "sidebar-left");
     static final Set<String> MODES = Set.of("app", "custom");
     private static final Pattern HEX = Pattern.compile("^#[0-9a-fA-F]{6}$");
@@ -30,6 +40,12 @@ public class ThemeValidator {
 
         if (theme.font() == null || !FONTS.contains(theme.font())) {
             throw new ContentValidationException("Unsupported font: " + theme.font());
+        }
+        if (theme.headingFont() != null && !FONTS.contains(theme.headingFont())) {
+            throw new ContentValidationException("Unsupported heading font: " + theme.headingFont());
+        }
+        if (theme.fontScope() != null && !FONT_SCOPES.contains(theme.fontScope())) {
+            throw new ContentValidationException("Unsupported font scope: " + theme.fontScope());
         }
         if (theme.layout() == null || !LAYOUTS.contains(theme.layout())) {
             throw new ContentValidationException("Unsupported layout: " + theme.layout());

@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { NotificationsListener } from "../../features/notifications/NotificationsListener";
+import { AppFonts } from "../../features/profile/AppFonts";
 import { BottomTabBar } from "./BottomTabBar";
 import { MobileMenu } from "./MobileMenu";
 import { NotificationBell } from "./NotificationBell";
@@ -26,6 +27,7 @@ export function AppLayout() {
       <MobileMenu />
       <NotificationBell />
       <NotificationsListener />
+      <AppFonts />
 
       <main className="lg:pl-64">
         {/* Clears the top bar (burger + bell, below the status bar) and whatever covers the
