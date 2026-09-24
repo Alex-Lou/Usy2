@@ -1,3 +1,5 @@
+import type { Framing } from "../../lib/framing";
+
 export type FontKey = "trebuchet" | "georgia" | "courier" | "comic" | "system";
 export type LayoutKey = "classic" | "sidebar-left";
 export type ThemeMode = "app" | "custom";
@@ -47,4 +49,6 @@ export interface Profile {
   theme: Theme;
   widgets: Widget[];
   coverAssetId?: number | null; // photo in the profile banner (else the theme gradient)
+  avatarFraming?: Framing | null; // which part of each photo shows (null: centred)
+  coverFraming?: Framing | null;
 }

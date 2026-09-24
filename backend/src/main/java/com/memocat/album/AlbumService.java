@@ -1,6 +1,7 @@
 package com.memocat.album;
 
 import com.memocat.album.dto.AlbumDto;
+import com.memocat.asset.Framing;
 import com.memocat.domain.Album;
 import com.memocat.domain.Photo;
 import com.memocat.domain.User;
@@ -66,6 +67,11 @@ public class AlbumService {
     /** Picks the album's cover among its photos; null goes back to the first photo. */
     @Transactional
     public AlbumDto setCover(Long albumId, Long photoId) {
+        return setCover(albumId, photoId, null);
+    }
+
+    @Transactional
+    public AlbumDto setCover(Long albumId, Long photoId, Framing framing) {
         Album album = requireAlbum(albumId);
         Photo cover = null;
         if (photoId != null) {
@@ -74,6 +80,7 @@ public class AlbumService {
                     .orElseThrow(() -> new ContentValidationException("Cette photo n'est pas dans l'album"));
         }
         album.setCoverPhoto(cover);
+        album.setCoverFraming(cover == null ? null : Framing.validate(framing));
         return albumMapper.toDto(albumRepository.save(album));
     }
 

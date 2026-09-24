@@ -31,7 +31,8 @@ public class AlbumMapper {
                 UserDto.from(album.getCreator()),
                 album.getCreatedAt(),
                 count,
-                coverAssetId);
+                coverAssetId,
+                album.getCoverPhoto() != null ? album.getCoverFraming() : null);
     }
 
     public PhotoDto toDto(Photo photo) {

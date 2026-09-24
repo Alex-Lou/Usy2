@@ -1,4 +1,5 @@
 import { apiRequest } from "../../lib/api/client";
+import type { Framing } from "../../lib/framing";
 import type { Album, Page, Photo } from "./types";
 
 export function listAlbums(page = 0, size = 12): Promise<Page<Album>> {
@@ -51,6 +52,6 @@ export function reorderPhotos(albumId: number, photoIds: number[]): Promise<void
 }
 
 /** Picks the album's cover among its photos; null goes back to the first photo. */
-export function setAlbumCover(albumId: number, photoId: number | null): Promise<Album> {
-  return apiRequest<Album>(`/api/albums/${albumId}/cover`, { method: "PUT", body: { photoId } });
+export function setAlbumCover(albumId: number, photoId: number | null, framing: Framing | null = null): Promise<Album> {
+  return apiRequest<Album>(`/api/albums/${albumId}/cover`, { method: "PUT", body: { photoId, framing } });
 }
