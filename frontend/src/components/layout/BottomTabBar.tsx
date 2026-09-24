@@ -15,22 +15,24 @@ export function BottomTabBar() {
             key={it.to}
             to={it.to}
             end={it.end}
+            aria-label={it.label}
+            title={it.label}
             className={({ isActive }) =>
-              "flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-semibold transition press " +
+              "flex flex-1 items-center justify-center py-2 transition press " +
               (isActive ? "text-primary" : "text-text-muted")
             }
           >
             {({ isActive }) => (
               <>
+                {/* Icons only: seven labels do not fit a phone's width. */}
                 <span
                   className={
                     "grid h-9 w-9 place-items-center rounded-token-sm transition " +
                     (isActive ? "btn-brand" : "")
                   }
                 >
-                  <Icon name={it.icon} size={20} />
+                  <Icon name={it.icon} size={21} />
                 </span>
-                {it.label}
               </>
             )}
           </NavLink>

@@ -15,13 +15,8 @@ export function navItems(myUserId?: number): NavItem[] {
     { to: "/jeux", label: "Jeux", icon: "gamepad" },
     { to: "/chat", label: "Messages", icon: "chat" },
     { to: "/dates", label: "Calendrier", icon: "calendar" },
+    { to: "/musique", label: "Musique", icon: "music" },
     { to: myUserId ? `/profile/${myUserId}` : "/profile/edit", label: "Profil", icon: "user" },
   ];
 }
 
-/** The side menus (desktop sidebar, mobile ☰) also hold what the bottom bar has no room for. */
-export function menuItems(myUserId?: number): NavItem[] {
-  const items = navItems(myUserId);
-  const profile = items.pop()!;
-  return [...items, { to: "/musique", label: "Musique", icon: "music" }, profile];
-}
