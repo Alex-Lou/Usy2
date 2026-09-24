@@ -5,6 +5,7 @@ import { App } from "./App";
 import { AppThemeProvider } from "./app/theme";
 import { NotificationsProvider } from "./app/notifications";
 import { AuthProvider } from "./features/auth/AuthContext";
+import { openExternalLinksNatively } from "./lib/native";
 import { registerServiceWorker } from "./registerSW";
 import "./styles/global.css";
 
@@ -23,3 +24,4 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 
 registerServiceWorker();
+openExternalLinksNatively();
