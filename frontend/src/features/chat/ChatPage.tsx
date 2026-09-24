@@ -19,6 +19,8 @@ import { ChatComposer } from "./ChatComposer";
 import { createChatClient, sendMessage } from "./chatClient";
 import { ImageViewer } from "./ImageViewer";
 import { MessageList } from "./MessageList";
+import { readingStyle, useReading } from "./reading";
+import { ReadingMenu } from "./ReadingMenu";
 import type { Message, MessageReaction } from "./types";
 
 /** Adds messages not seen yet, keeping chronological (id) order. */
@@ -47,6 +49,7 @@ export function ChatPage() {
   const stickToBottom = useRef(true);
   const { pet, setPet, pose, caption, act, onActivity, onMessage, noteHistory } = usePet(user?.id);
   const [petOpen, setPetOpen] = useState(() => readPetOpen());
+  const { reading, save: saveReading, error: readingError } = useReading();
 
   useEffect(() => {
     getReactionEmojis().then(setEmojis).catch(() => {});
@@ -184,7 +187,7 @@ export function ChatPage() {
 
   return (
     <div className="flex h-[calc(100dvh-var(--topbar-h)-max(var(--tabbar-h),var(--picker-h,0px))-2rem)] flex-col gap-3 lg:h-[calc(100dvh-2rem-max(2rem,var(--picker-h,0px))-1rem)]">
-      <header className="flex items-center gap-3 animate-fade-up">
+      <header className="relative z-20 flex items-center gap-3 animate-fade-up">
         {partner && (
           <ProfileLink userId={partner.userId} className="shrink-0 rounded-full">
             <Avatar name={partner.displayName} size={40} assetId={partner.avatarAssetId} framing={partner.avatarFraming} species={partner.companion} />
@@ -205,13 +208,16 @@ export function ChatPage() {
             {connected ? "Connecté" : "Connexion…"}
           </p>
         </div>
+        <div className="ml-auto">
+          <ReadingMenu reading={reading} onChange={saveReading} error={readingError} />
+        </div>
         {pet && (
           <button
             type="button"
             onClick={() => setPetOpen((o) => savePetOpen(!o))}
             aria-expanded={petOpen}
             aria-label={petOpen ? `Ranger ${pet.name}` : `Voir ${pet.name}`}
-            className="ml-auto flex items-center gap-1 rounded-full border border-border bg-surface py-1 pl-1 pr-2 text-xs text-text-muted press hover:border-primary/50"
+            className="flex items-center gap-1 rounded-full border border-border bg-surface py-1 pl-1 pr-2 text-xs text-text-muted press hover:border-primary/50"
           >
             <Animal species="cat" size={26} />
             <Icon name="chevronDown" size={14} className={"transition-transform " + (petOpen ? "rotate-180" : "")} />
@@ -229,7 +235,7 @@ export function ChatPage() {
           stickToBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
         }}
       >
-        <div ref={contentRef} className="flex min-h-full flex-col">
+        <div ref={contentRef} className="flex min-h-full flex-col" style={readingStyle(reading)}>
           {hasOlder && (
             <button onClick={loadOlder} className="mx-auto my-2 block text-xs text-text-muted hover:underline">
               Charger les messages plus anciens
