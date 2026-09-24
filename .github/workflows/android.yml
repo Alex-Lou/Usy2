@@ -4,9 +4,9 @@ name: android
 #
 # One-time setup in the repo Settings:
 #   - Actions must be enabled (Settings → Actions → General → Allow all actions).
-#   - Variable RENDER_URL = the server URL, e.g. https://memocat.onrender.com
-#     (Settings → Secrets and variables → Actions → Variables). The app calls
-#     this server; without it only pull requests build (as a check).
+#   - RENDER_URL = the server URL, e.g. https://memocat.onrender.com, as a
+#     repository variable OR secret (Settings → Secrets and variables →
+#     Actions). The app calls this server; without it nothing is published.
 #   - Signing (so each new APK installs over the previous one), as secrets:
 #       ANDROID_KEYSTORE_BASE64   base64 of a .jks keystore
 #       ANDROID_KEYSTORE_PASSWORD its password
@@ -15,13 +15,19 @@ name: android
 #     Without them the APK is signed with a throwaway key: it installs, but the
 #     next build will need an uninstall first.
 #
-# Runs on pull requests touching the app shell (build check, APK as an
-# artifact), by hand (Actions → android → Run workflow), and on "android-v*"
-# tags, which also attach the APK to a GitHub Release.
+# Runs on every merge into main that touches the app (the APK is then
+# published at one fixed address: the "android-latest" release, see the last
+# step), on pull requests touching the app shell (build check), by hand
+# (Actions → android → Run workflow), and on "android-v*" tags (a versioned
+# release).
 
 on:
   workflow_dispatch: {}
   push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/android.yml"
     tags: ["android-v*"]
   pull_request:
     paths:
@@ -49,12 +55,13 @@ jobs:
       # (build check only: that APK cannot reach any server).
       - name: Check the server URL
         env:
-          RENDER_URL: ${{ vars.RENDER_URL }}
+          RENDER_URL: ${{ vars.RENDER_URL || secrets.RENDER_URL }}
         run: |
           if [ -n "$RENDER_URL" ]; then
-            echo "API_URL=$RENDER_URL" >> "$GITHUB_ENV"
-          elif [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "::warning::Repository variable RENDER_URL is not set: build check only, this APK cannot reach the server."
+            echo "API_URL=${RENDER_URL%/}" >> "$GITHUB_ENV"
+            echo "PUBLISH=1" >> "$GITHUB_ENV"
+          elif [ "${{ github.event_name }}" != "workflow_dispatch" ] && ! [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "::warning::RENDER_URL is not set (variable or secret): build check only, nothing is published (this APK cannot reach the server)."
             echo "API_URL=https://memocat.invalid" >> "$GITHUB_ENV"
           else
             echo "::error::Repository variable RENDER_URL is not set (e.g. https://memocat.onrender.com)."
@@ -138,4 +145,19 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/android-v')
         uses: softprops/action-gh-release@v2
         with:
+          files: out/MemoCat.apk
+
+      # Always the same download page for the newest APK of main:
+      # https://github.com/<owner>/<repo>/releases/tag/android-latest
+      - name: Publish as the latest APK
+        if: github.ref == 'refs/heads/main' && env.PUBLISH == '1'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-latest
+          name: MemoCat Android (dernière version)
+          prerelease: true
+          make_latest: false
+          body: |
+            Dernier APK de MemoCat, construit depuis main (${{ github.sha }}).
+            Sur le téléphone : télécharger MemoCat.apk, l'ouvrir, autoriser l'installation.
           files: out/MemoCat.apk
