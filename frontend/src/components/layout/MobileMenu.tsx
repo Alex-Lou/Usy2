@@ -5,7 +5,7 @@ import { Avatar } from "../ui/Avatar";
 import { CompanionPicker } from "../ui/CompanionPicker";
 import { Icon } from "../ui/Icon";
 import { HomeWidgets } from "../../features/feed/HomeWidgets";
-import { navItems } from "./nav";
+import { menuItems } from "./nav";
 import { ThemeToggle } from "./ThemeToggle";
 
 /**
@@ -18,7 +18,7 @@ export function MobileMenu() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const items = navItems(user?.id);
+  const items = menuItems(user?.id);
 
   // Close on navigation and on Escape.
   useEffect(() => setOpen(false), [location.pathname]);

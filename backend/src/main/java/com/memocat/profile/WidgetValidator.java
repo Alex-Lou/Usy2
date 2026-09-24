@@ -61,7 +61,7 @@ public class WidgetValidator {
             case "marquee", "quote" -> requireText(widget, MAX_TEXT);
             case "richtext" -> requireText(widget, MAX_RICHTEXT);
             case "mood" -> validateMood(widget);
-            case "clock", "calendar" -> validateLabel(widget);
+            case "clock", "calendar", "music" -> validateLabel(widget);
             case "countdown" -> validateCountdown(widget);
             case "image" -> validateImage(widget);
             case "svg" -> validateSvg(widget);
@@ -134,7 +134,7 @@ public class WidgetValidator {
         validateLabel(widget);
     }
 
-    static boolean isWebAddress(String url) {
+    public static boolean isWebAddress(String url) {
         if (url == null || url.isBlank() || url.length() > MAX_URL) {
             return false;
         }
