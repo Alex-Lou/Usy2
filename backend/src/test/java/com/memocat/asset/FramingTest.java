@@ -18,10 +18,16 @@ class FramingTest {
     }
 
     @Test
+    void zoomingOutDownToHalfIsAllowed() {
+        assertThat(Framing.validate(new Framing(0, 1, 0.5))).isEqualTo(new Framing(0, 1, 0.5));
+        assertThat(Framing.parse("0.5,0.5,0.75")).isEqualTo(new Framing(0.5, 0.5, 0.75));
+    }
+
+    @Test
     void outOfRangeIsRefused() {
         assertThatThrownBy(() -> Framing.validate(new Framing(-0.1, 0.5, 1))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> Framing.validate(new Framing(0.5, 1.2, 1))).isInstanceOf(ContentValidationException.class);
-        assertThatThrownBy(() -> Framing.validate(new Framing(0.5, 0.5, 0.5))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> Framing.validate(new Framing(0.5, 0.5, 0.4))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> Framing.validate(new Framing(0.5, 0.5, 9))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> Framing.validate(new Framing(Double.NaN, 0.5, 1))).isInstanceOf(ContentValidationException.class);
         assertThat(Framing.validate(null)).isNull();

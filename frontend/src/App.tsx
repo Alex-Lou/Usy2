@@ -13,6 +13,7 @@ import { FishingPage } from "./features/pet/games/FishingPage";
 import { PetHousePage } from "./features/pet/house/PetHousePage";
 import { ProfilePage } from "./features/profile/ProfilePage";
 import { ProfileEditPage } from "./features/profile/ProfileEditPage";
+import { SharedWidgetsPage } from "./features/couple/SharedWidgetsPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 
 export function App() {
@@ -37,6 +38,7 @@ export function App() {
         <Route path="/jeux/chat" element={<PetHousePage />} />
         <Route path="/jeux/chat/peche" element={<FishingPage />} />
         <Route path="/profile/edit" element={<ProfileEditPage />} />
+        <Route path="/widgets" element={<SharedWidgetsPage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

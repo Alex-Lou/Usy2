@@ -8,11 +8,14 @@ import java.util.Locale;
  * How an image sits in its frame (avatar circle, cover banner, album tile).
  * The image first fills the frame (like CSS object-fit: cover), then:
  * {@code x}/{@code y} (0–1) choose which part of the overflow shows (0 = left/top,
- * 0.5 = centred, 1 = right/bottom) and {@code zoom} (1–4) enlarges it around
- * that point. The photo itself is never altered, so it can be reframed later.
+ * 0.5 = centred, 1 = right/bottom) and {@code zoom} (0.5–4) enlarges it around
+ * that point, or shrinks it below 1 (the frame's empty edges are then filled
+ * with a blurred copy). The photo itself is never altered, so it can be
+ * reframed later.
  */
 public record Framing(double x, double y, double zoom) {
 
+    public static final double MIN_ZOOM = 0.5;
     public static final double MAX_ZOOM = 4;
 
     /** Null stays null (centred); anything out of range is refused. */
@@ -20,7 +23,7 @@ public record Framing(double x, double y, double zoom) {
         if (f == null) {
             return null;
         }
-        if (!inRange(f.x(), 0, 1) || !inRange(f.y(), 0, 1) || !inRange(f.zoom(), 1, MAX_ZOOM)) {
+        if (!inRange(f.x(), 0, 1) || !inRange(f.y(), 0, 1) || !inRange(f.zoom(), MIN_ZOOM, MAX_ZOOM)) {
             throw new ContentValidationException("Cadrage invalide");
         }
         return new Framing(round(f.x()), round(f.y()), round(f.zoom()));

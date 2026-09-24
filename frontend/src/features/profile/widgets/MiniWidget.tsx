@@ -92,8 +92,17 @@ function MiniScene({ variant }: { variant: string }) {
   );
 }
 
+/** One person's live mood; without an owner (shared widgets) both moods side by side. */
 function MiniMood({ ownerId }: { ownerId?: number }) {
   const { couple } = useCouple();
+  if (ownerId === undefined) {
+    const moods = couple?.moods ?? [];
+    return (
+      <div className={TILE} title={moods.map((m) => m.label).filter(Boolean).join(" · ") || undefined}>
+        <span className="text-2xl leading-none">{moods.length ? moods.map((m) => m.emoji).join(" ") : "…"}</span>
+      </div>
+    );
+  }
   const mood = couple?.moods.find((m) => m.userId === ownerId);
   return (
     <div className={TILE} title={mood?.label ?? undefined}>

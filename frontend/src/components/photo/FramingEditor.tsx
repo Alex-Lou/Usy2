@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState, type PointerEvent as RPointerEvent } from "react";
 import { createPortal } from "react-dom";
 import { getAssetUrl } from "../../lib/api/blobCache";
-import { CENTRED, framingStyle, MAX_ZOOM, type Framing } from "../../lib/framing";
+import { BACKDROP_STYLE, CENTRED, framingStyle, MAX_ZOOM, MIN_ZOOM, needsBackdrop, type Framing } from "../../lib/framing";
 import { Icon } from "../ui/Icon";
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
 /**
  * Choose which part of a photo shows in its frame (avatar circle, cover
- * banner, album tile): drag to move, pinch / wheel / slider to zoom. Nothing
+ * banner, album tile): drag to move, pinch / wheel / slider to zoom (in or
+ * out: below 1× a blurred copy fills the frame's edges). Nothing
  * is cut: only the framing is returned, so it can be changed again later.
  */
 export function FramingEditor({
@@ -57,12 +58,13 @@ export function FramingEditor({
     const { width: W, height: H } = el.getBoundingClientRect();
     const cover = Math.max(W / natural.w, H / natural.h);
     setF((cur) => {
-      const spanX = cur.zoom * natural.w * cover - W; // hidden width at this zoom
+      // Hidden width at this zoom (negative when zoomed out: the free space; the same formula moves the photo inside it).
+      const spanX = cur.zoom * natural.w * cover - W;
       const spanY = cur.zoom * natural.h * cover - H;
       return {
         ...cur,
-        x: spanX > 0.5 ? clamp(cur.x - dx / spanX, 0, 1) : cur.x,
-        y: spanY > 0.5 ? clamp(cur.y - dy / spanY, 0, 1) : cur.y,
+        x: Math.abs(spanX) > 0.5 ? clamp(cur.x - dx / spanX, 0, 1) : cur.x,
+        y: Math.abs(spanY) > 0.5 ? clamp(cur.y - dy / spanY, 0, 1) : cur.y,
       };
     });
   }
@@ -86,7 +88,7 @@ export function FramingEditor({
     } else if (pointers.current.size === 2 && pinch.current) {
       const [a, b] = [...pointers.current.values()];
       const start = pinch.current;
-      setF((cur) => ({ ...cur, zoom: clamp((start.zoom * Math.hypot(a.x - b.x, a.y - b.y)) / start.dist, 1, MAX_ZOOM) }));
+      setF((cur) => ({ ...cur, zoom: clamp((start.zoom * Math.hypot(a.x - b.x, a.y - b.y)) / start.dist, MIN_ZOOM, MAX_ZOOM) }));
     }
   }
 
@@ -106,28 +108,31 @@ export function FramingEditor({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        onWheel={(e) => setF((cur) => ({ ...cur, zoom: clamp(cur.zoom * (1 - e.deltaY * 0.001), 1, MAX_ZOOM) }))}
+        onWheel={(e) => setF((cur) => ({ ...cur, zoom: clamp(cur.zoom * (1 - e.deltaY * 0.001), MIN_ZOOM, MAX_ZOOM) }))}
         aria-label="Glisse pour déplacer la photo"
       >
+        {src && needsBackdrop(f) && (
+          <img src={src} alt="" draggable={false} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" style={BACKDROP_STYLE} />
+        )}
         {src ? (
           <img
             src={src}
             alt=""
             draggable={false}
             onLoad={(e) => setNatural({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })}
-            className="pointer-events-none h-full w-full"
+            className="pointer-events-none relative h-full w-full"
             style={framingStyle(f)}
           />
         ) : (
           <div className="h-full w-full animate-pulse bg-white/10" />
         )}
       </div>
-      <p className="text-center text-xs text-white/70">Glisse pour déplacer · pince ou utilise le curseur pour zoomer</p>
+      <p className="text-center text-xs text-white/70">Glisse pour déplacer · pince ou utilise le curseur pour zoomer ou dézoomer</p>
       <label className="flex w-full max-w-md items-center gap-3 text-white">
         <span className="text-sm">Zoom</span>
         <input
           type="range"
-          min={1}
+          min={MIN_ZOOM}
           max={MAX_ZOOM}
           step={0.01}
           value={f.zoom}

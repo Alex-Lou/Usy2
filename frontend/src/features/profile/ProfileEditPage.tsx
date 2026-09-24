@@ -5,7 +5,6 @@ import { FramingEditor } from "../../components/photo/FramingEditor";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
-import { Input } from "../../components/ui/Input";
 import { ApiError } from "../../lib/api/client";
 import type { Framing } from "../../lib/framing";
 import { useAuth } from "../auth/useAuth";
@@ -14,11 +13,10 @@ import { getMyProfile, updateMyProfile } from "./api";
 import { FONT_GROUPS, FONTS, useFonts } from "../../lib/fonts";
 import { emitMyThemeSaved } from "./AppFonts";
 import { buildThemeStyle, LAYOUT_LABELS } from "./theme";
-import type { FontKey, LayoutKey, Theme, ThemeColors, ThemeMode, Widget, WidgetType } from "./types";
+import type { FontKey, LayoutKey, Theme, ThemeColors, ThemeMode, Widget } from "./types";
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
-import { PinsEditor } from "./widgets/PinsEditor";
-import { normalizePinUrl } from "./widgets/pinSuggestions";
-import { SVG_GROUPS, SVG_LABELS, WIDGET_LABELS } from "./widgets/registry";
+import { cleanWidget, missingImage, selectClass, WidgetListEditor } from "./widgets/WidgetEditor";
+import { ShareWidgetButton } from "../couple/ShareWidgetButton";
 
 const COLOR_FIELDS: { key: keyof ThemeColors; label: string }[] = [
   { key: "bg", label: "Fond" },
@@ -26,36 +24,6 @@ const COLOR_FIELDS: { key: keyof ThemeColors; label: string }[] = [
   { key: "primary", label: "Accent" },
   { key: "text", label: "Texte" },
 ];
-
-const WIDGET_TYPES: WidgetType[] = [
-  "richtext", "quote", "marquee", "mood", "clock", "countdown", "image", "svg", "pins",
-];
-
-function defaultWidget(type: WidgetType): Widget {
-  switch (type) {
-    case "marquee":
-      return { type: "marquee", text: "Bienvenue sur mon espace 💕" };
-    case "quote":
-      return { type: "quote", text: "Une citation" };
-    case "richtext":
-      return { type: "richtext", text: "**Coucou** mon amour 💕\nUn *petit* mot ici." };
-    case "mood":
-      return { type: "mood" };
-    case "clock":
-      return { type: "clock", label: "" };
-    case "countdown":
-      return { type: "countdown", date: "2026-12-25", label: "" };
-    case "image":
-      return { type: "image", assetId: 0, label: "" };
-    case "svg":
-      return { type: "svg", variant: "heart", label: "" };
-    case "pins":
-      return { type: "pins", label: "Accès rapides", pins: [{ label: "Pinterest", url: "https://www.pinterest.com" }] };
-  }
-}
-
-const selectClass =
-  "w-full rounded-token border border-border bg-bg-2/60 px-3 py-2.5 text-text outline-none focus:border-primary/70";
 
 export function ProfileEditPage() {
   const navigate = useNavigate();
@@ -124,33 +92,9 @@ export function ProfileEditPage() {
     setTheme((t) => (t ? { ...t, mode } : t));
   }
 
-  function moveWidget(index: number, dir: -1 | 1) {
-    setWidgets((list) => {
-      const next = [...list];
-      const target = index + dir;
-      if (target < 0 || target >= next.length) return list;
-      [next[index], next[target]] = [next[target], next[index]];
-      return next;
-    });
-  }
-
-  function updateWidget(index: number, patch: Partial<Widget>) {
-    setWidgets((list) => list.map((w, i) => (i === index ? ({ ...w, ...patch } as Widget) : w)));
-  }
-
-  async function uploadForWidget(index: number, file: File) {
-    setError(null);
-    try {
-      const asset = await uploadImage(file);
-      updateWidget(index, { assetId: asset.id });
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Envoi de l'image impossible.");
-    }
-  }
-
   async function handleSave() {
     if (!theme) return;
-    if (widgets.some((w) => w.type === "image" && (!w.assetId || w.assetId <= 0))) {
+    if (missingImage(widgets)) {
       setError("Un widget Image n'a pas encore de photo. Ajoute une image ou supprime le widget.");
       return;
     }
@@ -363,42 +307,14 @@ export function ProfileEditPage() {
         </section>
 
         <section className="card p-4">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <h2 className="font-semibold">Widgets</h2>
-            <div className="flex flex-wrap justify-end gap-1">
-              {WIDGET_TYPES.map((t) => (
-                <button key={t} type="button" onClick={() => setWidgets([...widgets, defaultWidget(t)])} className="chip press hover:border-primary/50">
-                  + {WIDGET_LABELS[t]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {widgets.length === 0 && <p className="text-sm text-text-muted">Aucun widget. Ajoutes-en un ci-dessus.</p>}
-            {widgets.map((w, i) => (
-              <div key={i} className="rounded-token border border-border bg-bg-2/40 p-3">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">{WIDGET_LABELS[w.type]}</span>
-                  <div className="flex gap-1">
-                    <button type="button" onClick={() => moveWidget(i, -1)} aria-label="Monter" className="grid h-7 w-7 place-items-center rounded-token-sm border border-border press"><Icon name="arrowUp" size={14} /></button>
-                    <button type="button" onClick={() => moveWidget(i, 1)} aria-label="Descendre" className="grid h-7 w-7 place-items-center rounded-token-sm border border-border press"><Icon name="arrowDown" size={14} /></button>
-                    <button type="button" onClick={() => setWidgets(widgets.filter((_, j) => j !== i))} aria-label="Supprimer" className="grid h-7 w-7 place-items-center rounded-token-sm text-danger press"><Icon name="x" size={14} /></button>
-                  </div>
-                </div>
-                <WidgetEditor widget={w} onPatch={(p) => updateWidget(i, p)} onUpload={(f) => uploadForWidget(i, f)} />
-                <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-text-muted">
-                  <input
-                    type="checkbox"
-                    checked={!!w.home}
-                    onChange={(e) => updateWidget(i, { home: e.target.checked })}
-                    className="h-4 w-4 accent-[var(--color-primary)]"
-                  />
-                  Dans le menu latéral
-                </label>
-              </div>
-            ))}
-          </div>
+          <h2 className="mb-1 font-semibold">Widgets</h2>
+          <p className="mb-3 text-xs text-text-muted">Ceux de ton profil sont à toi. « Partager » en met une copie dans la barre latérale, où vous pouvez tous les deux la modifier.</p>
+          <WidgetListEditor
+            widgets={widgets}
+            onChange={setWidgets}
+            onError={setError}
+            footer={(w) => <ShareWidgetButton widget={w} />}
+          />
         </section>
 
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
@@ -466,98 +382,4 @@ function FontSelect({
       </select>
     </label>
   );
-}
-
-function cleanWidget(w: Widget): Widget {
-  if (w.type !== "pins") return w;
-  const pins = w.pins
-    .map((p) => ({ url: normalizePinUrl(p.url), label: p.label?.trim() || undefined }))
-    .filter((p) => p.url);
-  return { ...w, label: w.label?.trim() || undefined, pins };
-}
-
-function WidgetEditor({
-  widget,
-  onPatch,
-  onUpload,
-}: {
-  widget: Widget;
-  onPatch: (patch: Partial<Widget>) => void;
-  onUpload: (file: File) => void;
-}) {
-  switch (widget.type) {
-    case "marquee":
-      return (
-        <div>
-          <Input value={widget.text} maxLength={280} onChange={(e) => onPatch({ text: e.target.value })} />
-          <p className="mt-1 text-[11px] text-text-muted">Petit bandeau qui défile en haut de ton profil (mot de bienvenue, humeur du moment…).</p>
-        </div>
-      );
-    case "quote":
-      return <Input value={widget.text} maxLength={280} onChange={(e) => onPatch({ text: e.target.value })} />;
-    case "richtext":
-      return (
-        <div>
-          <textarea
-            value={widget.text}
-            maxLength={1000}
-            rows={3}
-            onChange={(e) => onPatch({ text: e.target.value })}
-            className="w-full resize-none rounded-token border border-border bg-bg-2/60 px-3 py-2 text-text outline-none focus:border-primary/70"
-          />
-          <p className="mt-1 text-[11px] text-text-muted">**gras** · *italique* · [lien](https://…) · retours à la ligne</p>
-        </div>
-      );
-    case "mood":
-      return <p className="text-xs text-text-muted">Affiche ton humeur du moment. Elle se change en un geste depuis le bandeau « Nous » du fil.</p>;
-    case "clock":
-      return <Input value={widget.label ?? ""} maxLength={40} placeholder="titre (optionnel)" onChange={(e) => onPatch({ label: e.target.value })} />;
-    case "countdown":
-      return (
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <input type="date" value={widget.date} onChange={(e) => onPatch({ date: e.target.value })} className={selectClass + " sm:w-44"} />
-          <Input value={widget.label ?? ""} maxLength={40} placeholder="titre (ex. Vacances)" onChange={(e) => onPatch({ label: e.target.value })} />
-        </div>
-      );
-    case "image":
-      return (
-        <div className="flex flex-col gap-2">
-          {widget.assetId > 0 ? (
-            <AssetImage assetId={widget.assetId} className="max-h-40 w-full rounded-token object-cover" />
-          ) : (
-            <p className="text-xs text-text-muted">Aucune image choisie.</p>
-          )}
-          <div className="flex items-center gap-2">
-            <label className="chip cursor-pointer press hover:border-primary/50">
-              <Icon name="camera" size={14} /> {widget.assetId > 0 ? "Changer" : "Ajouter une image"}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) onUpload(f);
-                }}
-              />
-            </label>
-          </div>
-          <Input value={widget.label ?? ""} maxLength={40} placeholder="légende (optionnel)" onChange={(e) => onPatch({ label: e.target.value })} />
-        </div>
-      );
-    case "svg":
-      return (
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <select value={widget.variant} onChange={(e) => onPatch({ variant: e.target.value })} className={selectClass + " sm:w-44"}>
-            {SVG_GROUPS.map((g) => (
-              <optgroup key={g.group} label={g.group}>
-                {g.items.map((v) => <option key={v} value={v}>{SVG_LABELS[v] ?? v}</option>)}
-              </optgroup>
-            ))}
-          </select>
-          <Input value={widget.label ?? ""} maxLength={40} placeholder="légende (optionnel)" onChange={(e) => onPatch({ label: e.target.value })} />
-        </div>
-      );
-    case "pins":
-      return <PinsEditor label={widget.label} pins={widget.pins} onChange={(p) => onPatch(p)} />;
-  }
 }

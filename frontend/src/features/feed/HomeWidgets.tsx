@@ -1,36 +1,47 @@
-import { useEffect, useState } from "react";
-import { getAllProfiles } from "../profile/api";
-import type { Profile, Widget } from "../profile/types";
+import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Icon } from "../../components/ui/Icon";
+import { onCoupleActivity } from "../couple/activity";
+import { getSharedWidgets } from "../couple/api";
+import type { Widget } from "../profile/types";
 import { isWideMini, MiniWidget } from "../profile/widgets/MiniWidget";
 
 /**
- * The widgets both people chose to show outside their profile ("Dans le menu
- * latéral" in the profile editor), shrunk to small tiles for the side menu,
- * each with its owner's first name.
+ * The couple's shared widgets (same for both, editable by both in "Nos
+ * widgets"), shrunk to small tiles for the side menu. Kept in sync live.
  */
 export function HomeWidgets() {
-  const [items, setItems] = useState<{ owner: Profile; widget: Widget; key: string }[]>([]);
+  const [widgets, setWidgets] = useState<Widget[] | null>(null);
 
-  useEffect(() => {
-    getAllProfiles()
-      .then((all) =>
-        setItems(all.flatMap((p) => p.widgets.map((w, i) => ({ owner: p, widget: w, key: `${p.userId}-${i}` })).filter((x) => x.widget.home))),
-      )
+  const load = useCallback(() => {
+    getSharedWidgets()
+      .then((s) => setWidgets(s.widgets))
       .catch(() => {});
   }, []);
 
-  if (items.length === 0) return null;
+  useEffect(() => {
+    load();
+    return onCoupleActivity((a) => a.kind === "widgets" && load());
+  }, [load]);
+
+  if (!widgets) return null;
   return (
     <section aria-label="Nos widgets" className="flex flex-col gap-1.5">
-      <p className="text-xs font-semibold text-text-muted">Nos petits widgets</p>
-      <div className="grid grid-cols-2 gap-2">
-        {items.map(({ owner, widget, key }) => (
-          <div key={key} className={`flex min-w-0 flex-col gap-0.5 ${isWideMini(widget) ? "col-span-2" : ""}`}>
-            <MiniWidget widget={widget} ownerId={owner.userId} />
-            <span className="px-1 text-[9px] uppercase tracking-wide text-text-muted/80">{owner.displayName}</span>
-          </div>
-        ))}
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-semibold text-text-muted">Nos petits widgets</p>
+        <Link to="/widgets" className="grid h-6 w-6 place-items-center rounded-full text-text-muted press hover:text-primary" aria-label="Modifier nos widgets" title="Modifier nos widgets">
+          <Icon name={widgets.length ? "sliders" : "plus"} size={13} />
+        </Link>
       </div>
+      {widgets.length > 0 && (
+        <div className="grid grid-cols-2 gap-2">
+          {widgets.map((widget, i) => (
+            <div key={i} className={`min-w-0 ${isWideMini(widget) ? "col-span-2" : ""}`}>
+              <MiniWidget widget={widget} />
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

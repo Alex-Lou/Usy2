@@ -1,5 +1,6 @@
 import { apiRequest } from "../../lib/api/client";
-import type { CoupleOverview, Memory, Mood, Note, Page, SharedList } from "./types";
+import type { Widget } from "../profile/types";
+import type { CoupleOverview, Memory, Mood, Note, Page, SharedList, SharedWidgets } from "./types";
 
 export function getCouple(): Promise<CoupleOverview> {
   return apiRequest<CoupleOverview>("/api/couple");
@@ -59,4 +60,17 @@ export function setItemDone(itemId: number, done: boolean): Promise<SharedList> 
 
 export function deleteItem(itemId: number): Promise<SharedList> {
   return apiRequest<SharedList>(`/api/couple/list-items/${itemId}`, { method: "DELETE" });
+}
+
+export function getSharedWidgets(): Promise<SharedWidgets> {
+  return apiRequest<SharedWidgets>("/api/couple/widgets");
+}
+
+export function saveSharedWidgets(widgets: Widget[], version: number): Promise<SharedWidgets> {
+  return apiRequest<SharedWidgets>("/api/couple/widgets", { method: "PUT", body: { widgets, version } });
+}
+
+/** Adds a copy of one widget at the end of the shared list. */
+export function addSharedWidget(widget: Widget): Promise<SharedWidgets> {
+  return apiRequest<SharedWidgets>("/api/couple/widgets", { method: "POST", body: { widget } });
 }

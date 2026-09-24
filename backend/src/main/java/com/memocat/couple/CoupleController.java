@@ -5,6 +5,7 @@ import com.memocat.couple.dto.CoupleRequests;
 import com.memocat.couple.dto.MemoryDto;
 import com.memocat.couple.dto.MoodDto;
 import com.memocat.couple.dto.NoteDto;
+import com.memocat.couple.dto.SharedWidgetsDto;
 import com.memocat.web.PageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,10 +29,13 @@ public class CoupleController {
 
     private final CoupleService coupleService;
     private final MemoryService memoryService;
+    private final SharedWidgetsService sharedWidgets;
 
-    public CoupleController(CoupleService coupleService, MemoryService memoryService) {
+    public CoupleController(CoupleService coupleService, MemoryService memoryService,
+                            SharedWidgetsService sharedWidgets) {
         this.coupleService = coupleService;
         this.memoryService = memoryService;
+        this.sharedWidgets = sharedWidgets;
     }
 
     @GetMapping
@@ -72,5 +76,21 @@ public class CoupleController {
     @GetMapping("/memories")
     public List<MemoryDto> memories() {
         return memoryService.onThisDay();
+    }
+
+    /** The widgets of both side menus (editable by both). */
+    @GetMapping("/widgets")
+    public SharedWidgetsDto widgets() {
+        return sharedWidgets.get();
+    }
+
+    @PutMapping("/widgets")
+    public SharedWidgetsDto saveWidgets(Principal principal, @RequestBody CoupleRequests.WidgetsRequest request) {
+        return sharedWidgets.save(principal.getName(), request.widgets(), request.version());
+    }
+
+    @PostMapping("/widgets")
+    public SharedWidgetsDto addWidget(Principal principal, @RequestBody CoupleRequests.AddWidgetRequest request) {
+        return sharedWidgets.add(principal.getName(), request.widget());
     }
 }

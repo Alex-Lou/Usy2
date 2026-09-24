@@ -33,6 +33,11 @@ public class ApiExceptionHandler {
         return error(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflict(ConflictException ex) {
+        return error(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, Object>> handleTooLarge(
             org.springframework.web.multipart.MaxUploadSizeExceededException ex) {
