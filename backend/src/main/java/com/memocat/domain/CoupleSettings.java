@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
@@ -19,6 +21,15 @@ public class CoupleSettings {
 
     @Column(name = "together_since")
     private LocalDate togetherSince;
+
+    /** The widgets shown in both side menus (JSON list, validated before it is stored). */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "widgets_json", nullable = false)
+    private String widgetsJson = "[]";
+
+    /** Goes up on every change of the shared widgets (see SharedWidgetsService). */
+    @Column(name = "widgets_version", nullable = false)
+    private int widgetsVersion;
 
     protected CoupleSettings() {
         // for JPA
@@ -36,5 +47,19 @@ public class CoupleSettings {
 
     public void setTogetherSince(LocalDate togetherSince) {
         this.togetherSince = togetherSince;
+    }
+
+    public String getWidgetsJson() {
+        return widgetsJson;
+    }
+
+    public int getWidgetsVersion() {
+        return widgetsVersion;
+    }
+
+    /** Replaces the shared widgets and bumps their version. */
+    public void replaceWidgets(String widgetsJson) {
+        this.widgetsJson = widgetsJson;
+        this.widgetsVersion++;
     }
 }

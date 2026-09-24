@@ -1,6 +1,9 @@
 package com.memocat.couple.dto;
 
+import com.memocat.profile.dto.WidgetDto;
+
 import java.time.LocalDate;
+import java.util.List;
 
 /** Request bodies of the "Nous" API. Content rules are checked in the services. */
 public final class CoupleRequests {
@@ -22,5 +25,13 @@ public final class CoupleRequests {
     }
 
     public record DoneRequest(boolean done) {
+    }
+
+    /** The whole shared widget list, edited from the copy at {@code version}. */
+    public record WidgetsRequest(List<WidgetDto> widgets, Integer version) {
+    }
+
+    /** One widget added at the end of the shared list (e.g. shared from a profile). */
+    public record AddWidgetRequest(WidgetDto widget) {
     }
 }

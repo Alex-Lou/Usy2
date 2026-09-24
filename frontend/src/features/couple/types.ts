@@ -1,3 +1,4 @@
+import type { Widget } from "../profile/types";
 import type { User } from "../auth/api";
 
 export interface Mood {
@@ -47,9 +48,16 @@ export interface SharedList {
   items: ListItem[];
 }
 
+/** The side menu's widgets, shared by both (see SharedWidgetsService.java). */
+export interface SharedWidgets {
+  widgets: Widget[];
+  /** Sent back when saving: a save from an older copy is refused (409). */
+  version: number;
+}
+
 /** Broadcast on /topic/couple (see CoupleActivity.java). */
 export interface CoupleActivity {
-  kind: "mood" | "note" | "list" | "list-change" | "together";
+  kind: "mood" | "note" | "list" | "list-change" | "together" | "widgets";
   actorId: number;
   actorName: string;
   detail: string | null;
