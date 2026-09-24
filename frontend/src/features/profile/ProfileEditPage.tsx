@@ -322,7 +322,12 @@ export function ProfileEditPage() {
           <h2 className="mb-3 font-semibold">Style</h2>
           <div className="grid grid-cols-2 gap-3">
             <FontSelect label="Police du texte" value={theme.font} onChange={(font) => setTheme({ ...theme, font })} />
-            <FontSelect label="Police des titres" value={theme.headingFont ?? "app"} onChange={(headingFont) => setTheme({ ...theme, headingFont })} />
+            <FontSelect
+              label="Police des titres"
+              value={theme.headingFont ?? "app"}
+              appLabel="Comme le texte"
+              onChange={(headingFont) => setTheme({ ...theme, headingFont })}
+            />
             <div className="col-span-2 rounded-token-sm border border-border bg-bg-2/40 px-3 py-2" style={buildThemeStyle({ ...theme, mode: "app" })}>
               <p className="font-display text-lg font-bold text-text">Nos souvenirs ✨</p>
               <p className="font-sans text-sm text-text">Un petit mot doux, écrit avec ta police : é, à, ç, œ… 💕</p>
@@ -424,14 +429,27 @@ export function ProfileEditPage() {
 /**
  * A theme saved before fonts had a scope shows its font only with custom
  * colors: in the editor it becomes an explicit choice with the same result
- * (its font with custom colors, the app's font otherwise), for the profile.
+ * (its font on the profile with custom colors, the app's font otherwise).
+ * With no font of its own yet, a new choice applies to the whole app.
  */
 function withFontChoice(theme: Theme): Theme {
   if (theme.fontScope) return { ...theme, headingFont: theme.headingFont ?? "app" };
-  return { ...theme, font: theme.mode === "custom" ? theme.font : "app", headingFont: "app", fontScope: "profile" };
+  if (theme.mode === "custom") return { ...theme, headingFont: "app", fontScope: "profile" };
+  return { ...theme, font: "app", headingFont: "app", fontScope: "app" };
 }
 
-function FontSelect({ label, value, onChange }: { label: string; value: FontKey; onChange: (font: FontKey) => void }) {
+function FontSelect({
+  label,
+  value,
+  appLabel,
+  onChange,
+}: {
+  label: string;
+  value: FontKey;
+  /** Name of the "no font of its own" choice (titles follow the text font). */
+  appLabel?: string;
+  onChange: (font: FontKey) => void;
+}) {
   return (
     <label className="text-sm">
       <span className="mb-1 block text-text-muted">{label}</span>
@@ -440,7 +458,7 @@ function FontSelect({ label, value, onChange }: { label: string; value: FontKey;
           <optgroup key={group.label} label={group.label}>
             {group.keys.map((key) => (
               <option key={key} value={key}>
-                {FONTS[key].label}
+                {key === "app" && appLabel ? appLabel : FONTS[key].label}
               </option>
             ))}
           </optgroup>

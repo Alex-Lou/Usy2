@@ -15,14 +15,21 @@ export function fontsApply(theme: Theme): boolean {
   return theme.fontScope != null || theme.mode === "custom";
 }
 
-/** CSS variables for the theme's text and title fonts ("app" keeps the app's own). */
+/**
+ * CSS variables for the theme's fonts. The chosen text font reaches everything
+ * — titles and handwritten touches too — unless the titles have their own
+ * font; "app" everywhere keeps the app's own fonts.
+ */
 export function fontVars(theme: Theme): Record<string, string> {
   if (!fontsApply(theme)) return {};
   const vars: Record<string, string> = {};
   const body = fontStack(theme.font);
-  const heading = fontStack(theme.headingFont);
+  const heading = fontStack(theme.headingFont) ?? body;
   if (body) vars["--font-body"] = body;
-  if (heading) vars["--font-display"] = heading;
+  if (heading) {
+    vars["--font-display"] = heading;
+    vars["--font-script"] = heading;
+  }
   return vars;
 }
 
