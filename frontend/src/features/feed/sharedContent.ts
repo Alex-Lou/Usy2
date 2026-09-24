@@ -56,21 +56,3 @@ export function takeForChat(): SharedContent | null {
   forChat = null;
   return c;
 }
-
-// Same hand-off to the music page when "Playlist" is chosen.
-let forMusic: SharedContent | null = null;
-
-export function handToMusic(content: SharedContent): void {
-  forMusic = content;
-}
-
-export function takeForMusic(): SharedContent | null {
-  const c = forMusic;
-  forMusic = null;
-  return c;
-}
-
-/** The first web link in shared text, if any. */
-export function firstLink(text: string): string | null {
-  return text.match(/https?:\/\/[^\s<>"]+/i)?.[0] ?? null;
-}

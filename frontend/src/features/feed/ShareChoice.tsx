@@ -9,15 +9,12 @@ export function ShareChoice({
   partnerName,
   onPost,
   onMessage,
-  onPlaylist,
   onCancel,
 }: {
   shared: SharedContent;
   partnerName: string | null;
   onPost: () => void;
   onMessage: () => void;
-  /** Only when a link was shared: add it to a playlist ("Musique"). */
-  onPlaylist?: () => void;
   onCancel: () => void;
 }) {
   useEffect(() => {
@@ -58,12 +55,6 @@ export function ShareChoice({
             <Icon name="chat" size={22} className="text-primary" />
             {partnerName ? `Message à ${partnerName}` : "En message"}
           </button>
-          {onPlaylist && (
-            <button type="button" onClick={onPlaylist} className="col-span-2 flex items-center justify-center gap-2 rounded-token border border-border bg-bg-2/40 px-2 py-2.5 text-sm font-semibold press hover:border-primary/50">
-              <Icon name="music" size={18} className="text-primary" />
-              Dans une playlist
-            </button>
-          )}
         </div>
         <button type="button" onClick={onCancel} className="mt-2 w-full py-1.5 text-xs text-text-muted press hover:text-text">
           Annuler
