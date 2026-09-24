@@ -8,6 +8,16 @@ import java.util.Map;
  * font: allowlisted key. layout: allowlisted key.
  * mode: "app" (follow the app light/dark theme, default) or "custom" (use the
  *       stored colors). Null is treated as "app" for backward compatibility.
+ * font / headingFont: text and title fonts, allowlisted keys ("app" = the
+ *       app's own font). headingFont null = the app's title font.
+ * fontScope: "profile" (fonts on the profile page) or "app" (also the whole
+ *       app for its owner). Null = saved before this choice existed: the font
+ *       then only applies with custom colors, as it always did.
  */
-public record ThemeDto(Map<String, String> colors, String font, String layout, String mode) {
+public record ThemeDto(Map<String, String> colors, String font, String layout, String mode,
+                       String headingFont, String fontScope) {
+
+    public ThemeDto(Map<String, String> colors, String font, String layout, String mode) {
+        this(colors, font, layout, mode, null, null);
+    }
 }

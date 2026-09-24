@@ -1,6 +1,13 @@
 import type { Framing } from "../../lib/framing";
 
-export type FontKey = "trebuchet" | "georgia" | "courier" | "comic" | "system";
+export type FontKey =
+  | "app" // the app's own font (no override)
+  | "trebuchet" | "georgia" | "courier" | "comic" | "system"
+  | "nunito" | "quicksand" | "comfortaa" | "baloo" | "fredoka"
+  | "dancing" | "pacifico" | "satisfy" | "indie" | "patrick" | "caveat"
+  | "uncial" | "medieval" | "cinzel" | "almendra" | "imfell"
+  | "playfair" | "lora" | "cormorant" | "garamond";
+export type FontScope = "profile" | "app";
 export type LayoutKey = "classic" | "sidebar-left";
 export type ThemeMode = "app" | "custom";
 
@@ -16,6 +23,8 @@ export interface Theme {
   font: FontKey;
   layout: LayoutKey;
   mode?: ThemeMode; // "app" (follow app light/dark) by default, or "custom" colors
+  headingFont?: FontKey | null; // titles; null = the app's title font
+  fontScope?: FontScope | null; // null = saved before fonts had a scope (see fontsApply)
 }
 
 export type Widget = (

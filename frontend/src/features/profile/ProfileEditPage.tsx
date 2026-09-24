@@ -11,7 +11,9 @@ import type { Framing } from "../../lib/framing";
 import { useAuth } from "../auth/useAuth";
 import { uploadImage } from "../../lib/api/assets";
 import { getMyProfile, updateMyProfile } from "./api";
-import { buildThemeStyle, FONT_LABELS, LAYOUT_LABELS } from "./theme";
+import { FONT_GROUPS, FONTS, useFonts } from "../../lib/fonts";
+import { emitMyThemeSaved } from "./AppFonts";
+import { buildThemeStyle, LAYOUT_LABELS } from "./theme";
 import type { FontKey, LayoutKey, Theme, ThemeColors, ThemeMode, Widget, WidgetType } from "./types";
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
 import { PinsEditor } from "./widgets/PinsEditor";
@@ -68,13 +70,14 @@ export function ProfileEditPage() {
   const [bio, setBio] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  useFonts(theme?.font, theme?.headingFont); // previews show the chosen fonts
 
   useEffect(() => {
     let cancelled = false;
     getMyProfile()
       .then((p) => {
         if (!cancelled) {
-          setTheme({ ...p.theme, mode: p.theme.mode ?? "app" });
+          setTheme(withFontChoice({ ...p.theme, mode: p.theme.mode ?? "app" }));
           setWidgets(p.widgets);
           setAvatarAssetId(p.avatarAssetId ?? null);
           setCoverAssetId(p.coverAssetId ?? null);
@@ -165,6 +168,7 @@ export function ProfileEditPage() {
       );
       await refreshUser(); // header/avatar reflect the new photo
       navigate(`/profile/${saved.userId}`, { replace: true });
+      emitMyThemeSaved(saved.theme); // "Toute l'app" fonts change right away
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Enregistrement impossible.");
     } finally {
@@ -317,12 +321,33 @@ export function ProfileEditPage() {
         <section className="card p-4">
           <h2 className="mb-3 font-semibold">Style</h2>
           <div className="grid grid-cols-2 gap-3">
-            <label className="text-sm">
-              <span className="mb-1 block text-text-muted">Police</span>
-              <select value={theme.font} onChange={(e) => setTheme({ ...theme, font: e.target.value as FontKey })} className={selectClass}>
-                {(Object.keys(FONT_LABELS) as FontKey[]).map((f) => <option key={f} value={f}>{FONT_LABELS[f]}</option>)}
-              </select>
-            </label>
+            <FontSelect label="Police du texte" value={theme.font} onChange={(font) => setTheme({ ...theme, font })} />
+            <FontSelect label="Police des titres" value={theme.headingFont ?? "app"} onChange={(headingFont) => setTheme({ ...theme, headingFont })} />
+            <div className="col-span-2 rounded-token-sm border border-border bg-bg-2/40 px-3 py-2" style={buildThemeStyle({ ...theme, mode: "app" })}>
+              <p className="font-display text-lg font-bold text-text">Nos souvenirs ✨</p>
+              <p className="font-sans text-sm text-text">Un petit mot doux, écrit avec ta police : é, à, ç, œ… 💕</p>
+            </div>
+            <div className="col-span-2 text-sm">
+              <span className="mb-1 block text-text-muted">Appliquer ces polices à</span>
+              <div className="flex items-center gap-1 rounded-full border border-border bg-bg-2/60 p-1">
+                {(["profile", "app"] as const).map((scope) => (
+                  <button
+                    key={scope}
+                    type="button"
+                    onClick={() => setTheme({ ...theme, fontScope: scope })}
+                    aria-pressed={theme.fontScope === scope}
+                    className={"flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition press " + (theme.fontScope === scope ? "btn-brand" : "text-text-muted hover:text-text")}
+                  >
+                    {scope === "profile" ? "Mon profil" : "Toute l'app (pour moi)"}
+                  </button>
+                ))}
+              </div>
+              <span className="mt-1 block text-[11px] text-text-muted">
+                {theme.fontScope === "app"
+                  ? "Toute l'interface prend tes polices, sur tous tes appareils. Ton binôme garde les siennes."
+                  : "Seule ta page profil utilise ces polices (aussi quand ton binôme la regarde)."}
+              </span>
+            </div>
             <label className="text-sm">
               <span className="mb-1 block text-text-muted">Disposition</span>
               <select value={theme.layout} onChange={(e) => setTheme({ ...theme, layout: e.target.value as LayoutKey })} className={selectClass}>
@@ -381,7 +406,7 @@ export function ProfileEditPage() {
 
       <div className="lg:sticky lg:top-8 lg:self-start">
         <p className="mb-2 text-sm text-text-muted">Aperçu</p>
-        <div style={custom ? buildThemeStyle(theme) : undefined} className="card bg-bg p-4 font-sans text-text">
+        <div style={buildThemeStyle(theme)} className="card bg-bg p-4 font-sans text-text">
           <div className="flex flex-col gap-3">
             {widgets.length === 0 ? (
               <p className="text-text-muted">L'aperçu apparaîtra ici.</p>
@@ -396,6 +421,35 @@ export function ProfileEditPage() {
 }
 
 /** Pins: complete "site.fr" into https://site.fr, drop empty rows and empty names before saving. */
+/**
+ * A theme saved before fonts had a scope shows its font only with custom
+ * colors: in the editor it becomes an explicit choice with the same result
+ * (its font with custom colors, the app's font otherwise), for the profile.
+ */
+function withFontChoice(theme: Theme): Theme {
+  if (theme.fontScope) return { ...theme, headingFont: theme.headingFont ?? "app" };
+  return { ...theme, font: theme.mode === "custom" ? theme.font : "app", headingFont: "app", fontScope: "profile" };
+}
+
+function FontSelect({ label, value, onChange }: { label: string; value: FontKey; onChange: (font: FontKey) => void }) {
+  return (
+    <label className="text-sm">
+      <span className="mb-1 block text-text-muted">{label}</span>
+      <select value={value} onChange={(e) => onChange(e.target.value as FontKey)} className={selectClass}>
+        {FONT_GROUPS.map((group) => (
+          <optgroup key={group.label} label={group.label}>
+            {group.keys.map((key) => (
+              <option key={key} value={key}>
+                {FONTS[key].label}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function cleanWidget(w: Widget): Widget {
   if (w.type !== "pins") return w;
   const pins = w.pins

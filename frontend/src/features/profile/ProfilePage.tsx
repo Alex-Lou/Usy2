@@ -10,7 +10,8 @@ import { Loader } from "../../components/ui/states";
 import { useAuth } from "../auth/useAuth";
 import { NousPanel } from "../couple/NousPanel";
 import { getProfile } from "./api";
-import { buildThemeStyle } from "./theme";
+import { useFonts } from "../../lib/fonts";
+import { buildThemeStyle, fontsApply } from "./theme";
 import type { Profile } from "./types";
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
 
@@ -35,19 +36,21 @@ export function ProfilePage() {
     };
   }, [id]);
 
+  const fontsOn = profile ? fontsApply(profile.theme) : false;
+  useFonts(fontsOn ? profile?.theme.font : null, fontsOn ? profile?.theme.headingFont : null);
+
   if (error) return <div className="p-8 text-danger">{error}</div>;
   if (!profile) return <Loader />;
 
   const isOwn = user?.id === profile.userId;
-  // "custom" applies the profile's saved colors; otherwise the panel follows the app theme.
-  const custom = profile.theme.mode === "custom";
   const companion: Species =
     profile.companion && (SPECIES as readonly string[]).includes(profile.companion)
       ? (profile.companion as Species)
       : "cat";
 
   return (
-    <div style={custom ? buildThemeStyle(profile.theme) : undefined} className="flex flex-col gap-6 font-sans">
+    // The profile's colors (custom mode) and fonts apply only inside this view.
+    <div style={buildThemeStyle(profile.theme)} className="flex flex-col gap-6 font-sans">
       {/* Hero: cover band + overlapping avatar, with room to breathe. */}
       <div className="card overflow-hidden bg-bg animate-fade-up">
         <div className="relative h-28 overflow-hidden sm:h-36" style={{ backgroundImage: "var(--grad)" }}>

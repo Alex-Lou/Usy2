@@ -1,22 +1,6 @@
 import type { CSSProperties } from "react";
-import type { FontKey, LayoutKey, Theme } from "./types";
-
-// Maps the curated font keys to concrete font stacks.
-export const FONT_STACKS: Record<FontKey, string> = {
-  trebuchet: '"Trebuchet MS", "Segoe UI", system-ui, sans-serif',
-  georgia: 'Georgia, "Times New Roman", serif',
-  courier: '"Courier New", Courier, monospace',
-  comic: '"Comic Sans MS", "Comic Sans", cursive',
-  system: "system-ui, sans-serif",
-};
-
-export const FONT_LABELS: Record<FontKey, string> = {
-  trebuchet: "Trebuchet",
-  georgia: "Georgia",
-  courier: "Courier",
-  comic: "Comic Sans",
-  system: "Système",
-};
+import { fontStack } from "../../lib/fonts";
+import type { LayoutKey, Theme } from "./types";
 
 export const LAYOUT_LABELS: Record<LayoutKey, string> = {
   classic: "Classique (une colonne)",
@@ -24,15 +8,38 @@ export const LAYOUT_LABELS: Record<LayoutKey, string> = {
 };
 
 /**
+ * Whether the theme's fonts are used. A theme saved before fonts had a scope
+ * (fontScope null) keeps the old rule: its font only came with custom colors.
+ */
+export function fontsApply(theme: Theme): boolean {
+  return theme.fontScope != null || theme.mode === "custom";
+}
+
+/** CSS variables for the theme's text and title fonts ("app" keeps the app's own). */
+export function fontVars(theme: Theme): Record<string, string> {
+  if (!fontsApply(theme)) return {};
+  const vars: Record<string, string> = {};
+  const body = fontStack(theme.font);
+  const heading = fontStack(theme.headingFont);
+  if (body) vars["--font-body"] = body;
+  if (heading) vars["--font-display"] = heading;
+  return vars;
+}
+
+/**
  * Builds the inline style that overrides the design tokens for a scoped
- * container, so a profile's theme applies only inside the profile view.
+ * container, so a profile's theme applies only inside the profile view:
+ * its colors in custom mode, its fonts when they apply.
  */
 export function buildThemeStyle(theme: Theme): CSSProperties {
-  return {
-    "--color-bg": theme.colors.bg,
-    "--color-surface": theme.colors.surface,
-    "--color-primary": theme.colors.primary,
-    "--color-text": theme.colors.text,
-    "--font-body": FONT_STACKS[theme.font],
-  } as CSSProperties;
+  const colors =
+    theme.mode === "custom"
+      ? {
+          "--color-bg": theme.colors.bg,
+          "--color-surface": theme.colors.surface,
+          "--color-primary": theme.colors.primary,
+          "--color-text": theme.colors.text,
+        }
+      : {};
+  return { ...colors, ...fontVars(theme) } as CSSProperties;
 }
