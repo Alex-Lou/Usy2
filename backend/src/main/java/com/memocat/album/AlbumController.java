@@ -56,7 +56,7 @@ public class AlbumController {
     /** Body {"photoId": 12} picks the cover; {"photoId": null} goes back to the first photo. */
     @PutMapping("/{id}/cover")
     public AlbumDto setCover(@PathVariable Long id, @RequestBody AlbumRequests.Cover request) {
-        return albumService.setCover(id, request.photoId());
+        return albumService.setCover(id, request.photoId(), request.framing());
     }
 
     @DeleteMapping("/{id}")

@@ -93,7 +93,7 @@ export function Composer({
   return (
     <form onSubmit={submit} className="card p-4">
       <div className="flex gap-3">
-        <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} species={user?.companion} />
+        <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
         <div className="flex-1">
           <textarea
             ref={textareaRef}

@@ -1,5 +1,6 @@
 package com.memocat.profile.dto;
 
+import com.memocat.asset.Framing;
 import java.util.List;
 
 public record ProfileDto(
@@ -10,5 +11,7 @@ public record ProfileDto(
         String bio,
         ThemeDto theme,
         List<WidgetDto> widgets,
-        Long coverAssetId) {
+        Long coverAssetId,
+        Framing avatarFraming,
+        Framing coverFraming) {
 }

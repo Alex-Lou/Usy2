@@ -187,7 +187,7 @@ export function ChatPage() {
       <header className="flex items-center gap-3 animate-fade-up">
         {partner && (
           <ProfileLink userId={partner.userId} className="shrink-0 rounded-full">
-            <Avatar name={partner.displayName} size={40} assetId={partner.avatarAssetId} species={partner.companion} />
+            <Avatar name={partner.displayName} size={40} assetId={partner.avatarAssetId} framing={partner.avatarFraming} species={partner.companion} />
           </ProfileLink>
         )}
         <div className="min-w-0">

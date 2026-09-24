@@ -73,7 +73,7 @@ export function PostCard({
     <article className="card animate-fade-up overflow-hidden p-4">
       <header className="mb-3 flex items-center gap-3">
         <ProfileLink userId={post.author.id} className="shrink-0 rounded-full">
-          <Avatar name={post.author.displayName} size={42} assetId={post.author.avatarAssetId} species={post.author.companion} />
+          <Avatar name={post.author.displayName} size={42} assetId={post.author.avatarAssetId} framing={post.author.avatarFraming} species={post.author.companion} />
         </ProfileLink>
         <div className="min-w-0 flex-1">
           <ProfileLink userId={post.author.id} className="block truncate font-semibold hover:underline">

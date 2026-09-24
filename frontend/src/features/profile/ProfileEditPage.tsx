@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AssetImage } from "../../components/AssetImage";
+import { FramingEditor } from "../../components/photo/FramingEditor";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
 import { ApiError } from "../../lib/api/client";
+import type { Framing } from "../../lib/framing";
 import { useAuth } from "../auth/useAuth";
 import { uploadImage } from "../../lib/api/assets";
 import { getMyProfile, updateMyProfile } from "./api";
@@ -60,6 +62,9 @@ export function ProfileEditPage() {
   const [widgets, setWidgets] = useState<Widget[]>([]);
   const [avatarAssetId, setAvatarAssetId] = useState<number | null>(null);
   const [coverAssetId, setCoverAssetId] = useState<number | null>(null);
+  const [avatarFraming, setAvatarFraming] = useState<Framing | null>(null);
+  const [coverFraming, setCoverFraming] = useState<Framing | null>(null);
+  const [framing, setFraming] = useState<"avatar" | "cover" | null>(null); // editor open
   const [bio, setBio] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -73,6 +78,8 @@ export function ProfileEditPage() {
           setWidgets(p.widgets);
           setAvatarAssetId(p.avatarAssetId ?? null);
           setCoverAssetId(p.coverAssetId ?? null);
+          setAvatarFraming(p.avatarFraming ?? null);
+          setCoverFraming(p.coverFraming ?? null);
           setBio(p.bio ?? "");
         }
       })
@@ -87,6 +94,8 @@ export function ProfileEditPage() {
     try {
       const asset = await uploadImage(file);
       setCoverAssetId(asset.id);
+      setCoverFraming(null);
+      setFraming("cover"); // a new photo: choose its part right away
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Envoi de la photo impossible.");
     }
@@ -97,6 +106,8 @@ export function ProfileEditPage() {
     try {
       const asset = await uploadImage(file);
       setAvatarAssetId(asset.id);
+      setAvatarFraming(null);
+      setFraming("avatar");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Envoi de la photo impossible.");
     }
@@ -143,7 +154,15 @@ export function ProfileEditPage() {
     setSaving(true);
     setError(null);
     try {
-      const saved = await updateMyProfile(theme, widgets.map(cleanWidget), avatarAssetId, bio.trim() || null, coverAssetId);
+      const saved = await updateMyProfile(
+        theme,
+        widgets.map(cleanWidget),
+        avatarAssetId,
+        bio.trim() || null,
+        coverAssetId,
+        avatarFraming,
+        coverFraming,
+      );
       await refreshUser(); // header/avatar reflect the new photo
       navigate(`/profile/${saved.userId}`, { replace: true });
     } catch (err) {
@@ -165,7 +184,7 @@ export function ProfileEditPage() {
         <section className="card p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold"><Icon name="user" size={18} /> Identité</h2>
           <div className="flex items-center gap-4">
-            <Avatar name={user?.displayName ?? "?"} size={64} assetId={avatarAssetId} species={user?.companion} />
+            <Avatar key={avatarAssetId ?? 0} name={user?.displayName ?? "?"} size={64} assetId={avatarAssetId} framing={avatarFraming} species={user?.companion} />
             <div className="flex flex-wrap gap-2">
               <label className="chip cursor-pointer press hover:border-primary/50">
                 <Icon name="camera" size={14} /> {avatarAssetId ? "Changer la photo" : "Ajouter une photo"}
@@ -180,6 +199,11 @@ export function ProfileEditPage() {
                 />
               </label>
               {avatarAssetId && (
+                <button type="button" onClick={() => setFraming("avatar")} className="chip press hover:border-primary/50">
+                  <Icon name="sliders" size={14} /> Recadrer
+                </button>
+              )}
+              {avatarAssetId && (
                 <button type="button" onClick={() => setAvatarAssetId(null)} className="chip press text-danger hover:border-danger/50">
                   Retirer
                 </button>
@@ -189,7 +213,7 @@ export function ProfileEditPage() {
           <div className="mt-4">
             <span className="mb-1 block text-sm text-text-muted">Photo de couverture</span>
             <div className="relative h-24 overflow-hidden rounded-token border border-border" style={{ backgroundImage: "var(--grad)" }}>
-              {coverAssetId && <AssetImage assetId={coverAssetId} className="h-full w-full object-cover" />}
+              {coverAssetId && <AssetImage key={coverAssetId} assetId={coverAssetId} framing={coverFraming} className="h-full w-full object-cover" />}
             </div>
             <div className="mt-2 flex flex-wrap gap-2">
               <label className="chip cursor-pointer press hover:border-primary/50">
@@ -205,12 +229,44 @@ export function ProfileEditPage() {
                 />
               </label>
               {coverAssetId && (
+                <button type="button" onClick={() => setFraming("cover")} className="chip press hover:border-primary/50">
+                  <Icon name="sliders" size={14} /> Recadrer
+                </button>
+              )}
+              {coverAssetId && (
                 <button type="button" onClick={() => setCoverAssetId(null)} className="chip press text-danger hover:border-danger/50">
                   Retirer la couverture
                 </button>
               )}
             </div>
           </div>
+          {framing === "avatar" && avatarAssetId && (
+            <FramingEditor
+              assetId={avatarAssetId}
+              aspect={1}
+              round
+              initial={avatarFraming}
+              title="Cadrer ta photo de profil"
+              onCancel={() => setFraming(null)}
+              onSave={(f) => {
+                setAvatarFraming(f);
+                setFraming(null);
+              }}
+            />
+          )}
+          {framing === "cover" && coverAssetId && (
+            <FramingEditor
+              assetId={coverAssetId}
+              aspect={3.2} // the banner on a phone (it gets wider on a computer)
+              initial={coverFraming}
+              title="Cadrer ta couverture"
+              onCancel={() => setFraming(null)}
+              onSave={(f) => {
+                setCoverFraming(f);
+                setFraming(null);
+              }}
+            />
+          )}
           <label className="mt-3 block text-sm">
             <span className="mb-1 block text-text-muted">Bio</span>
             <textarea

@@ -1,6 +1,9 @@
 package com.memocat.domain;
 
+import com.memocat.asset.Framing;
+import com.memocat.asset.FramingConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -48,6 +51,11 @@ public class Profile {
     /** Photo shown in the profile's banner (null: the theme gradient). */
     @Column(name = "cover_asset_id")
     private Long coverAssetId;
+
+    /** Which part of the cover photo shows in the banner (null: centred). */
+    @Convert(converter = FramingConverter.class)
+    @Column(name = "cover_framing")
+    private Framing coverFraming;
 
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -110,5 +118,13 @@ public class Profile {
 
     public void setCoverAssetId(Long coverAssetId) {
         this.coverAssetId = coverAssetId;
+    }
+
+    public Framing getCoverFraming() {
+        return coverFraming;
+    }
+
+    public void setCoverFraming(Framing coverFraming) {
+        this.coverFraming = coverFraming;
     }
 }

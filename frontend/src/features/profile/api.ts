@@ -1,4 +1,5 @@
 import { apiRequest } from "../../lib/api/client";
+import type { Framing } from "../../lib/framing";
 import type { Profile, Theme, Widget } from "./types";
 
 export function getMyProfile(): Promise<Profile> {
@@ -20,10 +21,12 @@ export function updateMyProfile(
   avatarAssetId: number | null,
   bio: string | null,
   coverAssetId: number | null = null,
+  avatarFraming: Framing | null = null,
+  coverFraming: Framing | null = null,
 ): Promise<Profile> {
   return apiRequest<Profile>("/api/profiles/me", {
     method: "PUT",
-    body: { theme, widgets, avatarAssetId, bio, coverAssetId },
+    body: { theme, widgets, avatarAssetId, bio, coverAssetId, avatarFraming, coverFraming },
   });
 }
 

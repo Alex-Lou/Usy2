@@ -1,3 +1,4 @@
+import type { Framing } from "../../lib/framing";
 import type { User } from "../auth/api";
 
 export interface Album {
@@ -8,6 +9,7 @@ export interface Album {
   createdAt: string;
   photoCount: number;
   coverAssetId: number | null;
+  coverFraming?: Framing | null; // which part of the cover shows on the tile (null: centred)
 }
 
 export interface Photo {

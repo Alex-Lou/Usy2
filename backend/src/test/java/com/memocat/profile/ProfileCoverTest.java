@@ -1,6 +1,7 @@
 package com.memocat.profile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.memocat.asset.Framing;
 import com.memocat.domain.Asset;
 import com.memocat.domain.Profile;
 import com.memocat.domain.User;
@@ -57,6 +58,24 @@ class ProfileCoverTest {
         when(assets.findById(7L)).thenReturn(Optional.of(new Asset("k", "c.jpg", "image/jpeg", 1, lou)));
         assertThat(service.updateMyProfile("lou", withCover(7L)).coverAssetId()).isEqualTo(7L);
         assertThat(service.updateMyProfile("lou", withCover(null)).coverAssetId()).isNull();
+    }
+
+    @Test
+    void framingIsKeptWithItsPhotoAndDroppedWithoutOne() {
+        when(assets.findById(7L)).thenReturn(Optional.of(new Asset("k", "c.jpg", "image/jpeg", 1, lou)));
+        Framing top = new Framing(0.5, 0, 1.5);
+
+        var saved = service.updateMyProfile("lou", new ProfileUpdateRequest(theme, List.of(), 5L, null, 7L, top, top));
+        assertThat(saved.coverFraming()).isEqualTo(top);
+        assertThat(saved.avatarFraming()).isEqualTo(top);
+
+        var cleared = service.updateMyProfile("lou", new ProfileUpdateRequest(theme, List.of(), null, null, null, top, top));
+        assertThat(cleared.coverFraming()).isNull();
+        assertThat(cleared.avatarFraming()).isNull();
+
+        assertThatThrownBy(() -> service.updateMyProfile("lou",
+                new ProfileUpdateRequest(theme, List.of(), null, null, 7L, null, new Framing(0.5, 0.5, 20))))
+                .isInstanceOf(ContentValidationException.class);
     }
 
     @Test

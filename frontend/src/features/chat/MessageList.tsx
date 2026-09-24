@@ -92,7 +92,7 @@ export function MessageList({
                 <span className="w-[30px] shrink-0">
                   {lastOfRun && (
                     <ProfileLink userId={m.sender.id} className="block rounded-full">
-                      <Avatar name={m.sender.displayName} size={30} assetId={m.sender.avatarAssetId} species={m.sender.companion} />
+                      <Avatar name={m.sender.displayName} size={30} assetId={m.sender.avatarAssetId} framing={m.sender.avatarFraming} species={m.sender.companion} />
                     </ProfileLink>
                   )}
                 </span>

@@ -3,6 +3,7 @@ package com.memocat.profile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.memocat.asset.Framing;
 import com.memocat.domain.Asset;
 import com.memocat.domain.Profile;
 import com.memocat.domain.User;
@@ -108,10 +109,12 @@ public class ProfileService {
         }
 
         user.setAvatarAssetId(request.avatarAssetId());
+        user.setAvatarFraming(request.avatarAssetId() == null ? null : Framing.validate(request.avatarFraming()));
         userRepository.save(user);
 
         Profile profile = getOrCreate(user);
         profile.setCoverAssetId(cover);
+        profile.setCoverFraming(cover == null ? null : Framing.validate(request.coverFraming()));
         profile.setThemeJson(writeJson(request.theme()));
         profile.setWidgetsJson(writeJson(request.widgets()));
         profile.setBio(bio == null || bio.isBlank() ? null : bio);
@@ -150,7 +153,9 @@ public class ProfileService {
                 profile.getBio(),
                 theme,
                 widgets,
-                profile.getCoverAssetId());
+                profile.getCoverAssetId(),
+                user.getAvatarFraming(),
+                profile.getCoverFraming());
     }
 
     private String writeJson(Object value) {

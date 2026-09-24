@@ -1,6 +1,7 @@
 package com.memocat.album;
 
 import com.memocat.album.dto.AlbumDto;
+import com.memocat.asset.Framing;
 import com.memocat.domain.Album;
 import com.memocat.domain.Asset;
 import com.memocat.domain.Photo;
@@ -55,6 +56,15 @@ class AlbumCoverTest {
 
         AlbumDto reset = service.setCover(3L, null);
         assertThat(reset.coverAssetId()).isEqualTo(10L);
+    }
+
+    @Test
+    void coverFramingIsSavedAndDroppedWithTheCover() {
+        when(photos.findById(21L)).thenReturn(Optional.of(beach));
+        Framing left = new Framing(0, 0.5, 2);
+
+        assertThat(service.setCover(3L, 21L, left).coverFraming()).isEqualTo(left);
+        assertThat(service.setCover(3L, null, left).coverFraming()).isNull();
     }
 
     @Test
