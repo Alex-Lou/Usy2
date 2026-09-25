@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AssetImage } from "../../components/AssetImage";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Avatar } from "../../components/ui/Avatar";
@@ -46,10 +46,27 @@ export function PostCard({
   const [commentCount, setCommentCount] = useState(post.commentCount);
   const [busy, setBusy] = useState(false);
   const [viewing, setViewing] = useState(false);
+  const [burst, setBurst] = useState(0); // a heart blooms on the photo (double tap)
+  const tapTimer = useRef<number | null>(null);
 
   async function toggleReaction(emoji: string) {
     const summary = post.reactions.find((r) => r.emoji === emoji);
     onChanged(summary?.reactedByMe ? await unreact(post.id, emoji) : await react(post.id, emoji));
+  }
+
+  // One tap opens the photo; a quick second tap likes it instead (❤️, never un-likes).
+  function tapPhoto() {
+    if (tapTimer.current !== null) {
+      window.clearTimeout(tapTimer.current);
+      tapTimer.current = null;
+      setBurst(Date.now());
+      if (!post.reactions.find((r) => r.emoji === "❤️")?.reactedByMe) void toggleReaction("❤️");
+      return;
+    }
+    tapTimer.current = window.setTimeout(() => {
+      tapTimer.current = null;
+      setViewing(true);
+    }, 260);
   }
 
   async function saveEdit() {
@@ -121,10 +138,20 @@ export function PostCard({
       {!editing && !post.imageAssetId && firstUrl(post.text) && <LinkPreview url={firstUrl(post.text)!} className="mt-3" />}
 
       {post.imageAssetId && (
-        <button type="button" onClick={() => setViewing(true)} className="mt-3 block w-full press" aria-label="Agrandir la photo">
+        <button
+          type="button"
+          onClick={tapPhoto}
+          className="relative mt-3 block w-full touch-manipulation press"
+          aria-label="Agrandir la photo (deux fois : ❤️)"
+        >
           <EffectLayer effect={post.imageEffect} className="rounded-token">
             <AssetImage assetId={post.imageAssetId} className="max-h-[28rem] w-full rounded-token border border-border object-cover" />
           </EffectLayer>
+          {burst > 0 && (
+            <span key={burst} data-heart-burst="" className="mc-heart-burst pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">
+              <span className="mc-emoji text-7xl drop-shadow-lg">❤️</span>
+            </span>
+          )}
         </button>
       )}
       {viewing && post.imageAssetId && (

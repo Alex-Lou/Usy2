@@ -123,6 +123,7 @@ export function skin(s: PartStyle, what: { box?: boolean; text?: boolean; scope?
     if (s.align) {
       cls.push("mc-skin--align");
       style["--skin-align"] = s.align;
+      style["--skin-flex"] = s.align === "left" ? "flex-start" : s.align === "right" ? "flex-end" : "center";
     }
   }
   return { className: cls.join(" "), style: style as CSSProperties };
