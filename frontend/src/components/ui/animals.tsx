@@ -273,10 +273,13 @@ export function AnimalFace({ species, eyesClosed = false }: { species: Species; 
 const STILL_BELOW = 48;
 
 // Standalone cute face.
-export function Animal({ species, size = 64, className = "" }: { species: Species; size?: number; className?: string }) {
+/** `still`: no moves of its own (the default below 48 px); the avatar badge sets it false and plays its "hello" instead. */
+export function Animal({ species, size = 64, className = "", still = size < STILL_BELOW }: { species: Species; size?: number; className?: string; still?: boolean }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" className={(size < STILL_BELOW ? "mc-still " : "") + className} aria-hidden="true">
-      <AnimalFace species={species} />
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" className={(still ? "mc-still " : "") + className} aria-hidden="true">
+      <g className="mc-head">
+        <AnimalFace species={species} />
+      </g>
     </svg>
   );
 }
