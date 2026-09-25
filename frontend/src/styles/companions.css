@@ -1,0 +1,71 @@
+/* The cat and wolf faces, alive (see components/ui/animals.tsx): a blink now
+   and then, an ear that twitches, the cat's whiskers that quiver. Each part
+   turns around its own base (transform-box). */
+.mc-face .mc-face-eyes,
+.mc-face .mc-face-ear,
+.mc-face .mc-face-whiskers {
+  transform-box: fill-box;
+}
+.mc-face .mc-face-eyes {
+  transform-origin: 50% 50%;
+  animation: mc-face-blink 4.6s infinite;
+}
+.mc-face--wolf .mc-face-eyes {
+  animation-duration: 5.3s;
+}
+.mc-face .mc-face-ear--l {
+  transform-origin: 80% 100%;
+  animation: mc-face-ear-l 7s ease-in-out infinite;
+}
+.mc-face .mc-face-ear--r {
+  transform-origin: 20% 100%;
+  animation: mc-face-ear-r 9s ease-in-out infinite;
+}
+.mc-face--cat .mc-face-whiskers--l {
+  transform-origin: 100% 50%;
+  animation: mc-face-whisk-l 3.4s ease-in-out infinite;
+}
+.mc-face--cat .mc-face-whiskers--r {
+  transform-origin: 0% 50%;
+  animation: mc-face-whisk-r 3.4s ease-in-out infinite;
+}
+@keyframes mc-face-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+@keyframes mc-face-ear-l {
+  0%, 80%, 100% { transform: rotate(0); }
+  84% { transform: rotate(-14deg); }
+  88% { transform: rotate(4deg); }
+  92% { transform: rotate(0); }
+}
+@keyframes mc-face-ear-r {
+  0%, 60%, 100% { transform: rotate(0); }
+  64% { transform: rotate(14deg); }
+  68% { transform: rotate(-4deg); }
+  72% { transform: rotate(0); }
+}
+@keyframes mc-face-whisk-l {
+  0%, 70%, 100% { transform: rotate(0); }
+  78% { transform: rotate(-7deg); }
+  86% { transform: rotate(3deg); }
+}
+@keyframes mc-face-whisk-r {
+  0%, 70%, 100% { transform: rotate(0); }
+  78% { transform: rotate(7deg); }
+  86% { transform: rotate(-3deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-face .mc-face-eyes,
+  .mc-face .mc-face-ear,
+  .mc-face .mc-face-whiskers {
+    animation: none;
+  }
+}
+
+/* Small faces keep still (see Animal in animals.tsx): only the big ones move. */
+.mc-still .mc-face *,
+.mc-still .mc-penguin,
+.mc-still .mc-penguin * {
+  animation: none !important;
+}

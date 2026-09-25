@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SPECIES, type Species } from "../../../app/companion";
 import { AssetImage } from "../../../components/AssetImage";
-import { LivingPenguin } from "../../../components/penguin/LivingPenguin";
+import { isLivingKind, LivingCompanion } from "../../../components/companions/LivingCompanion";
 import { Animal } from "../../../components/ui/animals";
 import { HeartMark, SparkleMarks } from "../../../components/ui/decor";
 import { useCouple } from "../../couple/useCouple";
@@ -12,8 +12,8 @@ import { SCENES } from "./scenes";
 
 /** Text-like widgets take the whole row; the others are small square-ish tiles. */
 export function isWideMini(widget: Widget): boolean {
-  // The living penguin needs room to waddle.
-  return ["marquee", "quote", "richtext", "pins"].includes(widget.type) || (widget.type === "svg" && widget.variant === "penguin");
+  // The living companions need room to wander.
+  return ["marquee", "quote", "richtext", "pins"].includes(widget.type) || (widget.type === "svg" && isLivingKind(widget.variant));
 }
 
 const TILE = "flex h-full min-h-16 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-2xl bg-surface-2/60 p-1.5 text-center";
@@ -68,10 +68,10 @@ function plain(text: string): string {
 }
 
 function MiniScene({ variant }: { variant: string }) {
-  if (variant === "penguin") {
+  if (isLivingKind(variant)) {
     return (
       <div className={TILE}>
-        <LivingPenguin scene="tile" />
+        <LivingCompanion kind={variant} scene="tile" />
       </div>
     );
   }
