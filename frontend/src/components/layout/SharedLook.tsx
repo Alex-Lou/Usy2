@@ -28,6 +28,16 @@ export function SharedLook() {
   }, [accent]);
 
   const preset = BACKGROUNDS.find((b) => b.id === background);
+  const hasBackground = !!preset || (background === "photo" && !!backgroundAssetId);
+  // Tells the glass cards a background shows (see glass.css).
+  useEffect(() => {
+    if (!hasBackground) return;
+    document.documentElement.dataset.sharedBg = "";
+    return () => {
+      delete document.documentElement.dataset.sharedBg;
+    };
+  }, [hasBackground]);
+
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
       {background === "photo" && backgroundAssetId ? (

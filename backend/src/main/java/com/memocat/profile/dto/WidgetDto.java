@@ -16,7 +16,9 @@ import java.util.List;
  * Any widget: {@code home} = also shown at the top of the home feed;
  * {@code w} / {@code h} = its size on the profile, in grid cells (1..4; null:
  * the default width, and a height that follows the content); {@code style} =
- * its own look on the profile, over the frames' default (see PartStyleDto).
+ * its own look on the profile, over the frames' default (see PartStyleDto);
+ * {@code sidebar} = also shown in both side menus, live, for as long as it is
+ * on the profile with this flag (only its owner manages it).
  *
  * All text is stored as-is and escaped/whitelisted on display, never injected
  * as raw HTML — the widget set stays a closed, safe allowlist (no XSS vector).
@@ -24,12 +26,18 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record WidgetDto(String type, String text, String emoji, String label,
                         Long assetId, String date, String variant, List<PinDto> pins, Boolean home,
-                        Integer w, Integer h, PartStyleDto style) {
+                        Integer w, Integer h, PartStyleDto style, Boolean sidebar) {
+
+    /** Any widget, with a size and a look, not in the side menus. */
+    public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant,
+                     List<PinDto> pins, Boolean home, Integer w, Integer h, PartStyleDto style) {
+        this(type, text, emoji, label, assetId, date, variant, pins, home, w, h, style, null);
+    }
 
     /** Any widget, with a size but no look of its own. */
     public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant,
                      List<PinDto> pins, Boolean home, Integer w, Integer h) {
-        this(type, text, emoji, label, assetId, date, variant, pins, home, w, h, null);
+        this(type, text, emoji, label, assetId, date, variant, pins, home, w, h, null, null);
     }
 
     /** Any widget, without a size of its own. */

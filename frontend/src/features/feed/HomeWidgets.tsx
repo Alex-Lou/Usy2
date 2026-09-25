@@ -7,15 +7,16 @@ import type { Widget } from "../profile/types";
 import { isWideMini, MiniWidget } from "../profile/widgets/MiniWidget";
 
 /**
- * The couple's shared widgets (same for both, editable by both in "Nos
- * widgets"), shrunk to small tiles for the side menu. Kept in sync live.
+ * The side menu's widgets, shrunk to small tiles: the common ones (editable by
+ * both in "Nos widgets"), then those each of us shows from their profile.
+ * Kept in sync live.
  */
 export function HomeWidgets() {
-  const [widgets, setWidgets] = useState<Widget[] | null>(null);
+  const [widgets, setWidgets] = useState<{ widget: Widget; from?: string }[] | null>(null);
 
   const load = useCallback(() => {
     getSharedWidgets()
-      .then((s) => setWidgets(s.widgets))
+      .then((s) => setWidgets([...s.widgets.map((widget) => ({ widget })), ...(s.linked ?? []).map((l) => ({ widget: l.widget, from: l.ownerName }))]))
       .catch(() => {});
   }, []);
 
@@ -35,8 +36,8 @@ export function HomeWidgets() {
       </div>
       {widgets.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
-          {widgets.map((widget, i) => (
-            <div key={i} className={`min-w-0 ${isWideMini(widget) ? "col-span-2" : ""}`}>
+          {widgets.map(({ widget, from }, i) => (
+            <div key={i} title={from ? `Depuis le profil de ${from}` : undefined} className={`min-w-0 ${isWideMini(widget) ? "col-span-2" : ""}`}>
               <MiniWidget widget={widget} />
             </div>
           ))}

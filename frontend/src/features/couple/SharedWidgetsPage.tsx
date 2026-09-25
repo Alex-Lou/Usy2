@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { ApiError } from "../../lib/api/client";
 import { useAuth } from "../auth/useAuth";
@@ -8,6 +8,7 @@ import { isWideMini, MiniWidget } from "../profile/widgets/MiniWidget";
 import { cleanWidget, missingImage, WidgetListEditor } from "../profile/widgets/WidgetEditor";
 import { onCoupleActivity } from "./activity";
 import { getSharedWidgets, saveSharedWidgets } from "./api";
+import type { LinkedWidget } from "./types";
 
 /**
  * "Nos widgets": the side menu's widgets, the same for both, and both can edit
@@ -18,6 +19,7 @@ export function SharedWidgetsPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [widgets, setWidgets] = useState<Widget[] | null>(null);
+  const [linked, setLinked] = useState<LinkedWidget[]>([]);
   const [version, setVersion] = useState(0);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -30,6 +32,7 @@ export function SharedWidgetsPage() {
     getSharedWidgets()
       .then((s) => {
         setWidgets(s.widgets);
+        setLinked(s.linked ?? []);
         setVersion(s.version);
         setDirty(false);
         setChangedBy(null);
@@ -40,7 +43,12 @@ export function SharedWidgetsPage() {
   useEffect(() => {
     load();
     return onCoupleActivity((a) => {
-      if (a.kind !== "widgets" || a.actorId === user?.id) return;
+      if (a.kind !== "widgets") return;
+      if (a.actorId === user?.id) {
+        // My own profile changed what it shows here: refresh that part only.
+        getSharedWidgets().then((s) => setLinked(s.linked ?? [])).catch(() => {});
+        return;
+      }
       if (dirtyRef.current) setChangedBy(a.actorName); // keep what is being typed
       else load();
     });
@@ -62,6 +70,7 @@ export function SharedWidgetsPage() {
     try {
       const saved = await saveSharedWidgets(widgets.map(cleanWidget), version);
       setWidgets(saved.widgets);
+      setLinked(saved.linked ?? []);
       setVersion(saved.version);
       setDirty(false);
       setChangedBy(null);
@@ -97,6 +106,28 @@ export function SharedWidgetsPage() {
           )}
         </section>
 
+        {linked.length > 0 && (
+          <section className="card flex flex-col gap-2 p-4" aria-label="Depuis vos profils">
+            <h2 className="font-semibold">Depuis vos profils</h2>
+            <p className="text-xs text-text-muted">Montrés ici par leur auteur, tant qu'ils sont sur son profil. Seul lui peut les retirer.</p>
+            <ul className="flex flex-col gap-2">
+              {linked.map((l, i) => (
+                <li key={i} className="flex items-center gap-3 rounded-token border border-border p-2">
+                  <div className="w-32 shrink-0">
+                    <MiniWidget widget={l.widget} />
+                  </div>
+                  <span className="flex-1 text-sm text-text-muted">De {l.ownerName}</span>
+                  {l.ownerId === user?.id && (
+                    <Link to="/profile/edit" className="chip press text-xs hover:border-primary/50">
+                      Gérer sur mon profil
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
 
         <div className="flex gap-2">
@@ -108,8 +139,8 @@ export function SharedWidgetsPage() {
       <div className="lg:sticky lg:top-8 lg:self-start">
         <p className="mb-2 text-sm text-text-muted">Aperçu</p>
         <div className="card grid grid-cols-2 gap-2 p-3">
-          {widgets && widgets.length > 0 ? (
-            widgets.map((w, i) => (
+          {widgets && widgets.length + linked.length > 0 ? (
+            [...widgets, ...linked.map((l) => l.widget)].map((w, i) => (
               <div key={i} className={`min-w-0 ${isWideMini(w) ? "col-span-2" : ""}`}>
                 <MiniWidget widget={w} />
               </div>

@@ -54,7 +54,11 @@ export interface Theme {
   fontScope?: FontScope | null; // null = saved before fonts had a scope (see fontsApply)
   widgetGap?: WidgetGap | null; // space between the profile's widgets (null = "m")
   parts?: Partial<Record<PartKey, PartStyle>> | null; // each part's look (see partStyle.ts)
+  glass?: Glass | null; // my cards over a background (null: "medium"), see GlassSync
 }
+
+/** How see-through the cards get over a chosen background (a personal choice). */
+export type Glass = "off" | "light" | "medium" | "strong";
 
 export type Widget = (
   | { type: "marquee"; text: string }
@@ -71,6 +75,7 @@ export type Widget = (
   w?: number; // width on the profile grid, 1..4 cells (default: half, marquee full)
   h?: number; // height, 1..4 rows (default: follows the content)
   style?: PartStyle; // its own look on the profile, over the frames' default
+  sidebar?: boolean; // also in both side menus, for as long as it is on the profile
 };
 
 /** A pinned web page (quick access): its address and an optional short name. */

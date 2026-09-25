@@ -12,6 +12,13 @@ export function emitMyThemeSaved(theme: Theme): void {
   window.dispatchEvent(new CustomEvent<Theme>(EVENT, { detail: theme }));
 }
 
+/** Listens to my saved themes; returns the unsubscribe function. */
+export function onMyThemeSaved(listener: (theme: Theme) => void): () => void {
+  const on = (e: Event) => listener((e as CustomEvent<Theme>).detail);
+  window.addEventListener(EVENT, on);
+  return () => window.removeEventListener(EVENT, on);
+}
+
 /**
  * Invisible: applies the app's fonts. My own choice wins: when my profile's
  * fonts are set to "Toute l'app", they apply to the whole interface (text and

@@ -14,6 +14,7 @@ import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -32,7 +33,7 @@ class ProfileCoverTest {
     private final UserRepository users = mock(UserRepository.class);
     private final AssetRepository assets = mock(AssetRepository.class);
     private final ProfileService service = new ProfileService(profiles, users, new ThemeValidator(), new WidgetValidator(),
-            new ObjectMapper(), assets);
+            new ObjectMapper(), assets, mock(ApplicationEventPublisher.class));
     private final User lou = withId(new User("lou", "h", "Lou"), 1L);
     private final User sam = withId(new User("sam", "h", "Sam"), 2L);
     private final ThemeDto theme = new ThemeDto(

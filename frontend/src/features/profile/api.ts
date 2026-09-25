@@ -1,6 +1,6 @@
 import { apiRequest } from "../../lib/api/client";
 import type { Framing } from "../../lib/framing";
-import type { Profile, Theme, Widget } from "./types";
+import type { Glass, Profile, Theme, Widget } from "./types";
 
 export function getMyProfile(): Promise<Profile> {
   return apiRequest<Profile>("/api/profiles/me");
@@ -28,6 +28,11 @@ export function updateMyProfile(
     method: "PUT",
     body: { theme, widgets, avatarAssetId, bio, coverAssetId, avatarFraming, coverFraming },
   });
+}
+
+/** My glass choice (null: back to the default). */
+export function updateGlass(glass: Glass | null): Promise<Profile> {
+  return apiRequest<Profile>("/api/profiles/me/glass", { method: "PUT", body: { glass } });
 }
 
 export function updateCompanion(companion: string): Promise<Profile> {
