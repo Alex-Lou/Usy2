@@ -103,6 +103,14 @@ class AssetServiceTest {
         assertThat(PhotoEffects.validate(null)).isNull();
         assertThat(PhotoEffects.validate("hearts")).isEqualTo("hearts");
         assertThatThrownBy(() -> PhotoEffects.validate("<script>")).isInstanceOf(ContentValidationException.class);
+        assertThat(PhotoEffects.validate("fireworks")).isEqualTo("fireworks");
+        for (String ok : new String[] {"fall:🌸", "rise:🍕", "fall:❤️", "rise:👍🏽", "fall:👩‍❤️‍👨"}) {
+            assertThat(PhotoEffects.validate(ok)).as(ok).isEqualTo(ok);
+        }
+        for (String bad : new String[] {"fall:", "fall:abc", "fall:🌸x", "sideways:🌸", "fall:<b>", "rise: 🌸",
+                "fall:1", "fall:é", "fall:🌸🌸🌸🌸🌸🌸🌸🌸🌸", "fall:🌸;", "hearts:🌸"}) {
+            assertThatThrownBy(() -> PhotoEffects.validate(bad)).as(bad).isInstanceOf(ContentValidationException.class);
+        }
         assertThatThrownBy(() -> service.upload("lou", new MockMultipartFile("file", "a.png", "image/png",
                 new byte[]{(byte) 0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A}), "explode"))
                 .isInstanceOf(ContentValidationException.class);
