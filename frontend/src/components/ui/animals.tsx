@@ -127,13 +127,27 @@ export function AnimalFace({ species, eyesClosed = false }: { species: Species; 
 
     case "wolf":
       return (
+        // A wolf, not a kitten: tall ears, fluffy cheek ruffs, a darker mask and a long pale muzzle.
         <g className="mc-face mc-face--wolf">
-          {head("#b7bdc7")}
-          {pointyEars("#b7bdc7", "#8a929e")}
-          <ellipse cx="32" cy="42" rx="8" ry="6" fill="#e7ebf1" />
+          <g className="mc-face-ear mc-face-ear--l">
+            <path d="M17 19 L9 -3 L30 12 Z" fill="#8f97a3" stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
+            <path d="M18 14 L13 3 L25 11 Z" fill="#e9dcdc" />
+          </g>
+          <g className="mc-face-ear mc-face-ear--r">
+            <path d="M47 19 L55 -3 L34 12 Z" fill="#8f97a3" stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
+            <path d="M46 14 L51 3 L39 11 Z" fill="#e9dcdc" />
+          </g>
+          {/* Cheek ruffs, poking out of the head. */}
+          <path d="M11 34 l-9 4 l7 2 l-7 5 l9 1 l-4 5 l10 -3 z" fill="#e7ebf1" stroke={OUTLINE} strokeWidth="1.8" strokeLinejoin="round" />
+          <path d="M53 34 l9 4 l-7 2 l7 5 l-9 1 l4 5 l-10 -3 z" fill="#e7ebf1" stroke={OUTLINE} strokeWidth="1.8" strokeLinejoin="round" />
+          {head("#aab2be")}
+          <path d="M12 30 q20 -26 40 0 q-8 -5 -14 -3 l-6 8 l-6 -8 q-6 -2 -14 3 z" fill="#7f8794" />
+          <path d="M20 29 l6 1.5 M44 29 l-6 1.5" stroke={OUTLINE} strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M20 44 q12 14 24 0 q-2 -9 -12 -9 q-10 0 -12 9 z" fill="#eef1f5" />
           <Eyes closed={eyesClosed} />
-          <path d="M30 40 L34 40 L32 42.6 Z" fill={OUTLINE} />
-          <path d="M32 42.6 q-2.6 2.2 -5 1 M32 42.6 q2.6 2.2 5 1" stroke={OUTLINE} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+          <ellipse cx="32" cy="40" rx="4.2" ry="3" fill={OUTLINE} />
+          <ellipse cx="30.8" cy="39.1" rx="1.2" ry="0.7" fill="#fff" opacity="0.7" />
+          <path d="M32 43 v2 M32 45 q-3 2.6 -6 1 M32 45 q3 2.6 6 1" stroke={OUTLINE} strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </g>
       );
 
@@ -244,10 +258,13 @@ export function AnimalFace({ species, eyesClosed = false }: { species: Species; 
   }
 }
 
+/** Below this size (avatars in the feed, the chat…) faces keep still: only the big ones come alive. */
+const STILL_BELOW = 48;
+
 // Standalone cute face.
 export function Animal({ species, size = 64, className = "" }: { species: Species; size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" className={className} aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" className={(size < STILL_BELOW ? "mc-still " : "") + className} aria-hidden="true">
       <AnimalFace species={species} />
     </svg>
   );

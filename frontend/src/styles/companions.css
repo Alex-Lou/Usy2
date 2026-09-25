@@ -62,3 +62,10 @@
     animation: none;
   }
 }
+
+/* Small faces keep still (see Animal in animals.tsx): only the big ones move. */
+.mc-still .mc-face *,
+.mc-still .mc-penguin,
+.mc-still .mc-penguin * {
+  animation: none !important;
+}
