@@ -40,6 +40,13 @@ const GAMES: GameCard[] = [
     mode: "Solo · arcade",
     emoji: "🐍",
   },
+  {
+    to: "/jeux/sudoku",
+    title: "Sudoku",
+    tagline: "Quatre niveaux, de Facile à Expert : une nouvelle grille à chaque partie.",
+    mode: "Solo · réflexion",
+    emoji: "🔢",
+  },
 ];
 
 export function GamesHub() {
