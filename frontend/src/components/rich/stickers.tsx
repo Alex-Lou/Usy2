@@ -12,13 +12,16 @@ import { HeartMark, SparkleMarks } from "../ui/decor";
 export type StickerKind = "sticker" | "animated";
 
 /** The picker's packs. Every sticker belongs to one. */
-export type PackId = "compagnons" | "amour" | "humeurs" | "quotidien";
+export type PackId = "compagnons" | "amour" | "humeurs" | "quotidien" | "latino" | "francais" | "english";
 
 export const PACKS: { id: PackId; label: string; icon: string }[] = [
   { id: "compagnons", label: "Compagnons", icon: "🐱" },
   { id: "amour", label: "Amour", icon: "💕" },
   { id: "humeurs", label: "Humeurs", icon: "😴" },
   { id: "quotidien", label: "Quotidien", icon: "☕" },
+  { id: "latino", label: "Latino", icon: "🌶️" },
+  { id: "francais", label: "Français", icon: "🥐" },
+  { id: "english", label: "English", icon: "🗽" },
 ];
 
 export interface Sticker {
@@ -88,6 +91,39 @@ const note = (text: string, char: string) => (size: number) => (
   >
     {text}
     <span className="mc-emoji">{char}</span>
+  </span>
+);
+
+/** A companion saying something, in a speech bubble above its head. */
+const says = (s: Species, text: string, anim: string) => (size: number) => (
+  <span className="relative inline-flex flex-col items-center" style={{ width: size, height: size }}>
+    <span
+      className="relative z-10 -mb-1 max-w-[140%] whitespace-nowrap rounded-xl bg-surface px-1.5 py-0.5 font-display font-bold leading-tight text-text shadow ring-1 ring-border"
+      style={{ fontSize: Math.max(8, Math.round(size * 0.16)) }}
+    >
+      {text}
+    </span>
+    <span className={`inline-block ${anim}`}>
+      <Animal species={s} size={Math.round(size * 0.72)} />
+    </span>
+  </span>
+);
+
+/** A bold word in a colour burst, comic style ("OMG", "WESH"…); long words get smaller to stay about as wide as the sticker. */
+const burst = (text: string, bg: string, anim: string) => (size: number) => (
+  <span className={`inline-block p-1 ${anim}`}>
+    <span
+      className="inline-grid place-items-center whitespace-nowrap rounded-2xl px-2 font-display font-black uppercase italic leading-none text-white shadow-glow"
+      style={{
+        fontSize: Math.round(Math.min(size * 0.26, (size * 1.5) / (text.length * 0.64))),
+        height: Math.round(size * 0.58),
+        background: bg,
+        textShadow: "0 2px 0 rgba(0,0,0,0.35)",
+        transform: "rotate(-4deg)",
+      }}
+    >
+      {text}
+    </span>
   </span>
 );
 
@@ -174,6 +210,54 @@ export const STICKERS: readonly Sticker[] = [
   { id: "anniversaire", label: "Joyeux anniversaire", kind: "animated", pack: "quotidien", render: captioned("🎂", "joyeux anniv", "mc-hop") },
   { id: "noel", label: "Joyeux Noël", kind: "animated", pack: "quotidien", render: captioned("🎄", "joyeux Noël", "mc-sway") },
   { id: "bonne-annee", label: "Bonne année", kind: "animated", pack: "quotidien", render: captioned("🎆", "bonne année", "mc-pulse") },
+
+  // — Latino —
+  { id: "que-chimba", label: "¡Qué chimba!", kind: "animated", pack: "latino", render: burst("¡qué chimba!", "linear-gradient(135deg,#ff5f6d,#ffc371)", "mc-wiggle") },
+  { id: "ay-no", label: "Ay no…", kind: "animated", pack: "latino", render: says("cat", "ay no… 😩", "mc-shake") },
+  { id: "dale", label: "¡Dale!", kind: "animated", pack: "latino", render: burst("¡dale!", "linear-gradient(135deg,#11998e,#38ef7d)", "mc-hop") },
+  { id: "mi-amor", label: "Mi amor", kind: "animated", pack: "latino", render: note("mi amor", "💕") },
+  { id: "que-onda", label: "¿Qué onda?", kind: "animated", pack: "latino", render: says("parrot", "¿qué onda?", "mc-hop") },
+  { id: "no-manches", label: "No manches", kind: "animated", pack: "latino", render: captioned("🤯", "no manches", "mc-shake") },
+  { id: "andale", label: "¡Ándale!", kind: "animated", pack: "latino", render: says("dog", "¡ándale!", "mc-hop") },
+  { id: "te-quiero", label: "Te quiero mucho", kind: "animated", pack: "latino", render: note("te quiero mucho", "❤️") },
+  { id: "chevere", label: "Chévere", kind: "animated", pack: "latino", render: captioned("😎", "chévere", "mc-wiggle") },
+  { id: "que-rico", label: "¡Qué rico!", kind: "animated", pack: "latino", render: captioned("🌮", "¡qué rico!", "mc-wiggle") },
+  { id: "ay-dios-mio", label: "¡Ay, Dios mío!", kind: "animated", pack: "latino", render: says("capybara", "¡ay, Dios mío!", "mc-shake") },
+  { id: "besitos", label: "Besitos", kind: "animated", pack: "latino", render: captioned("😘", "besitos", "mc-pulse") },
+  { id: "buenas-noches", label: "Buenas noches", kind: "animated", pack: "latino", render: captioned("🌙", "buenas noches", "mc-sway") },
+  { id: "fiesta", label: "¡Fiesta!", kind: "animated", pack: "latino", render: burst("¡fiesta!", "linear-gradient(135deg,#f953c6,#b91d73)", "mc-hop") },
+
+  // — Français —
+  { id: "oh-la-la", label: "Oh là là", kind: "animated", pack: "francais", render: says("cat", "oh là là !", "mc-wiggle") },
+  { id: "wesh", label: "Wesh", kind: "animated", pack: "francais", render: burst("wesh", "linear-gradient(135deg,#4776e6,#8e54e9)", "mc-wiggle") },
+  { id: "la-hess", label: "C'est la hess", kind: "animated", pack: "francais", render: says("raccoon", "c'est la hess", "mc-sway") },
+  { id: "trop-mims", label: "Trop mims", kind: "animated", pack: "francais", render: captioned("🥹", "trop mims", "mc-pulse") },
+  { id: "grave", label: "Grave", kind: "animated", pack: "francais", render: burst("grave", "linear-gradient(135deg,#ff512f,#dd2476)", "mc-hop") },
+  { id: "ca-roule", label: "Ça roule", kind: "animated", pack: "francais", render: captioned("🛼", "ça roule", "mc-sway") },
+  { id: "chaud", label: "Chaud !", kind: "animated", pack: "francais", render: says("dog", "chaud !", "mc-hop") },
+  { id: "tkt", label: "Tkt", kind: "animated", pack: "francais", render: says("capybara", "tkt 😌", "mc-float") },
+  { id: "mdr", label: "Mdr", kind: "animated", pack: "francais", render: burst("mdr", "linear-gradient(135deg,#f7971e,#ffd200)", "mc-shake") },
+  { id: "bon-app", label: "Bon app'", kind: "animated", pack: "francais", render: captioned("🥖", "bon app'", "mc-wiggle") },
+  { id: "la-base", label: "La base", kind: "animated", pack: "francais", render: captioned("👌", "la base", "mc-pulse") },
+  { id: "flemme-fr", label: "Flemme", kind: "animated", pack: "francais", render: says("cat", "flemme…", "mc-float") },
+  { id: "bisous-fr", label: "Gros bisous", kind: "animated", pack: "francais", render: note("gros bisous", "😘") },
+  { id: "cest-ouf", label: "C'est ouf", kind: "animated", pack: "francais", render: burst("c'est ouf", "linear-gradient(135deg,#00c6ff,#0072ff)", "mc-pulse") },
+
+  // — English —
+  { id: "omg", label: "OMG", kind: "animated", pack: "english", render: burst("omg", "linear-gradient(135deg,#ff416c,#ff4b2b)", "mc-shake") },
+  { id: "bruh", label: "Bruh", kind: "animated", pack: "english", render: says("wolf", "bruh.", "mc-sway") },
+  { id: "no-cap", label: "No cap", kind: "animated", pack: "english", render: captioned("🧢", "no cap", "mc-wiggle") },
+  { id: "love-ya", label: "Love ya", kind: "animated", pack: "english", render: note("love ya", "💖") },
+  { id: "mood", label: "Mood", kind: "animated", pack: "english", render: says("cat", "mood", "mc-float") },
+  { id: "same", label: "Same", kind: "animated", pack: "english", render: says("raccoon", "same 😅", "mc-hop") },
+  { id: "lol", label: "LOL", kind: "animated", pack: "english", render: burst("lol", "linear-gradient(135deg,#f7971e,#ffd200)", "mc-shake") },
+  { id: "slay", label: "Slay", kind: "animated", pack: "english", render: burst("slay", "linear-gradient(135deg,#da22ff,#9733ee)", "mc-pulse") },
+  { id: "vibes", label: "Vibes", kind: "animated", pack: "english", render: captioned("✨", "good vibes", "mc-float") },
+  { id: "sus", label: "Sus", kind: "animated", pack: "english", render: says("lizard", "sus 🤨", "mc-sway") },
+  { id: "miss-u", label: "Miss u", kind: "animated", pack: "english", render: note("miss u", "🥺") },
+  { id: "lets-go", label: "Let's go", kind: "animated", pack: "english", render: burst("let's go!", "linear-gradient(135deg,#11998e,#38ef7d)", "mc-hop") },
+  { id: "whatever", label: "Whatever", kind: "animated", pack: "english", render: captioned("🙄", "whatever", "mc-sway") },
+  { id: "sweet-dreams", label: "Sweet dreams", kind: "animated", pack: "english", render: captioned("🌙", "sweet dreams", "mc-sway") },
 ];
 
 const BY_ID = new Map(STICKERS.map((s) => [s.id, s]));
