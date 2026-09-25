@@ -18,10 +18,13 @@ function Eyes({ closed = false }: { closed?: boolean }) {
   }
   return (
     <g className="mc-face-eyes">
-      <circle cx="24" cy="33" r="3.6" fill={EYE} />
-      <circle cx="40" cy="33" r="3.6" fill={EYE} />
-      <circle cx="25.2" cy="31.6" r="1.2" fill="#fff" />
-      <circle cx="41.2" cy="31.6" r="1.2" fill="#fff" />
+      {/* Inner group: the gaze wanders (styles/companions.css) while the outer one blinks. */}
+      <g className="mc-face-look">
+        <circle cx="24" cy="33" r="3.6" fill={EYE} />
+        <circle cx="40" cy="33" r="3.6" fill={EYE} />
+        <circle cx="25.2" cy="31.6" r="1.2" fill="#fff" />
+        <circle cx="41.2" cy="31.6" r="1.2" fill="#fff" />
+      </g>
     </g>
   );
 }
@@ -145,8 +148,16 @@ export function AnimalFace({ species, eyesClosed = false }: { species: Species; 
           <path d="M20 29 l6 1.5 M44 29 l-6 1.5" stroke={OUTLINE} strokeWidth="1.6" strokeLinecap="round" />
           <path d="M20 44 q12 14 24 0 q-2 -9 -12 -9 q-10 0 -12 9 z" fill="#eef1f5" />
           <Eyes closed={eyesClosed} />
-          <ellipse cx="32" cy="40" rx="4.2" ry="3" fill={OUTLINE} />
-          <ellipse cx="30.8" cy="39.1" rx="1.2" ry="0.7" fill="#fff" opacity="0.7" />
+          <g className="mc-face-whiskers mc-face-whiskers--l">
+            <path d="M22 43 L12 41.5 M22 45.5 L13 46.5" stroke={OUTLINE} strokeWidth="1.2" strokeLinecap="round" opacity="0.8" />
+          </g>
+          <g className="mc-face-whiskers mc-face-whiskers--r">
+            <path d="M42 43 L52 41.5 M42 45.5 L51 46.5" stroke={OUTLINE} strokeWidth="1.2" strokeLinecap="round" opacity="0.8" />
+          </g>
+          <g className="mc-face-nose">
+            <ellipse cx="32" cy="40" rx="4.2" ry="3" fill={OUTLINE} />
+            <ellipse cx="30.8" cy="39.1" rx="1.2" ry="0.7" fill="#fff" opacity="0.7" />
+          </g>
           <path d="M32 43 v2 M32 45 q-3 2.6 -6 1 M32 45 q3 2.6 6 1" stroke={OUTLINE} strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </g>
       );

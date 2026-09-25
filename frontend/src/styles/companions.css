@@ -2,16 +2,45 @@
    and then, an ear that twitches, the cat's whiskers that quiver. Each part
    turns around its own base (transform-box). */
 .mc-face .mc-face-eyes,
+.mc-face .mc-face-look,
 .mc-face .mc-face-ear,
-.mc-face .mc-face-whiskers {
+.mc-face .mc-face-whiskers,
+.mc-face .mc-face-nose {
   transform-box: fill-box;
 }
 .mc-face .mc-face-eyes {
   transform-origin: 50% 50%;
   animation: mc-face-blink 4.6s infinite;
 }
+/* The gaze wanders a little: left, back, right, back. */
+.mc-face .mc-face-look {
+  animation: mc-face-look 7.5s ease-in-out infinite;
+}
+
+/* The wolf is the liveliest: double blinks, busy ears, a sniffing nose. */
 .mc-face--wolf .mc-face-eyes {
-  animation-duration: 5.3s;
+  animation: mc-face-blink2 4.2s infinite;
+}
+.mc-face--wolf .mc-face-look {
+  animation-duration: 6s;
+}
+.mc-face--wolf .mc-face-ear--l {
+  animation: mc-wolf-ear-l 3.4s ease-in-out infinite;
+}
+.mc-face--wolf .mc-face-ear--r {
+  animation: mc-wolf-ear-r 4.3s ease-in-out infinite;
+}
+.mc-face--wolf .mc-face-whiskers--l {
+  transform-origin: 100% 50%;
+  animation: mc-face-whisk-l 2.6s ease-in-out infinite;
+}
+.mc-face--wolf .mc-face-whiskers--r {
+  transform-origin: 0% 50%;
+  animation: mc-face-whisk-r 2.6s ease-in-out 0.2s infinite;
+}
+.mc-face--wolf .mc-face-nose {
+  transform-origin: 50% 50%;
+  animation: mc-face-sniff 3.8s ease-in-out infinite;
 }
 .mc-face .mc-face-ear--l {
   transform-origin: 80% 100%;
@@ -32,6 +61,43 @@
 @keyframes mc-face-blink {
   0%, 93%, 100% { transform: scaleY(1); }
   96% { transform: scaleY(0.1); }
+}
+@keyframes mc-face-blink2 {
+  0%, 84%, 100% { transform: scaleY(1); }
+  87% { transform: scaleY(0.1); }
+  90% { transform: scaleY(1); }
+  93% { transform: scaleY(0.1); }
+  96% { transform: scaleY(1); }
+}
+@keyframes mc-face-look {
+  0%, 18%, 50%, 68%, 100% { transform: translateX(0); }
+  25%, 42% { transform: translateX(-1.6px); }
+  75%, 92% { transform: translateX(1.6px); }
+}
+@keyframes mc-wolf-ear-l {
+  0%, 100% { transform: rotate(0); }
+  12% { transform: rotate(-16deg); }
+  18% { transform: rotate(-4deg); }
+  22% { transform: rotate(-12deg); }
+  30%, 60% { transform: rotate(0); }
+  70% { transform: rotate(8deg); } /* listening sideways */
+  85% { transform: rotate(0); }
+}
+@keyframes mc-wolf-ear-r {
+  0%, 35%, 100% { transform: rotate(0); }
+  45% { transform: rotate(16deg); }
+  50% { transform: rotate(5deg); }
+  55% { transform: rotate(13deg); }
+  65% { transform: rotate(0); }
+  80% { transform: rotate(-8deg); }
+  92% { transform: rotate(0); }
+}
+@keyframes mc-face-sniff {
+  0%, 60%, 100% { transform: scale(1) translateY(0); }
+  65% { transform: scale(1.12, 0.92) translateY(-0.4px); }
+  70% { transform: scale(1); }
+  75% { transform: scale(1.12, 0.92) translateY(-0.4px); }
+  80% { transform: scale(1); }
 }
 @keyframes mc-face-ear-l {
   0%, 80%, 100% { transform: rotate(0); }
@@ -57,8 +123,10 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .mc-face .mc-face-eyes,
+  .mc-face .mc-face-look,
   .mc-face .mc-face-ear,
-  .mc-face .mc-face-whiskers {
+  .mc-face .mc-face-whiskers,
+  .mc-face .mc-face-nose {
     animation: none;
   }
 }
