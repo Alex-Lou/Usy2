@@ -138,23 +138,135 @@
   animation: none !important;
 }
 
-/* The companion badge on a profile photo (Avatar.tsx): too small for the face's
-   own moves, so every 15 s the whole little head says hello — a hop, a head
-   shake, a bit bigger — then rests. Only the badge moves (cheap in long lists). */
-.mc-badge-hello {
-  transform-origin: 50% 90%;
-  animation: mc-badge-hello 15s ease-in-out infinite;
+/* The companion badge on a profile photo (Avatar.tsx). Still between beats;
+   on each shared "hello" beat (html.mc-hello, every 15 s) the drawing itself
+   plays one short scene: the badge and its disc never move. */
+svg.mc-badge-face {
+  overflow: visible; /* flippers and ears may reach past the edge */
 }
-@keyframes mc-badge-hello {
-  0%, 90%, 100% { transform: none; }
-  91.5% { transform: translateY(-22%) rotate(-16deg) scale(1.18); }
-  93% { transform: translateY(-10%) rotate(14deg) scale(1.18); }
-  94.5% { transform: translateY(-4%) rotate(-10deg) scale(1.1); }
-  96% { transform: rotate(6deg) scale(1.04); }
-  97.5% { transform: rotate(-2deg); }
+svg.mc-badge-face .mc-head,
+svg.mc-badge-face .mc-face *,
+svg.mc-badge-face .mc-penguin,
+svg.mc-badge-face .mc-penguin * {
+  animation: none;
+}
+svg.mc-badge-face .mc-face-eyes,
+svg.mc-badge-face .mc-face-look {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+svg.mc-badge-face .mc-head {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.mc-hello svg.mc-badge-face .mc-head {
+  animation: mc-hello-head 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-eyes,
+.mc-hello svg.mc-badge-face .mc-penguin-eyes {
+  animation: mc-hello-blink 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-look {
+  animation: mc-hello-look 1.8s ease-in-out;
+}
+/* Penguin: flippers flap, it waddles, the beak chirps. */
+.mc-hello svg.mc-badge-face .mc-penguin {
+  animation: mc-hello-waddle 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-penguin-flap--l {
+  animation: mc-hello-flap-l 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-penguin-flap--r {
+  animation: mc-hello-flap-r 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-penguin-beak {
+  animation: mc-hello-chirp 1.8s ease-in-out;
+}
+/* Wolf and cat: ears prick up, whiskers quiver, the wolf sniffs. */
+.mc-hello svg.mc-badge-face .mc-face-ear--l {
+  animation: mc-hello-ear-l 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-ear--r {
+  animation: mc-hello-ear-r 1.8s ease-in-out 0.12s;
+}
+.mc-hello svg.mc-badge-face .mc-face-whiskers--l {
+  animation: mc-hello-whisk-l 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-whiskers--r {
+  animation: mc-hello-whisk-r 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-nose {
+  animation: mc-hello-sniff 1.8s ease-in-out;
+}
+@keyframes mc-hello-head {
+  0%, 100% { transform: none; }
+  18% { transform: translateY(-4px) rotate(-9deg); }
+  40% { transform: translateY(-2px) rotate(8deg); }
+  62% { transform: rotate(-5deg); }
+  80% { transform: rotate(2deg); }
+}
+@keyframes mc-hello-blink {
+  0%, 30%, 42%, 58%, 70%, 100% { transform: scaleY(1); }
+  36%, 64% { transform: scaleY(0.1); }
+}
+@keyframes mc-hello-look {
+  0%, 100% { transform: translateX(0); }
+  15%, 35% { transform: translateX(-2.4px); }
+  55%, 80% { transform: translateX(2.4px); }
+}
+@keyframes mc-hello-waddle {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-8deg); }
+  45% { transform: rotate(8deg); }
+  70% { transform: rotate(-5deg); }
+}
+@keyframes mc-hello-flap-l {
+  0%, 100% { transform: rotate(0); }
+  12%, 40%, 68% { transform: rotate(42deg); }
+  26%, 54%, 82% { transform: rotate(-8deg); }
+}
+@keyframes mc-hello-flap-r {
+  0%, 100% { transform: rotate(0); }
+  12%, 40%, 68% { transform: rotate(-42deg); }
+  26%, 54%, 82% { transform: rotate(8deg); }
+}
+@keyframes mc-hello-chirp {
+  0%, 30%, 60%, 100% { transform: scaleY(1); }
+  40% { transform: scaleY(1.5); }
+  50% { transform: scaleY(0.85); }
+  70% { transform: scaleY(1.4); }
+}
+@keyframes mc-hello-ear-l {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(-24deg); }
+  30% { transform: rotate(-4deg); }
+  48% { transform: rotate(-20deg); }
+  66% { transform: rotate(0); }
+}
+@keyframes mc-hello-ear-r {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(24deg); }
+  30% { transform: rotate(4deg); }
+  48% { transform: rotate(20deg); }
+  66% { transform: rotate(0); }
+}
+@keyframes mc-hello-whisk-l {
+  0%, 100% { transform: rotate(0); }
+  20%, 60% { transform: rotate(-14deg); }
+  40%, 80% { transform: rotate(8deg); }
+}
+@keyframes mc-hello-whisk-r {
+  0%, 100% { transform: rotate(0); }
+  20%, 60% { transform: rotate(14deg); }
+  40%, 80% { transform: rotate(-8deg); }
+}
+@keyframes mc-hello-sniff {
+  0%, 100% { transform: scale(1); }
+  25%, 45%, 65% { transform: scale(1.3); }
+  35%, 55% { transform: scale(0.95); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mc-badge-hello {
-    animation: none;
+  .mc-hello svg.mc-badge-face * {
+    animation: none !important;
   }
 }
