@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SharedAppearancePanel } from "../couple/SharedAppearancePanel";
 import { GlassSetting } from "./GlassSetting";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AssetImage } from "../../components/AssetImage";
 import { FramingEditor } from "../../components/photo/FramingEditor";
 import { Avatar } from "../../components/ui/Avatar";
@@ -225,6 +225,9 @@ export function ProfileEditPage() {
           <p className="mb-3 text-xs text-text-muted">
             Ceux de ton profil sont à toi. « Aussi dans la barre latérale » l'y montre à vous deux, tant qu'il est sur ton profil : le couper ou supprimer le widget l'en retire pour vous deux.
           </p>
+          <Link to="/widgets" className="chip press mb-3 inline-flex items-center gap-1 text-sm hover:border-primary/50">
+            <Icon name="sliders" size={14} /> Gérer toute ma barre latérale
+          </Link>
           <WidgetListEditor
             widgets={widgets}
             onChange={setWidgets}

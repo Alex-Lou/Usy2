@@ -7,6 +7,7 @@ import com.memocat.domain.User;
 import com.memocat.profile.dto.LinkedWidgetDto;
 import com.memocat.profile.dto.PartStyleDto;
 import com.memocat.profile.dto.ProfileUpdateRequest;
+import com.memocat.profile.dto.SidebarPrefsDto;
 import com.memocat.profile.dto.ThemeDto;
 import com.memocat.profile.dto.WidgetDto;
 import com.memocat.repository.AssetRepository;
@@ -116,5 +117,35 @@ class ProfileSidebarTest {
         assertThat(service.updateGlass("lou", null).theme().glass()).isNull();
         assertThat(service.getMyProfile("lou").theme().font()).isEqualTo("trebuchet"); // the rest of the theme stays
         assertThatThrownBy(() -> service.updateGlass("lou", "opaque")).isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
+    void mySideMenuChoicesAreKeptWithTheThemeAndChecked() throws Exception {
+        lousProfile.setThemeJson(json.writeValueAsString(theme));
+        SidebarPrefsDto prefs = new SidebarPrefsDto(List.of("c:abc123", "l:2:z9"), List.of("l:1:k2", "c:abc123"), true);
+
+        assertThat(service.updateSidebar("lou", prefs).theme().sidebar()).isEqualTo(prefs);
+        assertThat(service.getMyProfile("lou").theme().font()).isEqualTo("trebuchet"); // the rest of the theme stays
+
+        for (String bad : List.of("x:abc", "c:ABC", "l:abc:1", "c:" + "a".repeat(17), "c:a b")) {
+            assertThatThrownBy(() -> service.updateSidebar("lou", new SidebarPrefsDto(List.of(bad), null, null)))
+                    .isInstanceOf(ContentValidationException.class);
+        }
+        List<String> tooMany = java.util.stream.IntStream.range(0, 61).mapToObj(i -> "c:k" + i).toList();
+        assertThatThrownBy(() -> service.updateSidebar("lou", new SidebarPrefsDto(null, tooMany, null)))
+                .isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
+    void aProfileSaveKeepsTheStoredGlassAndSideMenuChoices() throws Exception {
+        lousProfile.setThemeJson(json.writeValueAsString(theme));
+        SidebarPrefsDto prefs = new SidebarPrefsDto(List.of("c:abc123"), null, null);
+        service.updateSidebar("lou", prefs);
+        service.updateGlass("lou", "strong");
+
+        save(quote("A", false)); // sent from a page loaded before: no glass, no side menu choices
+        var after = service.getMyProfile("lou").theme();
+        assertThat(after.sidebar()).isEqualTo(prefs);
+        assertThat(after.glass()).isEqualTo("strong");
     }
 }
