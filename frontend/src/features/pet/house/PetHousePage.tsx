@@ -13,28 +13,33 @@ import { createPetClient } from "./petClient";
 import { isNight, Room } from "./Room";
 import { ShopSheet } from "./ShopSheet";
 
-// A guest lives in the house with Moka: one at a time, chosen on each device.
-type Guest = Kind | "none";
-const GUESTS: { id: Guest; icon: string; label: string }[] = [
-  { id: "penguin", icon: "🐧", label: "Pingouin" },
-  { id: "wolf", icon: "🐺", label: "Loup" },
-  { id: "cat", icon: "🐱", label: "Chaton" },
-  { id: "none", icon: "🚫", label: "Personne" },
+// Companions keep Moka company: any of them, several or none, chosen on each device.
+const GUESTS: { id: Kind; icon: string; label: string; start: number }[] = [
+  { id: "penguin", icon: "🐧", label: "Pingouin", start: 0.2 },
+  { id: "wolf", icon: "🐺", label: "Loup", start: 0.55 },
+  { id: "cat", icon: "🐱", label: "Chaton", start: 0.8 },
 ];
-const GUEST_KEY = "memocat.house.guest";
-const OLD_PENGUIN_KEY = "memocat.house.penguin"; // before the choice: "0" = hidden
-function readGuest(): Guest {
+const GUESTS_KEY = "memocat.house.guests";
+const OLD_GUEST_KEY = "memocat.house.guest"; // one guest at a time, before
+const OLD_PENGUIN_KEY = "memocat.house.penguin"; // before that: "0" = hidden
+const isKind = (v: unknown): v is Kind => GUESTS.some((g) => g.id === v);
+function readGuests(): Kind[] {
   try {
-    const saved = localStorage.getItem(GUEST_KEY);
-    if (GUESTS.some((g) => g.id === saved)) return saved as Guest;
-    return localStorage.getItem(OLD_PENGUIN_KEY) === "0" ? "none" : "penguin";
+    const saved = localStorage.getItem(GUESTS_KEY);
+    if (saved) {
+      const list: unknown = JSON.parse(saved);
+      return Array.isArray(list) ? list.filter(isKind) : ["penguin"];
+    }
+    const old = localStorage.getItem(OLD_GUEST_KEY);
+    if (old) return isKind(old) ? [old] : [];
+    return localStorage.getItem(OLD_PENGUIN_KEY) === "0" ? [] : ["penguin"];
   } catch {
-    return "penguin";
+    return ["penguin"];
   }
 }
-function saveGuest(guest: Guest) {
+function saveGuests(guests: Kind[]) {
   try {
-    localStorage.setItem(GUEST_KEY, guest);
+    localStorage.setItem(GUESTS_KEY, JSON.stringify(guests));
   } catch {
     /* not remembered, still works */
   }
@@ -45,7 +50,11 @@ type Tool = "brush" | "laser" | null;
 const BRUSH_GOAL = 1400; // px of rubbing for one brushing
 const LASER_GOAL = 2200; // px of chasing for one play session
 
-const TOOLS: { id: PetAction | "brush" | "laser"; label: string; icon: string }[] = [
+const TOOLS: {
+  id: PetAction | "brush" | "laser";
+  label: string;
+  icon: string;
+}[] = [
   { id: "feed", label: "Manger", icon: "🥣" },
   { id: "brush", label: "Brosse", icon: "🪮" },
   { id: "bath", label: "Bain", icon: "🛁" },
@@ -76,7 +85,7 @@ export function PetHousePage() {
   const { pet, setPet, pose, caption, act, react, onActivity } = usePet(user?.id);
   const [tool, setTool] = useState<Tool>(null);
   const [shop, setShop] = useState(false);
-  const [guest, setGuest] = useState<Guest>(readGuest);
+  const [guests, setGuests] = useState<Kind[]>(readGuests);
   const [guestMenu, setGuestMenu] = useState(false);
   const guestRef = useRef<HTMLDivElement>(null);
 
@@ -131,7 +140,14 @@ export function PetHousePage() {
 
   function point(e: PointerEvent<HTMLDivElement>) {
     const box = stageRef.current?.getBoundingClientRect();
-    return box ? { x: e.clientX - box.left, y: e.clientY - box.top, w: box.width, h: box.height } : null;
+    return box
+      ? {
+          x: e.clientX - box.left,
+          y: e.clientY - box.top,
+          w: box.width,
+          h: box.height,
+        }
+      : null;
   }
 
   function onMove(e: PointerEvent<HTMLDivElement>) {
@@ -184,74 +200,98 @@ export function PetHousePage() {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-3">
-      <header className="relative z-30 flex items-center gap-2 animate-fade-up">
+      <header className="relative z-30 flex flex-wrap items-center gap-2 animate-fade-up">
         <Link to="/jeux" aria-label="Retour aux jeux" className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface press hover:border-primary/50">
           <Icon name="chevronLeft" size={18} />
         </Link>
-        <div className="min-w-0">
+        <div className="min-w-[5rem] flex-1">
           <h1 className="truncate font-display text-xl font-bold leading-tight">{pet.name}</h1>
           <p className="truncate text-xs text-text-muted">{pose === "sleep" ? "dort" : MOOD_TEXT[pet.mood]}</p>
         </div>
-        <span className="relative ml-auto whitespace-nowrap rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-semibold" aria-label={`${pet.coins} pièces`}>
-          🪙 {pet.coins}
-          {gain && (
-            <span key={gain.key} className="pointer-events-none absolute -top-5 right-1 text-xs font-bold text-primary animate-coin-up">
-              +{gain.n}
-            </span>
-          )}
-        </span>
-        <button
-          type="button"
-          onClick={() => {
-            setSoundEnabled(!sound);
-            setSound(!sound);
-          }}
-          aria-pressed={sound}
-          aria-label={sound ? "Couper les sons" : "Activer les sons"}
-          className="rounded-full border border-border bg-surface px-2.5 py-1.5 text-sm press hover:border-primary/50"
-        >
-          {sound ? "🔈" : "🔇"}
-        </button>
-        <div ref={guestRef} className="relative">
+        {/* Buttons move to their own line on narrow screens instead of squashing the name. */}
+        <div className="ml-auto flex items-center gap-2">
+          <span className="relative whitespace-nowrap rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-semibold" aria-label={`${pet.coins} pièces`}>
+            🪙 {pet.coins}
+            {gain && (
+              <span key={gain.key} className="pointer-events-none absolute -top-5 right-1 text-xs font-bold text-primary animate-coin-up">
+                +{gain.n}
+              </span>
+            )}
+          </span>
           <button
             type="button"
-            onClick={() => setGuestMenu((o) => !o)}
-            aria-expanded={guestMenu}
-            aria-haspopup="menu"
-            aria-label="Invité de la maison"
-            title="Invité de la maison"
-            className={"rounded-full border px-2.5 py-1.5 text-sm press hover:border-primary/50 " + (guest !== "none" ? "border-primary bg-surface-2" : "border-border bg-surface")}
+            onClick={() => {
+              setSoundEnabled(!sound);
+              setSound(!sound);
+            }}
+            aria-pressed={sound}
+            aria-label={sound ? "Couper les sons" : "Activer les sons"}
+            className="rounded-full border border-border bg-surface px-2.5 py-1.5 text-sm press hover:border-primary/50"
           >
-            {GUESTS.find((g) => g.id === guest)!.icon}
+            {sound ? "🔈" : "🔇"}
           </button>
-          {guestMenu && (
-            <div role="menu" aria-label="Qui vit avec Moka ?" className="absolute right-0 top-full z-20 mt-1.5 flex flex-col gap-0.5 rounded-token border border-border bg-surface p-1.5 shadow-card animate-pop">
-              <p className="px-2 pb-1 pt-0.5 text-[11px] font-semibold text-text-muted">Qui vit avec Moka ?</p>
-              {GUESTS.map((g) => (
-                <button
-                  key={g.id}
-                  type="button"
-                  role="menuitemradio"
-                  aria-checked={guest === g.id}
-                  onClick={() => {
-                    saveGuest(g.id);
-                    setGuest(g.id);
-                    setGuestMenu(false);
-                  }}
-                  className={"flex items-center gap-2 whitespace-nowrap rounded-token-sm px-2.5 py-1.5 text-left text-sm press " + (guest === g.id ? "bg-surface-2 font-semibold text-primary" : "text-text hover:bg-surface-2")}
-                >
-                  <span aria-hidden="true">{g.icon}</span> {g.label}
-                </button>
-              ))}
-            </div>
-          )}
+          <div ref={guestRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setGuestMenu((o) => !o)}
+              aria-expanded={guestMenu}
+              aria-haspopup="menu"
+              aria-label="Compagnons de Moka"
+              title="Compagnons de Moka"
+              className={
+                "whitespace-nowrap rounded-full border px-2.5 py-1.5 press hover:border-primary/50 " +
+                (guests.length > 1 ? "text-xs tracking-tighter " : "text-sm ") +
+                (guests.length ? "border-primary bg-surface-2" : "border-border bg-surface")
+              }
+            >
+              {guests.length
+                ? GUESTS.filter((g) => guests.includes(g.id))
+                    .map((g) => g.icon)
+                    .join("")
+                : "🐾"}
+            </button>
+            {guestMenu && (
+              <div
+                role="menu"
+                aria-label="Qui vit avec Moka ?"
+                className="absolute right-0 top-full z-20 mt-1.5 flex flex-col gap-0.5 rounded-token border border-border bg-surface p-1.5 shadow-card animate-pop"
+              >
+                <p className="px-2 pb-1 pt-0.5 text-[11px] font-semibold text-text-muted">Qui vit avec Moka ?</p>
+                {GUESTS.map((g) => {
+                  const on = guests.includes(g.id);
+                  return (
+                    <button
+                      key={g.id}
+                      type="button"
+                      role="menuitemcheckbox"
+                      aria-checked={on}
+                      onClick={() => {
+                        const next = on ? guests.filter((k) => k !== g.id) : GUESTS.filter((x) => x.id === g.id || guests.includes(x.id)).map((x) => x.id);
+                        saveGuests(next);
+                        setGuests(next);
+                      }}
+                      className={
+                        "flex items-center gap-2 whitespace-nowrap rounded-token-sm px-2.5 py-1.5 text-left text-sm press " +
+                        (on ? "bg-surface-2 font-semibold text-primary" : "text-text hover:bg-surface-2")
+                      }
+                    >
+                      <span className="w-4 text-center" aria-hidden="true">
+                        {on ? "✓" : ""}
+                      </span>
+                      <span aria-hidden="true">{g.icon}</span> {g.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <Link to="/jeux/chat/peche" aria-label="Pêche" className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm press hover:border-primary/50">
+            🎣
+          </Link>
+          <button type="button" onClick={() => setShop(true)} className="rounded-full btn-brand px-3 py-1.5 text-sm press">
+            Boutique
+          </button>
         </div>
-        <Link to="/jeux/chat/peche" aria-label="Pêche" className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm press hover:border-primary/50">
-          🎣
-        </Link>
-        <button type="button" onClick={() => setShop(true)} className="rounded-full btn-brand px-3 py-1.5 text-sm press">
-          Boutique
-        </button>
       </header>
 
       <div className="card grid grid-cols-2 gap-x-4 gap-y-1.5 px-4 py-3">
@@ -285,7 +325,9 @@ export function PetHousePage() {
           onTap={tool ? undefined : () => void care("pet")}
           label={`Toucher ${pet.name}`}
         />
-        {guest !== "none" && <LivingCompanion key={guest} kind={guest} scene="house" friendRef={catRef} />}
+        {GUESTS.filter((g) => guests.includes(g.id)).map((g) => (
+          <LivingCompanion key={g.id} kind={g.id} scene="house" start={g.start} friendRef={catRef} />
+        ))}
 
         {sparkles.map((s) => (
           <span key={s.id} className="pointer-events-none absolute text-lg animate-sparkle" style={{ left: s.x - 8, top: s.y - 12 }}>
@@ -293,7 +335,15 @@ export function PetHousePage() {
           </span>
         ))}
         {tool === "laser" && dot && (
-          <span className="pointer-events-none absolute h-3 w-3 rounded-full" style={{ left: dot.x - 6, top: dot.y - 6, background: "#ef4444", boxShadow: "0 0 12px 4px rgba(239,68,68,0.7)" }} />
+          <span
+            className="pointer-events-none absolute h-3 w-3 rounded-full"
+            style={{
+              left: dot.x - 6,
+              top: dot.y - 6,
+              background: "#ef4444",
+              boxShadow: "0 0 12px 4px rgba(239,68,68,0.7)",
+            }}
+          />
         )}
 
         {(hint || caption) && (
@@ -303,7 +353,13 @@ export function PetHousePage() {
         )}
         {tool && (
           <div className="absolute inset-x-6 bottom-3 h-1.5 overflow-hidden rounded-full bg-black/20" aria-hidden="true">
-            <div className="h-full rounded-full transition-[width] duration-150" style={{ width: `${progress * 100}%`, backgroundImage: "var(--grad)" }} />
+            <div
+              className="h-full rounded-full transition-[width] duration-150"
+              style={{
+                width: `${progress * 100}%`,
+                backgroundImage: "var(--grad)",
+              }}
+            />
           </div>
         )}
       </div>
