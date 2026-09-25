@@ -43,13 +43,18 @@ public class PageFetcher {
     }
 
     public Optional<Fetched> fetch(URI start, int maxBytes, String accept) {
+        return fetch(start, maxBytes, accept, USER_AGENT);
+    }
+
+    /** Same, as another client (feeds and public APIs prefer an honest reader name). */
+    public Optional<Fetched> fetch(URI start, int maxBytes, String accept, String userAgent) {
         URI uri = start;
         for (int hop = 0; hop <= MAX_REDIRECTS; hop++) {
             uri = safety.check(uri.toString());
             try {
                 HttpRequest req = HttpRequest.newBuilder(uri)
                         .timeout(Duration.ofSeconds(6))
-                        .header("User-Agent", USER_AGENT)
+                        .header("User-Agent", userAgent)
                         .header("Accept", accept)
                         .header("Accept-Language", "fr,en;q=0.8")
                         .GET()
