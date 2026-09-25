@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { DailyMemory } from "../../features/couple/DailyMemory";
 import { NotificationsListener } from "../../features/notifications/NotificationsListener";
 import { AppFonts } from "../../features/profile/AppFonts";
 import { BottomTabBar } from "./BottomTabBar";
@@ -23,6 +24,7 @@ export function AppLayout() {
       <NotificationsListener />
       <AppFonts />
       <GlassSync />
+      <DailyMemory />
 
       <main className="lg:pl-64">
         {/* Clears the top bar (burger + bell, below the status bar) and whatever covers the

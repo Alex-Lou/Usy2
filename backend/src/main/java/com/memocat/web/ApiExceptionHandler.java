@@ -38,6 +38,11 @@ public class ApiExceptionHandler {
         return error(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(TooSoonException.class)
+    public ResponseEntity<Map<String, Object>> handleTooSoon(TooSoonException ex) {
+        return error(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
+    }
+
     @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, Object>> handleTooLarge(
             org.springframework.web.multipart.MaxUploadSizeExceededException ex) {

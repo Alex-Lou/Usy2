@@ -26,6 +26,11 @@ export function deleteNote(id: number): Promise<void> {
   return apiRequest<void>(`/api/couple/notes/${id}`, { method: "DELETE" });
 }
 
+/** "Je pense à toi" to the other person (at most once a minute, else 429). */
+export function thinkOfYou(): Promise<void> {
+  return apiRequest<void>("/api/couple/thinking", { method: "POST" });
+}
+
 export function getMemories(): Promise<Memory[]> {
   return apiRequest<Memory[]>("/api/couple/memories");
 }
