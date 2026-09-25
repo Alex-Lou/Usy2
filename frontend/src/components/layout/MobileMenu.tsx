@@ -48,7 +48,7 @@ export function MobileMenu() {
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
-          <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col gap-4 overflow-y-auto border-r border-border bg-surface px-4 pb-5 pt-[calc(var(--safe-top)+1.25rem)] shadow-card animate-fade-up">
+          <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col gap-4 overflow-y-auto overflow-x-hidden border-r border-border bg-surface px-4 pb-5 pt-[calc(var(--safe-top)+1.25rem)] shadow-card animate-fade-up">
             <div className="flex items-center justify-between">
               <span className="font-display text-2xl font-bold text-grad">MemoCat</span>
               <button
