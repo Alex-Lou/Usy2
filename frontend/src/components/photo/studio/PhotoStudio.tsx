@@ -278,7 +278,10 @@ export function PhotoStudio({
     // Text starts about half the frame wide, whatever its length (then pinch to resize).
     const scale = kind === "text" ? Math.min(0.5, Math.max(0.18, 3 / Math.max(value.length, 4))) : 0.26;
     const text = kind === "text" ? { font: textFont, look: textLook } : {};
-    setLayers((ls) => [...ls, { id, kind, value, color, ...text, x: 0.5, y: kind === "text" ? 0.82 : 0.5, scale, rotation: 0 }]);
+    // A meme: the first caption goes on top, the next at the bottom.
+    const meme = kind === "text" && textLook === "meme";
+    const y = meme ? (layers.some((l) => l.look === "meme" && l.y < 0.5) ? 0.9 : 0.1) : kind === "text" ? 0.82 : 0.5;
+    setLayers((ls) => [...ls, { id, kind, value, color, ...text, x: 0.5, y, scale: meme ? Math.min(0.9, Math.max(0.2, 3.4 / Math.max(value.length, 4))) : scale, rotation: 0 }]);
     setSelected(id);
   }
 
@@ -565,7 +568,10 @@ export function PhotoStudio({
                     ) : l.kind === "emoji" ? (
                       <span className="mc-emoji leading-none" style={{ fontSize: size * 0.85 }}>{l.value}</span>
                     ) : (
-                      <span style={textCss(l.color ?? "#ffffff", l.font, l.look ?? "outline", size * 0.3)}>{l.value}</span>
+                      // Centred on the layer even when wider than it (as the export draws it).
+                      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={textCss(l.color ?? "#ffffff", l.font, l.look ?? "outline", size * 0.3)}>
+                        {l.value}
+                      </span>
                     )}
                   </div>
                 );
