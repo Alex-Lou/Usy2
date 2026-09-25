@@ -21,7 +21,8 @@ public class LinkPreviewService {
     static final Duration TTL = Duration.ofDays(7);
     /** A site that gave nothing (down, blocked, no tags) is asked again sooner. */
     static final Duration EMPTY_TTL = Duration.ofHours(1);
-    static final int MAX_CACHED = 500;
+    // Thumbnails live in the (1 GB) database outside the upload quota: at most ~100 MB.
+    static final int MAX_CACHED = 100;
     static final int MAX_PAGE = 512 * 1024;
     static final int MAX_IMAGE = 1024 * 1024;
 

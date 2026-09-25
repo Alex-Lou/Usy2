@@ -53,6 +53,8 @@ public class NewsService {
     static final int MAX_ITEMS = 80;
     private static final int MAX_FEED_BYTES = 2_000_000;
     private static final int MAX_IMAGE_BYTES = 2_000_000;
+    // Kept pictures stay well under the server's memory (a count alone could reach 240 MB).
+    static final long MAX_KEPT_IMAGE_BYTES = 20_000_000;
     private static final String AGENT = "MemoCat/1.0 (lecteur personnel de flux)";
     private static final String FEED_ACCEPT = "application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.9, */*;q=0.5";
 
@@ -170,10 +172,23 @@ public class NewsService {
             // Raster pictures only (an SVG could carry script).
             Optional<PageFetcher.Fetched> got = fetcher.fetch(URI.create(url), MAX_IMAGE_BYTES, "image/*", AGENT)
                     .filter(f -> f.contentType().startsWith("image/") && !f.contentType().contains("svg"));
-            got.ifPresent(f -> images.put(url, f));
+            got.ifPresent(f -> keep(url, f));
             return got;
         } catch (RuntimeException e) {
             return Optional.empty();
+        }
+    }
+
+    /** Adds a picture, then drops the least recently shown ones past the byte budget. */
+    private void keep(String url, PageFetcher.Fetched f) {
+        synchronized (images) {
+            images.put(url, f);
+            long total = images.values().stream().mapToLong(i -> i.body().length).sum();
+            var eldestFirst = images.values().iterator();
+            while (total > MAX_KEPT_IMAGE_BYTES && eldestFirst.hasNext()) {
+                total -= eldestFirst.next().body().length;
+                eldestFirst.remove();
+            }
         }
     }
 
