@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 import { Link } from "react-router-dom";
-import { LivingPenguin } from "../../../components/penguin/LivingPenguin";
+import type { Kind } from "../../../components/companions/brain";
+import { LivingCompanion } from "../../../components/companions/LivingCompanion";
 import { Icon } from "../../../components/ui/Icon";
 import { useAuth } from "../../auth/useAuth";
 import type { CatPose } from "../CatSprite";
@@ -12,18 +13,28 @@ import { createPetClient } from "./petClient";
 import { isNight, Room } from "./Room";
 import { ShopSheet } from "./ShopSheet";
 
-// The penguin lives in the house too; shown or hidden on each device.
-const PENGUIN_KEY = "memocat.house.penguin";
-function readPenguin(): boolean {
+// A guest lives in the house with Moka: one at a time, chosen on each device.
+type Guest = Kind | "none";
+const GUESTS: { id: Guest; icon: string; label: string }[] = [
+  { id: "penguin", icon: "🐧", label: "Pingouin" },
+  { id: "wolf", icon: "🐺", label: "Loup" },
+  { id: "cat", icon: "🐱", label: "Chaton" },
+  { id: "none", icon: "🚫", label: "Personne" },
+];
+const GUEST_KEY = "memocat.house.guest";
+const OLD_PENGUIN_KEY = "memocat.house.penguin"; // before the choice: "0" = hidden
+function readGuest(): Guest {
   try {
-    return localStorage.getItem(PENGUIN_KEY) !== "0";
+    const saved = localStorage.getItem(GUEST_KEY);
+    if (GUESTS.some((g) => g.id === saved)) return saved as Guest;
+    return localStorage.getItem(OLD_PENGUIN_KEY) === "0" ? "none" : "penguin";
   } catch {
-    return true;
+    return "penguin";
   }
 }
-function savePenguin(on: boolean) {
+function saveGuest(guest: Guest) {
   try {
-    localStorage.setItem(PENGUIN_KEY, on ? "1" : "0");
+    localStorage.setItem(GUEST_KEY, guest);
   } catch {
     /* not remembered, still works */
   }
@@ -65,7 +76,19 @@ export function PetHousePage() {
   const { pet, setPet, pose, caption, act, react, onActivity } = usePet(user?.id);
   const [tool, setTool] = useState<Tool>(null);
   const [shop, setShop] = useState(false);
-  const [penguin, setPenguin] = useState(readPenguin);
+  const [guest, setGuest] = useState<Guest>(readGuest);
+  const [guestMenu, setGuestMenu] = useState(false);
+  const guestRef = useRef<HTMLDivElement>(null);
+
+  // The guest menu closes on a touch anywhere else.
+  useEffect(() => {
+    if (!guestMenu) return;
+    const close = (e: globalThis.PointerEvent) => {
+      if (!guestRef.current?.contains(e.target as Node)) setGuestMenu(false);
+    };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, [guestMenu]);
   const [gain, setGain] = useState<{ n: number; key: number } | null>(null);
   const [progress, setProgress] = useState(0); // brush / laser progress 0..1
   const [dot, setDot] = useState<{ x: number; y: number } | null>(null);
@@ -161,7 +184,7 @@ export function PetHousePage() {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-3">
-      <header className="flex items-center gap-2 animate-fade-up">
+      <header className="relative z-30 flex items-center gap-2 animate-fade-up">
         <Link to="/jeux" aria-label="Retour aux jeux" className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface press hover:border-primary/50">
           <Icon name="chevronLeft" size={18} />
         </Link>
@@ -189,19 +212,40 @@ export function PetHousePage() {
         >
           {sound ? "🔈" : "🔇"}
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            savePenguin(!penguin);
-            setPenguin(!penguin);
-          }}
-          aria-pressed={penguin}
-          aria-label={penguin ? "Cacher le pingouin" : "Faire venir le pingouin"}
-          title={penguin ? "Cacher le pingouin" : "Faire venir le pingouin"}
-          className={"rounded-full border px-2.5 py-1.5 text-sm press hover:border-primary/50 " + (penguin ? "border-primary bg-surface-2" : "border-border bg-surface opacity-60")}
-        >
-          🐧
-        </button>
+        <div ref={guestRef} className="relative">
+          <button
+            type="button"
+            onClick={() => setGuestMenu((o) => !o)}
+            aria-expanded={guestMenu}
+            aria-haspopup="menu"
+            aria-label="Invité de la maison"
+            title="Invité de la maison"
+            className={"rounded-full border px-2.5 py-1.5 text-sm press hover:border-primary/50 " + (guest !== "none" ? "border-primary bg-surface-2" : "border-border bg-surface")}
+          >
+            {GUESTS.find((g) => g.id === guest)!.icon}
+          </button>
+          {guestMenu && (
+            <div role="menu" aria-label="Qui vit avec Moka ?" className="absolute right-0 top-full z-20 mt-1.5 flex flex-col gap-0.5 rounded-token border border-border bg-surface p-1.5 shadow-card animate-pop">
+              <p className="px-2 pb-1 pt-0.5 text-[11px] font-semibold text-text-muted">Qui vit avec Moka ?</p>
+              {GUESTS.map((g) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={guest === g.id}
+                  onClick={() => {
+                    saveGuest(g.id);
+                    setGuest(g.id);
+                    setGuestMenu(false);
+                  }}
+                  className={"flex items-center gap-2 whitespace-nowrap rounded-token-sm px-2.5 py-1.5 text-left text-sm press " + (guest === g.id ? "bg-surface-2 font-semibold text-primary" : "text-text hover:bg-surface-2")}
+                >
+                  <span aria-hidden="true">{g.icon}</span> {g.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <Link to="/jeux/chat/peche" aria-label="Pêche" className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm press hover:border-primary/50">
           🎣
         </Link>
@@ -241,7 +285,7 @@ export function PetHousePage() {
           onTap={tool ? undefined : () => void care("pet")}
           label={`Toucher ${pet.name}`}
         />
-        {penguin && <LivingPenguin scene="house" friendRef={catRef} />}
+        {guest !== "none" && <LivingCompanion key={guest} kind={guest} scene="house" friendRef={catRef} />}
 
         {sparkles.map((s) => (
           <span key={s.id} className="pointer-events-none absolute text-lg animate-sparkle" style={{ left: s.x - 8, top: s.y - 12 }}>

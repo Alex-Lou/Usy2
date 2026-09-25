@@ -12,14 +12,17 @@ const GOLD = "#e6b354";
 
 const S = 2.4; // head stroke width
 
-function Eyes() {
+function Eyes({ closed = false }: { closed?: boolean }) {
+  if (closed) {
+    return <path d="M20.4 33.5 q3.6 3 7.2 0 M36.4 33.5 q3.6 3 7.2 0" stroke={EYE} strokeWidth="2" fill="none" strokeLinecap="round" />;
+  }
   return (
-    <>
+    <g className="mc-face-eyes">
       <circle cx="24" cy="33" r="3.6" fill={EYE} />
       <circle cx="40" cy="33" r="3.6" fill={EYE} />
       <circle cx="25.2" cy="31.6" r="1.2" fill="#fff" />
       <circle cx="41.2" cy="31.6" r="1.2" fill="#fff" />
-    </>
+    </g>
   );
 }
 
@@ -48,10 +51,14 @@ function head(body: string) {
 function pointyEars(outer: string, inner: string) {
   return (
     <>
-      <path d="M19 16 L12 2 L32 13 Z" fill={outer} stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
-      <path d="M45 16 L52 2 L32 13 Z" fill={outer} stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
-      <path d="M20 13 L16 5 L28 12 Z" fill={inner} />
-      <path d="M44 13 L48 5 L36 12 Z" fill={inner} />
+      <g className="mc-face-ear mc-face-ear--l">
+        <path d="M19 16 L12 2 L32 13 Z" fill={outer} stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M20 13 L16 5 L28 12 Z" fill={inner} />
+      </g>
+      <g className="mc-face-ear mc-face-ear--r">
+        <path d="M45 16 L52 2 L32 13 Z" fill={outer} stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M44 13 L48 5 L36 12 Z" fill={inner} />
+      </g>
     </>
   );
 }
@@ -84,18 +91,23 @@ export function PenguinHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export function AnimalFace({ species }: { species: Species }) {
+/** `eyesClosed`: asleep (the living companions nap). Cat and wolf blink and twitch (styles/companions.css). */
+export function AnimalFace({ species, eyesClosed = false }: { species: Species; eyesClosed?: boolean }) {
   switch (species) {
     case "cat":
       return (
-        <g>
+        <g className="mc-face mc-face--cat">
           {head("#fff4e6")}
           {pointyEars("#fff4e6", PINK)}
-          <Eyes />
+          <Eyes closed={eyesClosed} />
           <Blush />
           <NoseMouth />
-          <path d="M13 36 L2 34 M13 40 L3 42.5" stroke={OUTLINE} strokeWidth="1.4" strokeLinecap="round" />
-          <path d="M51 36 L62 34 M51 40 L61 42.5" stroke={OUTLINE} strokeWidth="1.4" strokeLinecap="round" />
+          <g className="mc-face-whiskers mc-face-whiskers--l">
+            <path d="M13 36 L2 34 M13 40 L3 42.5" stroke={OUTLINE} strokeWidth="1.4" strokeLinecap="round" />
+          </g>
+          <g className="mc-face-whiskers mc-face-whiskers--r">
+            <path d="M51 36 L62 34 M51 40 L61 42.5" stroke={OUTLINE} strokeWidth="1.4" strokeLinecap="round" />
+          </g>
         </g>
       );
 
@@ -105,7 +117,7 @@ export function AnimalFace({ species }: { species: Species }) {
           <ellipse cx="11" cy="38" rx="7" ry="13" fill="#c9975f" stroke={OUTLINE} strokeWidth="2.2" />
           <ellipse cx="53" cy="38" rx="7" ry="13" fill="#c9975f" stroke={OUTLINE} strokeWidth="2.2" />
           {head("#e9c49a")}
-          <Eyes />
+          <Eyes closed={eyesClosed} />
           <Blush />
           <ellipse cx="32" cy="41" rx="6" ry="4.4" fill="#fff7ee" stroke={OUTLINE} strokeWidth="1.4" />
           <ellipse cx="32" cy="39" rx="2.4" ry="1.8" fill={OUTLINE} />
@@ -115,13 +127,27 @@ export function AnimalFace({ species }: { species: Species }) {
 
     case "wolf":
       return (
-        <g>
-          {head("#b7bdc7")}
-          {pointyEars("#b7bdc7", "#8a929e")}
-          <ellipse cx="32" cy="42" rx="8" ry="6" fill="#e7ebf1" />
-          <Eyes />
-          <path d="M30 40 L34 40 L32 42.6 Z" fill={OUTLINE} />
-          <path d="M32 42.6 q-2.6 2.2 -5 1 M32 42.6 q2.6 2.2 5 1" stroke={OUTLINE} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+        // A wolf, not a kitten: tall ears, fluffy cheek ruffs, a darker mask and a long pale muzzle.
+        <g className="mc-face mc-face--wolf">
+          <g className="mc-face-ear mc-face-ear--l">
+            <path d="M17 19 L9 -3 L30 12 Z" fill="#8f97a3" stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
+            <path d="M18 14 L13 3 L25 11 Z" fill="#e9dcdc" />
+          </g>
+          <g className="mc-face-ear mc-face-ear--r">
+            <path d="M47 19 L55 -3 L34 12 Z" fill="#8f97a3" stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
+            <path d="M46 14 L51 3 L39 11 Z" fill="#e9dcdc" />
+          </g>
+          {/* Cheek ruffs, poking out of the head. */}
+          <path d="M11 34 l-9 4 l7 2 l-7 5 l9 1 l-4 5 l10 -3 z" fill="#e7ebf1" stroke={OUTLINE} strokeWidth="1.8" strokeLinejoin="round" />
+          <path d="M53 34 l9 4 l-7 2 l7 5 l-9 1 l4 5 l-10 -3 z" fill="#e7ebf1" stroke={OUTLINE} strokeWidth="1.8" strokeLinejoin="round" />
+          {head("#aab2be")}
+          <path d="M12 30 q20 -26 40 0 q-8 -5 -14 -3 l-6 8 l-6 -8 q-6 -2 -14 3 z" fill="#7f8794" />
+          <path d="M20 29 l6 1.5 M44 29 l-6 1.5" stroke={OUTLINE} strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M20 44 q12 14 24 0 q-2 -9 -12 -9 q-10 0 -12 9 z" fill="#eef1f5" />
+          <Eyes closed={eyesClosed} />
+          <ellipse cx="32" cy="40" rx="4.2" ry="3" fill={OUTLINE} />
+          <ellipse cx="30.8" cy="39.1" rx="1.2" ry="0.7" fill="#fff" opacity="0.7" />
+          <path d="M32 43 v2 M32 45 q-3 2.6 -6 1 M32 45 q3 2.6 6 1" stroke={OUTLINE} strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </g>
       );
 
@@ -137,7 +163,7 @@ export function AnimalFace({ species }: { species: Species }) {
             <ellipse cx="40" cy="10" rx="2" ry="8.5" fill={PINK} />
           </g>
           {head("#fdf4ee")}
-          <Eyes />
+          <Eyes closed={eyesClosed} />
           <Blush />
           <path d="M30 39 L34 39 L32 41.4 Z" fill={PINK} />
           <path d="M32 41.4 v2.2 M32 43.6 q-2 1.6 -4 1 M32 43.6 q2 1.6 4 1" stroke={OUTLINE} strokeWidth="1.5" fill="none" strokeLinecap="round" />
@@ -197,7 +223,7 @@ export function AnimalFace({ species }: { species: Species }) {
         <g>
           {head("#7a5a44")}
           <path d="M18 36 Q32 30 46 36 Q46 50 32 53 Q18 50 18 36 Z" fill="#e2703a" />
-          <Eyes />
+          <Eyes closed={eyesClosed} />
           <path d="M28 39 L36 39 L32 45 Z" fill="#f4b53f" stroke={OUTLINE} strokeWidth="1" strokeLinejoin="round" />
           <ellipse cx="15" cy="38" rx="3.4" ry="2.1" fill="#c85f2e" opacity="0.6" />
           <ellipse cx="49" cy="38" rx="3.4" ry="2.1" fill="#c85f2e" opacity="0.6" />
@@ -232,10 +258,13 @@ export function AnimalFace({ species }: { species: Species }) {
   }
 }
 
+/** Below this size (avatars in the feed, the chat…) faces keep still: only the big ones come alive. */
+const STILL_BELOW = 48;
+
 // Standalone cute face.
 export function Animal({ species, size = 64, className = "" }: { species: Species; size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" className={className} aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" className={(size < STILL_BELOW ? "mc-still " : "") + className} aria-hidden="true">
       <AnimalFace species={species} />
     </svg>
   );
