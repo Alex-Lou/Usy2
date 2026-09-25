@@ -12,7 +12,7 @@ export function Sidebar() {
   const items = navItems(user?.id);
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-2 overflow-y-auto border-r border-border glass px-4 py-6 lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-2 overflow-y-auto overflow-x-hidden border-r border-border glass px-4 py-6 lg:flex">
       <div className="mb-4 flex items-center gap-2 px-2">
         <span className="grid h-10 w-10 place-items-center rounded-token btn-brand">
           <Icon name="heart" size={20} />

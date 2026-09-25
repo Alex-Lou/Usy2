@@ -6,7 +6,8 @@ export function CompanionPicker({ compact = false }: { compact?: boolean }) {
   const { companion, setCompanion } = useCompanion();
   const size = compact ? 30 : 40;
   return (
-    <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+    // Compact (side bars): wraps onto more lines, never scrolls sideways.
+    <div className={"flex gap-2 py-1 " + (compact ? "flex-wrap" : "overflow-x-auto no-scrollbar")}>
       {SPECIES.map((s) => (
         <button
           key={s}
