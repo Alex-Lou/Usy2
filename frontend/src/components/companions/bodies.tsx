@@ -1,4 +1,5 @@
-import { AnimalFace, PenguinHead } from "../ui/animals";
+import { AnimalFace } from "../ui/animals";
+import penguinUrl from "./PnguinoBody.svg";
 import type { CompanionBrain, Kind } from "./brain";
 
 // Whole-body companions, side on, feet at y = 0, facing right (the caller flips
@@ -9,19 +10,38 @@ export function CompanionBody({ kind, b }: { kind: Kind; b: CompanionBrain }) {
   return kind === "penguin" ? <PenguinBody b={b} /> : <FourLegs kind={kind} b={b} />;
 }
 
+// Lou's partner's whole-body penguin, used as is (the file is never edited): the
+// whole drawing sways, hops, breathes and belly-slides; eyelids drawn on top of
+// its eyes blink. Its own coordinates: 2100 box, feet at y 1654, centre x 1049.5.
+const PENGUIN_SCALE = 66 / 1411; // the drawing's height (1411) → 66 units, like the others
+const EYES = [891.5, 1209] as const; // eye centres (x), at y 658
+const LID = "#EAF3FE"; // the face white around the eyes
+
+function PenguinLids({ closed }: { closed: boolean }) {
+  return (
+    <g className={closed ? undefined : "mc-pingu-lids"}>
+      {EYES.map((x) => (
+        <g key={x}>
+          <ellipse cx={x} cy="658" rx="50" ry="60" fill={LID} />
+          <path d={`M${x - 44} 664 q44 34 88 0`} stroke="#121629" strokeWidth="14" strokeLinecap="round" fill="none" />
+        </g>
+      ))}
+    </g>
+  );
+}
+
 function PenguinBody({ b }: { b: CompanionBrain }) {
   const lie = b.lying * 80;
-  const NAVY = "#2b2d42";
+  // Squash and stretch: taller in the air, a wiggle when the flippers would flap.
+  const stretch = 1 - b.lift / 50;
+  const wiggle = 1 + Math.abs(b.wag) / 400;
   return (
-    <g transform={`translate(0 ${b.lying * 10}) rotate(${b.tilt + lie} 0 -22)`}>
-      <ellipse cx="-7" cy="-1" rx="6.5" ry="3" fill="#f4a93b" stroke={OUTLINE} strokeWidth="1.4" />
-      <ellipse cx="7" cy="-1" rx="6.5" ry="3" fill="#f4a93b" stroke={OUTLINE} strokeWidth="1.4" />
-      <ellipse cx="0" cy="-24" rx="17" ry="22" fill={NAVY} stroke={OUTLINE} strokeWidth="2" />
-      <ellipse cx="0" cy="-21" rx="11" ry="15" fill="#fffaf2" />
-      <path transform={`rotate(${-b.wag} -15 -34)`} d="M-15 -36 q-10 7 -9 22 q7 -3 11 -15 z" fill={NAVY} stroke={OUTLINE} strokeWidth="1.6" strokeLinejoin="round" />
-      <path transform={`rotate(${b.wag} 15 -34)`} d="M15 -36 q10 7 9 22 q-7 -3 -11 -15 z" fill={NAVY} stroke={OUTLINE} strokeWidth="1.6" strokeLinejoin="round" />
-      <g transform="translate(-19 -78) scale(0.59)">
-        <PenguinHead eyesClosed={b.eyesClosed} />
+    <g transform={`translate(0 ${b.lying * 10}) rotate(${b.tilt + lie} 0 -22) scale(${wiggle / stretch} ${stretch})`}>
+      <g transform={`scale(${PENGUIN_SCALE}) translate(-1049.5 -1654)`}>
+        <g className="mc-pingu-breathe">
+          <image href={penguinUrl} x="0" y="0" width="2100" height="2100" />
+          <PenguinLids closed={b.eyesClosed} />
+        </g>
       </g>
     </g>
   );
