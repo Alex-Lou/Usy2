@@ -60,9 +60,11 @@ public class NewsService {
             "bluesky", Pattern.compile("^@?([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+)$"),
             "mastodon", Pattern.compile("^@?([A-Za-z0-9_]{1,30})@([a-zA-Z0-9-]{1,63}(?:\\.[a-zA-Z0-9-]{1,63})+)$"),
             "reddit", Pattern.compile("^(?:r/)?([A-Za-z0-9_]{2,21})$"),
-            "xpost", Pattern.compile("^https://(?:www\\.)?(?:x|twitter)\\.com/([A-Za-z0-9_]{1,15})/status/(\\d{1,25})(?:[/?#].*)?$"));
+            "xpost", Pattern.compile("^https://(?:www\\.)?(?:x|twitter)\\.com/([A-Za-z0-9_]{1,15})/status/(\\d{1,25})(?:[/?#].*)?$"),
+            // Any site or feed I add myself: its address, the feed is found on the page if needed.
+            "rss", Pattern.compile("^(?i:(https?)://)?([a-zA-Z0-9-]{1,63}(?:\\.[a-zA-Z0-9-]{1,63})+)(/[^\\s\"'<>]*)?$"));
     private static final Map<String, String> KIND_LABEL = Map.of(
-            "bluesky", "Bluesky", "mastodon", "Mastodon", "reddit", "Reddit", "xpost", "X");
+            "bluesky", "Bluesky", "mastodon", "Mastodon", "reddit", "Reddit", "xpost", "X", "rss", "Site");
 
     private record Target(String key, String label, String kind, URI uri, Function<byte[], List<FeedParser.Entry>> parse) {
     }
@@ -187,7 +189,20 @@ public class NewsService {
             if (body.isEmpty()) {
                 throw new IllegalStateException("no answer");
             }
-            List<NewsItemDto> items = t.parse().apply(body.get().body()).stream()
+            List<FeedParser.Entry> entries;
+            try {
+                entries = t.parse().apply(body.get().body());
+            } catch (IllegalArgumentException notAFeed) {
+                // A site's page rather than its feed: follow the feed it announces.
+                if (!t.kind().equals("site") || !body.get().contentType().contains("html")) {
+                    throw notAFeed;
+                }
+                URI feed = FeedParser.discoverFeed(body.get().body(), body.get().finalUri())
+                        .orElseThrow(() -> new IllegalStateException("no feed on the page"));
+                entries = FeedParser.parseFeed(fetcher.fetch(feed, MAX_FEED_BYTES, FEED_ACCEPT, AGENT)
+                        .orElseThrow(() -> new IllegalStateException("no answer")).body());
+            }
+            List<NewsItemDto> items = entries.stream()
                     .filter(e -> e.url() != null && (e.title() != null || e.text() != null))
                     .map(e -> new NewsItemDto(t.key(), t.label(), t.kind(), e.title(), e.text(), e.url(), e.image(), e.author(), e.publishedAt()))
                     .toList();
@@ -224,6 +239,8 @@ public class NewsService {
                         URI.create("https://www.reddit.com/r/" + m.group(1) + "/.rss"), FeedParser::parseFeed));
                 case "xpost" -> out.add(new Target(key, "@" + m.group(1), "x",
                         URI.create("https://api.fxtwitter.com/" + m.group(1) + "/status/" + m.group(2)), FeedParser::parseFxTweet));
+                case "rss" -> out.add(new Target(key, m.group(2).toLowerCase().replaceFirst("^www\\.", ""), "site",
+                        URI.create(f.handle()), FeedParser::parseFeed));
                 default -> {
                 }
             }
@@ -243,6 +260,8 @@ public class NewsService {
         String clean = switch (f.kind()) {
             case "bluesky", "reddit" -> m.group(1);
             case "mastodon" -> m.group(1) + "@" + m.group(2).toLowerCase();
+            case "rss" -> (m.group(1) == null ? "https" : m.group(1).toLowerCase()) + "://" + m.group(2).toLowerCase()
+                    + (m.group(3) == null ? "" : m.group(3));
             default -> "https://x.com/" + m.group(1) + "/status/" + m.group(2);
         };
         return new NewsPrefsDto.Follow(f.kind(), clean);

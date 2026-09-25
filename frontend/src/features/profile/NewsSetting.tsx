@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getNewsPrefs, saveNewsPrefs, type NewsPrefs } from "../news/api";
+import { getNewsPrefs, getNewsSources, saveNewsPrefs, type NewsPrefs, type NewsSource } from "../news/api";
+import { NewsSettings } from "../news/NewsSettings";
 
 /**
  * 📰 "Actus", for me only: off, the feed is just ours; on, a second tab
@@ -8,11 +9,13 @@ import { getNewsPrefs, saveNewsPrefs, type NewsPrefs } from "../news/api";
  */
 export function NewsSetting() {
   const [prefs, setPrefs] = useState<NewsPrefs | null>(null);
+  const [sources, setSources] = useState<NewsSource[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getNewsPrefs().then(setPrefs).catch(() => setError("Réglage indisponible pour le moment."));
+    getNewsSources().then(setSources).catch(() => {});
   }, []);
 
   async function toggle() {
@@ -50,7 +53,12 @@ export function NewsSetting() {
           <span className={"absolute top-0.5 rounded-full bg-white shadow transition-all " + (on ? "left-[1.45rem]" : "left-0.5")} style={{ width: 22, height: 22 }} />
         </button>
       </div>
-      {on && <p className="text-xs text-primary">C'est activé : choisis tes sources dans le fil, onglet « 📰 Actus ».</p>}
+      {on && prefs && (
+        <>
+          <p className="text-xs text-primary">C'est activé : tes actus sont dans le fil, onglet « 📰 Actus ». Tes sources, ici ou dans l'onglet :</p>
+          <NewsSettings sources={sources} prefs={prefs} onSaved={setPrefs} />
+        </>
+      )}
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
     </section>
   );

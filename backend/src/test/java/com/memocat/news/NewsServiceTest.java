@@ -126,4 +126,35 @@ class NewsServiceTest {
         verify(fetcher, times(2)).fetch(asked.capture(), anyInt(), anyString(), anyString());
         assertThat(asked.getAllValues()).noneMatch(u -> u.getHost().startsWith("169.254"));
     }
+
+    @Test
+    void myOwnSitesAreCleanedAndRiskyAddressesRefused() {
+        NewsPrefsDto saved = service.savePrefs("lou", new NewsPrefsDto(true, List.of(), List.of(
+                new Follow("rss", "Korben.INFO"),
+                new Follow("rss", "http://blog.example.fr/feed/"),
+                new Follow("rss", "https://www.frandroid.com/feed"))));
+
+        assertThat(saved.follows()).extracting(Follow::handle).containsExactly(
+                "https://korben.info", "http://blog.example.fr/feed/", "https://www.frandroid.com/feed");
+        for (String bad : List.of("localhost", "javascript:alert(1)", "ftp://x.fr/f", "https://a.b/<script>", "file:///etc/passwd")) {
+            assertThatThrownBy(() -> service.savePrefs("lou", new NewsPrefsDto(true, List.of(), List.of(new Follow("rss", bad)))))
+                    .as(bad).isInstanceOf(ContentValidationException.class);
+        }
+    }
+
+    @Test
+    void aSitePageLeadsToTheFeedItAnnounces() {
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of(), List.of(new Follow("rss", "https://blog.example.fr"))));
+        String page = "<html><head><link rel=\"alternate\" type=\"application/rss+xml\" href=\"/feed.xml\"></head></html>";
+        when(fetcher.fetch(eq(URI.create("https://blog.example.fr")), anyInt(), anyString(), anyString()))
+                .thenReturn(Optional.of(new PageFetcher.Fetched(URI.create("https://blog.example.fr/"), "text/html; charset=utf-8", page.getBytes(StandardCharsets.UTF_8))));
+        when(fetcher.fetch(eq(URI.create("https://blog.example.fr/feed.xml")), anyInt(), anyString(), anyString()))
+                .thenReturn(body(RSS, "application/rss+xml"));
+
+        var items = service.items("lou");
+
+        assertThat(items).hasSize(2);
+        assertThat(items.get(0).sourceLabel()).isEqualTo("blog.example.fr");
+        assertThat(items.get(0).kind()).isEqualTo("site");
+    }
 }
