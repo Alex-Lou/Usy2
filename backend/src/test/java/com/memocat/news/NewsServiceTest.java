@@ -128,6 +128,34 @@ class NewsServiceTest {
     }
 
     @Test
+    void keepsPicturesWithinTheMemoryBudget() {
+        URI small = URI.create("https://korben.info/a.jpg");
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of("korben"), List.of()));
+        when(fetcher.fetch(eq(URI.create("https://korben.info/feed")), anyInt(), anyString(), anyString())).thenReturn(body(RSS, "application/rss+xml"));
+        service.items("lou");
+        when(fetcher.fetch(eq(small), anyInt(), anyString(), anyString())).thenReturn(body("jpg", "image/jpeg"));
+
+        service.image(small.toString());
+        service.image(small.toString());
+        verify(fetcher, times(1)).fetch(eq(small), anyInt(), anyString(), anyString());
+    }
+
+    @Test
+    void doesNotKeepAPictureBeyondTheMemoryBudget() {
+        URI huge = URI.create("https://korben.info/a.jpg");
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of("korben"), List.of()));
+        when(fetcher.fetch(eq(URI.create("https://korben.info/feed")), anyInt(), anyString(), anyString())).thenReturn(body(RSS, "application/rss+xml"));
+        service.items("lou");
+        byte[] tooBig = new byte[(int) NewsService.MAX_KEPT_IMAGE_BYTES + 1];
+        when(fetcher.fetch(eq(huge), anyInt(), anyString(), anyString()))
+                .thenReturn(Optional.of(new PageFetcher.Fetched(huge, "image/jpeg", tooBig)));
+
+        assertThat(service.image(huge.toString())).isPresent();
+        service.image(huge.toString());
+        verify(fetcher, times(2)).fetch(eq(huge), anyInt(), anyString(), anyString());
+    }
+
+    @Test
     void myOwnSitesAreCleanedAndRiskyAddressesRefused() {
         NewsPrefsDto saved = service.savePrefs("lou", new NewsPrefsDto(true, List.of(), List.of(
                 new Follow("rss", "Korben.INFO"),
