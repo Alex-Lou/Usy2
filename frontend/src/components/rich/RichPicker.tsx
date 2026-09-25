@@ -3,15 +3,11 @@ import { createPortal } from "react-dom";
 import { Icon } from "../ui/Icon";
 import { EMOJI_GROUPS } from "./emojiData";
 import { LiveSticker } from "./LiveSticker";
-import { STICKERS, stickerToken, type StickerKind } from "./stickers";
+import { PACKS, STICKERS, stickerToken, type PackId } from "./stickers";
 
-type Tab = "emoji" | StickerKind;
+type Tab = "emoji" | PackId;
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: "emoji", label: "Emojis" },
-  { id: "sticker", label: "Stickers" },
-  { id: "animated", label: "Animés" },
-];
+const TABS: { id: Tab; label: string; icon: string }[] = [{ id: "emoji", label: "Emojis", icon: "😀" }, ...PACKS];
 
 // Sheet height, published as --picker-h while open so pages keep the text box
 // visible right above it (see AppLayout and ChatPage).
@@ -153,9 +149,10 @@ export function RichPicker({ onEmoji, onSticker }: { onEmoji: (emoji: string) =>
                       role="tab"
                       aria-selected={tab === t.id}
                       onClick={() => setTab(t.id)}
-                      className={"flex-1 py-2 transition " + (tab === t.id ? "text-primary shadow-[inset_0_-2px_0_var(--color-primary)]" : "text-text-muted hover:text-text")}
+                      className={"flex min-w-0 flex-1 flex-col items-center py-1.5 transition " + (tab === t.id ? "text-primary shadow-[inset_0_-2px_0_var(--color-primary)]" : "text-text-muted hover:text-text")}
                     >
-                      {t.label}
+                      <span className="mc-emoji text-lg" aria-hidden="true">{t.icon}</span>
+                      <span className="max-w-full truncate text-[10px] tracking-tight sm:text-[11px]">{t.label}</span>
                     </button>
                   ))}
                 </div>
@@ -187,7 +184,7 @@ export function RichPicker({ onEmoji, onSticker }: { onEmoji: (emoji: string) =>
                 </>
               ) : (
                 <div className="grid flex-1 grid-cols-3 content-start gap-2 sm:grid-cols-4 lg:grid-cols-5 overflow-y-auto p-2">
-                  {STICKERS.filter((s) => s.kind === tab).map((s) => (
+                  {STICKERS.filter((s) => s.pack === tab).map((s) => (
                     <button
                       key={s.id}
                       type="button"
