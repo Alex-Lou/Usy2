@@ -3,7 +3,10 @@ package com.memocat.auth;
 import com.memocat.auth.dto.LoginResponse;
 import com.memocat.domain.User;
 import com.memocat.repository.UserRepository;
+import com.memocat.chat.LiveSockets;
+import com.memocat.push.PushSubscriptionService;
 import com.memocat.security.JwtService;
+import com.memocat.security.TokenGate;
 import com.memocat.web.TooSoonException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +37,12 @@ class AuthServiceTest {
     private JwtService jwtService;
     @Spy
     private LoginThrottle throttle = new LoginThrottle();
+    @Mock
+    private TokenGate tokenGate;
+    @Mock
+    private LiveSockets liveSockets;
+    @Mock
+    private PushSubscriptionService pushSubscriptions;
 
     @InjectMocks
     private AuthService authService;
@@ -99,6 +108,16 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> authService.login("alice", "secret")).isInstanceOf(TooSoonException.class);
         assertThatThrownBy(() -> authService.login("ALICE", "secret")).isInstanceOf(TooSoonException.class);
+    }
+
+    @Test
+    void logoutEverywhereRevokesTokensClosesLiveConnectionsAndDropsNotifications() {
+        authService.logoutEverywhere("alice");
+
+        var order = org.mockito.Mockito.inOrder(tokenGate, liveSockets, pushSubscriptions);
+        order.verify(tokenGate).revokeAll("alice");
+        order.verify(liveSockets).closeAllOf("alice");
+        order.verify(pushSubscriptions).removeAllOf("alice");
     }
 
     private String catchMessage(Runnable r) {

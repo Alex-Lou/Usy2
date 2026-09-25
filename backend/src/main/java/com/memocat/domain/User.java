@@ -58,6 +58,10 @@ public class User {
     @Column(name = "color_mode")
     private String colorMode;
 
+    /** "Log out all my devices": connections issued before this are refused (null: none). */
+    @Column(name = "tokens_valid_after")
+    private Instant tokensValidAfter;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -137,6 +141,14 @@ public class User {
 
     public void setColorMode(String colorMode) {
         this.colorMode = colorMode;
+    }
+
+    public Instant getTokensValidAfter() {
+        return tokensValidAfter;
+    }
+
+    public void setTokensValidAfter(Instant tokensValidAfter) {
+        this.tokensValidAfter = tokensValidAfter;
     }
 
     public Instant getCreatedAt() {

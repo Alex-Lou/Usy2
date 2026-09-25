@@ -11,6 +11,7 @@ import type { Framing } from "../../lib/framing";
 import { useAuth } from "../auth/useAuth";
 import { getMyProfile, updateMyProfile } from "./api";
 import { emitMyThemeSaved } from "./AppFonts";
+import { DangerZone } from "./DangerZone";
 import { GlassSetting } from "./GlassSetting";
 import { NewsSetting } from "./NewsSetting";
 import { compact, partsOf, PRESETS, type Parts } from "./partStyle";
@@ -438,6 +439,7 @@ export function MyProfilePage() {
               <p className="text-xs text-text-muted">
                 Tes polices pour toute l'app : Apparence › Fond de page › Texte › « Toute l'app (pour moi) ». La police de lecture des messages : bouton « Aa » dans Messages.
               </p>
+              <DangerZone />
             </div>
           )}
 
