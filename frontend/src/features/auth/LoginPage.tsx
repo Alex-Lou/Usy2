@@ -30,7 +30,9 @@ export function LoginPage() {
       setError(
         err instanceof ApiError && err.status === 401
           ? "Identifiant ou mot de passe incorrect."
-          : "Connexion impossible. Réessaie plus tard.",
+          : err instanceof ApiError && err.status === 429
+            ? "Trop d'essais : réessaie dans quelques minutes."
+            : "Connexion impossible. Réessaie plus tard.",
       );
     } finally {
       setSubmitting(false);
