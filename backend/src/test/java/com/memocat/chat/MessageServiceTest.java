@@ -167,4 +167,28 @@ class MessageServiceTest {
         com.memocat.domain.Asset voice = new com.memocat.domain.Asset("k.webm", "vocal.webm", "audio/webm", 10, lou);
         assertThat(com.memocat.chat.dto.ReplyPreviewDto.from(new Message(lou, "", voice)).attachment()).isEqualTo("audio");
     }
+
+    @Test
+    void aMessageCanBeSentWithABubbleStyleAndAScreenEffect() {
+        User sender = new User("lou", "h", "Lou");
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(sender));
+        when(messageRepository.save(any(Message.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        MessageDto dto = messageService.send("lou", "JE T'AIME", null, null, "shout", "hearts");
+        assertThat(dto.style()).isEqualTo("shout");
+        assertThat(dto.effect()).isEqualTo("hearts");
+
+        MessageDto plain = messageService.send("lou", "coucou", null, null, "", null);
+        assertThat(plain.style()).isNull();
+        assertThat(plain.effect()).isNull();
+    }
+
+    @Test
+    void unknownStylesAndEffectsAreRefusedBeforeAnythingIsSaved() {
+        assertThatThrownBy(() -> messageService.send("lou", "x", null, null, "scream", null))
+                .isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> messageService.send("lou", "x", null, null, null, "<script>"))
+                .isInstanceOf(ContentValidationException.class);
+        verify(messageRepository, never()).save(any());
+    }
 }
