@@ -58,19 +58,29 @@ class NewsServiceTest {
     void nothingIsOnUntilIChooseIt() {
         when(profiles.newsPrefs("lou")).thenReturn(null);
 
+        assertThat(service.prefs("lou").enabled()).isFalse();
+        assertThat(service.items("lou")).isEmpty();
+        verify(fetcher, never()).fetch(any(), anyInt(), anyString(), anyString());
+    }
+
+    @Test
+    void aSwitchedOffTabReadsNothingEvenWithSources() {
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(false, List.of("korben"), List.of()));
+
         assertThat(service.items("lou")).isEmpty();
         verify(fetcher, never()).fetch(any(), anyInt(), anyString(), anyString());
     }
 
     @Test
     void savesCleanChoicesAndRefusesUnknownOnes() {
-        NewsPrefsDto saved = service.savePrefs("lou", new NewsPrefsDto(List.of("korben", "korben", "numerama"), List.of(
+        NewsPrefsDto saved = service.savePrefs("lou", new NewsPrefsDto(true, List.of("korben", "korben", "numerama"), List.of(
                 new Follow("bluesky", "@korben.info"),
                 new Follow("mastodon", "@Gargron@Mastodon.Social"),
                 new Follow("reddit", "r/pcgaming"),
                 new Follow("xpost", "https://twitter.com/korben/status/1790?s=20"),
                 new Follow("reddit", "pcgaming"))));
 
+        assertThat(saved.enabled()).isTrue();
         assertThat(saved.sources()).containsExactly("korben", "numerama");
         assertThat(saved.follows()).containsExactly(
                 new Follow("bluesky", "korben.info"),
@@ -79,18 +89,18 @@ class NewsServiceTest {
                 new Follow("xpost", "https://x.com/korben/status/1790"));
         verify(profiles).updateNews("lou", saved);
 
-        assertThatThrownBy(() -> service.savePrefs("lou", new NewsPrefsDto(List.of("pub-site"), List.of())))
+        assertThatThrownBy(() -> service.savePrefs("lou", new NewsPrefsDto(true, List.of("pub-site"), List.of())))
                 .isInstanceOf(ContentValidationException.class);
         for (Follow bad : List.of(new Follow("mastodon", "gargron@localhost"), new Follow("bluesky", "a/../b"),
                 new Follow("xpost", "https://evil.com/korben/status/1"), new Follow("tiktok", "x"), new Follow("reddit", "a b"))) {
-            assertThatThrownBy(() -> service.savePrefs("lou", new NewsPrefsDto(List.of(), List.of(bad))))
+            assertThatThrownBy(() -> service.savePrefs("lou", new NewsPrefsDto(true, List.of(), List.of(bad))))
                     .as(bad.toString()).isInstanceOf(ContentValidationException.class);
         }
     }
 
     @Test
     void readsMySourcesNewestFirstAndKeepsThemAWhile() {
-        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(List.of("korben"), List.of(new Follow("reddit", "pcgaming"))));
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of("korben"), List.of(new Follow("reddit", "pcgaming"))));
         when(fetcher.fetch(eq(URI.create("https://korben.info/feed")), anyInt(), anyString(), anyString())).thenReturn(body(RSS, "application/rss+xml"));
         when(fetcher.fetch(eq(URI.create("https://www.reddit.com/r/pcgaming/.rss")), anyInt(), anyString(), anyString())).thenReturn(Optional.empty());
 
@@ -105,7 +115,7 @@ class NewsServiceTest {
 
     @Test
     void servesOnlyPicturesOfItemsItRead() {
-        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(List.of("korben"), List.of()));
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of("korben"), List.of()));
         when(fetcher.fetch(eq(URI.create("https://korben.info/feed")), anyInt(), anyString(), anyString())).thenReturn(body(RSS, "application/rss+xml"));
         service.items("lou");
         when(fetcher.fetch(eq(URI.create("https://korben.info/a.jpg")), anyInt(), anyString(), anyString())).thenReturn(body("jpg", "image/jpeg"));

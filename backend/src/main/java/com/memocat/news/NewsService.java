@@ -98,7 +98,7 @@ public class NewsService {
 
     public NewsPrefsDto prefs(String username) {
         NewsPrefsDto p = profiles.newsPrefs(username);
-        return p == null ? new NewsPrefsDto(List.of(), List.of()) : p;
+        return p == null ? new NewsPrefsDto(false, List.of(), List.of()) : p;
     }
 
     /** Checks and saves my choices: known sites, well-formed accounts, no duplicates. */
@@ -121,14 +121,19 @@ public class NewsService {
                 clean.add(n);
             }
         }
-        NewsPrefsDto saved = new NewsPrefsDto(List.copyOf(new LinkedHashSet<>(sources)), clean);
+        boolean enabled = prefs != null && Boolean.TRUE.equals(prefs.enabled());
+        NewsPrefsDto saved = new NewsPrefsDto(enabled, List.copyOf(new LinkedHashSet<>(sources)), clean);
         profiles.updateNews(username, saved);
         return saved;
     }
 
-    /** My tab: the latest items of everything I turned on, newest first. */
+    /** My tab: the latest items of everything I turned on, newest first (nothing while the tab is off). */
     public List<NewsItemDto> items(String username) {
-        List<Target> targets = targets(prefs(username));
+        NewsPrefsDto prefs = prefs(username);
+        if (!Boolean.TRUE.equals(prefs.enabled())) {
+            return List.of();
+        }
+        List<Target> targets = targets(prefs);
         if (targets.isEmpty()) {
             return List.of();
         }

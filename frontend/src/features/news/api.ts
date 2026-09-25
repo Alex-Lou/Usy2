@@ -14,6 +14,8 @@ export interface Follow {
 }
 
 export interface NewsPrefs {
+  /** The "Actus" tab is only there when switched on (Mon profil › Pour moi). */
+  enabled: boolean;
   sources: string[];
   follows: Follow[];
 }
