@@ -1,9 +1,12 @@
 package com.memocat.profile;
 
+import com.memocat.profile.dto.SidebarPrefsDto;
 import com.memocat.profile.dto.ThemeDto;
 import com.memocat.web.ContentValidationException;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,6 +35,8 @@ public class ThemeValidator {
     static final Set<String> MODES = Set.of("app", "custom");
     static final Set<String> GAPS = Set.of("s", "m", "l");
     static final Set<String> GLASSES = Set.of("off", "light", "medium", "strong");
+    static final int MAX_SIDEBAR_KEYS = 60;
+    private static final Pattern SIDEBAR_KEY = Pattern.compile("^(c|l:\\d{1,19}):[0-9a-z]{1,16}$");
     private static final Pattern HEX = Pattern.compile("^#[0-9a-fA-F]{6}$");
 
     public void validate(ThemeDto theme) {
@@ -62,6 +67,27 @@ public class ThemeValidator {
         }
         StyleValidator.validateParts(theme.parts());
         validateGlass(theme.glass());
+        validateSidebar(theme.sidebar());
+    }
+
+    /** My side menu choices: bounded lists of well-formed item keys. */
+    public void validateSidebar(SidebarPrefsDto prefs) {
+        if (prefs == null) {
+            return;
+        }
+        for (List<String> keys : Arrays.asList(prefs.hidden(), prefs.order())) {
+            if (keys == null) {
+                continue;
+            }
+            if (keys.size() > MAX_SIDEBAR_KEYS) {
+                throw new ContentValidationException("Too many side menu entries (max " + MAX_SIDEBAR_KEYS + ")");
+            }
+            for (String key : keys) {
+                if (key == null || !SIDEBAR_KEY.matcher(key).matches()) {
+                    throw new ContentValidationException("Invalid side menu entry");
+                }
+            }
+        }
     }
 
     /** A glass choice: null (the default) or one of GLASSES. */

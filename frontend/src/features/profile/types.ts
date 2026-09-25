@@ -55,6 +55,14 @@ export interface Theme {
   widgetGap?: WidgetGap | null; // space between the profile's widgets (null = "m")
   parts?: Partial<Record<PartKey, PartStyle>> | null; // each part's look (see partStyle.ts)
   glass?: Glass | null; // my cards over a background (null: "medium"), see GlassSync
+  sidebar?: SidebarPrefs | null; // my own side menu (see features/couple/sidebar.ts)
+}
+
+/** My side menu, only for me: hidden items and my order (item keys), or the whole section off. */
+export interface SidebarPrefs {
+  hidden?: string[];
+  order?: string[];
+  off?: boolean;
 }
 
 /** How see-through the cards get over a chosen background (a personal choice). */

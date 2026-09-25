@@ -1,6 +1,6 @@
 import { apiRequest } from "../../lib/api/client";
 import type { Framing } from "../../lib/framing";
-import type { Glass, Profile, Theme, Widget } from "./types";
+import type { Glass, Profile, SidebarPrefs, Theme, Widget } from "./types";
 
 export function getMyProfile(): Promise<Profile> {
   return apiRequest<Profile>("/api/profiles/me");
@@ -33,6 +33,11 @@ export function updateMyProfile(
 /** My glass choice (null: back to the default). */
 export function updateGlass(glass: Glass | null): Promise<Profile> {
   return apiRequest<Profile>("/api/profiles/me/glass", { method: "PUT", body: { glass } });
+}
+
+/** My side menu choices (see features/couple/sidebar.ts). */
+export function updateSidebar(prefs: SidebarPrefs): Promise<Profile> {
+  return apiRequest<Profile>("/api/profiles/me/sidebar", { method: "PUT", body: prefs });
 }
 
 export function updateCompanion(companion: string): Promise<Profile> {

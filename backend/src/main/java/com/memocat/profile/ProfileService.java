@@ -11,6 +11,7 @@ import com.memocat.couple.CoupleActivity;
 import com.memocat.profile.dto.LinkedWidgetDto;
 import com.memocat.profile.dto.ProfileDto;
 import com.memocat.profile.dto.ProfileUpdateRequest;
+import com.memocat.profile.dto.SidebarPrefsDto;
 import com.memocat.profile.dto.ThemeDto;
 import com.memocat.profile.dto.WidgetDto;
 import com.memocat.repository.AssetRepository;
@@ -130,9 +131,14 @@ public class ProfileService {
 
         Profile profile = getOrCreate(user);
         List<WidgetDto> linkedBefore = linkedOf(readWidgets(profile));
+        // Glass and side menu choices change only through their own endpoints:
+        // a profile save (maybe from an older page) keeps what is stored.
+        ThemeDto stored = readJson(profile.getThemeJson(), new TypeReference<ThemeDto>() {
+        });
+        ThemeDto theme = request.theme().withGlass(stored.glass()).withSidebar(stored.sidebar());
         profile.setCoverAssetId(cover);
         profile.setCoverFraming(cover == null ? null : Framing.validate(request.coverFraming()));
-        profile.setThemeJson(writeJson(request.theme()));
+        profile.setThemeJson(writeJson(theme));
         profile.setWidgetsJson(writeJson(request.widgets()));
         profile.setBio(bio == null || bio.isBlank() ? null : bio);
         ProfileDto saved = toDto(profileRepository.save(profile));
@@ -153,6 +159,19 @@ public class ProfileService {
         ThemeDto theme = readJson(profile.getThemeJson(), new TypeReference<ThemeDto>() {
         });
         profile.setThemeJson(writeJson(theme.withGlass(glass)));
+        return toDto(profileRepository.save(profile));
+    }
+
+    /** My own side menu choices, kept with my theme (see ThemeDto.sidebar). */
+    @Transactional
+    public ProfileDto updateSidebar(String username, SidebarPrefsDto prefs) {
+        themeValidator.validateSidebar(prefs);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Profile profile = getOrCreate(user);
+        ThemeDto theme = readJson(profile.getThemeJson(), new TypeReference<ThemeDto>() {
+        });
+        profile.setThemeJson(writeJson(theme.withSidebar(prefs)));
         return toDto(profileRepository.save(profile));
     }
 
