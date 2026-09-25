@@ -17,6 +17,8 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     /** Items checked, removed or renamed: sync only, no notification. */
     public static final String LIST_CHANGE = "list-change";
     public static final String TOGETHER = "together";
+    /** "Je pense à toi": a gentle nudge to the other person. */
+    public static final String THINKING = "thinking";
     /** The shared side-menu widgets changed: sync only, no notification. */
     public static final String WIDGETS = "widgets";
     /** A date on the shared calendar was added, changed or removed: sync only. */

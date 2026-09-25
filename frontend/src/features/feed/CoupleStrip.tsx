@@ -8,6 +8,7 @@ import { useAuth } from "../auth/useAuth";
 import { Memories } from "../couple/Memories";
 import { MoodChips } from "../couple/MoodChips";
 import { NoteComposer } from "../couple/NoteComposer";
+import { ThinkingButton } from "../couple/ThinkingButton";
 import { TogetherSince } from "../couple/TogetherSince";
 import { ago } from "../couple/time";
 import { useCouple } from "../couple/useCouple";
@@ -151,9 +152,12 @@ export function CoupleStrip() {
               }}
             />
           ) : (
-            <button type="button" onClick={() => setWriting(true)} className="chip press self-start hover:border-primary/50">
-              {theirNote ? "Répondre par un mot" : "Laisser un mot"}
-            </button>
+            <div className="flex flex-wrap items-start gap-2">
+              <button type="button" onClick={() => setWriting(true)} className="chip press hover:border-primary/50">
+                {theirNote ? "Répondre par un mot" : "Laisser un mot"}
+              </button>
+              <ThinkingButton />
+            </div>
           )}
 
           {countdowns.length > 0 && (

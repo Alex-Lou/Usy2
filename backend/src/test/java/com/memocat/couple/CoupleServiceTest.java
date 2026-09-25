@@ -10,6 +10,7 @@ import com.memocat.repository.MoodRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
 import com.memocat.web.ForbiddenException;
+import com.memocat.web.TooSoonException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,5 +130,28 @@ class CoupleServiceTest {
 
         service.deleteNote("lou", 4L);
         verify(notes).delete(note);
+    }
+
+    @Test
+    void thinkingOfYouIsSentAtMostOnceAMinute() {
+        Instant[] now = {Instant.parse("2026-09-23T10:00:00Z")};
+        Clock moving = new Clock() {
+            @Override public ZoneId getZone() { return ZoneOffset.UTC; }
+            @Override public Clock withZone(ZoneId zone) { return this; }
+            @Override public Instant instant() { return now[0]; }
+        };
+        service = new CoupleService(users, moods, notes, settings, new CoupleClock(ZoneId.of("Atlantic/Canary"), moving), events);
+
+        service.thinkOfYou("lou");
+        now[0] = now[0].plusSeconds(30);
+        assertThatThrownBy(() -> service.thinkOfYou("lou")).isInstanceOf(TooSoonException.class);
+        service.thinkOfYou("sam"); // each person has their own minute
+        now[0] = now[0].plusSeconds(31);
+        service.thinkOfYou("lou");
+
+        ArgumentCaptor<CoupleActivity> event = ArgumentCaptor.forClass(CoupleActivity.class);
+        verify(events, times(3)).publishEvent(event.capture());
+        assertThat(event.getAllValues()).extracting(CoupleActivity::kind).containsOnly(CoupleActivity.THINKING);
+        assertThat(event.getAllValues()).extracting(CoupleActivity::actorName).containsExactly("Lou", "Sam", "Lou");
     }
 }

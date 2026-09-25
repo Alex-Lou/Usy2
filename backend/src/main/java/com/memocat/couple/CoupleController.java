@@ -73,6 +73,13 @@ public class CoupleController {
         coupleService.deleteNote(principal.getName(), id);
     }
 
+    /** "Je pense à toi": a gentle nudge to the other person, at most once a minute. */
+    @PostMapping("/thinking")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void thinkOfYou(Principal principal) {
+        coupleService.thinkOfYou(principal.getName());
+    }
+
     @GetMapping("/memories")
     public List<MemoryDto> memories() {
         return memoryService.onThisDay();

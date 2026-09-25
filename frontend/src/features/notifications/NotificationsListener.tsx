@@ -68,6 +68,8 @@ export function NotificationsListener() {
         notify(`${a.actorName} a changé d'humeur : ${a.detail ?? ""}`);
       } else if (a.kind === "note") {
         notify(`${a.actorName} t'a laissé un mot`);
+      } else if (a.kind === "thinking") {
+        notify(`${a.actorName} pense à toi 💭`);
       } else if (a.kind === "list" && a.refId != null) {
         const last = lastListNotifRef.current.get(a.refId) ?? 0;
         lastListNotifRef.current.set(a.refId, Date.now());

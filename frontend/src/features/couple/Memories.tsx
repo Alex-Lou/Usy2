@@ -4,7 +4,7 @@ import { AssetImage } from "../../components/AssetImage";
 import { getMemories } from "./api";
 import type { Memory } from "./types";
 
-function yearsLabel(n: number): string {
+export function yearsLabel(n: number): string {
   return n === 1 ? "Il y a 1 an" : `Il y a ${n} ans`;
 }
 

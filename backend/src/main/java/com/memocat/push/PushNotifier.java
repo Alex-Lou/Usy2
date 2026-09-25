@@ -119,6 +119,7 @@ public class PushNotifier {
         PushPayload payload = switch (a.kind()) {
             case CoupleActivity.MOOD -> new PushPayload(TITLE, a.actorName() + " a changé d'humeur : " + a.detail(), "/", "mood");
             case CoupleActivity.NOTE -> new PushPayload(TITLE, a.actorName() + " t'a laissé un mot", "/", "note");
+            case CoupleActivity.THINKING -> new PushPayload(TITLE, a.actorName() + " pense à toi 💭", "/", "thinking");
             default -> null; // sync-only changes
         };
         if (payload == null) {
