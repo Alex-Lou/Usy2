@@ -1,27 +1,24 @@
-import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import { LoginPage } from "./features/auth/LoginPage";
 import { FeedPage } from "./features/feed/FeedPage";
+import { AlbumsPage } from "./features/albums/AlbumsPage";
+import { AlbumPage } from "./features/albums/AlbumPage";
+import { ChatPage } from "./features/chat/ChatPage";
+import { GamesHub } from "./features/games/GamesHub";
+import { MorpionPage } from "./features/games/MorpionPage";
+import { SnakePage } from "./features/games/SnakePage";
+import { SudokuPage } from "./features/games/sudoku/SudokuPage";
+import { PostPage } from "./features/feed/PostPage";
+import { FishingPage } from "./features/pet/games/FishingPage";
+import { PetHousePage } from "./features/pet/house/PetHousePage";
+import { ProfilePage } from "./features/profile/ProfilePage";
+import { MyProfilePage } from "./features/profile/MyProfilePage";
+import { SharedWidgetsPage } from "./features/couple/SharedWidgetsPage";
+import { OurProfilePage } from "./features/couple/OurProfilePage";
 import { MyProfileRedirect } from "./features/profile/MyProfileRedirect";
+import { DatesPage } from "./features/couple/DatesPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
-
-// Pages other than the feed load on first visit, so the app opens with less code to fetch and run.
-const AlbumsPage = lazy(() => import("./features/albums/AlbumsPage").then((m) => ({ default: m.AlbumsPage })));
-const AlbumPage = lazy(() => import("./features/albums/AlbumPage").then((m) => ({ default: m.AlbumPage })));
-const ChatPage = lazy(() => import("./features/chat/ChatPage").then((m) => ({ default: m.ChatPage })));
-const GamesHub = lazy(() => import("./features/games/GamesHub").then((m) => ({ default: m.GamesHub })));
-const MorpionPage = lazy(() => import("./features/games/MorpionPage").then((m) => ({ default: m.MorpionPage })));
-const SnakePage = lazy(() => import("./features/games/SnakePage").then((m) => ({ default: m.SnakePage })));
-const SudokuPage = lazy(() => import("./features/games/sudoku/SudokuPage").then((m) => ({ default: m.SudokuPage })));
-const PostPage = lazy(() => import("./features/feed/PostPage").then((m) => ({ default: m.PostPage })));
-const FishingPage = lazy(() => import("./features/pet/games/FishingPage").then((m) => ({ default: m.FishingPage })));
-const PetHousePage = lazy(() => import("./features/pet/house/PetHousePage").then((m) => ({ default: m.PetHousePage })));
-const ProfilePage = lazy(() => import("./features/profile/ProfilePage").then((m) => ({ default: m.ProfilePage })));
-const MyProfilePage = lazy(() => import("./features/profile/MyProfilePage").then((m) => ({ default: m.MyProfilePage })));
-const SharedWidgetsPage = lazy(() => import("./features/couple/SharedWidgetsPage").then((m) => ({ default: m.SharedWidgetsPage })));
-const OurProfilePage = lazy(() => import("./features/couple/OurProfilePage").then((m) => ({ default: m.OurProfilePage })));
-const DatesPage = lazy(() => import("./features/couple/DatesPage").then((m) => ({ default: m.DatesPage })));
 
 export function App() {
   return (
