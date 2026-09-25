@@ -13,7 +13,6 @@
  *   parked in SHARE_CACHE and the app opens a pre-filled post with it.
  */
 const CACHE = "memocat-v1";
-const MAX_FILES = 120; // oldest first out: files of past releases do not pile up on the phone
 const SHARE_CACHE = "memocat-share";
 const MAX_SHARED_FILE = 15 * 1024 * 1024;
 const SHELL = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
@@ -50,12 +49,6 @@ async function receiveShare(req) {
   return Response.redirect("/?share=1", 303);
 }
 
-/** Keeps at most MAX_FILES build files (the offline shell stays); keys come back oldest first. */
-async function trim(cache) {
-  const files = (await cache.keys()).filter((k) => new URL(k.url).pathname.startsWith("/assets/"));
-  await Promise.all(files.slice(0, Math.max(0, files.length - MAX_FILES)).map((k) => cache.delete(k)));
-}
-
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
@@ -83,9 +76,8 @@ self.addEventListener("fetch", (event) => {
         (cached) =>
           cached ||
           fetch(req).then((res) => {
-            if (!res.ok) return res; // never keep an error as a file
             const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put(req, copy).then(() => trim(c)));
+            caches.open(CACHE).then((c) => c.put(req, copy));
             return res;
           }),
       ),
