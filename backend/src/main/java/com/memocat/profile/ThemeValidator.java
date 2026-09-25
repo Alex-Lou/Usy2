@@ -59,6 +59,7 @@ public class ThemeValidator {
         if (theme.widgetGap() != null && !GAPS.contains(theme.widgetGap())) {
             throw new ContentValidationException("Unsupported widget gap: " + theme.widgetGap());
         }
+        StyleValidator.validateParts(theme.parts());
     }
 
     private void validateColors(Map<String, String> colors) {

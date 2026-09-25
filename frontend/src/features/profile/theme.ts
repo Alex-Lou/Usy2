@@ -1,11 +1,5 @@
-import type { CSSProperties } from "react";
 import { fontStack } from "../../lib/fonts";
-import type { LayoutKey, Theme } from "./types";
-
-export const LAYOUT_LABELS: Record<LayoutKey, string> = {
-  classic: "Classique (une colonne)",
-  "sidebar-left": "Barre latérale gauche",
-};
+import type { Theme } from "./types";
 
 /**
  * Whether the theme's fonts are used. A theme saved before fonts had a scope
@@ -34,19 +28,13 @@ export function fontVars(theme: Theme): Record<string, string> {
 }
 
 /**
- * Builds the inline style that overrides the design tokens for a scoped
- * container, so a profile's theme applies only inside the profile view:
- * its colors in custom mode, its fonts when they apply.
+ * A theme saved before fonts had a scope shows its font only with custom
+ * colors: it becomes an explicit choice with the same result (its font on the
+ * profile with custom colors, the app's font otherwise). With no font of its
+ * own yet, a new choice applies to the whole app.
  */
-export function buildThemeStyle(theme: Theme): CSSProperties {
-  const colors =
-    theme.mode === "custom"
-      ? {
-          "--color-bg": theme.colors.bg,
-          "--color-surface": theme.colors.surface,
-          "--color-primary": theme.colors.primary,
-          "--color-text": theme.colors.text,
-        }
-      : {};
-  return { ...colors, ...fontVars(theme) } as CSSProperties;
+export function withFontChoice(theme: Theme): Theme {
+  if (theme.fontScope) return { ...theme, headingFont: theme.headingFont ?? "app" };
+  if (theme.mode === "custom") return { ...theme, headingFont: "app", fontScope: "profile" };
+  return { ...theme, font: "app", headingFont: "app", fontScope: "app" };
 }

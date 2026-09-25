@@ -60,6 +60,7 @@ public class WidgetValidator {
         }
         validateCells(widget.w(), "width");
         validateCells(widget.h(), "height");
+        StyleValidator.validate(widget.style(), false);
         switch (widget.type()) {
             case "marquee", "quote" -> requireText(widget, MAX_TEXT);
             case "richtext" -> requireText(widget, MAX_RICHTEXT);

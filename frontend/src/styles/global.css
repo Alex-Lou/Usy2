@@ -4,6 +4,7 @@
 @import "./pet.css";
 @import "./photo.css";
 @import "./scenes.css";
+@import "./skin.css";
 
 @tailwind base;
 @tailwind components;

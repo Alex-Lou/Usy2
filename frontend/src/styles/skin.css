@@ -1,0 +1,13 @@
+/* Profile part looks (see features/profile/partStyle.ts). A wrapper carries
+   the classes and paints its direct child. Deliberately outside @layer so
+   Tailwind never purges them; the doubled class outranks the child's own
+   utilities (bg-surface, border…). */
+.mc-skin.mc-skin--bg > * { background: var(--skin-bg); }
+.mc-skin.mc-skin--glass > * { backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3); }
+.mc-skin.mc-skin--glass:not(.mc-skin--bg) > * { background: color-mix(in srgb, var(--color-surface) 55%, transparent); }
+.mc-skin.mc-skin--border > * { border-style: solid; border-width: var(--skin-bw); }
+.mc-skin.mc-skin--bc > * { border-color: var(--skin-bc); }
+.mc-skin.mc-skin--shadow > * { box-shadow: var(--skin-shadow); }
+.mc-skin.mc-skin--zoom > * { zoom: var(--skin-zoom); }
+.mc-skin.mc-skin--bold > * { font-weight: 700; }
+.mc-skin.mc-skin--align > * { text-align: var(--skin-align); }

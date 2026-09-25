@@ -5,6 +5,7 @@ import com.memocat.asset.Framing;
 import com.memocat.domain.Asset;
 import com.memocat.domain.Profile;
 import com.memocat.domain.User;
+import com.memocat.profile.dto.PartStyleDto;
 import com.memocat.profile.dto.ProfileUpdateRequest;
 import com.memocat.profile.dto.ThemeDto;
 import com.memocat.repository.AssetRepository;
@@ -85,5 +86,27 @@ class ProfileCoverTest {
         assertThatThrownBy(() -> service.updateMyProfile("lou", withCover(8L))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> service.updateMyProfile("lou", withCover(9L))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> service.updateMyProfile("lou", withCover(99L))).isInstanceOf(ContentValidationException.class);
+    }
+
+    private ProfileUpdateRequest withPagePhoto(Long assetId) {
+        PartStyleDto page = new PartStyleDto("#101010", null, null, null, null, null, null, null, null, null, null, null,
+                null, null, assetId, 40);
+        ThemeDto styled = new ThemeDto(theme.colors(), "trebuchet", "classic", "app", null, null, null, Map.of("page", page));
+        return new ProfileUpdateRequest(styled, List.of(), null, null, null);
+    }
+
+    @Test
+    void thePageBackgroundPhotoMustBeOneOfMyPhotos() {
+        when(assets.findById(7L)).thenReturn(Optional.of(new Asset("k", "c.jpg", "image/jpeg", 1, lou)));
+        when(assets.findById(8L)).thenReturn(Optional.of(new Asset("k", "c.jpg", "image/jpeg", 1, sam)));
+        when(assets.findById(9L)).thenReturn(Optional.of(new Asset("k", "doc.pdf", "application/pdf", 1, lou)));
+
+        var saved = service.updateMyProfile("lou", withPagePhoto(7L));
+        assertThat(saved.theme().parts().get("page").photoAssetId()).isEqualTo(7L);
+        assertThat(saved.theme().parts().get("page").veil()).isEqualTo(40);
+
+        assertThatThrownBy(() -> service.updateMyProfile("lou", withPagePhoto(8L))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.updateMyProfile("lou", withPagePhoto(9L))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.updateMyProfile("lou", withPagePhoto(99L))).isInstanceOf(ContentValidationException.class);
     }
 }

@@ -3,7 +3,7 @@ import { BACKGROUNDS, useSharedAppearance } from "../../features/couple/appearan
 import { AssetImage } from "../AssetImage";
 
 /** Readable text on a colour: dark on light accents, white on dark ones. */
-function onColor(hex: string): string {
+export function onColor(hex: string): string {
   const n = parseInt(hex.slice(1), 16);
   const lum = 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
   return lum > 160 ? "#12071a" : "#ffffff";

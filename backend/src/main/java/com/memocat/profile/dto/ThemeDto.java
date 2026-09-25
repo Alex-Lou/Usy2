@@ -14,16 +14,25 @@ import java.util.Map;
  *       app for its owner). Null = saved before this choice existed: the font
  *       then only applies with custom colors, as it always did.
  * widgetGap: space between the profile's widgets, "s", "m" or "l" (null: "m").
+ * parts: the look of each part of the profile, keyed "page", "header",
+ *       "tabs" and "widgets" (the frames' default); see PartStyleDto. Null or
+ *       absent parts keep their usual look.
  */
 public record ThemeDto(Map<String, String> colors, String font, String layout, String mode,
-                       String headingFont, String fontScope, String widgetGap) {
+                       String headingFont, String fontScope, String widgetGap,
+                       Map<String, PartStyleDto> parts) {
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode) {
-        this(colors, font, layout, mode, null, null, null);
+        this(colors, font, layout, mode, null, null, null, null);
     }
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
                     String headingFont, String fontScope) {
-        this(colors, font, layout, mode, headingFont, fontScope, null);
+        this(colors, font, layout, mode, headingFont, fontScope, null, null);
+    }
+
+    public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
+                    String headingFont, String fontScope, String widgetGap) {
+        this(colors, font, layout, mode, headingFont, fontScope, widgetGap, null);
     }
 }
