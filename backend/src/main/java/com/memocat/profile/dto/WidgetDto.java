@@ -1,0 +1,64 @@
+package com.memocat.profile.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.List;
+
+/**
+ * A single curated widget. Fields used depend on {@code type}:
+ * - marquee / quote / richtext: {@code text}
+ * - mood: {@code emoji} (+ optional {@code label})
+ * - clock: optional {@code label}
+ * - countdown: {@code date} (ISO) (+ optional {@code label})
+ * - image: {@code assetId} (+ optional {@code label} caption)
+ * - svg: {@code variant} (+ optional {@code label})
+ * - pins: {@code pins}, quick links to web pages (+ optional {@code label} title)
+ * Any widget: {@code home} = also shown at the top of the home feed;
+ * {@code w} / {@code h} = its size on the profile, in grid cells (1..4; null:
+ * the default width, and a height that follows the content); {@code style} =
+ * its own look on the profile, over the frames' default (see PartStyleDto);
+ * {@code sidebar} = also shown in both side menus, live, for as long as it is
+ * on the profile with this flag (only its owner manages it).
+ *
+ * All text is stored as-is and escaped/whitelisted on display, never injected
+ * as raw HTML — the widget set stays a closed, safe allowlist (no XSS vector).
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record WidgetDto(String type, String text, String emoji, String label,
+                        Long assetId, String date, String variant, List<PinDto> pins, Boolean home,
+                        Integer w, Integer h, PartStyleDto style, Boolean sidebar) {
+
+    /** Any widget, with a size and a look, not in the side menus. */
+    public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant,
+                     List<PinDto> pins, Boolean home, Integer w, Integer h, PartStyleDto style) {
+        this(type, text, emoji, label, assetId, date, variant, pins, home, w, h, style, null);
+    }
+
+    /** Any widget, with a size but no look of its own. */
+    public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant,
+                     List<PinDto> pins, Boolean home, Integer w, Integer h) {
+        this(type, text, emoji, label, assetId, date, variant, pins, home, w, h, null, null);
+    }
+
+    /** Any widget, without a size of its own. */
+    public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant,
+                     List<PinDto> pins, Boolean home) {
+        this(type, text, emoji, label, assetId, date, variant, pins, home, null, null);
+    }
+
+    /** Every widget type but "pins", not on the home feed. */
+    public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant) {
+        this(type, text, emoji, label, assetId, date, variant, null, null, null, null);
+    }
+
+    /** Any widget, not on the home feed. */
+    public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant,
+                     List<PinDto> pins) {
+        this(type, text, emoji, label, assetId, date, variant, pins, null, null, null);
+    }
+
+    /** A pinned web page: its address and an optional short name. */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public record PinDto(String url, String label) {
+    }
+}

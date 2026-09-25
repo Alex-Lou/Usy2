@@ -1,0 +1,58 @@
+# Render Blueprint for MemoCat (single Docker service + managed PostgreSQL).
+# From your phone: Render → New → Blueprint → connect this repo → Apply.
+# Then set the 6 MEMOCAT_USER* variables (the two accounts) when prompted.
+databases:
+  - name: memocat-db
+    plan: free
+
+services:
+  - type: web
+    name: memocat
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: MEMOCAT_DB_HOST
+        fromDatabase:
+          name: memocat-db
+          property: host
+      - key: MEMOCAT_DB_PORT
+        fromDatabase:
+          name: memocat-db
+          property: port
+      - key: MEMOCAT_DB_NAME
+        fromDatabase:
+          name: memocat-db
+          property: database
+      - key: MEMOCAT_DB_USER
+        fromDatabase:
+          name: memocat-db
+          property: user
+      - key: MEMOCAT_DB_PASSWORD
+        fromDatabase:
+          name: memocat-db
+          property: password
+      # JWT signing secret (auto-generated, 256-bit+).
+      - key: MEMOCAT_JWT_SECRET
+        generateValue: true
+      # Same-origin app; JWT is enforced at the STOMP CONNECT frame anyway.
+      - key: MEMOCAT_CORS_ORIGINS
+        value: "*"
+      # Free tier has no persistent disk: uploads live in /tmp and reset on restart.
+      - key: MEMOCAT_STORAGE_PATH
+        value: /tmp/memocat-uploads
+      # The two fixed accounts — set these in the Render dashboard (never committed).
+      - key: MEMOCAT_USER1_USERNAME
+        sync: false
+      - key: MEMOCAT_USER1_PASSWORD
+        sync: false
+      - key: MEMOCAT_USER1_DISPLAY_NAME
+        sync: false
+      - key: MEMOCAT_USER2_USERNAME
+        sync: false
+      - key: MEMOCAT_USER2_PASSWORD
+        sync: false
+      - key: MEMOCAT_USER2_DISPLAY_NAME
+        sync: false
