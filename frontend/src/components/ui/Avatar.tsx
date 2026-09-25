@@ -73,7 +73,7 @@ export function Avatar({
       {/* Companion badge — only when a photo is shown (otherwise the avatar IS the animal). */}
       {animal && assetId && (
         <span
-          className="absolute -bottom-0.5 -right-0.5 grid place-items-center rounded-full bg-surface ring-2 ring-surface"
+          className="mc-badge-hello absolute -bottom-0.5 -right-0.5 grid place-items-center rounded-full bg-surface ring-2 ring-surface"
           style={{ width: Math.round(size * 0.42), height: Math.round(size * 0.42) }}
         >
           <Animal species={animal} size={Math.round(size * 0.36)} />

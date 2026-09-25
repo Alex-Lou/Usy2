@@ -137,3 +137,24 @@
 .mc-still .mc-penguin * {
   animation: none !important;
 }
+
+/* The companion badge on a profile photo (Avatar.tsx): too small for the face's
+   own moves, so every 15 s the whole little head says hello — a hop, a head
+   shake, a bit bigger — then rests. Only the badge moves (cheap in long lists). */
+.mc-badge-hello {
+  transform-origin: 50% 90%;
+  animation: mc-badge-hello 15s ease-in-out infinite;
+}
+@keyframes mc-badge-hello {
+  0%, 90%, 100% { transform: none; }
+  91.5% { transform: translateY(-22%) rotate(-16deg) scale(1.18); }
+  93% { transform: translateY(-10%) rotate(14deg) scale(1.18); }
+  94.5% { transform: translateY(-4%) rotate(-10deg) scale(1.1); }
+  96% { transform: rotate(6deg) scale(1.04); }
+  97.5% { transform: rotate(-2deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-badge-hello {
+    animation: none;
+  }
+}
