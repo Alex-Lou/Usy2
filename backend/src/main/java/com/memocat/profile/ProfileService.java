@@ -222,10 +222,13 @@ public class ProfileService {
         return toDto(getOrCreate(user));
     }
 
+    /** The user's profile, created on first use (safe if two first uses race). */
     private Profile getOrCreate(User user) {
-        return profileRepository.findByUserId(user.getId())
-                .orElseGet(() -> profileRepository.save(
-                        new Profile(user, writeJson(DEFAULT_THEME), "[]")));
+        return profileRepository.findByUserId(user.getId()).orElseGet(() -> {
+            profileRepository.createIfAbsent(user.getId(), writeJson(DEFAULT_THEME));
+            return profileRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new IllegalStateException("Profile not created for user " + user.getId()));
+        });
     }
 
     private ProfileDto toDto(Profile profile) {
