@@ -15,16 +15,6 @@ export interface Adjust {
 
 export const NEUTRAL: Adjust = { brightness: 1, contrast: 1, saturate: 1, sepia: 0, grayscale: 0, hue: 0 };
 
-export const PRESETS: { id: string; label: string; adjust: Adjust }[] = [
-  { id: "none", label: "Original", adjust: NEUTRAL },
-  { id: "soft", label: "Doux", adjust: { ...NEUTRAL, brightness: 1.06, contrast: 0.9, saturate: 0.9 } },
-  { id: "vivid", label: "Vif", adjust: { ...NEUTRAL, contrast: 1.1, saturate: 1.45 } },
-  { id: "warm", label: "Chaud", adjust: { ...NEUTRAL, sepia: 0.2, saturate: 1.15, hue: -8 } },
-  { id: "cool", label: "Froid", adjust: { ...NEUTRAL, brightness: 1.02, saturate: 0.95, hue: 14 } },
-  { id: "vintage", label: "Vintage", adjust: { ...NEUTRAL, brightness: 1.05, contrast: 0.95, saturate: 0.85, sepia: 0.35 } },
-  { id: "bw", label: "N&B", adjust: { ...NEUTRAL, contrast: 1.1, grayscale: 1 } },
-];
-
 /** Preset combined with the user's sliders (multiplied). */
 export function combine(preset: Adjust, sliders: { brightness: number; contrast: number; saturate: number }): Adjust {
   return {

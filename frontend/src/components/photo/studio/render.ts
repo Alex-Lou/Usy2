@@ -1,5 +1,10 @@
+import type { FontKey } from "../../../features/profile/types";
 import { applyAdjust, type Adjust } from "./adjust";
+import { drawBorder, type BorderId } from "./borders";
+import { paintStrokes, type Stroke } from "./draw";
+import { paintFinish, type Finish, type Tint } from "./looks";
 import { sharpen, SIGMA_OF_WIDTH } from "./sharpen";
+import { ensureFont, paintText, type TextLook } from "./textStyle";
 
 export interface Frame {
   rotation: 0 | 90 | 180 | 270;
@@ -13,6 +18,8 @@ export interface Layer {
   kind: "emoji" | "sticker" | "text";
   value: string; // emoji char, sticker id, or text
   color?: string; // text only
+  font?: FontKey; // text only (default: the app's rounded font)
+  look?: TextLook; // text only (default: outline)
   x: number; // centre, 0..1 of the frame
   y: number;
   scale: number; // size as a fraction of the frame width
@@ -73,7 +80,8 @@ const MAX_LONG = 1600;
 
 /**
  * Flattens everything into a JPEG: framed photo, sharpening and colour
- * adjustments (same maths as the preview), then stickers/emojis/text on top.
+ * adjustments (same maths as the preview), the look's layers (tints,
+ * vignette, grain), the frame border, stickers/emojis/text, then the drawing.
  * When sharpening, a small photo is first enlarged (up to 2×, smooth
  * resampling) so it does not stay pixelated.
  * `stickerSvg` returns the on-screen SVG of a sticker layer.
@@ -86,6 +94,7 @@ export async function exportPhoto(
   sharpness: number,
   layers: Layer[],
   stickerSvg: (id: number) => SVGSVGElement | null,
+  extras: { tints: Tint[]; finish: Finish; border: BorderId; strokes: Stroke[] },
 ): Promise<Blob> {
   const { w, h } = rotatedSize(src, frame.rotation);
   const long = Math.min(MAX_LONG, Math.max(w, h) * (sharpness > 0 ? 2 : 1));
@@ -102,6 +111,9 @@ export async function exportPhoto(
   sharpen(pixels, sharpness, SIGMA_OF_WIDTH * W);
   applyAdjust(pixels, adjust);
   ctx.putImageData(pixels, 0, 0);
+  paintFinish(ctx, extras.tints, extras.finish, W, H);
+  drawBorder(ctx, extras.border, W, H);
+  await Promise.all(layers.filter((l) => l.kind === "text").map((l) => ensureFont(l.font, l.scale * W * 0.3)));
 
   for (const l of layers) {
     const size = l.scale * W;
@@ -117,19 +129,11 @@ export async function exportPhoto(
       ctx.textBaseline = "middle";
       ctx.fillText(l.value, 0, 0);
     } else {
-      const px = size * 0.3;
-      ctx.font = `800 ${px}px ui-rounded, system-ui, sans-serif`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.lineJoin = "round";
-      ctx.lineWidth = px * 0.16;
-      ctx.strokeStyle = "rgba(0,0,0,0.55)";
-      ctx.strokeText(l.value, 0, 0);
-      ctx.fillStyle = l.color ?? "#ffffff";
-      ctx.fillText(l.value, 0, 0);
+      paintText(ctx, l.value, l.color ?? "#ffffff", l.font, l.look ?? "outline", size * 0.3);
     }
     ctx.restore();
   }
+  paintStrokes(ctx, extras.strokes, W, H);
 
   return new Promise((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("export"))), "image/jpeg", 0.88),
