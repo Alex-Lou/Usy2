@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
 import { ListsPanel } from "./ListsPanel";
@@ -18,7 +18,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 /** The full shared space (profile "Nous" tab): same data on both profiles. */
-export function NousPanel({ myId }: { myId: number | undefined }) {
+/** `look`: classes and variables that dress its cards (see partStyle.skin). */
+export function NousPanel({ myId, look }: { myId: number | undefined; look?: { className: string; style: CSSProperties } }) {
   const { couple, setCouple } = useCouple();
   const [people, setPeople] = useState<Profile[]>([]);
 
@@ -27,7 +28,7 @@ export function NousPanel({ myId }: { myId: number | undefined }) {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={"flex flex-col gap-4 " + (look?.className ?? "")} style={look?.style}>
       <Section title="Nous">
         <TogetherSince value={couple?.togetherSince ?? null} editable onSaved={setCouple} />
         <MoodChips
