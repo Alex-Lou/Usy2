@@ -6,6 +6,8 @@ import { ApiError } from "../../lib/api/client";
 import { useAuth } from "../auth/useAuth";
 import { uploadImage } from "../../lib/api/assets";
 import { EffectLayer } from "../../components/photo/EffectLayer";
+import { StudioDraftCard } from "../../components/photo/studio/DraftCard";
+import type { StudioEdit } from "../../components/photo/studio/draft";
 import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { createPost } from "./api";
 
@@ -28,6 +30,7 @@ export function Composer({
   const [file, setFile] = useState<File | null>(null);
   const [effect, setEffect] = useState<string | null>(null);
   const [studio, setStudio] = useState(false);
+  const [resumed, setResumed] = useState<StudioEdit | undefined>(); // edits of a draft picked up
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -92,6 +95,14 @@ export function Composer({
 
   return (
     <form onSubmit={submit} className="card p-4">
+      <StudioDraftCard
+        onResume={(f, edits) => {
+          setFile(f);
+          setEffect(null);
+          setResumed(edits);
+          setStudio(true);
+        }}
+      />
       <div className="flex gap-3">
         <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
         <div className="flex-1">
@@ -138,8 +149,14 @@ export function Composer({
       {studio && file && (
         <PhotoStudio
           file={file}
-          onCancel={() => setStudio(false)}
+          initial={resumed}
+          keepDraft
+          onCancel={() => {
+            setStudio(false);
+            setResumed(undefined);
+          }}
           onDone={(edited, fx) => {
+            setResumed(undefined);
             setFile(edited);
             setEffect(fx);
             setStudio(false);
