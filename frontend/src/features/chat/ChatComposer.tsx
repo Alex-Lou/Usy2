@@ -3,6 +3,8 @@ import { RichPicker } from "../../components/rich/RichPicker";
 import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useRichInput";
 import { Icon } from "../../components/ui/Icon";
 import { EffectLayer } from "../../components/photo/EffectLayer";
+import { StudioDraftCard } from "../../components/photo/studio/DraftCard";
+import type { StudioEdit } from "../../components/photo/studio/draft";
 import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { getStorageUsage, uploadAudio, type Asset, type StorageUsage } from "../../lib/api/assets";
 import { takeForChat } from "../feed/sharedContent";
@@ -48,6 +50,7 @@ export function ChatComposer({
   const [error, setError] = useState<string | null>(null);
   const [usage, setUsage] = useState<StorageUsage | null>(null);
   const [studio, setStudio] = useState(false);
+  const [resumed, setResumed] = useState<StudioEdit | undefined>(); // edits of a draft picked up
   const [options, setOptions] = useState(false); // "Envoyer avec…"
   const press = useRef<{ timer: number; long: boolean } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -193,11 +196,24 @@ export function ChatComposer({
       )}
       {(error ?? voice.error) && <p className="px-2 text-sm text-danger">{error ?? voice.error}</p>}
       {sending && !pending && <p className="px-2 text-sm text-text-muted">Envoi du vocal…</p>}
+      <StudioDraftCard
+        onResume={(f, edits) => {
+          pick(f);
+          setResumed(edits);
+          setStudio(true);
+        }}
+      />
       {studio && pending && (
         <PhotoStudio
           file={pending.file}
-          onCancel={() => setStudio(false)}
+          initial={resumed}
+          keepDraft
+          onCancel={() => {
+            setStudio(false);
+            setResumed(undefined);
+          }}
           onDone={(edited, fx) => {
+            setResumed(undefined);
             if (pending.preview) URL.revokeObjectURL(pending.preview);
             setPending({ file: edited, preview: URL.createObjectURL(edited), effect: fx });
             setStudio(false);

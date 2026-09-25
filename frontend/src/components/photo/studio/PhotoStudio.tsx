@@ -9,6 +9,7 @@ import { FONTS, loadFont } from "../../../lib/fonts";
 import type { FontKey } from "../../../features/profile/types";
 import { combine, cssFilter } from "./adjust";
 import { BORDERS, drawBorder, type BorderId } from "./borders";
+import { clearDraft, NO_EDIT, saveDraft, type StudioEdit } from "./draft";
 import { BRUSHES, DRAW_COLORS, strokePath, touchesStroke, type Stroke } from "./draw";
 import { LookOverlay } from "./LookOverlay";
 import { findLook, LOOKS, NO_FINISH, tintsOf, type Finish, type Look } from "./looks";
@@ -49,6 +50,9 @@ type Gesture = { target: "image" | number; points: Map<number, { x: number; y: n
 type HandleDrag = { id: number; cx: number; cy: number; dist: number; angle: number; scale: number; rotation: number };
 const PANEL_H = 144; // tools panel height at rest (px)
 const PANEL_MIN = 112;
+const HISTORY_MAX = 50;
+const SETTLE_MS = 500; // a change becomes one undo step once things settle
+const sameEdit = (a: StudioEdit, b: StudioEdit) => JSON.stringify(a) === JSON.stringify(b);
 
 /** Settle a turn on the nearest quarter within 5°, so resizing doesn't tilt by accident. */
 function snapAngle(deg: number): number {
@@ -61,42 +65,48 @@ function snapAngle(deg: number): number {
  * grain), a border, stickers/emojis/styled text placed with the fingers (drag,
  * pinch to resize and turn), finger drawing, and an animated effect.
  * Returns a flattened JPEG plus the chosen effect; nothing leaves the device
- * until the caller uploads it.
+ * until the caller uploads it. Every change can be undone and redone; with
+ * `keepDraft`, the edits are also kept on the device until "Terminé" or
+ * "Annuler", to pick up after the app was closed (`initial` restores them).
  */
 export function PhotoStudio({
   file,
+  initial = NO_EDIT,
+  keepDraft = false,
   onDone,
   onCancel,
 }: {
   file: File;
+  initial?: StudioEdit;
+  keepDraft?: boolean;
   onDone: (edited: File, effect: string | null) => void;
   onCancel: () => void;
 }) {
   const [src, setSrc] = useState<(Source & { release: () => void }) | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("frame");
-  const [ratioId, setRatioId] = useState("orig");
-  const [frame, setFrame] = useState<Frame>({ rotation: 0, zoom: 1, panX: 0, panY: 0 });
-  const [lookId, setLookId] = useState("none");
-  const [finish, setFinish] = useState<Finish>(NO_FINISH);
-  const [border, setBorder] = useState<BorderId>("none");
+  const [ratioId, setRatioId] = useState(initial.ratioId);
+  const [frame, setFrame] = useState<Frame>(initial.frame);
+  const [lookId, setLookId] = useState(initial.lookId);
+  const [finish, setFinish] = useState<Finish>(initial.finish);
+  const [border, setBorder] = useState<BorderId>(initial.border);
   const [thumb, setThumb] = useState<string | null>(null);
-  const [sliders, setSliders] = useState({ brightness: 1, contrast: 1, saturate: 1 });
-  const [sharpness, setSharpness] = useState(0); // 0 = off, see sharpen.ts
+  const [sliders, setSliders] = useState(initial.sliders);
+  const [sharpness, setSharpness] = useState(initial.sharpness); // 0 = off, see sharpen.ts
   const sharpenId = `mc-sharpen-${useId().replace(/:/g, "")}`;
-  const [layers, setLayers] = useState<Layer[]>([]);
+  const [layers, setLayers] = useState<Layer[]>(initial.layers);
   const [selected, setSelected] = useState<number | null>(null);
   const [text, setText] = useState("");
   const [textColor, setTextColor] = useState(TEXT_COLORS[0]);
   const [textFont, setTextFont] = useState<FontKey>("app");
   const [textLook, setTextLook] = useState<TextLook>("outline");
-  const [strokes, setStrokes] = useState<Stroke[]>([]);
+  const [strokes, setStrokes] = useState<Stroke[]>(initial.strokes);
   const [drawColor, setDrawColor] = useState(DRAW_COLORS[2]);
   const [brush, setBrush] = useState(BRUSHES[1].width);
   const [eraser, setEraser] = useState(false);
   const drawing = useRef<number | null>(null); // id of the stroke being drawn
   const borderRef = useRef<HTMLCanvasElement>(null);
-  const [effect, setEffect] = useState<string | null>(null);
+  const [effect, setEffect] = useState<string | null>(initial.effect);
   const [fxEmoji, setFxEmoji] = useState("");
   const [fxMotion, setFxMotion] = useState<"fall" | "rise">("fall");
   const [saving, setSaving] = useState(false);
@@ -109,7 +119,71 @@ export function PhotoStudio({
   const [panelH, setPanelH] = useState(PANEL_H);
   const panelDrag = useRef<{ y: number; h: number } | null>(null);
   const panelMoved = useRef(false);
-  const nextId = useRef(1);
+  // Past the restored layers and strokes, so new ones never share an id.
+  const nextId = useRef(Math.max(0, ...initial.layers.map((l) => l.id), ...initial.strokes.map((s) => s.id)) + 1);
+
+  // — Undo / redo: a change becomes one step once things settle (a drag or a slider is one step). —
+  const edit: StudioEdit = { ratioId, frame, lookId, finish, border, sliders, sharpness, layers, strokes, effect };
+  const history = useRef({ past: [] as StudioEdit[], current: initial, future: [] as StudioEdit[], fileSaved: false });
+  const [, setSteps] = useState(0); // re-render when the undo/redo buttons change
+
+  function commit(next: StudioEdit) {
+    const h = history.current;
+    if (sameEdit(h.current, next)) return;
+    h.past = [...h.past, h.current].slice(-HISTORY_MAX);
+    h.current = next;
+    h.future = [];
+    setSteps((n) => n + 1);
+    if (keepDraft) {
+      void saveDraft(h.fileSaved ? null : file, next);
+      h.fileSaved = true;
+    }
+  }
+
+  useEffect(() => {
+    const t = window.setTimeout(() => commit(edit), SETTLE_MS);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ratioId, frame, lookId, finish, border, sliders, sharpness, layers, strokes, effect]);
+
+  function apply(e: StudioEdit) {
+    history.current.current = e;
+    setRatioId(e.ratioId);
+    setFrame(e.frame);
+    setLookId(e.lookId);
+    setFinish(e.finish);
+    setBorder(e.border);
+    setSliders(e.sliders);
+    setSharpness(e.sharpness);
+    setLayers(e.layers);
+    setStrokes(e.strokes);
+    setEffect(e.effect);
+    setSteps((n) => n + 1);
+    if (keepDraft) void saveDraft(null, e);
+  }
+
+  function undo() {
+    commit(edit); // a change not settled yet is the step to undo
+    const h = history.current;
+    const prev = h.past.pop();
+    if (!prev) return;
+    h.future = [h.current, ...h.future];
+    apply(prev);
+  }
+
+  function redo() {
+    const h = history.current;
+    const [next, ...rest] = h.future;
+    if (!next) return;
+    h.past = [...h.past, h.current];
+    h.future = rest;
+    apply(next);
+  }
+
+  function cancel() {
+    if (keepDraft) void clearDraft();
+    onCancel();
+  }
 
   useEffect(() => {
     let alive = true;
@@ -395,6 +469,7 @@ export function PhotoStudio({
       const svgOf = (id: number) => frameRef.current?.querySelector<SVGSVGElement>(`[data-layer="${id}"] svg`) ?? null;
       const blob = await exportPhoto(src, frame, aspect, adjust, sharpness, layers, svgOf, { tints, finish, border, strokes });
       const name = file.name.replace(/\.[^.]+$/, "") + "-studio.jpg";
+      if (keepDraft) void clearDraft();
       onDone(new File([blob], name, { type: "image/jpeg", lastModified: Date.now() }), effect);
     } catch {
       setError("L'enregistrement a échoué, réessaie.");
@@ -415,10 +490,30 @@ export function PhotoStudio({
       onKeyDown={(e) => e.stopPropagation()}
     >
       <header className="flex items-center gap-2 border-b border-border px-3 pb-2 pt-[calc(var(--safe-top)+0.5rem)]">
-        <button type="button" onClick={onCancel} className="rounded-full px-3 py-2 text-sm text-text-muted press hover:text-text">
+        <button type="button" onClick={cancel} className="rounded-full px-3 py-2 text-sm text-text-muted press hover:text-text">
           Annuler
         </button>
         <h2 className="flex-1 text-center font-display text-lg font-bold">Studio</h2>
+        <button
+          type="button"
+          onClick={undo}
+          disabled={history.current.past.length === 0 && sameEdit(history.current.current, edit)}
+          aria-label="Annuler la dernière retouche"
+          title="Annuler la dernière retouche"
+          className="grid h-9 w-9 place-items-center rounded-full text-lg text-text-muted press hover:text-text disabled:opacity-30"
+        >
+          ↶
+        </button>
+        <button
+          type="button"
+          onClick={redo}
+          disabled={history.current.future.length === 0}
+          aria-label="Rétablir"
+          title="Rétablir"
+          className="grid h-9 w-9 place-items-center rounded-full text-lg text-text-muted press hover:text-text disabled:opacity-30"
+        >
+          ↷
+        </button>
         <button type="button" onClick={save} disabled={!src || saving} className="rounded-full btn-brand px-4 py-2 text-sm press disabled:opacity-50">
           {saving ? "…" : "Terminé"}
         </button>
