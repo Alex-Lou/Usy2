@@ -39,6 +39,8 @@ public final class FeedParser {
     private static final Pattern IMG = Pattern.compile("<img[^>]+src=[\"']([^\"']+)[\"']", Pattern.CASE_INSENSITIVE);
     private static final Pattern TAG = Pattern.compile("<[^>]*>");
     private static final Pattern SPACES = Pattern.compile("\\s+");
+    private static final Pattern FEED_LINK = Pattern.compile("<link[^>]+type=[\"']application/(?:rss|atom)\\+xml[\"'][^>]*>", Pattern.CASE_INSENSITIVE);
+    private static final Pattern HREF = Pattern.compile("href=[\"']([^\"']+)[\"']", Pattern.CASE_INSENSITIVE);
     private static final ObjectMapper JSON = new ObjectMapper();
 
     private FeedParser() {
@@ -122,6 +124,26 @@ public final class FeedParser {
                 safeUrl(image),
                 clean(name.isBlank() ? "@" + tweet.path("author").path("screen_name").asText("") : name, 80),
                 at));
+    }
+
+    /** The RSS/Atom feed a web page announces in its head, if any. */
+    public static java.util.Optional<java.net.URI> discoverFeed(byte[] html, java.net.URI page) {
+        String head = new String(html, 0, Math.min(html.length, 200_000), java.nio.charset.StandardCharsets.UTF_8);
+        Matcher link = FEED_LINK.matcher(head);
+        while (link.find()) {
+            Matcher href = HREF.matcher(link.group());
+            if (href.find()) {
+                try {
+                    String url = safeUrl(page.resolve(href.group(1).replace("&amp;", "&").strip()).toString());
+                    if (url != null) {
+                        return java.util.Optional.of(java.net.URI.create(url));
+                    }
+                } catch (IllegalArgumentException ignored) {
+                    // a broken href: try the next one
+                }
+            }
+        }
+        return java.util.Optional.empty();
     }
 
     // — helpers —

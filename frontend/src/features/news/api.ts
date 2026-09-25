@@ -1,6 +1,6 @@
 import { apiRequest, fetchBlobUrl } from "../../lib/api/client";
 
-export type FollowKind = "bluesky" | "mastodon" | "reddit" | "xpost";
+export type FollowKind = "rss" | "bluesky" | "mastodon" | "reddit" | "xpost";
 
 export interface NewsSource {
   id: string;
