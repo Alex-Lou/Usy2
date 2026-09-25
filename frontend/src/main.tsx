@@ -25,3 +25,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
 registerServiceWorker();
 openExternalLinksNatively();
+
+// After a new release, an open tab may ask for a page file that no longer exists: reload once to get the new ones.
+window.addEventListener("vite:preloadError", (event) => {
+  const last = Number(sessionStorage.getItem("memocat.reloadedAt") ?? 0);
+  if (Date.now() - last < 10_000) return; // already tried: let the error show, no reload loop
+  event.preventDefault();
+  sessionStorage.setItem("memocat.reloadedAt", String(Date.now()));
+  window.location.reload();
+});
