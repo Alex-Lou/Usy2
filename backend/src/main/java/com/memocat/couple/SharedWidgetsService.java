@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.couple.dto.SharedWidgetsDto;
 import com.memocat.domain.CoupleSettings;
 import com.memocat.domain.User;
+import com.memocat.profile.ProfileService;
 import com.memocat.profile.WidgetValidator;
 import com.memocat.profile.dto.WidgetDto;
 import com.memocat.repository.CoupleSettingsRepository;
@@ -21,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The widgets shown in both side menus: one list the two can edit (profile
- * widgets stay personal). Same content rules as profile widgets. Each change
+ * The widgets shown in both side menus: one list the two can edit, plus the
+ * profile widgets their owners also show there (read-only here). Same content rules as profile widgets. Each change
  * bumps a version and a save made from an older copy is refused (409), so one
  * person's edit never silently erases the other's.
  */
@@ -34,21 +35,23 @@ public class SharedWidgetsService {
     private final WidgetValidator validator;
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher events;
+    private final ProfileService profiles;
 
     public SharedWidgetsService(CoupleSettingsRepository settings, UserRepository users, WidgetValidator validator,
-                                ObjectMapper objectMapper, ApplicationEventPublisher events) {
+                                ObjectMapper objectMapper, ApplicationEventPublisher events, ProfileService profiles) {
         this.settings = settings;
         this.users = users;
         this.validator = validator;
         this.objectMapper = objectMapper;
         this.events = events;
+        this.profiles = profiles;
     }
 
     @Transactional(readOnly = true)
     public SharedWidgetsDto get() {
         return settings.findById(CoupleSettings.SINGLETON_ID)
                 .map(this::toDto)
-                .orElseGet(() -> new SharedWidgetsDto(List.of(), 0));
+                .orElseGet(() -> new SharedWidgetsDto(List.of(), 0, profiles.linkedWidgets()));
     }
 
     /** Replaces the list, if nobody changed it since {@code version}. */
@@ -99,7 +102,7 @@ public class SharedWidgetsService {
     }
 
     private SharedWidgetsDto toDto(CoupleSettings s) {
-        return new SharedWidgetsDto(read(s), s.getWidgetsVersion());
+        return new SharedWidgetsDto(read(s), s.getWidgetsVersion(), profiles.linkedWidgets());
     }
 
     private List<WidgetDto> read(CoupleSettings s) {

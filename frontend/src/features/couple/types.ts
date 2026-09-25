@@ -53,6 +53,14 @@ export interface SharedWidgets {
   widgets: Widget[];
   /** Sent back when saving: a save from an older copy is refused (409). */
   version: number;
+  /** Profile widgets their owners also show here (managed on the profile). */
+  linked: LinkedWidget[];
+}
+
+export interface LinkedWidget {
+  ownerId: number;
+  ownerName: string;
+  widget: Widget;
 }
 
 /** A date on the shared calendar (see CoupleEventService.java). */

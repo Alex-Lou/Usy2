@@ -1,6 +1,7 @@
 package com.memocat.profile;
 
 import com.memocat.profile.dto.CompanionRequest;
+import com.memocat.profile.dto.GlassRequest;
 import com.memocat.profile.dto.ProfileDto;
 import com.memocat.profile.dto.ProfileUpdateRequest;
 import jakarta.validation.Valid;
@@ -43,6 +44,11 @@ public class ProfileController {
     @PutMapping("/me/companion")
     public ProfileDto updateCompanion(Principal principal, @RequestBody CompanionRequest request) {
         return profileService.updateCompanion(principal.getName(), request.companion());
+    }
+
+    @PutMapping("/me/glass")
+    public ProfileDto updateGlass(Principal principal, @RequestBody GlassRequest request) {
+        return profileService.updateGlass(principal.getName(), request.glass());
     }
 
     @GetMapping("/{userId}")

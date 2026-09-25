@@ -17,22 +17,34 @@ import java.util.Map;
  * parts: the look of each part of the profile, keyed "page", "header",
  *       "tabs" and "widgets" (the frames' default); see PartStyleDto. Null or
  *       absent parts keep their usual look.
+ * glass: how see-through the cards get over a chosen background, for the
+ *       profile's owner only: "off", "light", "medium" or "strong" (null: "medium").
  */
 public record ThemeDto(Map<String, String> colors, String font, String layout, String mode,
                        String headingFont, String fontScope, String widgetGap,
-                       Map<String, PartStyleDto> parts) {
+                       Map<String, PartStyleDto> parts, String glass) {
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode) {
-        this(colors, font, layout, mode, null, null, null, null);
+        this(colors, font, layout, mode, null, null, null, null, null);
     }
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
                     String headingFont, String fontScope) {
-        this(colors, font, layout, mode, headingFont, fontScope, null, null);
+        this(colors, font, layout, mode, headingFont, fontScope, null, null, null);
     }
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
                     String headingFont, String fontScope, String widgetGap) {
-        this(colors, font, layout, mode, headingFont, fontScope, widgetGap, null);
+        this(colors, font, layout, mode, headingFont, fontScope, widgetGap, null, null);
+    }
+
+    public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
+                    String headingFont, String fontScope, String widgetGap, Map<String, PartStyleDto> parts) {
+        this(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, null);
+    }
+
+    /** The same theme with another glass choice. */
+    public ThemeDto withGlass(String value) {
+        return new ThemeDto(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, value);
     }
 }

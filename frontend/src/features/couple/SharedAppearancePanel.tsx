@@ -85,7 +85,7 @@ export function SharedAppearancePanel() {
       <div>
         <h2 className="flex items-center gap-2 font-semibold"><Icon name="heart" size={18} /> Pour vous deux</h2>
         <p className="text-xs text-text-muted">
-          L'apparence commune de l'app, modifiable par vous deux. Si l'un de vous choisit ses propres polices (« Toute l'app (pour moi) » plus bas, ou « Aa » dans Messages), les siennes passent avant, pour lui seul.
+          L'apparence commune de l'app, modifiable par vous deux. Si l'un de vous choisit ses propres polices (« Toute l'app (pour moi) » dans Personnaliser › Fond de page › Texte sur son profil, ou « Aa » dans Messages), les siennes passent avant, rien que pour soi.
         </p>
       </div>
 

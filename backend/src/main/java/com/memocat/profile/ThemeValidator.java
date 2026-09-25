@@ -31,6 +31,7 @@ public class ThemeValidator {
     static final Set<String> LAYOUTS = Set.of("classic", "sidebar-left");
     static final Set<String> MODES = Set.of("app", "custom");
     static final Set<String> GAPS = Set.of("s", "m", "l");
+    static final Set<String> GLASSES = Set.of("off", "light", "medium", "strong");
     private static final Pattern HEX = Pattern.compile("^#[0-9a-fA-F]{6}$");
 
     public void validate(ThemeDto theme) {
@@ -60,6 +61,14 @@ public class ThemeValidator {
             throw new ContentValidationException("Unsupported widget gap: " + theme.widgetGap());
         }
         StyleValidator.validateParts(theme.parts());
+        validateGlass(theme.glass());
+    }
+
+    /** A glass choice: null (the default) or one of GLASSES. */
+    public void validateGlass(String glass) {
+        if (glass != null && !GLASSES.contains(glass)) {
+            throw new ContentValidationException("Unsupported glass: " + glass);
+        }
     }
 
     private void validateColors(Map<String, String> colors) {

@@ -7,6 +7,8 @@ import com.memocat.asset.Framing;
 import com.memocat.domain.Asset;
 import com.memocat.domain.Profile;
 import com.memocat.domain.User;
+import com.memocat.couple.CoupleActivity;
+import com.memocat.profile.dto.LinkedWidgetDto;
 import com.memocat.profile.dto.ProfileDto;
 import com.memocat.profile.dto.ProfileUpdateRequest;
 import com.memocat.profile.dto.ThemeDto;
@@ -16,9 +18,11 @@ import com.memocat.repository.ProfileRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
 import com.memocat.web.ResourceNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,19 +50,22 @@ public class ProfileService {
     private final WidgetValidator widgetValidator;
     private final ObjectMapper objectMapper;
     private final AssetRepository assetRepository;
+    private final ApplicationEventPublisher events;
 
     public ProfileService(ProfileRepository profileRepository,
                           UserRepository userRepository,
                           ThemeValidator themeValidator,
                           WidgetValidator widgetValidator,
                           ObjectMapper objectMapper,
-                          AssetRepository assetRepository) {
+                          AssetRepository assetRepository,
+                          ApplicationEventPublisher events) {
         this.profileRepository = profileRepository;
         this.userRepository = userRepository;
         this.themeValidator = themeValidator;
         this.widgetValidator = widgetValidator;
         this.objectMapper = objectMapper;
         this.assetRepository = assetRepository;
+        this.events = events;
     }
 
     @Transactional
@@ -122,12 +129,59 @@ public class ProfileService {
         userRepository.save(user);
 
         Profile profile = getOrCreate(user);
+        List<WidgetDto> linkedBefore = linkedOf(readWidgets(profile));
         profile.setCoverAssetId(cover);
         profile.setCoverFraming(cover == null ? null : Framing.validate(request.coverFraming()));
         profile.setThemeJson(writeJson(request.theme()));
         profile.setWidgetsJson(writeJson(request.widgets()));
         profile.setBio(bio == null || bio.isBlank() ? null : bio);
+        ProfileDto saved = toDto(profileRepository.save(profile));
+        if (!linkedBefore.equals(linkedOf(request.widgets()))) {
+            // Both side menus show these: they reload, live.
+            events.publishEvent(CoupleActivity.of(CoupleActivity.WIDGETS, user, null, null));
+        }
+        return saved;
+    }
+
+    /** My glass choice, kept with my theme (see ThemeDto.glass). */
+    @Transactional
+    public ProfileDto updateGlass(String username, String glass) {
+        themeValidator.validateGlass(glass);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Profile profile = getOrCreate(user);
+        ThemeDto theme = readJson(profile.getThemeJson(), new TypeReference<ThemeDto>() {
+        });
+        profile.setThemeJson(writeJson(theme.withGlass(glass)));
         return toDto(profileRepository.save(profile));
+    }
+
+    /**
+     * The widgets both profiles also show in the side menus, as the menus show
+     * them (no profile size, look or flags). Existing profiles only: reading
+     * never creates one.
+     */
+    @Transactional(readOnly = true)
+    public List<LinkedWidgetDto> linkedWidgets() {
+        return profileRepository.findAll().stream()
+                .sorted(Comparator.comparing(p -> p.getUser().getId()))
+                .flatMap(p -> linkedOf(readWidgets(p)).stream()
+                        .map(w -> new LinkedWidgetDto(p.getUser().getId(), p.getUser().getDisplayName(), w)))
+                .toList();
+    }
+
+    /** The side-menu copies of the widgets flagged {@code sidebar}. */
+    private static List<WidgetDto> linkedOf(List<WidgetDto> widgets) {
+        return widgets.stream()
+                .filter(w -> Boolean.TRUE.equals(w.sidebar()))
+                .map(w -> new WidgetDto(w.type(), w.text(), w.emoji(), w.label(), w.assetId(), w.date(), w.variant(),
+                        w.pins(), null))
+                .toList();
+    }
+
+    private List<WidgetDto> readWidgets(Profile profile) {
+        return readJson(profile.getWidgetsJson(), new TypeReference<>() {
+        });
     }
 
     private static Long pagePhotoOf(ThemeDto theme) {

@@ -70,11 +70,6 @@ export function saveSharedWidgets(widgets: Widget[], version: number): Promise<S
   return apiRequest<SharedWidgets>("/api/couple/widgets", { method: "PUT", body: { widgets, version } });
 }
 
-/** Adds a copy of one widget at the end of the shared list. */
-export function addSharedWidget(widget: Widget): Promise<SharedWidgets> {
-  return apiRequest<SharedWidgets>("/api/couple/widgets", { method: "POST", body: { widget } });
-}
-
 export function getEvents(): Promise<CoupleEvent[]> {
   return apiRequest<CoupleEvent[]>("/api/couple/events");
 }

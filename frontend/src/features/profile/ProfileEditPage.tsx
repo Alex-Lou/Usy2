@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { SharedAppearancePanel } from "../couple/SharedAppearancePanel";
+import { GlassSetting } from "./GlassSetting";
 import { useNavigate } from "react-router-dom";
 import { AssetImage } from "../../components/AssetImage";
 import { FramingEditor } from "../../components/photo/FramingEditor";
@@ -18,7 +19,6 @@ import { fontVars, withFontChoice } from "./theme";
 import type { Theme, Widget } from "./types";
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
 import { cleanWidget, missingImage, WidgetListEditor } from "./widgets/WidgetEditor";
-import { ShareWidgetButton } from "../couple/ShareWidgetButton";
 
 export function ProfileEditPage() {
   const navigate = useNavigate();
@@ -119,6 +119,7 @@ export function ProfileEditPage() {
         </p>
 
         <SharedAppearancePanel />
+        <GlassSetting />
 
         <section className="card p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold"><Icon name="user" size={18} /> Identité</h2>
@@ -221,12 +222,24 @@ export function ProfileEditPage() {
 
         <section className="card p-4">
           <h2 className="mb-1 font-semibold">Widgets</h2>
-          <p className="mb-3 text-xs text-text-muted">Ceux de ton profil sont à toi. « Partager » en met une copie dans la barre latérale, où vous pouvez tous les deux la modifier.</p>
+          <p className="mb-3 text-xs text-text-muted">
+            Ceux de ton profil sont à toi. « Aussi dans la barre latérale » l'y montre à vous deux, tant qu'il est sur ton profil : le couper ou supprimer le widget l'en retire pour vous deux.
+          </p>
           <WidgetListEditor
             widgets={widgets}
             onChange={setWidgets}
             onError={setError}
-            footer={(w) => <ShareWidgetButton widget={w} />}
+            footer={(w, i) => (
+              <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={!!w.sidebar}
+                  onChange={(e) => setWidgets((list) => list.map((x, j) => (j === i ? { ...x, sidebar: e.target.checked || undefined } : x)))}
+                  className="h-4 w-4 accent-[var(--color-primary)]"
+                />
+                Aussi dans la barre latérale <span className="text-xs text-text-muted">(visible par vous deux)</span>
+              </label>
+            )}
           />
         </section>
 

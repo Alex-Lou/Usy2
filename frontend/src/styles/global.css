@@ -5,6 +5,7 @@
 @import "./photo.css";
 @import "./scenes.css";
 @import "./skin.css";
+@import "./glass.css";
 
 @tailwind base;
 @tailwind components;

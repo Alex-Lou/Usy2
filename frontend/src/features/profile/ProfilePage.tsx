@@ -390,7 +390,16 @@ export function ProfilePage() {
 /** The page's own background, over the app's shared one, for as long as the profile is shown. */
 function PageBackdrop({ look }: { look: PartStyle }) {
   const fill = fillOf(look);
-  if (!look.photoAssetId && !fill) return null;
+  const shown = !!(look.photoAssetId || fill);
+  // Tells the glass cards a background shows (see glass.css).
+  useEffect(() => {
+    if (!shown) return;
+    document.documentElement.dataset.profileBg = "";
+    return () => {
+      delete document.documentElement.dataset.profileBg;
+    };
+  }, [shown]);
+  if (!shown) return null;
   return createPortal(
     <div data-profile-backdrop="" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
       {look.photoAssetId ? (

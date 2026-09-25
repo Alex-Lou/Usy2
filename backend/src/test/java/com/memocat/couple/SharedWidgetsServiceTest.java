@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.couple.dto.SharedWidgetsDto;
 import com.memocat.domain.CoupleSettings;
 import com.memocat.domain.User;
+import com.memocat.profile.ProfileService;
 import com.memocat.profile.WidgetValidator;
+import com.memocat.profile.dto.LinkedWidgetDto;
 import com.memocat.profile.dto.WidgetDto;
 import com.memocat.repository.CoupleSettingsRepository;
 import com.memocat.repository.UserRepository;
@@ -36,6 +38,7 @@ class SharedWidgetsServiceTest {
     @Mock private CoupleSettingsRepository settings;
     @Mock private UserRepository users;
     @Mock private ApplicationEventPublisher events;
+    @Mock private ProfileService profiles;
 
     private SharedWidgetsService service;
     private CoupleSettings row;
@@ -53,7 +56,8 @@ class SharedWidgetsServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new SharedWidgetsService(settings, users, new WidgetValidator(), new ObjectMapper(), events);
+        service = new SharedWidgetsService(settings, users, new WidgetValidator(), new ObjectMapper(), events, profiles);
+        lenient().when(profiles.linkedWidgets()).thenReturn(List.of());
         row = CoupleSettings.create();
         lenient().when(users.findByUsername("sam")).thenReturn(Optional.of(sam));
         lenient().when(settings.findById(CoupleSettings.SINGLETON_ID)).thenReturn(Optional.of(row));
@@ -100,5 +104,14 @@ class SharedWidgetsServiceTest {
         assertThatThrownBy(() -> service.save("sam", List.of(), null)).isInstanceOf(ContentValidationException.class);
         verify(settings, never()).save(any());
         verify(events, never()).publishEvent(any());
+    }
+
+    @Test
+    void theMenusAlsoListTheWidgetsBothProfilesShowThere() {
+        LinkedWidgetDto lous = new LinkedWidgetDto(1L, "Lou", quote("De mon profil", null));
+        when(profiles.linkedWidgets()).thenReturn(List.of(lous));
+
+        assertThat(service.get().linked()).containsExactly(lous);
+        assertThat(service.save("sam", List.of(quote("Commun", null)), 0).linked()).containsExactly(lous);
     }
 }
