@@ -3,6 +3,7 @@ import { getToken } from "../../lib/api/client";
 import { wsUrl } from "../../lib/api/ws";
 import type { PetActivity } from "../pet/types";
 import type { Message, MessageReactions } from "./types";
+import { NO_LOOK, type MessageLook } from "./looks";
 
 /**
  * Opens a STOMP-over-WebSocket connection authenticated with the JWT (sent in
@@ -41,6 +42,12 @@ export function createChatClient(
  * `attachmentAssetId`: a photo/GIF/document uploaded first (see attachments.ts);
  * `replyToId`: the earlier message this one answers.
  */
-export function sendMessage(client: Client, content: string, attachmentAssetId: number | null = null, replyToId: number | null = null): void {
-  client.publish({ destination: "/app/chat.send", body: JSON.stringify({ content, attachmentAssetId, replyToId }) });
+export function sendMessage(
+  client: Client,
+  content: string,
+  attachmentAssetId: number | null = null,
+  replyToId: number | null = null,
+  look: MessageLook = NO_LOOK,
+): void {
+  client.publish({ destination: "/app/chat.send", body: JSON.stringify({ content, attachmentAssetId, replyToId, style: look.style, effect: look.effect }) });
 }

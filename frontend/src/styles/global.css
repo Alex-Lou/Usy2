@@ -6,6 +6,7 @@
 @import "./scenes.css";
 @import "./skin.css";
 @import "./glass.css";
+@import "./chat-fx.css";
 
 @tailwind base;
 @tailwind components;

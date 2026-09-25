@@ -9,6 +9,8 @@ export interface Message {
   createdAt: string;
   reactions: MessageReaction[]; // one emoji per person, oldest first
   replyTo: ReplyPreview | null; // the earlier message this one answers
+  style?: string | null; // bubble style: "shout" | "whisper" | "shake" (see looks.ts)
+  effect?: string | null; // full-screen effect played for both (see looks.ts)
 }
 
 /** The quoted message shown above a reply. */

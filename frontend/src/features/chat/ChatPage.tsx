@@ -17,6 +17,8 @@ import type { Profile } from "../profile/types";
 import { getHistory, reactToMessage } from "./api";
 import { ChatComposer } from "./ChatComposer";
 import { createChatClient, sendMessage } from "./chatClient";
+import { effectSeen, markEffectSeen, SCREEN_EFFECTS, type MessageLook, type ScreenEffectId } from "./looks";
+import { ScreenEffect } from "./ScreenEffect";
 import { ImageViewer } from "./ImageViewer";
 import { MessageList } from "./MessageList";
 import { useFonts } from "../../lib/fonts";
@@ -42,6 +44,10 @@ export function ChatPage() {
   const [viewing, setViewing] = useState<Asset | null>(null);
   const [emojis, setEmojis] = useState<string[]>([]);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const [playing, setPlaying] = useState<{ effect: ScreenEffectId; key: number } | null>(null);
+  const play = useCallback((effect: string | null | undefined) => {
+    if (effect && SCREEN_EFFECTS.some((f) => f.id === effect)) setPlaying({ effect: effect as ScreenEffectId, key: Date.now() });
+  }, []);
   const replyRef = useRef<Message | null>(null);
   replyRef.current = replyTo;
   const clientRef = useRef<Client | null>(null);
@@ -91,12 +97,20 @@ export function ChatPage() {
         setHasOlder(p.totalPages > 1);
         setPage(0);
         noteHistory(p.content[0]?.createdAt);
+        // An effect sent to me lately and not yet seen here plays once on opening.
+        const fresh = p.content.find((m) => m.effect && m.sender.id !== user?.id && Date.now() - new Date(m.createdAt).getTime() < 86_400_000);
+        if (fresh && !effectSeen(fresh.id)) {
+          markEffectSeen(fresh.id);
+          play(fresh.effect);
+        }
       })
       .catch(() => {});
-  }, [noteHistory]);
+  }, [noteHistory, play, user?.id]);
 
   // The chat socket also carries the cat's live events (one connection).
   const onMessageRef = useRef(onMessage);
+  const playRef = useRef(play);
+  playRef.current = play;
   const onActivityRef = useRef(onActivity);
   onMessageRef.current = onMessage;
   onActivityRef.current = onActivity;
@@ -106,6 +120,10 @@ export function ChatPage() {
       (m) => {
         setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
         onMessageRef.current(m);
+        if (m.effect && !effectSeen(m.id)) {
+          markEffectSeen(m.id); // played live, for both
+          playRef.current(m.effect);
+        }
       },
       setConnected,
       (a) => onActivityRef.current(a),
@@ -181,11 +199,11 @@ export function ChatPage() {
     setHasOlder(next + 1 < p.totalPages);
   }
 
-  const send = useCallback((text: string, attachment: Asset | null) => {
+  const send = useCallback((text: string, attachment: Asset | null, look?: MessageLook) => {
     const client = clientRef.current;
     if (!client) return;
     stickToBottom.current = true;
-    sendMessage(client, text, attachment?.id ?? null, replyRef.current?.id ?? null);
+    sendMessage(client, text, attachment?.id ?? null, replyRef.current?.id ?? null, look);
     setReplyTo(null);
   }, []);
 
@@ -251,7 +269,7 @@ export function ChatPage() {
               <p className="text-text-muted">Aucun message. Dis coucou !</p>
             </div>
           ) : (
-            <MessageList messages={messages} myId={user?.id} emojis={emojis} onOpenImage={setViewing} onReact={react} onReply={setReplyTo} />
+            <MessageList messages={messages} myId={user?.id} emojis={emojis} onOpenImage={setViewing} onReact={react} onReply={setReplyTo} onReplay={play} />
           )}
           <div className="h-2 shrink-0" />
         </div>
@@ -260,6 +278,7 @@ export function ChatPage() {
       <ChatComposer connected={connected} onSend={send} replyTo={replyTo} myId={user?.id} onCancelReply={() => setReplyTo(null)} />
 
       {viewing && <ImageViewer asset={viewing} onClose={() => setViewing(null)} />}
+      {playing && <ScreenEffect key={playing.key} effect={playing.effect} onDone={() => setPlaying(null)} />}
     </div>
   );
 }

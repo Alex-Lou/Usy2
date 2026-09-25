@@ -49,6 +49,14 @@ public class Message {
     @JoinColumn(name = "reply_to_id")
     private Message replyTo;
 
+    /** Optional bubble style: "shout", "whisper" or "shake" (see MessageLooks). */
+    @Column(length = 16)
+    private String style;
+
+    /** Optional full-screen effect played for both: "confetti", "hearts"… (see MessageLooks). */
+    @Column(length = 16)
+    private String effect;
+
     protected Message() {
         // for JPA
     }
@@ -58,10 +66,24 @@ public class Message {
     }
 
     public Message(User sender, String content, Asset attachment, Message replyTo) {
+        this(sender, content, attachment, replyTo, null, null);
+    }
+
+    public Message(User sender, String content, Asset attachment, Message replyTo, String style, String effect) {
         this.sender = sender;
         this.content = content;
         this.attachment = attachment;
         this.replyTo = replyTo;
+        this.style = style;
+        this.effect = effect;
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public String getEffect() {
+        return effect;
     }
 
     public Message getReplyTo() {

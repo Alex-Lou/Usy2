@@ -9,6 +9,7 @@ import { AttachmentView } from "./AttachmentView";
 import { LongPress, ReactionBar, ReactionPills } from "./MessageReactions";
 import { Quote } from "./Quote";
 import type { Message } from "./types";
+import { styleClass } from "./looks";
 
 const GROUP_GAP_MS = 5 * 60_000;
 
@@ -55,6 +56,7 @@ export function MessageList({
   onOpenImage,
   onReact,
   onReply,
+  onReplay,
 }: {
   messages: Message[];
   myId: number | undefined;
@@ -62,6 +64,8 @@ export function MessageList({
   onOpenImage: (a: Asset) => void;
   onReact: (messageId: number, emoji: string | null) => void;
   onReply: (m: Message) => void;
+  /** Plays a message's screen effect again. */
+  onReplay?: (effect: string) => void;
 }) {
   const [menu, setMenu] = useState<{ message: Message; anchor: DOMRect } | null>(null);
   const myReaction = (m: Message) => m.reactions.find((r) => r.userId === myId)?.emoji ?? null;
@@ -113,8 +117,21 @@ export function MessageList({
                             : `border border-border bg-surface-2 ${lastOfRun ? "rounded-bl-sm" : ""}`)
                     }
                   >
-                    <RichBody text={m.content} />
+                    <span className={styleClass(m.style)}>
+                      <RichBody text={m.content} />
+                    </span>
                   </div>
+                )}
+                {m.effect && onReplay && (
+                  <button
+                    type="button"
+                    onClick={() => onReplay(m.effect!)}
+                    aria-label="Rejouer l'effet"
+                    title="Rejouer l'effet"
+                    className="grid h-7 w-7 place-items-center rounded-full border border-border bg-surface text-sm press hover:border-primary/50"
+                  >
+                    <span className="mc-emoji">✨</span>
+                  </button>
                 )}
                 </div>
                 </LongPress>

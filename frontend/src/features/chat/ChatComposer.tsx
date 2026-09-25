@@ -7,7 +7,9 @@ import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { getStorageUsage, uploadAudio, type Asset, type StorageUsage } from "../../lib/api/assets";
 import { takeForChat } from "../feed/sharedContent";
 import { checkFile, DOCUMENT_ACCEPT, formatSize, uploadAttachment } from "./attachments";
+import type { MessageLook } from "./looks";
 import { quoteText } from "./Quote";
+import { SendOptions } from "./SendOptions";
 import type { Message } from "./types";
 import { canRecordVoice, formatDuration, MAX_VOICE_SECONDS, useVoiceRecorder } from "./useVoiceRecorder";
 
@@ -33,7 +35,7 @@ export function ChatComposer({
   onCancelReply,
 }: {
   connected: boolean;
-  onSend: (text: string, attachment: Asset | null) => void;
+  onSend: (text: string, attachment: Asset | null, look?: MessageLook) => void;
   /** The message being answered (shown above the box, sent with the next message). */
   replyTo?: Message | null;
   myId?: number;
@@ -46,6 +48,8 @@ export function ChatComposer({
   const [error, setError] = useState<string | null>(null);
   const [usage, setUsage] = useState<StorageUsage | null>(null);
   const [studio, setStudio] = useState(false);
+  const [options, setOptions] = useState(false); // "Envoyer avec…"
+  const press = useRef<{ timer: number; long: boolean } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const voice = useVoiceRecorder((recording) => void sendVoice(recording));
 
@@ -92,7 +96,7 @@ export function ChatComposer({
     ref.current?.focus();
   }
 
-  async function submit(e?: FormEvent) {
+  async function submit(e?: FormEvent, look?: MessageLook) {
     e?.preventDefault();
     const value = text.trim();
     if ((!value && !pending) || !connected || sending) return;
@@ -100,7 +104,7 @@ export function ChatComposer({
     setError(null);
     try {
       const asset = pending ? await uploadAttachment(pending.file, pending.effect) : null;
-      onSend(value, asset);
+      onSend(value, asset, look);
       setText("");
       setPending(null);
     } catch (err) {
@@ -285,11 +289,47 @@ export function ChatComposer({
             <Icon name="mic" size={20} />
           </button>
         ) : (
-          <button type="submit" disabled={!canSend} aria-label="Envoyer" className="grid h-12 w-12 shrink-0 place-items-center rounded-full btn-brand disabled:opacity-50 press">
+          // A long press (or a right click) opens "Envoyer avec…" (bubble style, screen effect).
+          <button
+            type="submit"
+            disabled={!canSend}
+            aria-label="Envoyer"
+            title="Appui long : envoyer avec un style ou un effet"
+            onPointerDown={() => {
+              const state = { timer: 0, long: false };
+              state.timer = window.setTimeout(() => {
+                state.long = true;
+                setOptions(true);
+              }, 450);
+              press.current = state;
+            }}
+            onPointerUp={() => press.current && window.clearTimeout(press.current.timer)}
+            onPointerLeave={() => press.current && window.clearTimeout(press.current.timer)}
+            onPointerCancel={() => press.current && window.clearTimeout(press.current.timer)}
+            onClick={(e) => {
+              if (press.current?.long) e.preventDefault(); // that press opened the options
+              press.current = null;
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              if (canSend) setOptions(true);
+            }}
+            className="grid h-12 w-12 shrink-0 touch-manipulation select-none place-items-center rounded-full btn-brand disabled:opacity-50 press"
+          >
             <Icon name="send" size={18} />
           </button>
         )}
       </div>
+      )}
+      {options && (
+        <SendOptions
+          text={text.trim()}
+          onClose={() => setOptions(false)}
+          onSend={(look) => {
+            setOptions(false);
+            void submit(undefined, look);
+          }}
+        />
       )}
     </form>
   );
