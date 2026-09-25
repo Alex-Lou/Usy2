@@ -5,7 +5,8 @@ import { Animal } from "../../../components/ui/animals";
 import { HeartMark, SparkleMarks } from "../../../components/ui/decor";
 import { useCouple } from "../../couple/useCouple";
 import type { Widget } from "../types";
-import { domainOf, isWebAddress } from "./pinSuggestions";
+import { PinCard } from "./PinsWidget";
+import { isWebAddress } from "./pinSuggestions";
 import { SCENES } from "./scenes";
 
 /** Text-like widgets take the whole row; the others are small square-ish tiles. */
@@ -40,21 +41,17 @@ export function MiniWidget({ widget, ownerId }: { widget: Widget; ownerId?: numb
     case "svg":
       return <MiniScene variant={widget.variant} />;
     case "pins": {
+      // The same little cards as on the profile, two per row.
       const safe = widget.pins.filter((p) => isWebAddress(p.url));
       if (safe.length === 0) return null;
       return (
-        <div className="flex flex-wrap gap-1">
-          {safe.slice(0, 6).map((pin, i) => (
-            <a
-              key={`${pin.url}-${i}`}
-              href={pin.url}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="max-w-full truncate rounded-full bg-surface-2/70 px-2 py-0.5 text-[11px] text-text-muted press hover:text-primary"
-            >
-              📌 {pin.label || domainOf(pin.url)}
-            </a>
-          ))}
+        <div className="rounded-2xl bg-surface-2/60 p-2">
+          {widget.label && <p className="mb-1 truncate px-0.5 text-xs font-semibold text-primary">{widget.label}</p>}
+          <div className="grid grid-cols-2 gap-x-2 gap-y-3 pt-2">
+            {safe.map((pin, i) => (
+              <PinCard key={`${pin.url}-${i}`} pin={pin} index={i} />
+            ))}
+          </div>
         </div>
       );
     }

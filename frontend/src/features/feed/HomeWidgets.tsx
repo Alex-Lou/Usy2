@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Icon } from "../../components/ui/Icon";
 import { onCoupleActivity } from "../couple/activity";
 import { getSharedWidgets } from "../couple/api";
+import { copiesOfLinked } from "../couple/linked";
 import type { Widget } from "../profile/types";
 import { isWideMini, MiniWidget } from "../profile/widgets/MiniWidget";
 
@@ -16,7 +17,14 @@ export function HomeWidgets() {
 
   const load = useCallback(() => {
     getSharedWidgets()
-      .then((s) => setWidgets([...s.widgets.map((widget) => ({ widget })), ...(s.linked ?? []).map((l) => ({ widget: l.widget, from: l.ownerName }))]))
+      .then((s) => {
+        const linked = s.linked ?? [];
+        const isCopy = copiesOfLinked(linked); // shown once, from the profile
+        setWidgets([
+          ...s.widgets.filter((w) => !isCopy(w)).map((widget) => ({ widget })),
+          ...linked.map((l) => ({ widget: l.widget, from: l.ownerName })),
+        ]);
+      })
       .catch(() => {});
   }, []);
 
