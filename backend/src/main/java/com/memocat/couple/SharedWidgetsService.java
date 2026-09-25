@@ -18,7 +18,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,16 +66,6 @@ public class SharedWidgetsService {
             throw new ConflictException("Les widgets ont été modifiés entre-temps : recharge et recommence.");
         }
         return store(me, s, clean);
-    }
-
-    /** Adds one widget at the end (whatever the version: nothing is overwritten). */
-    @Transactional
-    public SharedWidgetsDto add(String username, WidgetDto widget) {
-        User me = requireUser(username);
-        CoupleSettings s = lockedSettings();
-        List<WidgetDto> next = new ArrayList<>(read(s));
-        next.add(widget);
-        return store(me, s, validated(next));
     }
 
     private SharedWidgetsDto store(User me, CoupleSettings s, List<WidgetDto> widgets) {

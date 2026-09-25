@@ -148,4 +148,16 @@ class ProfileSidebarTest {
         assertThat(after.sidebar()).isEqualTo(prefs);
         assertThat(after.glass()).isEqualTo("strong");
     }
+
+    @Test
+    void aFirstVisitCreatesTheProfileAtomicallyInsteadOfSavingADuplicate() {
+        User newcomer = withId(new User("nina", "h", "Nina"), 3L);
+        Profile created = new Profile(newcomer, "{}", "[]");
+        when(users.findByUsername("nina")).thenReturn(Optional.of(newcomer));
+        when(profiles.findByUserId(3L)).thenReturn(Optional.empty(), Optional.of(created));
+
+        assertThat(service.getMyProfile("nina").displayName()).isEqualTo("Nina");
+        verify(profiles).createIfAbsent(org.mockito.ArgumentMatchers.eq(3L), any(String.class));
+        verify(profiles, never()).save(any(Profile.class)); // no plain insert that could collide
+    }
 }

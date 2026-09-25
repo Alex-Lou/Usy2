@@ -15,15 +15,20 @@ import com.memocat.web.ContentValidationException;
 import com.memocat.web.ForbiddenException;
 import com.memocat.web.PageResponse;
 import com.memocat.web.ResourceNotFoundException;
+import com.memocat.web.TooSoonException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** The shared "Nous" space: since when, each person's live mood, and short notes. */
 @Service
@@ -33,6 +38,8 @@ public class CoupleService {
     static final int MAX_MOOD_LABEL = 40;
     static final int MAX_NOTE = 280;
     private static final int MAX_PAGE_SIZE = 50;
+    /** "Je pense à toi" at most once a minute per person: a nudge, not a stream. */
+    static final Duration THINKING_QUIET = Duration.ofMinutes(1);
 
     private final UserRepository users;
     private final MoodRepository moods;
@@ -40,6 +47,7 @@ public class CoupleService {
     private final CoupleSettingsRepository settings;
     private final CoupleClock clock;
     private final ApplicationEventPublisher events;
+    private final Map<Long, Instant> lastThinking = new ConcurrentHashMap<>();
 
     public CoupleService(UserRepository users, MoodRepository moods, CoupleNoteRepository notes,
                          CoupleSettingsRepository settings, CoupleClock clock, ApplicationEventPublisher events) {
@@ -119,6 +127,22 @@ public class CoupleService {
             throw new ForbiddenException("You can only delete your own notes");
         }
         notes.delete(note);
+    }
+
+    /** Tells the other person "je pense à toi" (notification only, nothing stored). */
+    @Transactional // the notification goes out after commit
+    public void thinkOfYou(String username) {
+        User me = requireUser(username);
+        Instant now = clock.now().toInstant();
+        boolean[] tooSoon = {false};
+        lastThinking.compute(me.getId(), (id, last) -> {
+            tooSoon[0] = last != null && now.isBefore(last.plus(THINKING_QUIET));
+            return tooSoon[0] ? last : now;
+        });
+        if (tooSoon[0]) {
+            throw new TooSoonException("Déjà envoyé, réessaie dans une minute 💭");
+        }
+        events.publishEvent(CoupleActivity.of(CoupleActivity.THINKING, me, null, null));
     }
 
     private User requireUser(String username) {

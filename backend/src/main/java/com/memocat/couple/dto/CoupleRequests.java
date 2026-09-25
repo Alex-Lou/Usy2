@@ -32,10 +32,6 @@ public final class CoupleRequests {
     public record WidgetsRequest(List<WidgetDto> widgets, Integer version) {
     }
 
-    /** One widget added at the end of the shared list (e.g. shared from a profile). */
-    public record AddWidgetRequest(WidgetDto widget) {
-    }
-
     /** A date on the shared calendar; {@code time} null = all day. */
     public record EventRequest(String title, LocalDate date, LocalTime time, String emoji, String note,
                                boolean yearly) {

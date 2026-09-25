@@ -168,6 +168,17 @@ class PushNotifierTest {
     }
 
     @Test
+    void thinkingOfYouReachesTheOtherPerson() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.THINKING, 1L, "Lou", null, null));
+
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("body").asText()).isEqualTo("Lou pense à toi 💭");
+        assertThat(payload.get("tag").asText()).isEqualTo("thinking");
+    }
+
+    @Test
     void listBurstNotifiesOnceThenAgainAfterAQuietWhile() {
         MutableClock clock = new MutableClock(Instant.parse("2026-09-23T10:00:00Z"));
         PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, json, clock);

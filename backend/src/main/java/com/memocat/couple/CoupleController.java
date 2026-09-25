@@ -73,6 +73,13 @@ public class CoupleController {
         coupleService.deleteNote(principal.getName(), id);
     }
 
+    /** "Je pense à toi": a gentle nudge to the other person, at most once a minute. */
+    @PostMapping("/thinking")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void thinkOfYou(Principal principal) {
+        coupleService.thinkOfYou(principal.getName());
+    }
+
     @GetMapping("/memories")
     public List<MemoryDto> memories() {
         return memoryService.onThisDay();
@@ -87,10 +94,5 @@ public class CoupleController {
     @PutMapping("/widgets")
     public SharedWidgetsDto saveWidgets(Principal principal, @RequestBody CoupleRequests.WidgetsRequest request) {
         return sharedWidgets.save(principal.getName(), request.widgets(), request.version());
-    }
-
-    @PostMapping("/widgets")
-    public SharedWidgetsDto addWidget(Principal principal, @RequestBody CoupleRequests.AddWidgetRequest request) {
-        return sharedWidgets.add(principal.getName(), request.widget());
     }
 }

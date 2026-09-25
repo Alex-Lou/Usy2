@@ -393,12 +393,30 @@ export function PhotoStudio({
   }
 
   // — Corner handle of the selected layer: drag to resize and turn it (mouse or one finger). —
+  /**
+   * Where the handle sits: a corner of the layer, once turned — the
+   * bottom-right one, or another inside the photo when the layer hangs over
+   * an edge, so the handle stays on screen (any corner resizes the same way).
+   */
+  function cornerOf(l: Layer) {
+    const half = (l.scale * box.w) / 2;
+    const a = (l.rotation * Math.PI) / 180;
+    const at = (sx: number, sy: number) => ({
+      x: l.x * box.w + sx * half * Math.cos(a) - sy * half * Math.sin(a),
+      y: l.y * box.h + sx * half * Math.sin(a) + sy * half * Math.cos(a),
+    });
+    const corners = [at(1, 1), at(-1, 1), at(1, -1), at(-1, -1)];
+    const inside = corners.find((c) => c.x >= 0 && c.x <= box.w && c.y >= 0 && c.y <= box.h);
+    const c = inside ?? corners[0];
+    return { x: Math.min(box.w, Math.max(0, c.x)), y: Math.min(box.h, Math.max(0, c.y)) };
+  }
+
   function handleDown(e: RPointerEvent<HTMLSpanElement>, l: Layer) {
     e.stopPropagation();
     e.currentTarget.setPointerCapture(e.pointerId);
-    const r = e.currentTarget.parentElement!.getBoundingClientRect(); // the layer: its centre stays put
-    const cx = r.left + r.width / 2;
-    const cy = r.top + r.height / 2;
+    const r = e.currentTarget.parentElement!.getBoundingClientRect(); // the frame's area: the layer's centre stays put
+    const cx = r.left + l.x * box.w;
+    const cy = r.top + l.y * box.h;
     handle.current = {
       id: l.id,
       cx,
@@ -416,7 +434,9 @@ export function PhotoStudio({
     if (!h) return;
     const dist = Math.hypot(e.clientX - h.cx, e.clientY - h.cy);
     const turn = ((Math.atan2(e.clientY - h.cy, e.clientX - h.cx) - h.angle) * 180) / Math.PI;
-    patchLayer(h.id, { scale: Math.min(1.6, Math.max(0.06, (h.scale * dist) / h.dist)), rotation: snapAngle(h.rotation + turn) });
+    // Grows by what the finger moves away (not by a ratio): a handle held near the centre stays gentle.
+    const scale = h.scale + (Math.SQRT2 * (dist - h.dist)) / box.w;
+    patchLayer(h.id, { scale: Math.min(1.6, Math.max(0.06, scale)), rotation: snapAngle(h.rotation + turn) });
   }
 
   function handleUp(e: RPointerEvent<HTMLSpanElement>) {
@@ -547,20 +567,6 @@ export function PhotoStudio({
                     ) : (
                       <span style={textCss(l.color ?? "#ffffff", l.font, l.look ?? "outline", size * 0.3)}>{l.value}</span>
                     )}
-                    {selected === l.id && (
-                      // No <svg> in here: the export looks up the sticker as `[data-layer] svg`.
-                      <span
-                        aria-hidden="true"
-                        title="Tirer pour agrandir ou tourner"
-                        onPointerDown={(e) => handleDown(e, l)}
-                        onPointerMove={handleMove}
-                        onPointerUp={handleUp}
-                        onPointerCancel={handleUp}
-                        className="absolute -bottom-4 -right-4 grid h-8 w-8 cursor-nwse-resize touch-none place-items-center"
-                      >
-                        <span className="h-5 w-5 rounded-full border-2 border-white bg-primary shadow-card" />
-                      </span>
-                    )}
                   </div>
                 );
               })}
@@ -587,6 +593,23 @@ export function PhotoStudio({
               )}
             </div>
           </EffectLayer>
+        )}
+        {src && box.w > 0 && sel && (
+          // The selected layer's corner handle, over the photo (not inside it) so its edge never cuts it.
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ width: box.w, height: box.h }}>
+            <span
+              aria-hidden="true"
+              title="Tirer pour agrandir ou tourner"
+              onPointerDown={(e) => handleDown(e, sel)}
+              onPointerMove={handleMove}
+              onPointerUp={handleUp}
+              onPointerCancel={handleUp}
+              className="pointer-events-auto absolute grid h-8 w-8 cursor-nwse-resize touch-none place-items-center"
+              style={{ left: cornerOf(sel).x - 16, top: cornerOf(sel).y - 16 }}
+            >
+              <span className="h-5 w-5 rounded-full border-2 border-white bg-primary shadow-card" />
+            </span>
+          </div>
         )}
       </div>
 
