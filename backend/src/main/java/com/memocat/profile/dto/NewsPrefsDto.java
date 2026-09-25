@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 
 /**
- * My own "Actus" tab (only for me, on every device): the news sites I turned
- * on ({@code sources}, ids from NewsCatalog) and the public accounts I follow
- * ({@code follows}). Nothing is on until I choose it.
+ * My own "Actus" tab (only for me, on every device): whether the tab is there
+ * at all ({@code enabled}, off unless I switch it on in my profile), the news
+ * sites I turned on ({@code sources}, ids from NewsCatalog) and the public
+ * accounts I follow ({@code follows}). Nothing is on until I choose it.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record NewsPrefsDto(List<String> sources, List<Follow> follows) {
+public record NewsPrefsDto(Boolean enabled, List<String> sources, List<Follow> follows) {
 
     /**
      * A public account or post, readable without any sign-in: {@code kind} is

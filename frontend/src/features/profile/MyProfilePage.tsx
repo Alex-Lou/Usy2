@@ -12,6 +12,7 @@ import { useAuth } from "../auth/useAuth";
 import { getMyProfile, updateMyProfile } from "./api";
 import { emitMyThemeSaved } from "./AppFonts";
 import { GlassSetting } from "./GlassSetting";
+import { NewsSetting } from "./NewsSetting";
 import { compact, partsOf, PRESETS, type Parts } from "./partStyle";
 import { ProfileBody } from "./ProfileBody";
 import { GAPS, ProfileGrid } from "./ProfileGrid";
@@ -433,6 +434,7 @@ export function MyProfilePage() {
           {tab === "moi" && (
             <div className="flex flex-col gap-4">
               <GlassSetting />
+              <NewsSetting />
               <p className="text-xs text-text-muted">
                 Tes polices pour toute l'app : Apparence › Fond de page › Texte › « Toute l'app (pour moi) ». La police de lecture des messages : bouton « Aa » dans Messages.
               </p>

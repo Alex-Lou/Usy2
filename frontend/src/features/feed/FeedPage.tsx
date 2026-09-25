@@ -5,6 +5,7 @@ import { Skeleton } from "../../components/ui/Skeleton";
 import { EmptyState } from "../../components/ui/states";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { useAuth } from "../auth/useAuth";
+import { getNewsPrefs } from "../news/api";
 import { NewsTab } from "../news/NewsTab";
 import { getAllProfiles } from "../profile/api";
 import { onFeedActivity } from "./activity";
@@ -29,7 +30,14 @@ export function FeedPage() {
   const [shared, setShared] = useState<SharedContent | null>(null); // waiting for "post or message?"
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [params, setParams] = useSearchParams();
-  const tab = params.get("onglet") === "actus" ? "actus" : "nous";
+  // The second tab exists only for whoever switched "Actus" on in their profile.
+  const [newsOn, setNewsOn] = useState(false);
+  useEffect(() => {
+    getNewsPrefs()
+      .then((p) => setNewsOn(p.enabled))
+      .catch(() => {});
+  }, []);
+  const tab = newsOn && params.get("onglet") === "actus" ? "actus" : "nous";
   const setTab = (t: "nous" | "actus") => {
     const q = new URLSearchParams(params);
     if (t === "nous") q.delete("onglet");
@@ -109,20 +117,22 @@ export function FeedPage() {
     <div className="flex flex-col gap-4">
       <header className="flex items-center gap-2 animate-fade-up">
         <p className="text-text-muted">Coucou {user?.displayName} 👋</p>
-        <div role="tablist" aria-label="Fil" className="ml-auto flex gap-1 rounded-full border border-border bg-surface p-1">
-          {(["nous", "actus"] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              role="tab"
-              aria-selected={tab === t}
-              onClick={() => setTab(t)}
-              className={"rounded-full px-3 py-1 text-sm font-semibold transition press " + (tab === t ? "btn-brand" : "text-text-muted hover:text-text")}
-            >
-              {t === "nous" ? "💞 Nous" : "📰 Actus"}
-            </button>
-          ))}
-        </div>
+        {newsOn && (
+          <div role="tablist" aria-label="Fil" className="ml-auto flex gap-1 rounded-full border border-border bg-surface p-1">
+            {(["nous", "actus"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={tab === t}
+                onClick={() => setTab(t)}
+                className={"rounded-full px-3 py-1 text-sm font-semibold transition press " + (tab === t ? "btn-brand" : "text-text-muted hover:text-text")}
+              >
+                {t === "nous" ? "💞 Nous" : "📰 Actus"}
+              </button>
+            ))}
+          </div>
+        )}
       </header>
 
       {tab === "actus" ? (

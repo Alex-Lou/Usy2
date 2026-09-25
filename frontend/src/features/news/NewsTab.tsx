@@ -34,7 +34,7 @@ export function NewsTab() {
         setPrefs(p);
         if (p.sources.length + p.follows.length === 0) setEditing(true);
       })
-      .catch(() => setPrefs({ sources: [], follows: [] }));
+      .catch(() => setPrefs({ enabled: true, sources: [], follows: [] }));
     load();
   }, [load]);
 
