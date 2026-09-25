@@ -19,7 +19,17 @@ public final class PetCatalog {
             new Item("glasses", "Lunettes rondes", "face", 45),
             new Item("beret", "Béret", "head", 60),
             new Item("crown", "Couronne", "head", 120),
-            new Item("cushion", "Coussin moelleux", "home", 80));
+            new Item("cushion", "Coussin moelleux", "home", 80),
+            new Item("bandana", "Bandana", "neck", 35),
+            new Item("pearls", "Collier de perles", "neck", 90),
+            new Item("sunglasses", "Lunettes de soleil", "face", 55),
+            new Item("heartglasses", "Lunettes cœurs", "face", 70),
+            new Item("monocle", "Monocle", "face", 85),
+            new Item("flowers", "Couronne de fleurs", "head", 65),
+            new Item("party", "Chapeau de fête", "head", 40),
+            new Item("bunny", "Serre-tête lapin", "head", 50),
+            new Item("wizard", "Chapeau de magicien", "head", 110),
+            new Item("tophat", "Haut-de-forme", "head", 100));
 
     private PetCatalog() {
     }

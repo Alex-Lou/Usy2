@@ -3,6 +3,8 @@
 // parts (eyes, mouth, props); all motion is CSS (styles/pet.css), so it stays
 // light and stops entirely for people who prefer reduced motion.
 
+import { HeadItems, NeckItem } from "./accessories";
+
 export type CatPose = "idle" | "sleep" | "purr" | "eat" | "play" | "startle" | "hungry" | "bath";
 
 const OUTLINE = "#4a3b33";
@@ -146,64 +148,6 @@ function Props({ pose }: { pose: CatPose }) {
     default:
       return null;
   }
-}
-
-// Accessories, drawn on the cat so they follow its head and body.
-function NeckItem({ id }: { id: string }) {
-  if (id === "collar")
-    return (
-      <g>
-        <path d="M57 84 q23 11 46 0" stroke="#d94a6a" strokeWidth="5" fill="none" strokeLinecap="round" />
-        <circle cx="80" cy="92" r="4" fill="#f2c14e" stroke={OUTLINE} strokeWidth="1.3" />
-        <path d="M78 93 h4" stroke={OUTLINE} strokeWidth="1" />
-      </g>
-    );
-  if (id === "bow")
-    return (
-      <g fill="#ff86b8" stroke={OUTLINE} strokeWidth="1.5" strokeLinejoin="round">
-        <path d="M80 89 L66 82 L66 96 Z" />
-        <path d="M80 89 L94 82 L94 96 Z" />
-        <circle cx="80" cy="89" r="3.6" />
-      </g>
-    );
-  if (id === "scarf")
-    return (
-      <g stroke={OUTLINE} strokeWidth="1.5" strokeLinejoin="round">
-        <path d="M55 82 q25 13 50 0 l0 6 q-25 13 -50 0 z" fill="#4fb3a9" />
-        <path d="M92 90 l6 20 l-9 1 l-3 -19 z" fill="#4fb3a9" />
-        <path d="M60 86 q20 9 40 0" stroke="#fff" strokeWidth="1.2" fill="none" opacity="0.6" />
-      </g>
-    );
-  return null;
-}
-
-function HeadItems({ wearing }: { wearing: string[] }) {
-  return (
-    <>
-      {wearing.includes("glasses") && (
-        <g stroke={OUTLINE} strokeWidth="1.8" fill="rgba(255,255,255,0.18)">
-          <circle cx="67" cy="62" r="9" />
-          <circle cx="93" cy="62" r="9" />
-          <path d="M76 61 q4 -3 8 0" fill="none" />
-        </g>
-      )}
-      {wearing.includes("beret") && (
-        <g stroke={OUTLINE} strokeWidth="1.8">
-          <ellipse cx="84" cy="32" rx="24" ry="8.5" fill="#7a5bb5" transform="rotate(-8 84 32)" />
-          <path d="M88 22 l2 -5" strokeLinecap="round" />
-        </g>
-      )}
-      {wearing.includes("crown") && (
-        <path
-          d="M64 34 L66 18 L73 27 L80 14 L87 27 L94 18 L96 34 Z"
-          fill="#f2c14e"
-          stroke={OUTLINE}
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-      )}
-    </>
-  );
 }
 
 /**
