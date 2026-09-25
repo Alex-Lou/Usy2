@@ -8,7 +8,6 @@ export type Parts = Partial<Record<PartKey, PartStyle>>;
 export const PART_LABELS: Record<PartKey, string> = {
   page: "Fond de page",
   header: "Présentation",
-  tabs: "Onglets",
   widgets: "Tous les cadres",
 };
 
@@ -153,7 +152,6 @@ export const PRESETS: { id: string; label: string; swatch: string; parts: Parts 
     parts: {
       page: { bg: "#0f1030", bg2: "#2a1650", text: "#ecebff", accent: "#ffd45e" },
       header: { bg: "#1b1a45", opacity: 80, glass: true, border: "thin", borderColor: "#ffd45e", radius: "round" },
-      tabs: { bg: "#1b1a45", opacity: 70, radius: "round" },
       widgets: { bg: "#1b1a45", opacity: 75, glass: true, border: "thin", borderColor: "#3a3470", radius: "soft" },
     },
   },
@@ -164,7 +162,6 @@ export const PRESETS: { id: string; label: string; swatch: string; parts: Parts 
     parts: {
       page: { bg: "#ffe8d6", bg2: "#ffd1dc", text: "#5a3a3a", accent: "#e0707f" },
       header: { bg: "#fff7f0", radius: "round", shadow: "soft", border: "none", font: "dancing" },
-      tabs: { bg: "#fff7f0", radius: "round" },
       widgets: { bg: "#fff7f0", radius: "round", shadow: "soft", border: "none" },
     },
   },
@@ -175,7 +172,6 @@ export const PRESETS: { id: string; label: string; swatch: string; parts: Parts 
     parts: {
       page: { bg: "#16301f", bg2: "#2e4a2a", text: "#e8f3e0", accent: "#9fe0a4" },
       header: { bg: "#1f3b26", opacity: 90, border: "thin", borderColor: "#4f7a4f", font: "almendra" },
-      tabs: { bg: "#1f3b26", opacity: 85 },
       widgets: { bg: "#1f3b26", opacity: 85, border: "thin", borderColor: "#4f7a4f", radius: "soft" },
     },
   },
@@ -186,7 +182,6 @@ export const PRESETS: { id: string; label: string; swatch: string; parts: Parts 
     parts: {
       page: { bg: "#f3ead8", text: "#3c332a", accent: "#b5476b" },
       header: { bg: "#fffaf1", border: "thin", borderColor: "#d9c7a8", radius: "square", shadow: "soft", font: "caveat" },
-      tabs: { bg: "#fffaf1", border: "thin", borderColor: "#d9c7a8", radius: "square" },
       widgets: { bg: "#fffaf1", border: "thin", borderColor: "#d9c7a8", radius: "square", shadow: "soft", font: "patrick" },
     },
   },
@@ -197,7 +192,6 @@ export const PRESETS: { id: string; label: string; swatch: string; parts: Parts 
     parts: {
       page: { bg: "#0d0b1a", bg2: "#1a0b2e", text: "#f5f3ff", accent: "#22d3ee" },
       header: { bg: "#140f2e", border: "thick", borderColor: "#22d3ee", radius: "square", shadow: "strong", font: "baloo" },
-      tabs: { bg: "#140f2e", border: "thin", borderColor: "#ff3d9a", radius: "square" },
       widgets: { bg: "#140f2e", border: "thick", borderColor: "#ff3d9a", radius: "square", shadow: "strong" },
     },
   },
@@ -208,7 +202,6 @@ export const PRESETS: { id: string; label: string; swatch: string; parts: Parts 
     parts: {
       page: { bg: "#0e3b53", bg2: "#1b6f8a", text: "#effaff", accent: "#7cc6e8" },
       header: { bg: "#ffffff", opacity: 14, glass: true, radius: "round", border: "thin", borderColor: "#7cc6e8" },
-      tabs: { bg: "#ffffff", opacity: 12, radius: "round" },
       widgets: { bg: "#ffffff", opacity: 14, glass: true, radius: "round", border: "thin", borderColor: "#2f86a3" },
     },
   },

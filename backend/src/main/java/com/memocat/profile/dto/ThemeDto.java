@@ -15,7 +15,8 @@ import java.util.Map;
  *       then only applies with custom colors, as it always did.
  * widgetGap: space between the profile's widgets, "s", "m" or "l" (null: "m").
  * parts: the look of each part of the profile, keyed "page", "header",
- *       "tabs" and "widgets" (the frames' default); see PartStyleDto. Null or
+ *       "widgets" (the frames' default) — plus "tabs", no longer shown but still
+ *       accepted from older themes; see PartStyleDto. Null or
  *       absent parts keep their usual look.
  * glass: how see-through the cards get over a chosen background, for the
  *       profile's owner only: "off", "light", "medium" or "strong" (null: "medium").

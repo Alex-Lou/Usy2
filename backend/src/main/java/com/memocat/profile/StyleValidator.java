@@ -14,7 +14,11 @@ import java.util.regex.Pattern;
  */
 public final class StyleValidator {
 
-    /** The parts of a profile that can be styled. */
+    /**
+     * The parts of a profile that can be styled. "tabs" is no longer shown
+     * (the profile view has no tabs) but stays accepted: themes saved before
+     * keep saving as they are.
+     */
     static final Set<String> PARTS = Set.of("page", "header", "tabs", "widgets");
     static final Set<String> BORDERS = Set.of("none", "thin", "thick");
     static final Set<String> RADII = Set.of("square", "soft", "round");

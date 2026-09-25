@@ -88,9 +88,4 @@ public class CoupleController {
     public SharedWidgetsDto saveWidgets(Principal principal, @RequestBody CoupleRequests.WidgetsRequest request) {
         return sharedWidgets.save(principal.getName(), request.widgets(), request.version());
     }
-
-    @PostMapping("/widgets")
-    public SharedWidgetsDto addWidget(Principal principal, @RequestBody CoupleRequests.AddWidgetRequest request) {
-        return sharedWidgets.add(principal.getName(), request.widget());
-    }
 }

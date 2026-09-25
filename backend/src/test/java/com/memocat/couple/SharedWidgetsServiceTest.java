@@ -87,20 +87,9 @@ class SharedWidgetsServiceTest {
     }
 
     @Test
-    void addingAppendsWhateverTheVersion() {
-        service.save("sam", List.of(quote("A", null)), 0);
-
-        SharedWidgetsDto after = service.add("sam", quote("B", true));
-
-        assertThat(after.widgets()).containsExactly(quote("A", null), quote("B", null));
-        assertThat(after.version()).isEqualTo(2);
-    }
-
-    @Test
     void contentFollowsTheProfileWidgetRules() {
         assertThatThrownBy(() -> service.save("sam", List.of(new WidgetDto("script", "x", null, null, null, null, null)), 0))
                 .isInstanceOf(ContentValidationException.class);
-        assertThatThrownBy(() -> service.add("sam", null)).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> service.save("sam", List.of(), null)).isInstanceOf(ContentValidationException.class);
         verify(settings, never()).save(any());
         verify(events, never()).publishEvent(any());
