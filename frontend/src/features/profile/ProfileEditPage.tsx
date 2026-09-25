@@ -11,20 +11,14 @@ import type { Framing } from "../../lib/framing";
 import { useAuth } from "../auth/useAuth";
 import { uploadImage } from "../../lib/api/assets";
 import { getMyProfile, updateMyProfile } from "./api";
-import { FONT_GROUPS, FONTS, useFonts } from "../../lib/fonts";
+import { useFonts } from "../../lib/fonts";
 import { emitMyThemeSaved } from "./AppFonts";
-import { buildThemeStyle, LAYOUT_LABELS } from "./theme";
-import type { FontKey, LayoutKey, Theme, ThemeColors, ThemeMode, Widget } from "./types";
+import { fillOf, partFonts, partsOf, pageVars, skin, widgetStyle } from "./partStyle";
+import { fontVars, withFontChoice } from "./theme";
+import type { Theme, Widget } from "./types";
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
-import { cleanWidget, missingImage, selectClass, WidgetListEditor } from "./widgets/WidgetEditor";
+import { cleanWidget, missingImage, WidgetListEditor } from "./widgets/WidgetEditor";
 import { ShareWidgetButton } from "../couple/ShareWidgetButton";
-
-const COLOR_FIELDS: { key: keyof ThemeColors; label: string }[] = [
-  { key: "bg", label: "Fond" },
-  { key: "surface", label: "Cartes" },
-  { key: "primary", label: "Accent" },
-  { key: "text", label: "Texte" },
-];
 
 export function ProfileEditPage() {
   const navigate = useNavigate();
@@ -39,7 +33,7 @@ export function ProfileEditPage() {
   const [bio, setBio] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  useFonts(theme?.font, theme?.headingFont); // previews show the chosen fonts
+  useFonts(theme?.font, theme?.headingFont, ...(theme ? partFonts(partsOf(theme), widgets) : [])); // the preview shows the chosen fonts
 
   useEffect(() => {
     let cancelled = false;
@@ -85,14 +79,6 @@ export function ProfileEditPage() {
     }
   }
 
-  function setColor(key: keyof ThemeColors, value: string) {
-    setTheme((t) => (t ? { ...t, colors: { ...t.colors, [key]: value } } : t));
-  }
-
-  function setMode(mode: ThemeMode) {
-    setTheme((t) => (t ? { ...t, mode } : t));
-  }
-
   async function handleSave() {
     if (!theme) return;
     if (missingImage(widgets)) {
@@ -122,13 +108,15 @@ export function ProfileEditPage() {
   }
 
   if (!theme) return <div className="p-8 text-text-muted">{error ?? "Chargement…"}</div>;
-
-  const custom = theme.mode === "custom";
+  const parts = partsOf(theme);
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <div className="flex flex-col gap-4">
-        <h1 className="font-display text-2xl font-bold animate-fade-up">Personnaliser mon profil</h1>
+        <h1 className="font-display text-2xl font-bold animate-fade-up">Contenu de mon profil</h1>
+        <p className="-mt-2 text-sm text-text-muted">
+          Couleurs, fond, polices et style de chaque cadre : bouton <strong>« Personnaliser »</strong> directement sur ton profil.
+        </p>
 
         <SharedAppearancePanel />
 
@@ -232,84 +220,6 @@ export function ProfileEditPage() {
         </section>
 
         <section className="card p-4">
-          <h2 className="mb-3 flex items-center gap-2 font-semibold"><Icon name="sparkles" size={18} /> Apparence</h2>
-          <div className="mb-3 flex items-center gap-1 rounded-full border border-border bg-bg-2/60 p-1">
-            <button
-              type="button"
-              onClick={() => setMode("app")}
-              aria-pressed={!custom}
-              className={"flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition press " + (!custom ? "btn-brand" : "text-text-muted hover:text-text")}
-            >
-              Suivre le thème
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("custom")}
-              aria-pressed={custom}
-              className={"flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition press " + (custom ? "btn-brand" : "text-text-muted hover:text-text")}
-            >
-              Couleurs perso
-            </button>
-          </div>
-          {custom ? (
-            <div className="grid grid-cols-2 gap-3">
-              {COLOR_FIELDS.map(({ key, label }) => (
-                <label key={key} className="flex items-center justify-between gap-2 rounded-token-sm border border-border bg-bg-2/40 px-3 py-2 text-sm">
-                  <span>{label}</span>
-                  <input type="color" value={theme.colors[key]} onChange={(e) => setColor(key, e.target.value)} className="h-8 w-12 cursor-pointer rounded border border-border bg-transparent" />
-                </label>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-text-muted">Ton profil suit automatiquement le thème clair/sombre de l'app. 🌙</p>
-          )}
-        </section>
-
-        <section className="card p-4">
-          <h2 className="mb-3 font-semibold">Style</h2>
-          <div className="grid grid-cols-2 gap-3">
-            <FontSelect label="Police du texte" value={theme.font} onChange={(font) => setTheme({ ...theme, font })} />
-            <FontSelect
-              label="Police des titres"
-              value={theme.headingFont ?? "app"}
-              appLabel="Comme le texte"
-              onChange={(headingFont) => setTheme({ ...theme, headingFont })}
-            />
-            <div className="col-span-2 rounded-token-sm border border-border bg-bg-2/40 px-3 py-2" style={buildThemeStyle({ ...theme, mode: "app" })}>
-              <p className="font-display text-lg font-bold text-text">Nos souvenirs ✨</p>
-              <p className="font-sans text-sm text-text">Un petit mot doux, écrit avec ta police : é, à, ç, œ… 💕</p>
-            </div>
-            <div className="col-span-2 text-sm">
-              <span className="mb-1 block text-text-muted">Appliquer ces polices à</span>
-              <div className="flex items-center gap-1 rounded-full border border-border bg-bg-2/60 p-1">
-                {(["profile", "app"] as const).map((scope) => (
-                  <button
-                    key={scope}
-                    type="button"
-                    onClick={() => setTheme({ ...theme, fontScope: scope })}
-                    aria-pressed={theme.fontScope === scope}
-                    className={"flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition press " + (theme.fontScope === scope ? "btn-brand" : "text-text-muted hover:text-text")}
-                  >
-                    {scope === "profile" ? "Mon profil" : "Toute l'app (pour moi)"}
-                  </button>
-                ))}
-              </div>
-              <span className="mt-1 block text-[11px] text-text-muted">
-                {theme.fontScope === "app"
-                  ? "Toute l'interface prend tes polices, sur tous tes appareils. Ton binôme garde les siennes."
-                  : "Seule ta page profil utilise ces polices (aussi quand ton binôme la regarde)."}
-              </span>
-            </div>
-            <label className="text-sm">
-              <span className="mb-1 block text-text-muted">Disposition</span>
-              <select value={theme.layout} onChange={(e) => setTheme({ ...theme, layout: e.target.value as LayoutKey })} className={selectClass}>
-                {(Object.keys(LAYOUT_LABELS) as LayoutKey[]).map((l) => <option key={l} value={l}>{LAYOUT_LABELS[l]}</option>)}
-              </select>
-            </label>
-          </div>
-        </section>
-
-        <section className="card p-4">
           <h2 className="mb-1 font-semibold">Widgets</h2>
           <p className="mb-3 text-xs text-text-muted">Ceux de ton profil sont à toi. « Partager » en met une copie dans la barre latérale, où vous pouvez tous les deux la modifier.</p>
           <WidgetListEditor
@@ -330,59 +240,23 @@ export function ProfileEditPage() {
 
       <div className="lg:sticky lg:top-8 lg:self-start">
         <p className="mb-2 text-sm text-text-muted">Aperçu</p>
-        <div style={buildThemeStyle(theme)} className="card bg-bg p-4 font-sans text-text">
+        <div style={{ ...fontVars(theme), ...pageVars(parts.page ?? {}), background: fillOf(parts.page ?? {}) ?? undefined }} className="card bg-bg p-4 font-sans text-text">
           <div className="flex flex-col gap-3">
             {widgets.length === 0 ? (
               <p className="text-text-muted">L'aperçu apparaîtra ici.</p>
             ) : (
-              widgets.map((w, i) => <WidgetRenderer key={i} widget={w} ownerId={user?.id} />)
+              widgets.map((w, i) => {
+                const look = skin(widgetStyle(parts, w));
+                return (
+                  <div key={i} className={look.className} style={look.style}>
+                    <WidgetRenderer widget={w} ownerId={user?.id} />
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-/** Pins: complete "site.fr" into https://site.fr, drop empty rows and empty names before saving. */
-/**
- * A theme saved before fonts had a scope shows its font only with custom
- * colors: in the editor it becomes an explicit choice with the same result
- * (its font on the profile with custom colors, the app's font otherwise).
- * With no font of its own yet, a new choice applies to the whole app.
- */
-function withFontChoice(theme: Theme): Theme {
-  if (theme.fontScope) return { ...theme, headingFont: theme.headingFont ?? "app" };
-  if (theme.mode === "custom") return { ...theme, headingFont: "app", fontScope: "profile" };
-  return { ...theme, font: "app", headingFont: "app", fontScope: "app" };
-}
-
-function FontSelect({
-  label,
-  value,
-  appLabel,
-  onChange,
-}: {
-  label: string;
-  value: FontKey;
-  /** Name of the "no font of its own" choice (titles follow the text font). */
-  appLabel?: string;
-  onChange: (font: FontKey) => void;
-}) {
-  return (
-    <label className="text-sm">
-      <span className="mb-1 block text-text-muted">{label}</span>
-      <select value={value} onChange={(e) => onChange(e.target.value as FontKey)} className={selectClass}>
-        {FONT_GROUPS.map((group) => (
-          <optgroup key={group.label} label={group.label}>
-            {group.keys.map((key) => (
-              <option key={key} value={key}>
-                {key === "app" && appLabel ? appLabel : FONTS[key].label}
-              </option>
-            ))}
-          </optgroup>
-        ))}
-      </select>
-    </label>
   );
 }

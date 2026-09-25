@@ -15,7 +15,8 @@ import java.util.List;
  * - pins: {@code pins}, quick links to web pages (+ optional {@code label} title)
  * Any widget: {@code home} = also shown at the top of the home feed;
  * {@code w} / {@code h} = its size on the profile, in grid cells (1..4; null:
- * the default width, and a height that follows the content).
+ * the default width, and a height that follows the content); {@code style} =
+ * its own look on the profile, over the frames' default (see PartStyleDto).
  *
  * All text is stored as-is and escaped/whitelisted on display, never injected
  * as raw HTML — the widget set stays a closed, safe allowlist (no XSS vector).
@@ -23,7 +24,13 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record WidgetDto(String type, String text, String emoji, String label,
                         Long assetId, String date, String variant, List<PinDto> pins, Boolean home,
-                        Integer w, Integer h) {
+                        Integer w, Integer h, PartStyleDto style) {
+
+    /** Any widget, with a size but no look of its own. */
+    public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant,
+                     List<PinDto> pins, Boolean home, Integer w, Integer h) {
+        this(type, text, emoji, label, assetId, date, variant, pins, home, w, h, null);
+    }
 
     /** Any widget, without a size of its own. */
     public WidgetDto(String type, String text, String emoji, String label, Long assetId, String date, String variant,

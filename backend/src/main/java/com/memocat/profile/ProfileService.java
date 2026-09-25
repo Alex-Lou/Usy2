@@ -108,6 +108,15 @@ public class ProfileService {
             }
         }
 
+        Long pagePhoto = pagePhotoOf(request.theme());
+        if (pagePhoto != null) {
+            Asset asset = assetRepository.findById(pagePhoto)
+                    .orElseThrow(() -> new ContentValidationException("Photo de fond introuvable"));
+            if (!asset.getUploader().getId().equals(user.getId()) || !asset.getContentType().startsWith("image/")) {
+                throw new ContentValidationException("La photo de fond doit être une de tes photos");
+            }
+        }
+
         user.setAvatarAssetId(request.avatarAssetId());
         user.setAvatarFraming(request.avatarAssetId() == null ? null : Framing.validate(request.avatarFraming()));
         userRepository.save(user);
@@ -119,6 +128,13 @@ public class ProfileService {
         profile.setWidgetsJson(writeJson(request.widgets()));
         profile.setBio(bio == null || bio.isBlank() ? null : bio);
         return toDto(profileRepository.save(profile));
+    }
+
+    private static Long pagePhotoOf(ThemeDto theme) {
+        if (theme.parts() == null || theme.parts().get("page") == null) {
+            return null;
+        }
+        return theme.parts().get("page").photoAssetId();
     }
 
     @Transactional
