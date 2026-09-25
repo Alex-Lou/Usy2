@@ -1,24 +1,24 @@
 /* Animated photo effects (see components/photo/EffectLayer.tsx). */
-@layer components {
-  .fx-bounce { animation: fx-bounce 1.6s cubic-bezier(0.3, 0, 0.4, 1) infinite; transform-origin: 50% 100%; }
-  .fx-zoom { animation: fx-zoom 8s ease-in-out infinite alternate; }
-  .fx-shake { animation: fx-shake 0.5s ease-in-out infinite; }
-  .fx-rainbow { animation: fx-rainbow 4s linear infinite; }
-  .fx-col { position: absolute; top: 0; height: 100%; line-height: 1; animation-name: fx-fall; animation-timing-function: linear; animation-iteration-count: infinite; opacity: 0; }
-  .fx-col--rise { animation-name: fx-rise; }
-  .fx-col--rain { opacity: 0.8; }
-  .fx-sway { animation: fx-sway 2.4s ease-in-out infinite alternate; }
-  .fx-heartbeat { animation: fx-heartbeat 1.4s ease-in-out infinite; }
-  .fx-confetti { width: 7px; height: 11px; border-radius: 2px; animation: fx-flip 1.1s linear infinite; }
-  /* Shooting star: a bright head with a fading tail, crossing diagonally. */
-  .fx-shoot { position: absolute; width: 22%; height: 2px; border-radius: 2px; opacity: 0;
-    background: linear-gradient(90deg, rgba(255,255,255,0), #fff); box-shadow: 0 0 6px #fff;
-    transform: rotate(-28deg); animation: fx-shoot 4.2s ease-in infinite; }
-  /* Firework burst: eight dots (box-shadow) flying out from the centre. */
-  .fx-burst { position: absolute; width: 5px; height: 5px; border-radius: 50%; opacity: 0; animation: fx-burst 3.2s ease-out infinite;
-    box-shadow: 0 -2.4em currentColor, 1.7em -1.7em currentColor, 2.4em 0 currentColor, 1.7em 1.7em currentColor,
+/* Deliberately outside @layer: the classes are built dynamically (fx-${effect},
+   fx-col--${motion}), so Tailwind would purge them from a layer. */
+.fx-bounce { animation: fx-bounce 1.6s cubic-bezier(0.3, 0, 0.4, 1) infinite; transform-origin: 50% 100%; }
+.fx-zoom { animation: fx-zoom 8s ease-in-out infinite alternate; }
+.fx-shake { animation: fx-shake 0.5s ease-in-out infinite; }
+.fx-rainbow { animation: fx-rainbow 4s linear infinite; }
+.fx-col { position: absolute; top: 0; height: 100%; line-height: 1; animation-name: fx-fall; animation-timing-function: linear; animation-iteration-count: infinite; opacity: 0; }
+.fx-col--rise { animation-name: fx-rise; }
+.fx-col--rain { opacity: 0.8; }
+.fx-sway { animation: fx-sway 2.4s ease-in-out infinite alternate; }
+.fx-heartbeat { animation: fx-heartbeat 1.4s ease-in-out infinite; }
+.fx-confetti { width: 7px; height: 11px; border-radius: 2px; animation: fx-flip 1.1s linear infinite; }
+/* Shooting star: a bright head with a fading tail, crossing diagonally. */
+.fx-shoot { position: absolute; width: 22%; height: 2px; border-radius: 2px; opacity: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0), #fff); box-shadow: 0 0 6px #fff;
+  transform: rotate(-28deg); animation: fx-shoot 4.2s ease-in infinite; }
+/* Firework burst: eight dots (box-shadow) flying out from the centre. */
+.fx-burst { position: absolute; width: 5px; height: 5px; border-radius: 50%; opacity: 0; animation: fx-burst 3.2s ease-out infinite;
+  box-shadow: 0 -2.4em currentColor, 1.7em -1.7em currentColor, 2.4em 0 currentColor, 1.7em 1.7em currentColor,
       0 2.4em currentColor, -1.7em 1.7em currentColor, -2.4em 0 currentColor, -1.7em -1.7em currentColor; }
-}
 @keyframes fx-bounce { 0%, 100% { transform: translateY(0) scale(1, 1); } 40% { transform: translateY(-4%) scale(0.98, 1.02); } 60% { transform: translateY(0) scale(1.02, 0.98); } }
 @keyframes fx-zoom { from { transform: scale(1); } to { transform: scale(1.12); } }
 @keyframes fx-shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-1.4deg); } 75% { transform: rotate(1.4deg); } }

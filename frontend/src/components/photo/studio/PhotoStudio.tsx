@@ -46,6 +46,15 @@ const SVG_STICKERS = STICKERS.filter((s) => s.kind === "sticker");
 const QUICK_EMOJIS = ["😍", "🥰", "😂", "😎", "🥳", "😘", "🤍", "❤️", "💕", "✨", "🔥", "🌸", "🌈", "⭐", "🎉", "👑", "🐱", "☕", "🌙", "☀️"];
 
 type Gesture = { target: "image" | number; points: Map<number, { x: number; y: number }>; start?: { dist: number; angle: number } };
+type HandleDrag = { id: number; cx: number; cy: number; dist: number; angle: number; scale: number; rotation: number };
+const PANEL_H = 144; // tools panel height at rest (px)
+const PANEL_MIN = 112;
+
+/** Settle a turn on the nearest quarter within 5°, so resizing doesn't tilt by accident. */
+function snapAngle(deg: number): number {
+  const quarter = Math.round(deg / 90) * 90;
+  return Math.abs(deg - quarter) < 5 ? quarter : deg;
+}
 
 /**
  * Full-screen photo studio: framing, looks (filters, warmth, fade, vignette,
@@ -96,6 +105,10 @@ export function PhotoStudio({
   const frameRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gesture = useRef<Gesture | null>(null);
+  const handle = useRef<HandleDrag | null>(null);
+  const [panelH, setPanelH] = useState(PANEL_H);
+  const panelDrag = useRef<{ y: number; h: number } | null>(null);
+  const panelMoved = useRef(false);
   const nextId = useRef(1);
 
   useEffect(() => {
@@ -305,6 +318,56 @@ export function PhotoStudio({
     if (g.points.size === 0) gesture.current = null;
   }
 
+  // — Corner handle of the selected layer: drag to resize and turn it (mouse or one finger). —
+  function handleDown(e: RPointerEvent<HTMLSpanElement>, l: Layer) {
+    e.stopPropagation();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const r = e.currentTarget.parentElement!.getBoundingClientRect(); // the layer: its centre stays put
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    handle.current = {
+      id: l.id,
+      cx,
+      cy,
+      dist: Math.max(1, Math.hypot(e.clientX - cx, e.clientY - cy)),
+      angle: Math.atan2(e.clientY - cy, e.clientX - cx),
+      scale: l.scale,
+      rotation: l.rotation,
+    };
+  }
+
+  function handleMove(e: RPointerEvent<HTMLSpanElement>) {
+    e.stopPropagation();
+    const h = handle.current;
+    if (!h) return;
+    const dist = Math.hypot(e.clientX - h.cx, e.clientY - h.cy);
+    const turn = ((Math.atan2(e.clientY - h.cy, e.clientX - h.cx) - h.angle) * 180) / Math.PI;
+    patchLayer(h.id, { scale: Math.min(1.6, Math.max(0.06, (h.scale * dist) / h.dist)), rotation: snapAngle(h.rotation + turn) });
+  }
+
+  function handleUp(e: RPointerEvent<HTMLSpanElement>) {
+    e.stopPropagation();
+    handle.current = null;
+  }
+
+  // — Tools panel: drag its grip to make it taller or shorter, tap to switch. —
+  const panelMax = () => Math.round(window.innerHeight * 0.6);
+  const clampPanel = (h: number) => Math.min(panelMax(), Math.max(PANEL_MIN, h));
+
+  function panelDown(e: RPointerEvent<HTMLButtonElement>) {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    panelDrag.current = { y: e.clientY, h: panelH };
+    panelMoved.current = false;
+  }
+
+  function panelMove(e: RPointerEvent<HTMLButtonElement>) {
+    const d = panelDrag.current;
+    if (!d) return;
+    const dy = d.y - e.clientY;
+    if (Math.abs(dy) > 4) panelMoved.current = true;
+    if (panelMoved.current) setPanelH(clampPanel(d.h + dy));
+  }
+
   async function save() {
     if (!src) return;
     setSaving(true);
@@ -389,6 +452,20 @@ export function PhotoStudio({
                     ) : (
                       <span style={textCss(l.color ?? "#ffffff", l.font, l.look ?? "outline", size * 0.3)}>{l.value}</span>
                     )}
+                    {selected === l.id && (
+                      // No <svg> in here: the export looks up the sticker as `[data-layer] svg`.
+                      <span
+                        aria-hidden="true"
+                        title="Tirer pour agrandir ou tourner"
+                        onPointerDown={(e) => handleDown(e, l)}
+                        onPointerMove={handleMove}
+                        onPointerUp={handleUp}
+                        onPointerCancel={handleUp}
+                        className="absolute -bottom-4 -right-4 grid h-8 w-8 cursor-nwse-resize touch-none place-items-center"
+                      >
+                        <span className="h-5 w-5 rounded-full border-2 border-white bg-primary shadow-card" />
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -444,6 +521,27 @@ export function PhotoStudio({
       )}
 
       <div className="border-t border-border bg-surface pb-[env(safe-area-inset-bottom)]">
+        <button
+          type="button"
+          aria-label={panelH > PANEL_H ? "Réduire les outils" : "Agrandir les outils"}
+          title="Tirer vers le haut ou le bas"
+          onPointerDown={panelDown}
+          onPointerMove={panelMove}
+          onPointerUp={() => (panelDrag.current = null)}
+          onPointerCancel={() => (panelDrag.current = null)}
+          onClick={() => {
+            if (panelMoved.current) return; // that was a drag, not a tap
+            setPanelH((h) => (h > PANEL_H ? PANEL_H : panelMax()));
+          }}
+          onKeyDown={(e) => {
+            if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+            e.preventDefault();
+            setPanelH((h) => clampPanel(h + (e.key === "ArrowUp" ? 48 : -48)));
+          }}
+          className="flex h-5 w-full cursor-ns-resize touch-none items-center justify-center"
+        >
+          <span className="h-1.5 w-10 rounded-full bg-border" />
+        </button>
         <div role="tablist" className="no-scrollbar flex overflow-x-auto">
           {TABS.map((t) => (
             <button
@@ -458,7 +556,7 @@ export function PhotoStudio({
             </button>
           ))}
         </div>
-        <div className="h-36 overflow-y-auto p-3">
+        <div className="overflow-y-auto p-3" style={{ height: panelH, maxHeight: "60dvh" }}>
           {tab === "frame" && (
             <div className="flex flex-col gap-3">
               <div className="flex flex-wrap gap-2">
