@@ -140,6 +140,15 @@ class PetServiceTest {
     }
 
     @Test
+    void differentCaresInARowBothCount() {
+        service.act("lou", PetService.FEED);
+        clock.now = t0.plusSeconds(1);
+        PetDto brushed = service.act("lou", PetService.BRUSH);
+        assertThat(brushed.cleanliness()).isEqualTo(75); // 50 + 25: counted at once
+        assertThat(brushed.happiness()).isEqualTo(59);   // 50 + 4 (feed) + 5 (brush)
+    }
+
+    @Test
     void valuesStayBetweenZeroAndHundred() {
         pet.setStats(95, 98, 90, 90, t0);
         PetDto dto = service.act("lou", PetService.FEED);

@@ -34,11 +34,22 @@ const isNight = () => {
  * tap makes it hop with a note or a heart. The loop sleeps off screen and in
  * the background.
  */
-export function LivingCompanion({ kind, scene, friendRef }: { kind: Kind; scene: keyof typeof SCENES; friendRef?: RefObject<SVGGElement> }) {
+export function LivingCompanion({
+  kind,
+  scene,
+  friendRef,
+  start = 0.3,
+}: {
+  kind: Kind;
+  scene: keyof typeof SCENES;
+  friendRef?: RefObject<SVGGElement>;
+  /** Where it first stands, 0 (left) … 1 (right), so several don't pile up. */
+  start?: number;
+}) {
   const box = SCENES[scene];
   const svgRef = useRef<SVGSVGElement>(null);
   const brainRef = useRef<CompanionBrain | null>(null);
-  if (!brainRef.current || brainRef.current.kind !== kind) brainRef.current = new CompanionBrain(kind, box.minX + (box.maxX - box.minX) * 0.3);
+  if (!brainRef.current || brainRef.current.kind !== kind) brainRef.current = new CompanionBrain(kind, box.minX + (box.maxX - box.minX) * start);
   const [, redraw] = useState(0);
 
   useEffect(() => {

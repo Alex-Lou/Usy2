@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 /**
  * The shared cat. Needs go down slowly with time (computed on read, no
  * scheduler) and come back up with care; care also fills a shared purse
- * (capped per day) that buys accessories. Rapid repeated taps still animate
- * on screen but only count once every few seconds.
+ * (capped per day) that buys accessories. Rapid repeated taps of the same
+ * care still animate on screen but only count once every few seconds.
  */
 @Service
 public class PetService {
@@ -113,7 +113,9 @@ public class PetService {
         Instant now = clock.instant();
         int[] needs = needsNow(pet, now);
 
-        boolean counts = pet.getLastActionAt() == null || !now.isBefore(pet.getLastActionAt().plus(COOLDOWN));
+        // Only the same care repeated within a few seconds is ignored: feeding then brushing both count.
+        boolean counts = pet.getLastActionAt() == null || !action.equals(pet.getLastAction())
+                || !now.isBefore(pet.getLastActionAt().plus(COOLDOWN));
         if (counts) {
             needs[0] += effect.satiety();
             needs[1] += effect.happiness();
