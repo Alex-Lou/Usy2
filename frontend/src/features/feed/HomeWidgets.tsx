@@ -35,7 +35,7 @@ export function HomeWidgets() {
     <section aria-label="Nos widgets" className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between gap-2">
         <p className="text-xs font-semibold text-text-muted">Nos petits widgets</p>
-        <Link to="/widgets" className="grid h-6 w-6 place-items-center rounded-full text-text-muted press hover:text-primary" aria-label="Gérer ma barre latérale" title="Gérer ma barre latérale">
+        <Link to="/profile/barre" className="grid h-6 w-6 place-items-center rounded-full text-text-muted press hover:text-primary" aria-label="Gérer ma barre latérale" title="Gérer ma barre latérale">
           <Icon name={shown.length ? "sliders" : "plus"} size={13} />
         </Link>
       </div>

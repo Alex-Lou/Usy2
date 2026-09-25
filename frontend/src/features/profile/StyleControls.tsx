@@ -1,5 +1,4 @@
 import { useState, type ReactNode } from "react";
-import { createPortal } from "react-dom";
 import { AssetImage } from "../../components/AssetImage";
 import { Icon } from "../../components/ui/Icon";
 import { uploadImage } from "../../lib/api/assets";
@@ -15,22 +14,17 @@ const TAB_LABELS: Record<Tab, string> = { colors: "Couleurs", aspect: "Aspect", 
 /** Quick colours; any other one through the colour picker. */
 const SWATCHES = ["#ffffff", "#fff7f0", "#ffe8d6", "#ffd1dc", "#e0707f", "#b5476b", "#ffd45e", "#9fe0a4", "#7cc6e8", "#b18cff", "#2a1650", "#16301f", "#0e3b53", "#0d0b1a", "#3c332a"];
 
-export const SHEET_MIN = 160;
-const sheetMax = () => Math.round(window.innerHeight * 0.85);
-
 /**
- * The bottom sheet that styles one part of the profile, live.
+ * The settings of one part of the profile (Couleurs / Aspect / Texte, or
+ * Photo for the page), shown in "Mon profil" beside the live preview.
  */
-export function StylePanel({
+export function StyleControls({
   title,
   page = false,
   value,
   inherited,
-  height,
-  onHeight,
   onChange,
   onReset,
-  onClose,
   pageText,
   footer,
 }: {
@@ -40,11 +34,8 @@ export function StylePanel({
   value: PartStyle;
   /** What it gets when a field is left unset (a frame: the frames' default). */
   inherited?: PartStyle;
-  height: number;
-  onHeight: (h: number) => void;
   onChange: (s: PartStyle) => void;
   onReset: () => void;
-  onClose: () => void;
   /** The page's Texte tab (its fonts live on the theme). */
   pageText?: ReactNode;
   footer?: ReactNode;
@@ -66,15 +57,11 @@ export function StylePanel({
   }
 
   return (
-    <Sheet
-      title={title}
-      height={height}
-      onHeight={onHeight}
-      onClose={onClose}
-      actions={
+    <div className="flex flex-col rounded-token border border-border bg-surface" aria-label={`Style : ${title}`} role="group">
+      <div className="flex items-center gap-2 px-4 pt-3">
+        <h3 className="mr-auto truncate font-semibold">{title}</h3>
         <button type="button" onClick={onReset} className="chip press text-xs hover:border-primary/50">↺ Par défaut</button>
-      }
-    >
+      </div>
       <div role="tablist" className="flex shrink-0 border-b border-border px-2">
         {tabs.map((t) => (
           <button
@@ -90,7 +77,7 @@ export function StylePanel({
         ))}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4">
+      <div className="p-4">
         <div className="flex flex-col gap-4">
           {tab === "colors" && (
             <>
@@ -205,68 +192,7 @@ export function StylePanel({
           {footer}
         </div>
       </div>
-    </Sheet>
-  );
-}
-
-/**
- * A bottom sheet over the page (the page stays visible and scrollable above
- * it). Drag its grip, or use ↑/↓ on it, to make it taller or shorter.
- */
-export function Sheet({
-  title,
-  height,
-  onHeight,
-  onClose,
-  actions,
-  children,
-}: {
-  title: string;
-  height: number;
-  onHeight: (h: number) => void;
-  onClose: () => void;
-  actions?: ReactNode;
-  children: ReactNode;
-}) {
-  const [drag, setDrag] = useState<{ y: number; h: number } | null>(null);
-  const clampH = (h: number) => Math.min(sheetMax(), Math.max(SHEET_MIN, h));
-
-  return createPortal(
-    <div
-      role="dialog"
-      aria-label={title}
-      className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-w-2xl flex-col rounded-t-3xl border border-b-0 border-border bg-surface pb-[env(safe-area-inset-bottom)] text-text shadow-card lg:left-64"
-      style={{ height, maxHeight: "85dvh" }}
-    >
-      <button
-        type="button"
-        aria-label="Tirer pour agrandir ou réduire"
-        onPointerDown={(e) => {
-          e.currentTarget.setPointerCapture(e.pointerId);
-          setDrag({ y: e.clientY, h: height });
-        }}
-        onPointerMove={(e) => drag && onHeight(clampH(drag.h + drag.y - e.clientY))}
-        onPointerUp={() => setDrag(null)}
-        onPointerCancel={() => setDrag(null)}
-        onKeyDown={(e) => {
-          if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
-          e.preventDefault();
-          onHeight(clampH(height + (e.key === "ArrowUp" ? 48 : -48)));
-        }}
-        className="flex h-6 w-full shrink-0 cursor-ns-resize touch-none items-center justify-center"
-      >
-        <span className="h-1.5 w-10 rounded-full bg-border" />
-      </button>
-      <div className="flex items-center gap-2 px-4 pb-2">
-        <h2 className="mr-auto truncate font-semibold">{title}</h2>
-        {actions}
-        <button type="button" onClick={onClose} aria-label="Fermer" className="grid h-9 w-9 place-items-center rounded-full press hover:bg-surface-2">
-          <Icon name="x" size={18} />
-        </button>
-      </div>
-      {children}
-    </div>,
-    document.body,
+    </div>
   );
 }
 
