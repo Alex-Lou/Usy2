@@ -11,3 +11,6 @@
 .mc-skin.mc-skin--zoom > * { zoom: var(--skin-zoom); }
 .mc-skin.mc-skin--bold > * { font-weight: 700; }
 .mc-skin.mc-skin--align > * { text-align: var(--skin-align); }
+/* Row widgets (clock, mood) move along the row; column ones across it. */
+.mc-skin.mc-skin--align > .flex:not(.flex-col) { justify-content: var(--skin-flex); }
+.mc-skin.mc-skin--align > .flex-col { align-items: var(--skin-flex); }

@@ -35,3 +35,17 @@
   [class^="fx-"],
   [class*=" fx-"] { animation: none !important; }
 }
+
+/* Double tap on a feed photo: a heart blooms, then fades (features/feed/PostCard.tsx). */
+.mc-heart-burst { animation: mc-heart-burst 0.9s ease-out forwards; }
+@keyframes mc-heart-burst {
+  0% { opacity: 0; transform: scale(0.3); }
+  25% { opacity: 1; transform: scale(1.15); }
+  45% { transform: scale(0.95); }
+  70% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-heart-burst { animation: mc-heart-burst-still 0.9s linear forwards; }
+  @keyframes mc-heart-burst-still { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+}
