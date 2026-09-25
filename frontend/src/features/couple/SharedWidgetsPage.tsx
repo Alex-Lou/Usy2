@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { ApiError } from "../../lib/api/client";
 import { useAuth } from "../auth/useAuth";
+import { SpaceSwitcher } from "../profile/SpaceSwitcher";
 import { getMyProfile, updateMyProfile } from "../profile/api";
 import type { Widget } from "../profile/types";
 import { isWideMini, MiniWidget } from "../profile/widgets/MiniWidget";
@@ -158,7 +159,9 @@ export function SharedWidgetsPage() {
   const off = !!prefs?.off;
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1fr_16rem]">
+    <div className="flex flex-col gap-4">
+    <SpaceSwitcher />
+    <div className="grid gap-6 lg:grid-cols-[1fr_16rem]">
       <div className="flex flex-col gap-4">
         <div>
           <h1 className="font-display text-2xl font-bold">Ma barre latérale</h1>
@@ -288,6 +291,7 @@ export function SharedWidgetsPage() {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

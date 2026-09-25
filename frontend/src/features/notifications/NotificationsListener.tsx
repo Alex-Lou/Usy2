@@ -72,7 +72,7 @@ export function NotificationsListener() {
         const last = lastListNotifRef.current.get(a.refId) ?? 0;
         lastListNotifRef.current.set(a.refId, Date.now());
         if (Date.now() - last >= LIST_QUIET_MS) {
-          notify(`${a.actorName} a mis à jour la liste « ${a.detail ?? ""} »`, `/profile/${myId}?tab=nous&list=${a.refId}`);
+          notify(`${a.actorName} a mis à jour la liste « ${a.detail ?? ""} »`, `/profile/nous?list=${a.refId}`);
         }
       }
     };

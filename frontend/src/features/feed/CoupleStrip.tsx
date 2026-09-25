@@ -101,7 +101,7 @@ export function CoupleStrip() {
             </span>
           )}
           {myId != null && !folded && (
-            <Link to={`/profile/${myId}?tab=nous`} className="text-sm text-primary underline-offset-2 hover:underline">
+            <Link to="/profile/nous" className="text-sm text-primary underline-offset-2 hover:underline">
               Listes, mots…
             </Link>
           )}

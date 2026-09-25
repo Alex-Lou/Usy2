@@ -41,7 +41,7 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v
  * The profile's widgets on a grid (4 columns, 2 on phones). Each widget can
  * span 1 to 4 cells each way; nothing overlaps and content is never cut (a row
  * grows if it must). While arranging, a handle in each corner resizes it.
- * Each frame wears its look (`styleOf`); while styling, a pencil picks it.
+ * Each frame wears its look (`styleOf`).
  */
 export function ProfileGrid({
   widgets,
@@ -50,8 +50,6 @@ export function ProfileGrid({
   arranging = false,
   onResize,
   styleOf,
-  onStyle,
-  styled,
 }: {
   widgets: Widget[];
   ownerId: number;
@@ -59,10 +57,6 @@ export function ProfileGrid({
   arranging?: boolean;
   onResize?: (index: number, size: { w: number; h: number | undefined }) => void;
   styleOf?: (index: number) => PartStyle;
-  /** Styling mode: each frame gets a pencil that picks it. */
-  onStyle?: (index: number) => void;
-  /** The frame being styled. */
-  styled?: number | null;
 }) {
   const cols = useColumns();
   const gridRef = useRef<HTMLDivElement>(null);
@@ -90,8 +84,6 @@ export function ProfileGrid({
           gapRem={gapRem}
           onResize={(size) => onResize?.(i, size)}
           look={styleOf?.(i)}
-          onStyle={onStyle && (() => onStyle(i))}
-          picked={styled === i}
         />
       ))}
     </div>
@@ -108,8 +100,6 @@ function Cell({
   gapRem,
   onResize,
   look,
-  onStyle,
-  picked,
 }: {
   widget: Widget;
   ownerId: number;
@@ -120,8 +110,6 @@ function Cell({
   gapRem: number;
   onResize: (size: { w: number; h: number | undefined }) => void;
   look?: PartStyle;
-  onStyle?: () => void;
-  picked?: boolean;
 }) {
   const dressed = look ? skin(look) : null;
   const cellRef = useRef<HTMLDivElement>(null);
@@ -165,25 +153,15 @@ function Cell({
   return (
     <div
       ref={cellRef}
-      className={`relative flex min-w-0 scroll-mt-24 flex-col ${arranging || picked ? "rounded-token outline-dashed outline-2 outline-offset-2 outline-primary/60" : ""}`}
+      className={`relative flex min-w-0 flex-col ${arranging ? "rounded-token outline-dashed outline-2 outline-offset-2 outline-primary/60" : ""}`}
       style={{ gridColumn: `span ${span}`, gridRow: widget.h ? `span ${widget.h}` : undefined }}
     >
       <div
-        className={`min-h-0 flex-1 [&>*]:h-full ${arranging || onStyle ? "pointer-events-none select-none" : ""} ${dressed?.className ?? ""}`}
+        className={`min-h-0 flex-1 [&>*]:h-full ${arranging ? "pointer-events-none select-none" : ""} ${dressed?.className ?? ""}`}
         style={dressed?.style}
       >
         <WidgetRenderer widget={widget} ownerId={ownerId} />
       </div>
-      {onStyle && (
-        <button
-          type="button"
-          onClick={onStyle}
-          aria-label="Styliser ce cadre"
-          className="absolute -right-2 -top-2 z-10 grid h-9 w-9 place-items-center rounded-full btn-brand shadow-card press"
-        >
-          ✏️
-        </button>
-      )}
       {arranging && (
         <>
           <div className="absolute inset-x-1 top-1 z-10 flex flex-wrap items-center gap-1 rounded-2xl bg-surface/95 p-1 shadow-card backdrop-blur">

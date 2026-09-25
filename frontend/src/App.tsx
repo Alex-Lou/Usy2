@@ -12,8 +12,10 @@ import { PostPage } from "./features/feed/PostPage";
 import { FishingPage } from "./features/pet/games/FishingPage";
 import { PetHousePage } from "./features/pet/house/PetHousePage";
 import { ProfilePage } from "./features/profile/ProfilePage";
-import { ProfileEditPage } from "./features/profile/ProfileEditPage";
+import { MyProfilePage } from "./features/profile/MyProfilePage";
 import { SharedWidgetsPage } from "./features/couple/SharedWidgetsPage";
+import { OurProfilePage } from "./features/couple/OurProfilePage";
+import { MyProfileRedirect } from "./features/profile/MyProfileRedirect";
 import { DatesPage } from "./features/couple/DatesPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 
@@ -38,8 +40,13 @@ export function App() {
         <Route path="/jeux/snake" element={<SnakePage />} />
         <Route path="/jeux/chat" element={<PetHousePage />} />
         <Route path="/jeux/chat/peche" element={<FishingPage />} />
-        <Route path="/profile/edit" element={<ProfileEditPage />} />
-        <Route path="/widgets" element={<SharedWidgetsPage />} />
+        {/* My four spaces (see SpaceSwitcher), all under /profile. */}
+        <Route path="/profile" element={<MyProfileRedirect />} />
+        <Route path="/profile/moi" element={<MyProfilePage />} />
+        <Route path="/profile/nous" element={<OurProfilePage />} />
+        <Route path="/profile/barre" element={<SharedWidgetsPage />} />
+        <Route path="/profile/edit" element={<Navigate to="/profile/moi" replace />} />
+        <Route path="/widgets" element={<Navigate to="/profile/barre" replace />} />
         <Route path="/dates" element={<DatesPage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
       </Route>
