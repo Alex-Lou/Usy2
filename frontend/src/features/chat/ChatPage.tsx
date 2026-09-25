@@ -19,6 +19,8 @@ import { ChatComposer } from "./ChatComposer";
 import { createChatClient, sendMessage } from "./chatClient";
 import { ImageViewer } from "./ImageViewer";
 import { MessageList } from "./MessageList";
+import { useFonts } from "../../lib/fonts";
+import { useSharedAppearance } from "../couple/appearance";
 import { readingStyle, useReading } from "./reading";
 import { ReadingMenu } from "./ReadingMenu";
 import type { Message, MessageReaction } from "./types";
@@ -50,6 +52,8 @@ export function ChatPage() {
   const { pet, setPet, pose, caption, act, onActivity, onMessage, noteHistory } = usePet(user?.id);
   const [petOpen, setPetOpen] = useState(() => readPetOpen());
   const { reading, save: saveReading, error: readingError } = useReading();
+  const common = useSharedAppearance();
+  useFonts(reading.font ? null : common.chatFont);
 
   useEffect(() => {
     getReactionEmojis().then(setEmojis).catch(() => {});
@@ -209,7 +213,7 @@ export function ChatPage() {
           </p>
         </div>
         <div className="ml-auto">
-          <ReadingMenu reading={reading} onChange={saveReading} error={readingError} />
+          <ReadingMenu reading={reading} onChange={saveReading} error={readingError} commonFont={common.chatFont} />
         </div>
         {pet && (
           <button
@@ -235,7 +239,7 @@ export function ChatPage() {
           stickToBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
         }}
       >
-        <div ref={contentRef} className="flex min-h-full flex-col" style={readingStyle(reading)}>
+        <div ref={contentRef} className="flex min-h-full flex-col" style={readingStyle(reading, common)}>
           {hasOlder && (
             <button onClick={loadOlder} className="mx-auto my-2 block text-xs text-text-muted hover:underline">
               Charger les messages plus anciens

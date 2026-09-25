@@ -54,6 +54,10 @@ public class User {
     @Column(name = "reading_size")
     private String readingSize;
 
+    /** Light/dark look this person chose ("neo" or "scrapbook"; null: not chosen yet). */
+    @Column(name = "color_mode")
+    private String colorMode;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -125,6 +129,14 @@ public class User {
     public void setReading(String font, String size) {
         this.readingFont = font;
         this.readingSize = size;
+    }
+
+    public String getColorMode() {
+        return colorMode;
+    }
+
+    public void setColorMode(String colorMode) {
+        this.colorMode = colorMode;
     }
 
     public Instant getCreatedAt() {

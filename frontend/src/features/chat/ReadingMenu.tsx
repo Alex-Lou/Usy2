@@ -1,9 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { FONT_GROUPS, FONTS, loadFont } from "../../lib/fonts";
+import type { FontKey } from "../profile/types";
 import { READING_SIZES, type Reading } from "./reading";
 
 /** "Aa": pick the font and size I read the messages in. */
-export function ReadingMenu({ reading, onChange, error }: { reading: Reading; onChange: (r: Reading) => void; error: string | null }) {
+export function ReadingMenu({
+  reading,
+  onChange,
+  error,
+  commonFont = null,
+}: {
+  reading: Reading;
+  onChange: (r: Reading) => void;
+  error: string | null;
+  /** The messages' font chosen in common, used when I have none of my own. */
+  commonFont?: FontKey | null;
+}) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +79,8 @@ export function ReadingMenu({ reading, onChange, error }: { reading: Reading; on
                   className={"rounded-token px-2 py-1.5 text-left press " + (current === key ? "bg-primary/15 text-text ring-1 ring-primary" : "hover:bg-surface-2")}
                   style={{ fontFamily: FONTS[key].stack ?? undefined }}
                 >
-                  {FONTS[key].label} <span className="text-text-muted">· Coucou mon cœur</span>
+                  {key === "app" && commonFont ? `Par défaut (commun : ${FONTS[commonFont].label})` : FONTS[key].label}{" "}
+                  <span className="text-text-muted">· Coucou mon cœur</span>
                 </button>
               ))}
             </div>

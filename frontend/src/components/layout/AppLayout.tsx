@@ -4,22 +4,15 @@ import { AppFonts } from "../../features/profile/AppFonts";
 import { BottomTabBar } from "./BottomTabBar";
 import { MobileMenu } from "./MobileMenu";
 import { NotificationBell } from "./NotificationBell";
+import { ColorModeSync } from "./ColorModeSync";
+import { SharedLook } from "./SharedLook";
 import { Sidebar } from "./Sidebar";
 
 export function AppLayout() {
   return (
     <div className="relative min-h-dvh">
-      {/* Decorative aurora (à fond) — purely visual, behind everything. */}
-      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div
-          className="absolute -left-24 -top-24 h-80 w-80 rounded-full opacity-40 blur-3xl"
-          style={{ background: "var(--grad)", animation: "float-slow 12s ease-in-out infinite" }}
-        />
-        <div
-          className="absolute -right-20 top-1/3 h-72 w-72 rounded-full opacity-25 blur-3xl"
-          style={{ background: "var(--grad)", animation: "float-slow 16s ease-in-out infinite reverse" }}
-        />
-      </div>
+      <SharedLook />
+      <ColorModeSync />
 
       <Sidebar />
       {/* Mobile top bar backdrop: content scrolls under it, never under bare buttons. */}

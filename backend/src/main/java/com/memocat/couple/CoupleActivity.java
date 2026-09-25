@@ -21,6 +21,8 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     public static final String WIDGETS = "widgets";
     /** A date on the shared calendar was added, changed or removed: sync only. */
     public static final String EVENTS = "events";
+    /** The shared look of the app changed: sync only. */
+    public static final String APPEARANCE = "appearance";
 
     public static CoupleActivity of(String kind, User actor, String detail, Long refId) {
         return new CoupleActivity(kind, actor.getId(), actor.getDisplayName(), detail, refId);

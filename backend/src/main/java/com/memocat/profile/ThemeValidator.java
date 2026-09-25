@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class ThemeValidator {
 
     static final Set<String> COLOR_KEYS = Set.of("bg", "surface", "primary", "text");
-    static final Set<String> FONTS = Set.of(
+    public static final Set<String> FONTS = Set.of(
             "app", "trebuchet", "georgia", "courier", "comic", "system",
             // Rounded
             "nunito", "quicksand", "comfortaa", "baloo", "fredoka",

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useFonts } from "../../lib/fonts";
+import { fontStack, useFonts } from "../../lib/fonts";
+import { useSharedAppearance } from "../couple/appearance";
 import { getMyProfile } from "./api";
 import { fontVars } from "./theme";
-import type { Theme } from "./types";
+import type { FontKey, Theme } from "./types";
 
 const EVENT = "memocat:my-theme-saved";
 
@@ -12,9 +13,11 @@ export function emitMyThemeSaved(theme: Theme): void {
 }
 
 /**
- * Invisible: when my profile's fonts are set to "Toute l'app", applies them to
- * the whole interface (text and titles) for me only, on every device, since
- * they are stored with my profile. Mounted behind auth.
+ * Invisible: applies the app's fonts. My own choice wins: when my profile's
+ * fonts are set to "Toute l'app", they apply to the whole interface (text and
+ * titles) for me only, on every device, since they are stored with my
+ * profile. Otherwise the fonts the two of us chose in common apply, if any.
+ * Mounted behind auth.
  */
 export function AppFonts() {
   const [theme, setTheme] = useState<Theme | null>(null);
@@ -26,10 +29,11 @@ export function AppFonts() {
     return () => window.removeEventListener(EVENT, onSaved);
   }, []);
 
+  const common = useSharedAppearance();
   const appWide = theme?.fontScope === "app";
-  useFonts(appWide ? theme?.font : null, appWide ? theme?.headingFont : null);
+  useFonts(appWide ? theme?.font : common.font, appWide ? theme?.headingFont : common.headingFont);
 
-  const vars = appWide && theme ? fontVars(theme) : {};
+  const vars = appWide && theme ? fontVars(theme) : commonFontVars(common.font, common.headingFont);
   const signature = JSON.stringify(vars);
   useEffect(() => {
     const root = document.documentElement.style;
@@ -39,4 +43,17 @@ export function AppFonts() {
   }, [signature]);
 
   return null;
+}
+
+/** Same variables as fontVars, from the fonts chosen in common. */
+function commonFontVars(font: FontKey | null, headingFont: FontKey | null): Record<string, string> {
+  const vars: Record<string, string> = {};
+  const body = fontStack(font);
+  const heading = fontStack(headingFont) ?? body;
+  if (body) vars["--font-body"] = body;
+  if (heading) {
+    vars["--font-display"] = heading;
+    vars["--font-script"] = heading;
+  }
+  return vars;
 }
