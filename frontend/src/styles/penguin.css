@@ -52,7 +52,28 @@
   92% { transform: scaleY(0.9); }
   96% { transform: scaleY(1.25); }
 }
+/* The whole-body penguin (components/companions/bodies.tsx): it breathes, and
+   the eyelids drawn over its eyes close for a blink now and then. */
+.mc-pingu-breathe {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: mc-pingu-breathe 3.2s ease-in-out infinite;
+}
+.mc-pingu-lids {
+  opacity: 0;
+  animation: mc-pingu-blink 4.6s infinite;
+}
+@keyframes mc-pingu-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(0.99, 1.025); }
+}
+@keyframes mc-pingu-blink {
+  0%, 93%, 100% { opacity: 0; }
+  94%, 97% { opacity: 1; }
+}
 @media (prefers-reduced-motion: reduce) {
+  .mc-pingu-breathe,
+  .mc-pingu-lids,
   .mc-penguin,
   .mc-penguin-flap,
   .mc-penguin-eyes,
