@@ -22,37 +22,45 @@ import java.util.Map;
  *       profile's owner only: "off", "light", "medium" or "strong" (null: "medium").
  * sidebar: the owner's own side menu (hidden widgets, order, section off);
  *       see SidebarPrefsDto. Like glass, only changed through its own endpoint.
+ * news: the owner's own "Actus" tab (sources and followed accounts); see
+ *       NewsPrefsDto. Only changed through its own endpoint too.
  */
 public record ThemeDto(Map<String, String> colors, String font, String layout, String mode,
                        String headingFont, String fontScope, String widgetGap,
-                       Map<String, PartStyleDto> parts, String glass, SidebarPrefsDto sidebar) {
+                       Map<String, PartStyleDto> parts, String glass, SidebarPrefsDto sidebar,
+                       NewsPrefsDto news) {
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode) {
-        this(colors, font, layout, mode, null, null, null, null, null, null);
+        this(colors, font, layout, mode, null, null, null, null, null, null, null);
     }
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
                     String headingFont, String fontScope) {
-        this(colors, font, layout, mode, headingFont, fontScope, null, null, null, null);
+        this(colors, font, layout, mode, headingFont, fontScope, null, null, null, null, null);
     }
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
                     String headingFont, String fontScope, String widgetGap) {
-        this(colors, font, layout, mode, headingFont, fontScope, widgetGap, null, null, null);
+        this(colors, font, layout, mode, headingFont, fontScope, widgetGap, null, null, null, null);
     }
 
     public ThemeDto(Map<String, String> colors, String font, String layout, String mode,
                     String headingFont, String fontScope, String widgetGap, Map<String, PartStyleDto> parts) {
-        this(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, null, null);
+        this(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, null, null, null);
     }
 
     /** The same theme with another glass choice. */
     public ThemeDto withGlass(String value) {
-        return new ThemeDto(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, value, sidebar);
+        return new ThemeDto(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, value, sidebar, news);
     }
 
     /** The same theme with other side menu choices. */
     public ThemeDto withSidebar(SidebarPrefsDto value) {
-        return new ThemeDto(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, glass, value);
+        return new ThemeDto(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, glass, value, news);
+    }
+
+    /** The same theme with other "Actus" choices. */
+    public ThemeDto withNews(NewsPrefsDto value) {
+        return new ThemeDto(colors, font, layout, mode, headingFont, fontScope, widgetGap, parts, glass, sidebar, value);
     }
 }
