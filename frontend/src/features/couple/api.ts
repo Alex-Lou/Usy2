@@ -1,6 +1,6 @@
 import { apiRequest } from "../../lib/api/client";
 import type { Widget } from "../profile/types";
-import type { CoupleEvent, CoupleEventInput, CoupleOverview, Memory, Mood, Note, Page, SharedList, SharedWidgets } from "./types";
+import type { CoupleEvent, CoupleEventInput, CoupleOverview, Memory, Mood, Note, Page, NousTheme, SharedList, SharedWidgets } from "./types";
 
 export function getCouple(): Promise<CoupleOverview> {
   return apiRequest<CoupleOverview>("/api/couple");
@@ -68,6 +68,15 @@ export function getSharedWidgets(): Promise<SharedWidgets> {
 
 export function saveSharedWidgets(widgets: Widget[], version: number): Promise<SharedWidgets> {
   return apiRequest<SharedWidgets>("/api/couple/widgets", { method: "PUT", body: { widgets, version } });
+}
+
+/** The look of "Notre profil" (see NousThemeService.java). */
+export function getNousTheme(): Promise<NousTheme> {
+  return apiRequest<NousTheme>("/api/couple/nous-theme");
+}
+
+export function saveNousTheme(theme: NousTheme): Promise<NousTheme> {
+  return apiRequest<NousTheme>("/api/couple/nous-theme", { method: "PUT", body: theme });
 }
 
 export function getEvents(): Promise<CoupleEvent[]> {

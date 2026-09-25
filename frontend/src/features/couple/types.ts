@@ -1,4 +1,4 @@
-import type { Widget } from "../profile/types";
+import type { PartStyle, Widget } from "../profile/types";
 import type { User } from "../auth/api";
 
 export interface Mood {
@@ -55,6 +55,11 @@ export interface SharedWidgets {
   version: number;
   /** Profile widgets their owners also show here (managed on the profile). */
   linked: LinkedWidget[];
+}
+
+/** The look of "Notre profil", for both: its page background and its cards. */
+export interface NousTheme {
+  parts?: { page?: PartStyle; cards?: PartStyle } | null;
 }
 
 export interface LinkedWidget {

@@ -57,6 +57,19 @@ public class CoupleSettings {
     @Column(name = "chat_size")
     private String chatSize;
 
+    /** The look of "Notre profil" (JSON, validated before it is stored). See NousThemeService. */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "nous_theme_json")
+    private String nousThemeJson;
+
+    public String getNousThemeJson() {
+        return nousThemeJson;
+    }
+
+    public void setNousThemeJson(String nousThemeJson) {
+        this.nousThemeJson = nousThemeJson;
+    }
+
     public static CoupleSettings create() {
         CoupleSettings settings = new CoupleSettings();
         settings.id = SINGLETON_ID;

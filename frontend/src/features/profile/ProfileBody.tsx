@@ -96,7 +96,7 @@ export function ProfileBody({
 }
 
 /** The page's own background, over the app's shared one, for as long as the profile is shown. */
-function PageBackdrop({ look }: { look: PartStyle }) {
+export function PageBackdrop({ look }: { look: PartStyle }) {
   const fill = fillOf(look);
   const shown = !!(look.photoAssetId || fill);
   // Tells the glass cards a background shows (see glass.css).
@@ -117,7 +117,7 @@ function PageBackdrop({ look }: { look: PartStyle }) {
 }
 
 /** The same background, inside a preview box. */
-function InlineBackdrop({ look }: { look: PartStyle }) {
+export function InlineBackdrop({ look }: { look: PartStyle }) {
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
       <Backdrop look={look} fallback={<div className="absolute inset-0 bg-bg" />} />
