@@ -11,6 +11,7 @@ export const SPECIES = [
   "capybara",
   "robin",
   "parrot",
+  "penguin",
 ] as const;
 
 export type Species = (typeof SPECIES)[number];
@@ -25,6 +26,7 @@ export const SPECIES_LABELS: Record<Species, string> = {
   capybara: "Capybara",
   robin: "Rouge-gorge",
   parrot: "Perroquet",
+  penguin: "Pingouin",
 };
 
 function valid(value: string | null | undefined): Species {

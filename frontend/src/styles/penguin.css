@@ -1,0 +1,62 @@
+/* The penguin companion (see components/ui/animals.tsx): a gentle waddle, a
+   blink now and then, flippers that flap and a beak that chirps. */
+.mc-penguin,
+.mc-penguin-flap,
+.mc-penguin-eyes,
+.mc-penguin-beak {
+  transform-box: fill-box;
+}
+.mc-penguin {
+  transform-origin: 50% 100%;
+  animation: mc-penguin-waddle 2.4s ease-in-out infinite;
+}
+.mc-penguin-flap--l {
+  transform-origin: 100% 0%;
+  animation: mc-penguin-flap-l 2.4s ease-in-out infinite;
+}
+.mc-penguin-flap--r {
+  transform-origin: 0% 0%;
+  animation: mc-penguin-flap-r 2.4s ease-in-out infinite;
+}
+.mc-penguin-eyes {
+  transform-origin: 50% 50%;
+  animation: mc-penguin-blink 4.2s infinite;
+}
+.mc-penguin-beak {
+  transform-origin: 50% 0%;
+  animation: mc-penguin-chirp 6s ease-in-out infinite;
+}
+@keyframes mc-penguin-waddle {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes mc-penguin-flap-l {
+  0%, 60%, 100% { transform: rotate(0); }
+  70% { transform: rotate(28deg); }
+  80% { transform: rotate(-6deg); }
+  90% { transform: rotate(22deg); }
+}
+@keyframes mc-penguin-flap-r {
+  0%, 60%, 100% { transform: rotate(0); }
+  70% { transform: rotate(-28deg); }
+  80% { transform: rotate(6deg); }
+  90% { transform: rotate(-22deg); }
+}
+@keyframes mc-penguin-blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(0.1); }
+}
+@keyframes mc-penguin-chirp {
+  0%, 84%, 100% { transform: scaleY(1); }
+  88% { transform: scaleY(1.35); }
+  92% { transform: scaleY(0.9); }
+  96% { transform: scaleY(1.25); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-penguin,
+  .mc-penguin-flap,
+  .mc-penguin-eyes,
+  .mc-penguin-beak {
+    animation: none;
+  }
+}
