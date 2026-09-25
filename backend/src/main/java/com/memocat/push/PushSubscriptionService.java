@@ -26,6 +26,13 @@ public class PushSubscriptionService {
         this.users = users;
     }
 
+    /** "Log out all my devices": no device gets this account's notifications any more. */
+    @Transactional
+    public void removeAllOf(String username) {
+        users.findByUsername(username).ifPresent(user ->
+                subscriptions.deleteAll(subscriptions.findByUserIdOrderByCreatedAtAsc(user.getId())));
+    }
+
     /**
      * Registers this device for the user (idempotent per endpoint; a device that
      * changes account is re-bound). Keeps at most {@value #MAX_DEVICES_PER_USER}
