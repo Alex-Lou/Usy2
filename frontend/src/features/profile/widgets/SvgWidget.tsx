@@ -1,4 +1,5 @@
 import { SPECIES, type Species } from "../../../app/companion";
+import { LivingPenguin } from "../../../components/penguin/LivingPenguin";
 import { Animal } from "../../../components/ui/animals";
 import { HeartMark, SparkleMarks } from "../../../components/ui/decor";
 import { SCENES } from "./scenes";
@@ -18,6 +19,8 @@ export function SvgWidget({ variant, label }: { variant: string; label?: string 
     <div className="flex flex-col items-center gap-1 rounded-token border border-border bg-surface px-4 py-4">
       {Scene ? (
         <Scene />
+      ) : variant === "penguin" ? (
+        <LivingPenguin scene="tile" />
       ) : isSpecies(variant) ? (
         <div className="mc-float">
           <Animal species={variant} size={72} />

@@ -56,6 +56,33 @@ function pointyEars(outer: string, inner: string) {
   );
 }
 
+/**
+ * The penguin's head in the 64 box: Lou's partner's drawing (the white mask, the
+ * eyes and the beak, traced 300×300 and scaled in) on a navy head. Shared by the
+ * companion face and the living penguin (components/penguin).
+ */
+export function PenguinHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
+  return (
+    <>
+      <ellipse cx="32" cy="33" rx="25" ry="23" fill="#2b2d42" stroke={OUTLINE} strokeWidth={S} />
+      <g transform="translate(0 64) scale(0.02133 -0.02133)">
+        <path
+          fill="#fffaf2"
+          d="M1148 2068 c71 -43 84 -117 81 -461 -4 -430 -3 -459 14 -517 30 -103 126 -164 257 -164 131 0 227 61 257 164 17 58 18 93 14 517 -3 349 10 417 85 464 52 32 132 31 199 -3 135 -69 243 -271 261 -489 4 -43 1 -150 -6 -239 l-13 -161 41 -42 c55 -57 82 -118 82 -190 0 -102 -51 -154 -181 -185 -66 -15 -144 -17 -739 -17 -595 0 -673 2 -739 17 -130 31 -181 83 -181 185 0 72 27 133 82 190 l41 42 -13 161 c-14 181 -9 282 20 389 77 276 281 434 438 339z"
+        />
+        {!eyesClosed && (
+          <g className="mc-penguin-eyes">
+            <path fill={EYE} d="M948 1487 c-20 -22 -68 -155 -68 -189 0 -56 53 -98 123 -98 74 0 127 58 127 140 0 47 -39 131 -72 154 -33 24 -86 20 -110 -7z" />
+            <path fill={EYE} d="M1942 1494 c-33 -23 -72 -107 -72 -154 0 -84 53 -140 132 -140 43 0 54 4 84 34 20 20 34 44 34 58 0 38 -46 171 -68 195 -24 27 -77 31 -110 7z" />
+          </g>
+        )}
+        <path className="mc-penguin-beak" fill="#f4a93b" d="M1561 1320 l40 -21 -18 -30 c-19 -32 -68 -79 -83 -79 -15 0 -64 47 -83 79 l-18 30 38 20 c49 26 74 26 124 1z" />
+      </g>
+      {eyesClosed && <path d="M18 36 q3.3 2.6 6.6 0 M39.4 36 q3.3 2.6 6.6 0" stroke={EYE} strokeWidth="1.8" fill="none" strokeLinecap="round" />}
+    </>
+  );
+}
+
 // eslint-disable-next-line react-refresh/only-export-components
 export function AnimalFace({ species }: { species: Species }) {
   switch (species) {
@@ -184,18 +211,7 @@ export function AnimalFace({ species }: { species: Species }) {
         <g className="mc-penguin">
           <path className="mc-penguin-flap mc-penguin-flap--l" d="M11 44 q-8 4 -9 13 q7 -1 12 -8 z" fill="#2b2d42" stroke={OUTLINE} strokeWidth="1.6" strokeLinejoin="round" />
           <path className="mc-penguin-flap mc-penguin-flap--r" d="M53 44 q8 4 9 13 q-7 -1 -12 -8 z" fill="#2b2d42" stroke={OUTLINE} strokeWidth="1.6" strokeLinejoin="round" />
-          <ellipse cx="32" cy="33" rx="25" ry="23" fill="#2b2d42" stroke={OUTLINE} strokeWidth={S} />
-          <g transform="translate(0 64) scale(0.02133 -0.02133)">
-            <path
-              fill="#fffaf2"
-              d="M1148 2068 c71 -43 84 -117 81 -461 -4 -430 -3 -459 14 -517 30 -103 126 -164 257 -164 131 0 227 61 257 164 17 58 18 93 14 517 -3 349 10 417 85 464 52 32 132 31 199 -3 135 -69 243 -271 261 -489 4 -43 1 -150 -6 -239 l-13 -161 41 -42 c55 -57 82 -118 82 -190 0 -102 -51 -154 -181 -185 -66 -15 -144 -17 -739 -17 -595 0 -673 2 -739 17 -130 31 -181 83 -181 185 0 72 27 133 82 190 l41 42 -13 161 c-14 181 -9 282 20 389 77 276 281 434 438 339z"
-            />
-            <g className="mc-penguin-eyes">
-              <path fill={EYE} d="M948 1487 c-20 -22 -68 -155 -68 -189 0 -56 53 -98 123 -98 74 0 127 58 127 140 0 47 -39 131 -72 154 -33 24 -86 20 -110 -7z" />
-              <path fill={EYE} d="M1942 1494 c-33 -23 -72 -107 -72 -154 0 -84 53 -140 132 -140 43 0 54 4 84 34 20 20 34 44 34 58 0 38 -46 171 -68 195 -24 27 -77 31 -110 7z" />
-            </g>
-            <path className="mc-penguin-beak" fill="#f4a93b" d="M1561 1320 l40 -21 -18 -30 c-19 -32 -68 -79 -83 -79 -15 0 -64 47 -83 79 l-18 30 38 20 c49 26 74 26 124 1z" />
-          </g>
+          <PenguinHead />
           <Blush />
         </g>
       );

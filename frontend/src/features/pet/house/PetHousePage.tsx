@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 import { Link } from "react-router-dom";
+import { LivingPenguin } from "../../../components/penguin/LivingPenguin";
 import { Icon } from "../../../components/ui/Icon";
 import { useAuth } from "../../auth/useAuth";
 import type { CatPose } from "../CatSprite";
@@ -10,6 +11,23 @@ import { usePet } from "../usePet";
 import { createPetClient } from "./petClient";
 import { isNight, Room } from "./Room";
 import { ShopSheet } from "./ShopSheet";
+
+// The penguin lives in the house too; shown or hidden on each device.
+const PENGUIN_KEY = "memocat.house.penguin";
+function readPenguin(): boolean {
+  try {
+    return localStorage.getItem(PENGUIN_KEY) !== "0";
+  } catch {
+    return true;
+  }
+}
+function savePenguin(on: boolean) {
+  try {
+    localStorage.setItem(PENGUIN_KEY, on ? "1" : "0");
+  } catch {
+    /* not remembered, still works */
+  }
+}
 
 type Tool = "brush" | "laser" | null;
 
@@ -47,6 +65,7 @@ export function PetHousePage() {
   const { pet, setPet, pose, caption, act, react, onActivity } = usePet(user?.id);
   const [tool, setTool] = useState<Tool>(null);
   const [shop, setShop] = useState(false);
+  const [penguin, setPenguin] = useState(readPenguin);
   const [gain, setGain] = useState<{ n: number; key: number } | null>(null);
   const [progress, setProgress] = useState(0); // brush / laser progress 0..1
   const [dot, setDot] = useState<{ x: number; y: number } | null>(null);
@@ -170,6 +189,19 @@ export function PetHousePage() {
         >
           {sound ? "🔈" : "🔇"}
         </button>
+        <button
+          type="button"
+          onClick={() => {
+            savePenguin(!penguin);
+            setPenguin(!penguin);
+          }}
+          aria-pressed={penguin}
+          aria-label={penguin ? "Cacher le pingouin" : "Faire venir le pingouin"}
+          title={penguin ? "Cacher le pingouin" : "Faire venir le pingouin"}
+          className={"rounded-full border px-2.5 py-1.5 text-sm press hover:border-primary/50 " + (penguin ? "border-primary bg-surface-2" : "border-border bg-surface opacity-60")}
+        >
+          🐧
+        </button>
         <Link to="/jeux/chat/peche" aria-label="Pêche" className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm press hover:border-primary/50">
           🎣
         </Link>
@@ -209,6 +241,7 @@ export function PetHousePage() {
           onTap={tool ? undefined : () => void care("pet")}
           label={`Toucher ${pet.name}`}
         />
+        {penguin && <LivingPenguin scene="house" friendRef={catRef} />}
 
         {sparkles.map((s) => (
           <span key={s.id} className="pointer-events-none absolute text-lg animate-sparkle" style={{ left: s.x - 8, top: s.y - 12 }}>
