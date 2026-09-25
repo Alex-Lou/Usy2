@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { SharedAppearancePanel } from "../couple/SharedAppearancePanel";
 import { useNavigate } from "react-router-dom";
 import { AssetImage } from "../../components/AssetImage";
 import { FramingEditor } from "../../components/photo/FramingEditor";
@@ -128,6 +129,8 @@ export function ProfileEditPage() {
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <div className="flex flex-col gap-4">
         <h1 className="font-display text-2xl font-bold animate-fade-up">Personnaliser mon profil</h1>
+
+        <SharedAppearancePanel />
 
         <section className="card p-4">
           <h2 className="mb-3 flex items-center gap-2 font-semibold"><Icon name="user" size={18} /> Identité</h2>

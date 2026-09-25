@@ -52,4 +52,13 @@ class ReadingServiceTest {
         assertThatThrownBy(() -> service.save("lou", new ReadingDto("nunito", "xxl"))).isInstanceOf(ContentValidationException.class);
         assertThat(service.get("lou")).isEqualTo(new ReadingDto("caveat", "xl"));
     }
+
+    @Test
+    void colorModeIsNeonOrPaper() {
+        assertThat(service.colorMode("lou").mode()).isNull();
+        assertThat(service.saveColorMode("lou", new com.memocat.profile.dto.ColorModeDto("scrapbook")).mode()).isEqualTo("scrapbook");
+        assertThat(service.colorMode("lou").mode()).isEqualTo("scrapbook");
+        assertThatThrownBy(() -> service.saveColorMode("lou", new com.memocat.profile.dto.ColorModeDto("pink")))
+                .isInstanceOf(ContentValidationException.class);
+    }
 }

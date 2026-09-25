@@ -1,6 +1,7 @@
 package com.memocat.profile;
 
 import com.memocat.domain.User;
+import com.memocat.profile.dto.ColorModeDto;
 import com.memocat.profile.dto.ReadingDto;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
@@ -18,7 +19,8 @@ import java.util.Set;
 @Service
 public class ReadingService {
 
-    static final Set<String> SIZES = Set.of("s", "m", "l", "xl");
+    public static final Set<String> SIZES = Set.of("s", "m", "l", "xl");
+    static final Set<String> COLOR_MODES = Set.of("neo", "scrapbook");
 
     private final UserRepository users;
 
@@ -45,6 +47,23 @@ public class ReadingService {
         }
         me.setReading("app".equals(font) ? null : font, "m".equals(size) ? null : size);
         return new ReadingDto(me.getReadingFont(), me.getReadingSize());
+    }
+
+    /** This person's light/dark look ("neo" or "scrapbook"), or null when never chosen. */
+    @Transactional(readOnly = true)
+    public ColorModeDto colorMode(String username) {
+        return new ColorModeDto(requireUser(username).getColorMode());
+    }
+
+    @Transactional
+    public ColorModeDto saveColorMode(String username, ColorModeDto request) {
+        User me = requireUser(username);
+        String mode = request == null ? null : request.mode();
+        if (mode == null || !COLOR_MODES.contains(mode)) {
+            throw new ContentValidationException("Unsupported color mode: " + mode);
+        }
+        me.setColorMode(mode);
+        return new ColorModeDto(mode);
     }
 
     private User requireUser(String username) {

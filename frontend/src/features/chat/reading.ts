@@ -37,10 +37,11 @@ function remember(r: Reading): void {
   }
 }
 
-/** CSS for the message list: the chosen font and size. */
-export function readingStyle(r: Reading): React.CSSProperties {
-  const px = READING_SIZES.find((s) => s.id === (r.size ?? "m"))?.px ?? 16;
-  return { fontFamily: fontStack(r.font) ?? undefined, fontSize: px };
+/** CSS for the message list: my font and size, else the ones chosen in common. */
+export function readingStyle(r: Reading, common?: { chatFont: FontKey | null; chatSize: ReadingSize | null }): React.CSSProperties {
+  const size = r.size ?? common?.chatSize ?? "m";
+  const px = READING_SIZES.find((s) => s.id === size)?.px ?? 16;
+  return { fontFamily: fontStack(r.font ?? common?.chatFont) ?? undefined, fontSize: px };
 }
 
 /** My reading settings: the server's copy (every device), saved at once when changed. */

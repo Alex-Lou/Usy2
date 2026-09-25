@@ -35,6 +35,28 @@ public class CoupleSettings {
         // for JPA
     }
 
+    // Shared look of the app (null: the app's default). See SharedAppearanceService.
+    @Column(name = "app_font")
+    private String appFont;
+
+    @Column(name = "app_heading_font")
+    private String appHeadingFont;
+
+    @Column(name = "accent_color")
+    private String accentColor;
+
+    @Column(name = "background")
+    private String background;
+
+    @Column(name = "background_asset_id")
+    private Long backgroundAssetId;
+
+    @Column(name = "chat_font")
+    private String chatFont;
+
+    @Column(name = "chat_size")
+    private String chatSize;
+
     public static CoupleSettings create() {
         CoupleSettings settings = new CoupleSettings();
         settings.id = SINGLETON_ID;
@@ -61,5 +83,44 @@ public class CoupleSettings {
     public void replaceWidgets(String widgetsJson) {
         this.widgetsJson = widgetsJson;
         this.widgetsVersion++;
+    }
+
+    public String getAppFont() {
+        return appFont;
+    }
+
+    public String getAppHeadingFont() {
+        return appHeadingFont;
+    }
+
+    public String getAccentColor() {
+        return accentColor;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public Long getBackgroundAssetId() {
+        return backgroundAssetId;
+    }
+
+    public String getChatFont() {
+        return chatFont;
+    }
+
+    public String getChatSize() {
+        return chatSize;
+    }
+
+    public void setAppearance(String appFont, String appHeadingFont, String accentColor, String background,
+                              Long backgroundAssetId, String chatFont, String chatSize) {
+        this.appFont = appFont;
+        this.appHeadingFont = appHeadingFont;
+        this.accentColor = accentColor;
+        this.background = background;
+        this.backgroundAssetId = backgroundAssetId;
+        this.chatFont = chatFont;
+        this.chatSize = chatSize;
     }
 }
