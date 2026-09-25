@@ -25,6 +25,11 @@ const CAPTION: Record<PetAction, (who: string, name: string) => string> = {
   fish: (who, name) => `${who} a pêché des poissons pour ${name}`,
 };
 
+/** A late answer or live echo older than what is on screen must not roll the needs back. */
+function isOlder(next: Pet, cur: Pet | null): boolean {
+  return !!cur?.lastActionAt && !!next.lastActionAt && new Date(next.lastActionAt) < new Date(cur.lastActionAt);
+}
+
 /**
  * The cat's live state and what it is doing right now. Base pose: asleep after
  * a quiet while, hungry when it needs food, calm otherwise; interactions (mine
@@ -75,7 +80,7 @@ export function usePet(myId: number | undefined) {
       react(POSE_OF[action], REACTION_MS[action]);
       return actOnPet(action)
         .then((p) => {
-          setPet(p);
+          setPet((cur) => (isOlder(p, cur) ? cur : p));
           return p;
         })
         .catch(() => null);
@@ -86,7 +91,7 @@ export function usePet(myId: number | undefined) {
   /** Live event from /topic/pet (the other person's echo of mine is ignored). */
   const onActivity = useCallback(
     (a: PetActivity) => {
-      setPet(a.pet);
+      setPet((cur) => (isOlder(a.pet, cur) ? cur : a.pet));
       if (a.actorId === myId || a.action === "rename" || a.action === "shop") return;
       react(POSE_OF[a.action], REACTION_MS[a.action]);
       say(CAPTION[a.action](a.actorName, a.pet.name));
