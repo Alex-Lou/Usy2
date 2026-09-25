@@ -2,6 +2,7 @@ package com.memocat.asset;
 
 import com.memocat.asset.dto.AssetDto;
 import com.memocat.asset.dto.StorageUsageDto;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -55,15 +56,17 @@ public class AssetController {
      * case one is opened directly, so their content can never run in the app.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> serve(@PathVariable Long id) {
+    public ResponseEntity<byte[]> serve(@PathVariable Long id, HttpServletResponse raw) {
         AssetService.ServedFile served = assetService.serve(id);
         ResponseEntity.BodyBuilder response = ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(served.contentType()))
                 .cacheControl(CacheControl.maxAge(Duration.ofDays(30)).cachePrivate());
         if (!served.inline()) {
             response.header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
-                            .filename(served.filename(), StandardCharsets.UTF_8).build().toString())
-                    .header("Content-Security-Policy", "sandbox");
+                            .filename(served.filename(), StandardCharsets.UTF_8).build().toString());
+            // Added straight on the response: the app-wide policy is already there, and the
+            // browser enforces both (an entity header of the same name would be dropped).
+            raw.addHeader("Content-Security-Policy", "sandbox");
         }
         return response.body(served.content());
     }
