@@ -24,4 +24,7 @@ WORKDIR /app
 COPY --from=backend /app/backend/target/*.jar app.jar
 ENV MEMOCAT_STORAGE_PATH=/tmp/memocat-uploads
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Java takes only 25% of the container's memory by default (~128 MB on a 512 MB
+# instance): give it 60%, the rest covers threads and class metadata. On an
+# out-of-memory error, exit so the host restarts it instead of limping along.
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=60", "-XX:+ExitOnOutOfMemoryError", "-jar", "/app/app.jar"]
