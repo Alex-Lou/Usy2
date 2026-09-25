@@ -8,6 +8,7 @@ import { isWideMini, MiniWidget } from "../profile/widgets/MiniWidget";
 import { cleanWidget, missingImage, WidgetListEditor } from "../profile/widgets/WidgetEditor";
 import { onCoupleActivity } from "./activity";
 import { getSharedWidgets, saveSharedWidgets } from "./api";
+import { copiesOfLinked } from "./linked";
 import type { LinkedWidget } from "./types";
 
 /**
@@ -53,6 +54,8 @@ export function SharedWidgetsPage() {
       else load();
     });
   }, [load, user?.id]);
+
+  const isCopy = copiesOfLinked(linked);
 
   function edit(update: (list: Widget[]) => Widget[]) {
     setWidgets((list) => update(list ?? []));
@@ -100,7 +103,18 @@ export function SharedWidgetsPage() {
 
         <section className="card p-4">
           {widgets ? (
-            <WidgetListEditor widgets={widgets} onChange={edit} onError={setError} />
+            <WidgetListEditor
+              widgets={widgets}
+              onChange={edit}
+              onError={setError}
+              footer={(w) =>
+                isCopy(cleanWidget(w)) && (
+                  <p className="mt-2 text-xs text-primary">
+                    Doublon : ce widget est déjà montré depuis un profil (voir « Depuis vos profils »). Tu peux le supprimer ici.
+                  </p>
+                )
+              }
+            />
           ) : (
             <div className="h-24 animate-pulse rounded-token bg-border/50" />
           )}
@@ -140,7 +154,7 @@ export function SharedWidgetsPage() {
         <p className="mb-2 text-sm text-text-muted">Aperçu</p>
         <div className="card grid grid-cols-2 gap-2 p-3">
           {widgets && widgets.length + linked.length > 0 ? (
-            [...widgets, ...linked.map((l) => l.widget)].map((w, i) => (
+            [...widgets.filter((w) => !isCopy(w)), ...linked.map((l) => l.widget)].map((w, i) => (
               <div key={i} className={`min-w-0 ${isWideMini(w) ? "col-span-2" : ""}`}>
                 <MiniWidget widget={w} />
               </div>

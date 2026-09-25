@@ -5,7 +5,7 @@ import type { Pin } from "../types";
 import { domainOf, isWebAddress } from "./pinSuggestions";
 
 /** One pinned site: the page's own picture when it has one (server-side preview), else its initial. */
-function PinCard({ pin, index }: { pin: Pin; index: number }) {
+export function PinCard({ pin, index }: { pin: Pin; index: number }) {
   const [ref, inView] = useInView<HTMLAnchorElement>();
   const [title, setTitle] = useState<string | null>(null);
   const [image, setImage] = useState<string | null>(null);
