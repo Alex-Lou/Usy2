@@ -13,7 +13,7 @@ export type ThemeMode = "app" | "custom";
 export type WidgetGap = "s" | "m" | "l";
 
 /** The parts of a profile that have a look of their own ("widgets" = every frame's default). */
-export type PartKey = "page" | "header" | "tabs" | "widgets";
+export type PartKey = "page" | "header" | "widgets";
 
 /**
  * The look of one part (see backend PartStyleDto). Every field is optional:

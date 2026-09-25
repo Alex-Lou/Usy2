@@ -32,8 +32,8 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 ];
 
 /** What the Apparence tab is styling: the ready-made looks, a part, or one frame (by index). */
-type Target = "presets" | Exclude<PartKey, "tabs"> | number;
-const PART_TARGETS: { id: Exclude<PartKey, "tabs">; label: string; icon: string }[] = [
+type Target = "presets" | PartKey | number;
+const PART_TARGETS: { id: PartKey; label: string; icon: string }[] = [
   { id: "page", label: "Fond de page", icon: "🖼️" },
   { id: "header", label: "Présentation", icon: "🪪" },
   { id: "widgets", label: "Tous les cadres", icon: "🧩" },
