@@ -4,7 +4,7 @@ import { EMOJI_GROUPS } from "../../rich/emojiData";
 import { STICKERS } from "../../rich/stickers";
 import { Icon } from "../../ui/Icon";
 import { EffectLayer } from "../EffectLayer";
-import { PHOTO_EFFECTS } from "../effects";
+import { customEffect, PHOTO_EFFECTS } from "../effects";
 import { FONTS, loadFont } from "../../../lib/fonts";
 import type { FontKey } from "../../../features/profile/types";
 import { combine, cssFilter } from "./adjust";
@@ -88,6 +88,8 @@ export function PhotoStudio({
   const drawing = useRef<number | null>(null); // id of the stroke being drawn
   const borderRef = useRef<HTMLCanvasElement>(null);
   const [effect, setEffect] = useState<string | null>(null);
+  const [fxEmoji, setFxEmoji] = useState("");
+  const [fxMotion, setFxMotion] = useState<"fall" | "rise">("fall");
   const [saving, setSaving] = useState(false);
   const [box, setBox] = useState({ w: 0, h: 0 });
   const stageRef = useRef<HTMLDivElement>(null);
@@ -694,15 +696,56 @@ export function PhotoStudio({
             </div>
           )}
           {tab === "fx" && (
-            <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => setEffect(null)} className={"chip press " + (effect === null ? "border-primary text-primary" : "")}>
-                Aucune
-              </button>
-              {PHOTO_EFFECTS.map((fx) => (
-                <button key={fx.id} type="button" onClick={() => setEffect(fx.id)} className={"chip press " + (effect === fx.id ? "border-primary text-primary" : "")}>
-                  {fx.icon} {fx.label}
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={() => setEffect(null)} className={"chip press " + (effect === null ? "border-primary text-primary" : "")}>
+                  Aucune
                 </button>
-              ))}
+                {PHOTO_EFFECTS.map((fx) => (
+                  <button key={fx.id} type="button" onClick={() => setEffect(fx.id)} className={"chip press " + (effect === fx.id ? "border-primary text-primary" : "")}>
+                    {fx.icon} {fx.label}
+                  </button>
+                ))}
+              </div>
+              {/* Any emoji raining down or floating up. */}
+              <form
+                className="flex flex-wrap items-center gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const custom = customEffect(fxMotion, fxEmoji);
+                  if (custom) setEffect(custom);
+                }}
+              >
+                <span className="text-xs text-text-muted">Emoji au choix :</span>
+                <input
+                  value={fxEmoji}
+                  onChange={(e) => {
+                    setFxEmoji(e.target.value);
+                    const custom = customEffect(fxMotion, e.target.value);
+                    if (custom) setEffect(custom);
+                  }}
+                  maxLength={16}
+                  placeholder="🍕"
+                  aria-label="Emoji de l'animation"
+                  className="mc-emoji w-16 rounded-full border border-border bg-bg-2/60 px-3 py-1.5 text-center text-lg outline-none focus:border-primary/70"
+                />
+                {(["fall", "rise"] as const).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    aria-pressed={fxMotion === m}
+                    onClick={() => {
+                      setFxMotion(m);
+                      const custom = customEffect(m, fxEmoji);
+                      if (custom) setEffect(custom);
+                    }}
+                    className={"chip press text-xs " + (fxMotion === m ? "border-primary text-primary" : "")}
+                  >
+                    {m === "fall" ? "↓ tombe" : "↑ monte"}
+                  </button>
+                ))}
+                {fxEmoji.trim() !== "" && !customEffect(fxMotion, fxEmoji) && <span className="text-xs text-danger">Seulement un emoji</span>}
+              </form>
             </div>
           )}
         </div>
