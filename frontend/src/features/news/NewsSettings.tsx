@@ -5,6 +5,7 @@ import { ApiError } from "../../lib/api/client";
 import { saveNewsPrefs, type Follow, type FollowKind, type NewsPrefs, type NewsSource } from "./api";
 
 const KINDS: { id: FollowKind; label: string; icon: string; placeholder: string; hint: string }[] = [
+  { id: "rss", label: "Site", icon: "📰", placeholder: "monsite.fr ou son flux RSS", hint: "L'adresse d'un site (son flux est trouvé tout seul) ou directement son flux RSS/Atom." },
   { id: "bluesky", label: "Bluesky", icon: "🦋", placeholder: "korben.info", hint: "Le pseudo du compte (ex. korben.info)." },
   { id: "mastodon", label: "Mastodon", icon: "🐘", placeholder: "Gargron@mastodon.social", hint: "pseudo@serveur" },
   { id: "reddit", label: "Reddit", icon: "👽", placeholder: "pcgaming", hint: "Le nom du subreddit, sans r/." },
@@ -15,8 +16,8 @@ const KINDS: { id: FollowKind; label: string; icon: string; placeholder: string;
  * My "Actus" choices: news sites switched on one by one, and the public
  * accounts I follow. Saved at each change (only for me); nothing is on at first.
  */
-export function NewsSettings({ sources, prefs, onSaved, onClose }: { sources: NewsSource[]; prefs: NewsPrefs; onSaved: (p: NewsPrefs) => void; onClose: () => void }) {
-  const [kind, setKind] = useState<FollowKind>("bluesky");
+export function NewsSettings({ sources, prefs, onSaved, onClose }: { sources: NewsSource[]; prefs: NewsPrefs; onSaved: (p: NewsPrefs) => void; onClose?: () => void }) {
+  const [kind, setKind] = useState<FollowKind>("rss");
   const [handle, setHandle] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -52,9 +53,11 @@ export function NewsSettings({ sources, prefs, onSaved, onClose }: { sources: Ne
     <div className="card flex flex-col gap-4 p-4 animate-pop" data-news-settings="">
       <div className="flex items-center justify-between">
         <h2 className="font-display text-lg font-bold">Mes sources</h2>
-        <button type="button" onClick={onClose} aria-label="Fermer" className="grid h-9 w-9 place-items-center rounded-full text-text-muted press hover:text-text">
-          <Icon name="x" size={18} />
-        </button>
+        {onClose && (
+          <button type="button" onClick={onClose} aria-label="Fermer" className="grid h-9 w-9 place-items-center rounded-full text-text-muted press hover:text-text">
+            <Icon name="x" size={18} />
+          </button>
+        )}
       </div>
       <p className="-mt-2 text-xs text-text-muted">Seulement pour toi. Rien n'est activé tant que tu ne le choisis pas ; aucun compte, aucune inscription.</p>
 
@@ -81,13 +84,13 @@ export function NewsSettings({ sources, prefs, onSaved, onClose }: { sources: Ne
       </section>
 
       <section className="flex flex-col gap-2">
-        <h3 className="text-sm font-semibold">💬 Comptes publics</h3>
+        <h3 className="text-sm font-semibold">➕ Mes ajouts : sites, comptes publics</h3>
         {prefs.follows.length > 0 && (
           <ul className="flex flex-col gap-1">
             {prefs.follows.map((f) => (
               <li key={`${f.kind}:${f.handle}`} className="flex items-center gap-2 rounded-token border border-border px-3 py-1.5 text-sm">
                 <span aria-hidden="true">{KINDS.find((k) => k.id === f.kind)?.icon}</span>
-                <span className="min-w-0 flex-1 truncate">{f.handle}</span>
+                <span className="min-w-0 flex-1 truncate">{f.kind === "rss" ? f.handle.replace(/^https?:\/\/(www\.)?/, "") : f.handle}</span>
                 <button type="button" onClick={() => remove(f)} disabled={busy} aria-label={`Retirer ${f.handle}`} className="text-text-muted press hover:text-danger">
                   <Icon name="x" size={16} />
                 </button>
