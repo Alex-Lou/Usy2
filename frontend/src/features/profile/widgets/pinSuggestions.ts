@@ -2,7 +2,8 @@ import type { Pin } from "../types";
 
 /**
  * Hand-picked sites to pin in one tap: reference institutions and archives
- * rather than random blogs (folklore and Gaelic tradition from the sources).
+ * rather than random blogs (folklore and Gaelic tradition from the sources),
+ * and a few tech and games sites that write real articles.
  */
 export const PIN_SUGGESTIONS: { group: string; pins: Pin[] }[] = [
   { group: "Inspiration", pins: [{ label: "Pinterest", url: "https://www.pinterest.com" }] },
@@ -37,6 +38,19 @@ export const PIN_SUGGESTIONS: { group: string; pins: Pin[] }[] = [
       { label: "CELT (textes irlandais)", url: "https://celt.ucc.ie" },
       { label: "LearnGaelic", url: "https://learngaelic.scot" },
       { label: "Teanglann (irlandais)", url: "https://www.teanglann.ie" },
+    ],
+  },
+  {
+    group: "Geek & actus",
+    pins: [
+      { label: "Korben", url: "https://korben.info" },
+      { label: "Numerama", url: "https://www.numerama.com" },
+      { label: "Jeuxvideo.com", url: "https://www.jeuxvideo.com" },
+      { label: "Next", url: "https://next.ink" },
+      { label: "Journal du Geek", url: "https://www.journaldugeek.com" },
+      { label: "Frandroid", url: "https://www.frandroid.com" },
+      { label: "Gamekult", url: "https://www.gamekult.com" },
+      { label: "Ars Technica", url: "https://arstechnica.com" },
     ],
   },
 ];

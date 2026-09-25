@@ -9,6 +9,7 @@ import com.memocat.domain.Profile;
 import com.memocat.domain.User;
 import com.memocat.couple.CoupleActivity;
 import com.memocat.profile.dto.LinkedWidgetDto;
+import com.memocat.profile.dto.NewsPrefsDto;
 import com.memocat.profile.dto.ProfileDto;
 import com.memocat.profile.dto.ProfileUpdateRequest;
 import com.memocat.profile.dto.SidebarPrefsDto;
@@ -135,7 +136,7 @@ public class ProfileService {
         // a profile save (maybe from an older page) keeps what is stored.
         ThemeDto stored = readJson(profile.getThemeJson(), new TypeReference<ThemeDto>() {
         });
-        ThemeDto theme = request.theme().withGlass(stored.glass()).withSidebar(stored.sidebar());
+        ThemeDto theme = request.theme().withGlass(stored.glass()).withSidebar(stored.sidebar()).withNews(stored.news());
         profile.setCoverAssetId(cover);
         profile.setCoverFraming(cover == null ? null : Framing.validate(request.coverFraming()));
         profile.setThemeJson(writeJson(theme));
@@ -173,6 +174,28 @@ public class ProfileService {
         });
         profile.setThemeJson(writeJson(theme.withSidebar(prefs)));
         return toDto(profileRepository.save(profile));
+    }
+
+    /** My "Actus" choices (see ThemeDto.news); null when never set. */
+    @Transactional
+    public NewsPrefsDto newsPrefs(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        ThemeDto theme = readJson(getOrCreate(user).getThemeJson(), new TypeReference<ThemeDto>() {
+        });
+        return theme.news();
+    }
+
+    /** Saves my "Actus" choices, already checked by NewsService. */
+    @Transactional
+    public void updateNews(String username, NewsPrefsDto prefs) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Profile profile = getOrCreate(user);
+        ThemeDto theme = readJson(profile.getThemeJson(), new TypeReference<ThemeDto>() {
+        });
+        profile.setThemeJson(writeJson(theme.withNews(prefs)));
+        profileRepository.save(profile);
     }
 
     /**
