@@ -25,10 +25,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String HEADER = "Authorization";
     private static final String PREFIX = "Bearer ";
 
-    private final JwtService jwtService;
+    private final TokenGate tokenGate;
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
-        this.jwtService = jwtService;
+    public JwtAuthenticationFilter(TokenGate tokenGate) {
+        this.tokenGate = tokenGate;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith(PREFIX)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
             String token = header.substring(PREFIX.length());
-            jwtService.validateAndGetUsername(token).ifPresent(username -> {
+            tokenGate.authenticate(token).ifPresent(username -> {
                 var authentication = new UsernamePasswordAuthenticationToken(
                         username, null, Collections.emptyList());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

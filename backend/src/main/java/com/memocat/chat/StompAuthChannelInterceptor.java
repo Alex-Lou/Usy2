@@ -1,6 +1,6 @@
 package com.memocat.chat;
 
-import com.memocat.security.JwtService;
+import com.memocat.security.TokenGate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -22,10 +22,12 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
 
     private static final String PREFIX = "Bearer ";
 
-    private final JwtService jwtService;
+    private final TokenGate tokenGate;
+    private final LiveSockets liveSockets;
 
-    public StompAuthChannelInterceptor(JwtService jwtService) {
-        this.jwtService = jwtService;
+    public StompAuthChannelInterceptor(TokenGate tokenGate, LiveSockets liveSockets) {
+        this.tokenGate = tokenGate;
+        this.liveSockets = liveSockets;
     }
 
     @Override
@@ -38,8 +40,9 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             if (header == null || !header.startsWith(PREFIX)) {
                 throw new IllegalArgumentException("Missing bearer token on CONNECT");
             }
-            String username = jwtService.validateAndGetUsername(header.substring(PREFIX.length()))
+            String username = tokenGate.authenticate(header.substring(PREFIX.length()))
                     .orElseThrow(() -> new IllegalArgumentException("Invalid token on CONNECT"));
+            liveSockets.owned(accessor.getSessionId(), username);
             accessor.setUser(new UsernamePasswordAuthenticationToken(
                     username, null, Collections.emptyList()));
         }

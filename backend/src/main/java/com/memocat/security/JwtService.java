@@ -55,16 +55,27 @@ public class JwtService {
      * @return the subject (username) if the token is valid, empty otherwise.
      */
     public Optional<String> validateAndGetUsername(String token) {
+        return verify(token).map(Verified::username);
+    }
+
+    /** Same check, also giving when the token was issued (to refuse revoked ones). */
+    public Optional<Verified> verify(String token) {
         try {
             Claims claims = Jwts.parser()
                     .verifyWith(key)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-            return Optional.ofNullable(claims.getSubject());
+            if (claims.getSubject() == null || claims.getIssuedAt() == null) {
+                return Optional.empty();
+            }
+            return Optional.of(new Verified(claims.getSubject(), claims.getIssuedAt().toInstant()));
         } catch (JwtException | IllegalArgumentException e) {
             return Optional.empty();
         }
+    }
+
+    public record Verified(String username, Instant issuedAt) {
     }
 
     public record IssuedToken(String token, Instant expiresAt) {
