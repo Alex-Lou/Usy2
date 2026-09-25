@@ -1,0 +1,25 @@
+/* Chat bubble styles and the full-screen effect (features/chat/looks.ts,
+   ScreenEffect.tsx). Outside @layer: the classes are picked at runtime. */
+.mc-shout { display: inline-block; font-size: 1.55em; font-weight: 800; line-height: 1.15; letter-spacing: 0.01em; animation: mc-shout 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+.mc-whisper { display: inline-block; font-size: 0.82em; font-style: italic; letter-spacing: 0.05em; opacity: 0.72; }
+.mc-tremble { display: inline-block; animation: mc-tremble 0.22s linear infinite; }
+@keyframes mc-shout {
+  0% { transform: scale(0.5); }
+  45% { transform: scale(1.18) rotate(-3deg); }
+  65% { transform: scale(0.96) rotate(2deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes mc-tremble {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  25% { transform: translate(-0.7px, 0.5px) rotate(-0.7deg); }
+  50% { transform: translate(0.6px, -0.6px) rotate(0.6deg); }
+  75% { transform: translate(-0.4px, -0.4px) rotate(-0.4deg); }
+}
+
+/* Full-screen effect: each particle plays once (the overlay then goes away). */
+.mc-screen-fx .fx-col { animation-iteration-count: 1; }
+.mc-screen-fx .fx-burst { animation-iteration-count: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-shout, .mc-tremble { animation: none; }
+}
