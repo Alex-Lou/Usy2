@@ -8,6 +8,7 @@ import { ChatPage } from "./features/chat/ChatPage";
 import { GamesHub } from "./features/games/GamesHub";
 import { MorpionPage } from "./features/games/MorpionPage";
 import { SnakePage } from "./features/games/SnakePage";
+import { SudokuPage } from "./features/games/sudoku/SudokuPage";
 import { PostPage } from "./features/feed/PostPage";
 import { FishingPage } from "./features/pet/games/FishingPage";
 import { PetHousePage } from "./features/pet/house/PetHousePage";
@@ -38,6 +39,7 @@ export function App() {
         <Route path="/jeux" element={<GamesHub />} />
         <Route path="/jeux/morpion" element={<MorpionPage />} />
         <Route path="/jeux/snake" element={<SnakePage />} />
+        <Route path="/jeux/sudoku" element={<SudokuPage />} />
         <Route path="/jeux/chat" element={<PetHousePage />} />
         <Route path="/jeux/chat/peche" element={<FishingPage />} />
         {/* My four spaces (see SpaceSwitcher), all under /profile. */}
