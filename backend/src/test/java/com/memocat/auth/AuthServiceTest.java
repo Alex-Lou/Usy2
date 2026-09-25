@@ -4,11 +4,13 @@ import com.memocat.auth.dto.LoginResponse;
 import com.memocat.domain.User;
 import com.memocat.repository.UserRepository;
 import com.memocat.security.JwtService;
+import com.memocat.web.TooSoonException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +32,8 @@ class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private JwtService jwtService;
+    @Spy
+    private LoginThrottle throttle = new LoginThrottle();
 
     @InjectMocks
     private AuthService authService;
@@ -83,6 +87,18 @@ class AuthServiceTest {
         String wrongPwMsg = catchMessage(() -> authService.login("alice", "wrong"));
 
         assertThat(unknownMsg).isEqualTo(wrongPwMsg);
+    }
+
+    @Test
+    void repeatedWrongPasswordsLockTheAccountEvenForTheRightOne() {
+        when(userRepository.findByUsername("alice")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrong", "hashed-pw")).thenReturn(false);
+        for (int i = 0; i < LoginThrottle.MAX_FAILURES; i++) {
+            assertThatThrownBy(() -> authService.login("alice", "wrong")).isInstanceOf(BadCredentialsException.class);
+        }
+
+        assertThatThrownBy(() -> authService.login("alice", "secret")).isInstanceOf(TooSoonException.class);
+        assertThatThrownBy(() -> authService.login("ALICE", "secret")).isInstanceOf(TooSoonException.class);
     }
 
     private String catchMessage(Runnable r) {
