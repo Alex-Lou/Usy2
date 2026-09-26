@@ -11,7 +11,8 @@ import { MOOD_TEXT, wornItems, type PetAction } from "../types";
 import { usePet } from "../usePet";
 import { DecorBar } from "./DecorBar";
 import { DecorLayer } from "./DecorLayer";
-import { surface } from "./houseApi";
+import { Garden } from "./Garden";
+import { surface, type Scene } from "./houseApi";
 import { HouseShop } from "./HouseShop";
 import { createPetClient } from "./petClient";
 import { isNight, Room } from "./Room";
@@ -93,7 +94,9 @@ export function PetHousePage() {
   const { pet, setPet, pose, caption, act, react, onActivity } = usePet(user?.id);
   const [tool, setTool] = useState<Tool>(null);
   const [shop, setShop] = useState(false);
-  const decor = useHouseDecor("inside");
+  const [scene, setScene] = useState<Scene>("inside");
+  const decor = useHouseDecor(scene);
+  const inside = scene === "inside";
   const [decorShop, setDecorShop] = useState<"objects" | "room" | null>(null);
   const followHouse = decor.follow;
   const labels = useMemo(() => Object.fromEntries((decor.house?.items ?? []).map((i) => [i.id, i.label])), [decor.house]);
@@ -324,6 +327,27 @@ export function PetHousePage() {
         <Gauge icon="⚡" label="Énergie" value={pet.energy} />
       </div>
 
+      <div className="flex gap-1.5 self-center rounded-full border border-border bg-surface p-1 text-sm" role="tablist" aria-label="Où regarder">
+        {(["inside", "outside"] as const).map((s) => (
+          <button
+            key={s}
+            type="button"
+            role="tab"
+            aria-selected={scene === s}
+            onClick={() => {
+              if (s === scene) return;
+              if (decor.editing) decor.stop();
+              setTool(null);
+              setDot(null);
+              setScene(s);
+            }}
+            className={`rounded-full px-4 py-1.5 font-semibold press ${scene === s ? "btn-brand" : "text-text-muted"}`}
+          >
+            {s === "inside" ? "🏠 Dedans" : "🌳 Dehors"}
+          </button>
+        ))}
+      </div>
+
       <div
         ref={stageRef}
         onPointerMove={onMove}
@@ -337,14 +361,19 @@ export function PetHousePage() {
         }}
         className={"relative aspect-[4/3] w-full touch-none select-none overflow-hidden rounded-token border border-border " + (tool ? "cursor-none" : "")}
       >
-        <Room
-          night={night}
-          furnished={(decor.draft ?? decor.house?.layouts.inside.items ?? []).length > 0}
-          surfaces={{ wall: surface(decor.house, "wall"), floor: surface(decor.house, "floor"), view: surface(decor.house, "view"), ceiling: surface(decor.house, "ceiling") }}
-        />
+        {inside ? (
+          <Room
+            night={night}
+            furnished={(decor.draft ?? decor.house?.layouts.inside.items ?? []).length > 0}
+            surfaces={{ wall: surface(decor.house, "wall"), floor: surface(decor.house, "floor"), view: surface(decor.house, "view"), ceiling: surface(decor.house, "ceiling") }}
+          />
+        ) : (
+          <Garden night={night} surfaces={{ house: surface(decor.house, "house"), ground: surface(decor.house, "ground") }} />
+        )}
         <DecorLayer
-          items={decor.draft ?? decor.house?.layouts.inside.items ?? []}
+          items={decor.draft ?? decor.house?.layouts[scene].items ?? []}
           labels={labels}
+          night={night}
           editing={decor.editing}
           selected={decor.selected}
           onSelect={decor.setSelected}
@@ -352,6 +381,7 @@ export function PetHousePage() {
           onRemove={remove}
           stageRef={stageRef}
         />
+        {inside && (
         <LivingCat
           mode="house"
           pose={shownPose}
@@ -362,6 +392,7 @@ export function PetHousePage() {
           onTap={tool || decor.editing ? undefined : () => void care("pet")}
           label={`Toucher ${pet.name}`}
         />
+        )}
         {GUESTS.filter((g) => guests.includes(g.id)).map((g) => (
           <LivingCompanion key={g.id} kind={g.id} scene="house" start={g.start} friendRef={catRef} />
         ))}
@@ -425,9 +456,10 @@ export function PetHousePage() {
           onRemove={() => decor.selected != null && remove(decor.selected)}
           onObjects={() => setDecorShop("objects")}
           onRoom={() => setDecorShop("room")}
+          roomLabel={inside ? "🎨 Pièce" : "🏡 Maison & sol"}
           onDone={decor.stop}
         />
-      ) : (
+      ) : inside ? (
       <div className="grid grid-cols-6 gap-1.5">
         {TOOLS.map((t) => (
           <button
@@ -445,6 +477,8 @@ export function PetHousePage() {
           </button>
         ))}
       </div>
+      ) : (
+        <p className="text-center text-sm text-text-muted">{pet.name} est resté·e au chaud à l'intérieur ; les compagnons, eux, profitent du jardin.</p>
       )}
       <p className="text-center text-[11px] text-text-muted">
         {pet.coinsLeftToday > 0
@@ -461,7 +495,7 @@ export function PetHousePage() {
           }}
           className="self-center rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold press hover:border-primary/50 disabled:opacity-40"
         >
-          ✏️ Décorer la maison
+          {inside ? "✏️ Décorer la maison" : "✏️ Décorer le jardin"}
         </button>
       )}
 
@@ -469,6 +503,7 @@ export function PetHousePage() {
       {decorShop && decor.house && (
         <HouseShop
           house={decor.house}
+          scene={scene}
           night={night}
           initialTab={decorShop}
           onChange={(h) => {

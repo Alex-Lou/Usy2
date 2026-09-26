@@ -19,7 +19,10 @@ const SETS = {
   noto: "Noto Emoji © Google, Apache licence 2.0 — github.com/googlefonts/noto-emoji",
 };
 
-const catalog = JSON.parse(readFileSync(CATALOG, "utf8"));
+// Drawings the house needs besides the catalog: what shows before anything is chosen.
+const DEFAULTS = [{ id: "maison-defaut", src: "fluent-emoji:house-with-garden" }];
+
+const catalog = [...JSON.parse(readFileSync(CATALOG, "utf8")), ...DEFAULTS];
 const tmp = mkdtempSync(join(tmpdir(), "decor-"));
 const sets = {};
 function set(name) {
