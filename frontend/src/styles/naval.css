@@ -80,11 +80,71 @@ button.nv-ship {
   overflow: visible;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
 }
-.nv-ship--selected {
-  animation: nv-lift 1.1s ease-in-out infinite;
-  outline: 2px dashed var(--nv-accent);
-  outline-offset: -1px;
+/* Placing: ships hold still, follow the finger, never scroll the page. */
+.nv-board--placing .nv-ship {
+  animation: none;
+  touch-action: none;
+  cursor: grab;
   border-radius: 8px;
+}
+.nv-board--placing .nv-ship:focus-visible {
+  outline: 2px solid var(--nv-accent);
+  outline-offset: -1px;
+}
+.nv-float {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  padding: 0.3%;
+  opacity: 0.92;
+  transform: scale(1.08);
+  filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.45));
+}
+.nv-float--bad {
+  filter: drop-shadow(0 0 6px rgba(255, 70, 90, 0.9)) saturate(0.6);
+}
+.nv-float .nv-ship-svg {
+  width: 100%;
+  height: 100%;
+}
+.nv-port {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 56px;
+}
+.nv-port-ship {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 8px 10px 6px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2, rgba(127, 127, 127, 0.1));
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+  transition: opacity 0.15s;
+}
+.nv-port-ship--out {
+  opacity: 0.25;
+}
+.nv-port-hull {
+  display: block;
+  width: calc(var(--len) * 26px);
+  height: 26px;
+}
+.nv-port-name {
+  font-size: 11px;
+  font-weight: 600;
+}
+.nv-note {
+  min-height: 1.25rem;
+  margin-top: -4px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 .nv-ship--sunk {
   animation: nv-sink 1.4s ease-in 0.5s both;
@@ -369,6 +429,92 @@ button.nv-ship {
   letter-spacing: 1px;
   opacity: 0.7;
 }
+/* Where we are, and what to play */
+.nv-steps {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nv-steps li {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--color-text-muted, inherit);
+  text-align: center;
+}
+.nv-steps li::before {
+  content: "";
+  align-self: stretch;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--color-border);
+}
+.nv-step-dot {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-weight: 700;
+  border: 1px solid var(--color-border);
+}
+.nv-step-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nv-step--done::before,
+.nv-step--on::before {
+  background: var(--color-primary) !important;
+}
+.nv-step--done .nv-step-dot {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.nv-step--on {
+  color: inherit !important;
+  font-weight: 700;
+}
+.nv-step--on .nv-step-dot {
+  color: #fff;
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+.nv-mode,
+.nv-level {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  text-align: left;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.nv-mode:enabled:hover,
+.nv-level:hover {
+  border-color: var(--color-primary);
+}
+.nv-mode-title {
+  font-family: var(--font-display, inherit);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.nv-level {
+  padding: 12px;
+}
+.nv-level--on {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
 .nv-result {
   animation: qz-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
 }
@@ -418,10 +564,6 @@ button.nv-ship {
 @keyframes nv-drift {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(1.5%, -2%); }
-}
-@keyframes nv-lift {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6%); }
 }
 @keyframes nv-sink {
   0% { transform: none; filter: none; }
