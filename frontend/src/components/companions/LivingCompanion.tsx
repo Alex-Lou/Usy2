@@ -4,6 +4,8 @@ import { BUBBLE_LIFE, CompanionBrain, type BubbleKind, type Kind } from "./brain
 
 const BUBBLE: Record<BubbleKind, string> = { z: "z", note: "♪", heart: "♥", howl: "Aouuu" };
 const BUBBLE_COLOR: Record<BubbleKind, string> = { z: "#7cc6e8", note: "#b18cff", heart: "#ff86b8", howl: "#a9b8ff" };
+// The feet sink a little into the ground (and its shadow) so they touch it.
+const SINK = 1.5;
 const HEAD_TOP: Record<Kind, number> = { penguin: 66, wolf: 58, cat: 58, otter: 48 };
 /** Relative sizes, so the wolf stands a little taller than the kitten and the penguin. */
 const SIZE: Record<Kind, number> = { penguin: 1, wolf: 1.2, cat: 1.05, otter: 1.05 };
@@ -135,7 +137,7 @@ export function LivingCompanion({
         ))}
       <ellipse cx={b.x} cy={box.ground + 1} rx={(kind === "penguin" ? 16 : 22) * s + b.lying * 8 * s} ry={3 * s} fill="#000" opacity="0.14" />
       <g
-        transform={`translate(${b.x} ${box.ground + b.lift}) scale(${b.dir * s} ${s})`}
+        transform={`translate(${b.x} ${box.ground + SINK + b.lift}) scale(${b.dir * s} ${s})`}
         onClick={poke}
         role="button"
         tabIndex={0}
