@@ -2,7 +2,8 @@ import { apiRequest } from "../../lib/api/client";
 
 /** {@code c}: choices (several can be ticked) · {@code l}: own words (both answered, then guessed) · {@code p}: just to talk. */
 export type Kind = "c" | "l" | "p";
-export type Verdict = "right" | "close" | "wrong";
+/** {@code some}: ticked choices only, under half of the ticks in common. */
+export type Verdict = "right" | "close" | "some" | "wrong";
 
 export interface NousTheme {
   id: string;
@@ -27,6 +28,7 @@ export interface NousCard {
 export interface NousScore {
   right: number;
   close: number;
+  some: number;
   wrong: number;
   pending: number;
   percent: number | null;
@@ -40,7 +42,7 @@ export interface NousOverview {
   theirAnswers: number;
   toGuess: number;
   toJudge: number;
-  /** How well I know the other one / how well they know me. */
+  /** How well I know the other one / how well they know me ({@code percent}: average points). */
   me: NousScore;
   them: NousScore;
   daily: NousCard | null;
@@ -79,6 +81,10 @@ export interface NousReveal {
   verdict: Verdict | null;
   note: string | null;
   createdAt: string;
+  /** 0–100: ticks in common ÷ ticks in all ({@code common}, {@code union}); words: right 100, close 50, wrong 0. */
+  points: number | null;
+  common: number | null;
+  union: number | null;
 }
 
 export interface NousHistory {
@@ -108,8 +114,18 @@ export function toggled(list: number[], i: number): number[] {
 export const VERDICTS: Record<Verdict, { label: string; emoji: string; color: string }> = {
   right: { label: "Juste !", emoji: "🎯", color: "#3fbf7f" },
   close: { label: "Presque !", emoji: "😏", color: "#f0a020" },
+  some: { label: "Un peu", emoji: "🤏", color: "#8a7bd8" },
   wrong: { label: "Raté", emoji: "🙈", color: "#e2534f" },
 };
+
+/** Why a guess got its points, in a few words. */
+export function pointsDetail(r: NousReveal): string | null {
+  if (r.points == null) return null;
+  if (r.common != null && r.union != null) {
+    return `${r.common} case${r.common > 1 ? "s" : ""} en commun sur ${r.union} cochée${r.union > 1 ? "s" : ""} en tout · ${r.points} %`;
+  }
+  return `Réponse en mots jugée ${r.verdict ? VERDICTS[r.verdict].label.toLowerCase().replace(" !", "") : ""} · ${r.points} %`;
+}
 
 /** A little word for a telepathy score, from "strangers" to "soulmates". */
 export function telepathy(percent: number | null): string {

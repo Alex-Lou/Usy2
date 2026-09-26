@@ -4,7 +4,7 @@ import { ApiError } from "../../lib/api/client";
 import { Confetti } from "../games/Confetti";
 import { Ticks } from "./Ticks";
 import {
-  getHistory, getToGuess, judgeGuess, MAX_NOTE, MAX_TEXT, sendGuess, toggled, VERDICTS,
+  getHistory, getToGuess, judgeGuess, MAX_NOTE, MAX_TEXT, pointsDetail, sendGuess, toggled, VERDICTS,
   type NousReveal, type NousTheme, type NousToGuess, type Verdict,
 } from "./api";
 
@@ -78,6 +78,11 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
           </motion.div>
         </div>
         <Stamp verdict={reveal.verdict} partnerName={partnerName} />
+        {pointsDetail(reveal) && (
+          <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="text-center text-sm font-semibold tabular-nums text-text-muted" data-nous-points="">
+            {pointsDetail(reveal)}
+          </motion.p>
+        )}
         <button type="button" onClick={next} className="btn-brand press self-center rounded-token px-5 py-2 font-semibold">
           {queue.length > 1 ? "Suivante →" : "Terminé ✓"}
         </button>
@@ -103,7 +108,7 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
       <h2 className="font-display text-xl font-bold leading-snug">{current.text}</h2>
       {current.kind === "c" ? (
         <div className="flex flex-col gap-2">
-          <p className="text-xs text-text-muted">Coche tout ce que {partnerName} a coché : les mêmes = 🎯, au moins une en commun = 😏.</p>
+          <p className="text-xs text-text-muted">Coche tout ce que {partnerName} a coché. Points = cases en commun ÷ cases cochées en tout (oublis et cases en trop comptent pareil).</p>
           <Ticks options={current.options} ticked={ticks} color={color} disabled={busy} label="Ta devinette" onToggle={(i) => setTicks((t) => toggled(t, i))} />
           <button type="button" disabled={busy || ticks.length === 0} onClick={() => void send(ticks, null)}
             className="btn-brand press self-end rounded-token px-4 py-2 font-semibold disabled:opacity-40">
@@ -185,7 +190,7 @@ function JudgeItem({ r, color, partnerName, onDone }: { r: NousReveal; color: st
             placeholder="Un petit mot avec ton verdict (facultatif)" aria-label="Petit mot"
             className="w-full rounded-token border border-border bg-surface-2 px-3 py-2 text-sm" />
           <div className="grid grid-cols-3 gap-2" role="group" aria-label="Verdict">
-            {(Object.keys(VERDICTS) as Verdict[]).map((v) => (
+            {(["right", "close", "wrong"] as Verdict[]).map((v) => (
               <button key={v} type="button" disabled={busy} onClick={() => void judge(v)}
                 className="press rounded-token px-2 py-2 text-sm font-bold text-white shadow"
                 style={{ background: VERDICTS[v].color }}>
@@ -233,6 +238,7 @@ export function HistoryTab({ themes, partnerName }: Props) {
               {side === "mine" ? "Ta devinette" : `Devinette de ${partnerName}`} : <b className="text-text">{said(r, "guess")}</b>
               {" · "}{side === "mine" ? `Réponse de ${partnerName}` : "Ta réponse"} : <b className="text-text">{said(r, "answer")}</b>
             </p>
+            {pointsDetail(r) && <p className="text-xs font-semibold tabular-nums">{pointsDetail(r)}</p>}
             {r.note && <p className="nd-note rounded-token px-2.5 py-1.5 text-xs">💬 {r.note}</p>}
           </li>
         ))}
