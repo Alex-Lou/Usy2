@@ -6,10 +6,10 @@ const BUBBLE: Record<BubbleKind, string> = { z: "z", note: "♪", heart: "♥", 
 const BUBBLE_COLOR: Record<BubbleKind, string> = { z: "#7cc6e8", note: "#b18cff", heart: "#ff86b8", howl: "#a9b8ff" };
 // The feet sink a little into the ground (and its shadow) so they touch it.
 const SINK = 1.5;
-const HEAD_TOP: Record<Kind, number> = { penguin: 66, wolf: 58, cat: 58, otter: 48 };
+const HEAD_TOP: Record<Kind, number> = { penguin: 66, wolf: 58, cat: 58, otter: 48, siamese: 62 };
 /** Relative sizes, so the wolf stands a little taller than the kitten and the penguin. */
-const SIZE: Record<Kind, number> = { penguin: 1, wolf: 1.2, cat: 1.05, otter: 1.05 };
-const LABEL: Record<Kind, string> = { penguin: "le pingouin", wolf: "le loup", cat: "le chat", otter: "la loutre" };
+const SIZE: Record<Kind, number> = { penguin: 1, wolf: 1.2, cat: 1.05, otter: 1.05, siamese: 1.05 };
+const LABEL: Record<Kind, string> = { penguin: "le pingouin", wolf: "le loup", cat: "le chat", otter: "la loutre", siamese: "le siamois" };
 
 /** Where a companion lives: the house (same 400×300 box as Room) or a side-menu tile. */
 export const SCENES = {
@@ -18,7 +18,7 @@ export const SCENES = {
 } as const;
 
 /** The companions that can live in the house or a side-menu tile. */
-export const LIVING_KINDS: Kind[] = ["penguin", "wolf", "cat", "otter"];
+export const LIVING_KINDS: Kind[] = ["penguin", "wolf", "cat", "otter", "siamese"];
 export const isLivingKind = (v: string): v is Kind => (LIVING_KINDS as string[]).includes(v);
 /** The living body for a companion choice: the otter without its fish walks as the otter. */
 export const livingKindOf = (v: string): Kind | null => (v === "otter-plain" ? "otter" : isLivingKind(v) ? v : null);

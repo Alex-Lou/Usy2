@@ -5,7 +5,7 @@
  * when touched. Pure state, stepped by LivingCompanion's frame loop.
  */
 
-export type Kind = "penguin" | "wolf" | "cat" | "otter";
+export type Kind = "penguin" | "wolf" | "cat" | "otter" | "siamese";
 export type State = "idle" | "walk" | "visit" | "nap" | "happy" | "trick";
 export type BubbleKind = "z" | "note" | "heart" | "howl";
 
@@ -31,6 +31,7 @@ const KINDS: Record<Kind, { speed: number; trickOdds: number; trickDur: number }
   wolf: { speed: 34, trickOdds: 12, trickDur: 2.6 }, // sits and howls
   cat: { speed: 38, trickOdds: 15, trickDur: 1.3 }, // crouches then pounces
   otter: { speed: 30, trickOdds: 15, trickDur: 6 }, // belly slide too: otters love it
+  siamese: { speed: 38, trickOdds: 15, trickDur: 1.3 }, // a cat: crouches then pounces
 };
 
 export const BUBBLE_LIFE = 1.6;
@@ -140,7 +141,7 @@ export class CompanionBrain {
       if (this.slides()) {
         this.target = this.x < (env.minX + env.maxX) / 2 ? rand(env.maxX - room * 0.25, env.maxX) : rand(env.minX, env.minX + room * 0.25);
         this.dir = this.target > this.x ? 1 : -1;
-      } else if (this.kind === "cat") {
+      } else if (this.kind === "cat" || this.kind === "siamese") {
         const room2 = this.dir > 0 ? env.maxX - this.x : this.x - env.minX;
         if (room2 < 50) this.dir = this.dir > 0 ? -1 : 1; // pounce where there is room
       }
