@@ -41,10 +41,11 @@ export function listComments(postId: number, page = 0, size = 20): Promise<Page<
   return apiRequest<Page<Comment>>(`/api/posts/${postId}/comments?page=${page}&size=${size}`);
 }
 
-export function addComment(postId: number, text: string): Promise<Comment> {
+/** {@code parentId}: the comment it answers (a reply to a reply joins the same thread). */
+export function addComment(postId: number, text: string, parentId: number | null = null): Promise<Comment> {
   return apiRequest<Comment>(`/api/posts/${postId}/comments`, {
     method: "POST",
-    body: { text },
+    body: { text, parentId },
   });
 }
 

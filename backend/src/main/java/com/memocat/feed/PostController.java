@@ -88,6 +88,6 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     public CommentDto addComment(Principal principal, @PathVariable Long id,
                                  @RequestBody PostRequests.CreateComment request) {
-        return commentService.create(principal.getName(), id, request.text());
+        return commentService.create(principal.getName(), id, request.text(), request.parentId());
     }
 }

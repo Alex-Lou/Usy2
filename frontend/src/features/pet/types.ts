@@ -4,7 +4,7 @@ export type PetMood = "hungry" | "tired" | "dirty" | "bored" | "happy" | "conten
 export interface PetItem {
   id: string;
   label: string;
-  slot: "neck" | "head" | "face" | "home";
+  slot: "neck" | "head" | "face" | "home" | "coat";
   price: number;
   owned: boolean;
   equipped: boolean;

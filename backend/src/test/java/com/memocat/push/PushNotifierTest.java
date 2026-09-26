@@ -121,6 +121,23 @@ class PushNotifierTest {
     }
 
     @Test
+    void aReplyOrATagSaysSoAndOpensTheVeryComment() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onFeedActivity(new FeedActivity(FeedActivity.COMMENT, 1L, "Lou", 8L, 1L, null, java.util.List.of(2L), 51L, 2L));
+        assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou a répondu à ton commentaire 💬");
+        assertThat(sentPayload(phone).get("url").asText()).isEqualTo("/posts/8?comments=1&comment=51");
+    }
+
+    @Test
+    void aTagInAPostSaysSo() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onFeedActivity(new FeedActivity(FeedActivity.POST, 1L, "Lou", 8L, 1L, null, java.util.List.of(2L), null, null));
+        assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou t'a identifié·e dans un post 🏷️");
+    }
+
+    @Test
     void reactionsOpenTheVeryMessageOrComment() throws Exception {
         when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
 

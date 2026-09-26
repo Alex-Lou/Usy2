@@ -25,6 +25,7 @@ export interface Comment {
   text: string;
   createdAt: string;
   reactions: CommentReaction[]; // one emoji per person, oldest first
+  parentId?: number | null; // the top-level comment it answers
 }
 
 export interface CommentReaction {

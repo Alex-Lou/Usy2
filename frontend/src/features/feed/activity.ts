@@ -6,6 +6,9 @@ export interface FeedActivity {
   postId: number;
   postAuthorId: number;
   emoji: string | null;
+  mentionedIds?: number[]; // who the post or comment tags
+  commentId?: number | null; // the new comment
+  replyToId?: number | null; // author of the comment it answers
 }
 
 /**

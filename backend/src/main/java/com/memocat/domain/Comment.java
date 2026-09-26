@@ -32,6 +32,11 @@ public class Comment {
     @Column(nullable = false)
     private String text;
 
+    /** The comment this one answers (always a top-level one), or null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -40,9 +45,14 @@ public class Comment {
     }
 
     public Comment(Post post, User author, String text) {
+        this(post, author, text, null);
+    }
+
+    public Comment(Post post, User author, String text, Comment parent) {
         this.post = post;
         this.author = author;
         this.text = text;
+        this.parent = parent;
     }
 
     @PrePersist
@@ -70,5 +80,9 @@ public class Comment {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Comment getParent() {
+        return parent;
     }
 }
