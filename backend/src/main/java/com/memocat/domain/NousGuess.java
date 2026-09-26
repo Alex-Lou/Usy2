@@ -14,7 +14,8 @@ import java.time.Instant;
 
 /**
  * 💞 Nous deux: one guess about the other person's answer. Ticked choices
- * (a bit set) are judged at once: the same ones right, some in common close; words wait for the verdict of the person it is about (right, close
+ * (a bit set) are judged at once by their share of ticks in common (see
+ * NousService.verdict); words wait for the verdict of the person it is about (right, close
  * or wrong, with a little note).
  */
 @Entity
@@ -23,6 +24,8 @@ public class NousGuess {
 
     public static final String RIGHT = "right";
     public static final String CLOSE = "close";
+    /** Ticked choices only: under half of the ticks in common, but some. */
+    public static final String SOME = "some";
     public static final String WRONG = "wrong";
 
     @Id
