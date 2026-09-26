@@ -12,6 +12,7 @@ export const SPECIES = [
   "robin",
   "parrot",
   "penguin",
+  "otter-plain",
   "otter",
 ] as const;
 
@@ -28,7 +29,8 @@ export const SPECIES_LABELS: Record<Species, string> = {
   robin: "Rouge-gorge",
   parrot: "Perroquet",
   penguin: "Pingouin",
-  otter: "Loutre",
+  "otter-plain": "Loutre",
+  otter: "Loutre au poisson",
 };
 
 function valid(value: string | null | undefined): Species {
