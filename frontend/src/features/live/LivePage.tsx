@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ApiError } from "../../lib/api/client";
 import { useAuth } from "../auth/useAuth";
 import { Confetti } from "../games/Confetti";
+import { ShareScore } from "../games/ShareScore";
 import { getNous, toggled, type NousTheme } from "../nous/api";
 import { Ticks } from "../nous/Ticks";
 import { getQuiz, MIX, type QuizTheme } from "../quiz/api";
@@ -441,7 +442,16 @@ function Final({ g, host, other, color, onNew }: { g: LiveView; host: boolean; o
         {!abandoned && g.kind === "quiz" && g.status === "done" && <p className="tabular-nums">Toi <b>{me}</b> · {other} <b>{them}</b></p>}
         {g.kind === "nous" && finished && <p className="text-sm text-text-muted">{compat >= 80 ? "Deux têtes, un seul cœur." : compat >= 50 ? "Joliment accordés." : "Assez différents pour ne jamais s'ennuyer."}</p>}
         {reason && <p className="text-sm text-text-muted">{reason}</p>}
-        <button type="button" onClick={onNew} className="btn-brand press mt-2 rounded-token px-5 py-2 font-semibold">⚡ Nouvelle partie</button>
+        <div className="mt-2 flex flex-wrap justify-center gap-2">
+          <button type="button" onClick={onNew} className="btn-brand press rounded-token px-5 py-2 font-semibold">⚡ Nouvelle partie</button>
+          {g.status === "done" && !abandoned && played.length > 0 && (
+            <ShareScore
+              text={g.kind === "quiz"
+                ? `⚡ Duel quiz en direct · ${g.label} : moi ${me} – ${them} ${other} · ${me > them ? "victoire 🏆" : me < them ? `victoire de ${other} 👑` : "égalité 🤝"}`
+                : `💞 Même longueur d'onde en direct avec ${other} : ${compat} % de compatibilité sur ${played.length} question${played.length > 1 ? "s" : ""} !`}
+            />
+          )}
+        </div>
       </div>
       {g.rounds.length > 0 && (
         <details className="card p-3">
