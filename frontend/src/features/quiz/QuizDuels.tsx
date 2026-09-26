@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ApiError } from "../../lib/api/client";
 import { Confetti } from "../games/Confetti";
+import { ShareScore } from "../games/ShareScore";
 import { getDuel, MIX, type QuizChallenge, type QuizChallenges, type QuizDuel, type QuizTheme } from "./api";
 
 const MIX_COLOR = "#7c6cf0";
@@ -217,7 +218,12 @@ export function DuelView({ id, onBack }: { id: number; onBack: () => void }) {
           </li>
         ))}
       </ol>
-      <button type="button" onClick={onBack} className="chip press self-center">← Défis</button>
+      <div className="flex flex-wrap justify-center gap-2">
+        <button type="button" onClick={onBack} className="chip press">← Défis</button>
+        <ShareScore
+          text={`🎯 Défi quiz · ${what(c)} : ${duel.myName} ${c.myScore ?? 0} – ${c.theirScore ?? 0} ${duel.theirName} · ${c.outcome === "win" ? `victoire de ${duel.myName} 👑` : c.outcome === "lose" ? `victoire de ${duel.theirName} 👑` : "égalité 🤝"}`}
+        />
+      </div>
     </div>
   );
 }

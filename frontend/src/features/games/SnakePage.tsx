@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
+import { ShareScore } from "./ShareScore";
 
 const GRID = 15; // cells per side
 const SIZE = 360; // logical canvas px
@@ -220,6 +221,7 @@ export function SnakePage() {
                 <Icon name="gamepad" size={18} />
                 {over ? "Rejouer" : "Jouer"}
               </Button>
+              {over && <div className="mt-2"><ShareScore text={`🐍 Snake : ${score} points ! Qui fait mieux ?`} /></div>}
             </div>
           </div>
         )}

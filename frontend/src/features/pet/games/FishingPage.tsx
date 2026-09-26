@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../../../components/ui/Icon";
+import { ShareScore } from "../../games/ShareScore";
 import { getPet, playRound } from "../api";
 import { CatSprite, type CatPose } from "../CatSprite";
 import { wornItems, type Pet } from "../types";
@@ -244,6 +245,7 @@ export function FishingPage() {
                     {result.coins == null ? "Enregistrement…" : result.coins > 0 ? `+${result.coins} 🪙` : "Plus de pièces à gagner aujourd'hui"}
                   </p>
                   <p className="text-xs text-text-muted">Record : {Math.max(readBest(), result.score)}</p>
+                  <ShareScore text={`🎣 La pêche : ${result.score} points, ${result.caught} poisson${result.caught > 1 ? "s" : ""} pour ${name}${result.record ? " · nouveau record 🏆" : ""}`} />
                   <div className="mt-2 flex gap-2">
                     <button type="button" onClick={start} className="btn-brand rounded-full px-5 py-2 font-semibold press">
                       Rejouer
