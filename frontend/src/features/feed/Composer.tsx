@@ -10,6 +10,7 @@ import { StudioDraftCard } from "../../components/photo/studio/DraftCard";
 import type { StudioEdit } from "../../components/photo/studio/draft";
 import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { createPost } from "./api";
+import { MentionSuggest, usePeople } from "./mentions";
 
 export interface ComposerSeed {
   text: string;
@@ -26,6 +27,8 @@ export function Composer({
   seed?: ComposerSeed;
 }) {
   const { user } = useAuth();
+  const people = usePeople();
+  const [caret, setCaret] = useState(0);
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [effect, setEffect] = useState<string | null>(null);
@@ -109,11 +112,29 @@ export function Composer({
           <textarea
             ref={textareaRef}
             value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Quoi de neuf, mon cœur ?"
+            onChange={(e) => {
+              setText(e.target.value);
+              setCaret(e.target.selectionStart ?? e.target.value.length);
+            }}
+            onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? 0)}
+            placeholder="Quoi de neuf, mon cœur ? (@ pour taguer)"
             maxLength={2000}
             rows={2}
             className="w-full resize-none bg-transparent text-text placeholder:text-text-muted outline-none"
+          />
+          <MentionSuggest
+            text={text}
+            caret={caret}
+            people={people}
+            myId={user?.id}
+            onPick={(next, pos) => {
+              setText(next);
+              setCaret(pos);
+              requestAnimationFrame(() => {
+                textareaRef.current?.focus();
+                textareaRef.current?.setSelectionRange(pos, pos);
+              });
+            }}
           />
           {preview && (
             <div className="relative mt-2 inline-block">

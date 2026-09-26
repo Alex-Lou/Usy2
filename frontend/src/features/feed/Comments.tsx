@@ -10,7 +10,18 @@ import { useAuth } from "../auth/useAuth";
 import { LongPress, ReactionBar, ReactionPills } from "../chat/MessageReactions";
 import { onCommentReactions } from "./activity";
 import { addComment, deleteComment, listComments, reactToComment } from "./api";
+import { MentionSuggest, usePeople, withMentions } from "./mentions";
 import type { Comment, CommentReaction } from "./types";
+
+/** Where a new comment goes: at the end, or (a reply) right after the last of its thread. */
+function placed(list: Comment[], c: Comment): Comment[] {
+  if (c.parentId == null) return [...list, c];
+  let at = list.length;
+  list.forEach((x, i) => {
+    if (x.id === c.parentId || x.parentId === c.parentId) at = i + 1;
+  });
+  return [...list.slice(0, at), c, ...list.slice(at)];
+}
 
 export function Comments({
   postId,
@@ -60,6 +71,23 @@ export function Comments({
   const { text, setText, ref, insert, rememberCaret } = useRichInput<HTMLTextAreaElement>();
   useAutoGrow(ref, text, 120);
   const [busy, setBusy] = useState(false);
+  const people = usePeople();
+  const [caret, setCaret] = useState(0);
+  // Answering a comment: its thread (the top-level comment) and whom.
+  const [replyTo, setReplyTo] = useState<{ id: number; name: string } | null>(null);
+
+  function reply(c: Comment) {
+    setReplyTo({ id: c.parentId ?? c.id, name: c.author.displayName });
+    // Tags the person answered (not myself), unless the text already does.
+    const tag = `@${c.author.displayName} `;
+    const next = c.author.id !== user?.id && !text.includes(tag.trim()) ? tag + text : text;
+    setText(next);
+    requestAnimationFrame(() => {
+      ref.current?.focus();
+      ref.current?.setSelectionRange(next.length, next.length);
+      setCaret(next.length);
+    });
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -90,8 +118,9 @@ export function Comments({
     if (!content.trim() || busy) return;
     setBusy(true);
     try {
-      const c = await addComment(postId, content);
-      setItems((prev) => [...prev, c]);
+      const c = await addComment(postId, content, replyTo?.id ?? null);
+      setItems((prev) => placed(prev, c));
+      setReplyTo(null);
       if (clearInput) setText("");
       onCountChange(1);
     } finally {
@@ -104,21 +133,36 @@ export function Comments({
     void send(text, true);
   }
 
+  // Deleting a comment takes its replies with it (the server does the same).
   async function remove(id: number) {
     await deleteComment(id);
-    setItems((prev) => prev.filter((c) => c.id !== id));
-    onCountChange(-1);
+    const gone = items.filter((c) => c.id === id || c.parentId === id).length;
+    setItems((prev) => prev.filter((c) => c.id !== id && c.parentId !== id));
+    if (replyTo?.id === id) setReplyTo(null);
+    onCountChange(-gone);
   }
 
   return (
     <div className="mt-3 border-t border-border pt-3">
       {/* The box comes first: nothing moves when the comments finish loading. */}
+      {replyTo && (
+        <p className="mb-1.5 flex items-center gap-2 text-xs text-text-muted">
+          <span>↩ Réponse à <b className="text-text">{replyTo.name}</b></span>
+          <button type="button" onClick={() => setReplyTo(null)} aria-label="Ne plus répondre" className="press hover:text-text">
+            <Icon name="x" size={12} />
+          </button>
+        </p>
+      )}
       <form onSubmit={submit} className="flex items-end gap-1.5">
         <textarea
           ref={ref}
           rows={1}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value);
+            setCaret(e.target.selectionStart ?? e.target.value.length);
+          }}
+          onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? 0)}
           onKeyDown={(e) => {
             if (isSendKey(e)) {
               e.preventDefault();
@@ -127,7 +171,7 @@ export function Comments({
           }}
           onBlur={rememberCaret}
           maxLength={1000}
-          placeholder="Écrire un commentaire…"
+          placeholder={replyTo ? `Répondre à ${replyTo.name}…` : "Commenter… (@ pour taguer)"}
           className="min-h-10 flex-1 resize-none rounded-3xl border border-border bg-bg-2/60 px-4 py-2 text-sm leading-snug outline-none focus:border-primary/70"
         />
         <RichPicker onEmoji={insert} onSticker={(token) => void send(token, false)} />
@@ -135,12 +179,25 @@ export function Comments({
           <Icon name="send" size={16} />
         </button>
       </form>
+      <div className="mt-1.5 empty:hidden">
+        <MentionSuggest
+          text={text}
+          caret={caret}
+          people={people}
+          myId={user?.id}
+          onPick={(next, pos) => {
+            setText(next);
+            setCaret(pos);
+            requestAnimationFrame(() => ref.current?.setSelectionRange(pos, pos));
+          }}
+        />
+      </div>
 
       <div className="mt-3 flex flex-col gap-3">
         {items.map((c) => (
-          <div key={c.id} className="flex items-start gap-2.5">
+          <div key={c.id} className={`flex items-start gap-2.5 ${c.parentId != null ? "ml-10" : ""}`}>
             <ProfileLink userId={c.author.id} className="shrink-0 rounded-full">
-              <Avatar name={c.author.displayName} size={30} assetId={c.author.avatarAssetId} framing={c.author.avatarFraming} species={c.author.companion} />
+              <Avatar name={c.author.displayName} size={c.parentId != null ? 24 : 30} assetId={c.author.avatarAssetId} framing={c.author.avatarFraming} species={c.author.companion} />
             </ProfileLink>
             <div id={`comment-${c.id}`} className="flex min-w-0 flex-1 flex-col items-start">
             <LongPress onLongPress={(anchor) => setMenu({ comment: c, anchor })}>
@@ -155,17 +212,22 @@ export function Comments({
                   </button>
                 )}
               </div>
-              <RichBody text={c.text} className="text-sm" />
+              <RichBody text={c.text} className="text-sm" renderText={(t) => withMentions(t, people)} />
             </div>
             </LongPress>
-            <ReactionPills
-              reactions={c.reactions ?? []}
-              myId={user?.id}
-              onOpen={() => {
-                const el = document.getElementById(`comment-${c.id}`);
-                if (el) setMenu({ comment: c, anchor: el.getBoundingClientRect() });
-              }}
-            />
+            <div className="flex items-center gap-2">
+              <ReactionPills
+                reactions={c.reactions ?? []}
+                myId={user?.id}
+                onOpen={() => {
+                  const el = document.getElementById(`comment-${c.id}`);
+                  if (el) setMenu({ comment: c, anchor: el.getBoundingClientRect() });
+                }}
+              />
+              <button type="button" onClick={() => reply(c)} className="px-1 text-xs font-semibold text-text-muted press hover:text-text">
+                Répondre
+              </button>
+            </div>
             </div>
           </div>
         ))}
