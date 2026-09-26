@@ -1,0 +1,242 @@
+[
+[
+"f01",
+"c",
+"Dans 10 ans, on vit…",
+"En ville",
+"À la campagne",
+"Au bord de la mer",
+"Quelque part à l'étranger"
+],
+[
+"f02",
+"c",
+"Ce qui compte le plus pour toi ?",
+"La famille",
+"La liberté",
+"La sécurité",
+"L'aventure"
+],
+[
+"f03",
+"c",
+"Face à un gros choix, tu…",
+"Écoutes ton cœur",
+"Fais une liste pour/contre",
+"Demandes conseil",
+"Laisses faire le hasard"
+],
+[
+"f04",
+"c",
+"Ta plus grande source d'énergie ?",
+"Être seul·e un moment",
+"Voir du monde",
+"La nature",
+"Créer quelque chose"
+],
+[
+"f05",
+"c",
+"Ton rapport à l'argent ?",
+"Prudent·e",
+"Généreux·se",
+"Je ne compte pas",
+"Je planifie tout"
+],
+[
+"f06",
+"c",
+"La qualité que tu admires le plus ?",
+"La gentillesse",
+"Le courage",
+"L'humour",
+"L'honnêteté"
+],
+[
+"f07",
+"c",
+"Ce qui te stresse le plus ?",
+"Le travail",
+"L'argent",
+"La santé",
+"Le regard des autres"
+],
+[
+"f08",
+"c",
+"Ton idée d'une vie réussie ?",
+"Être entouré·e",
+"Être libre",
+"Laisser une trace",
+"Être en paix"
+],
+[
+"f09",
+"c",
+"Si tu changeais de métier demain ?",
+"Artisan·e",
+"Artiste",
+"Soigner les gens",
+"Ouvrir un café"
+],
+[
+"f10",
+"c",
+"Notre maison idéale ?",
+"Un petit nid douillet",
+"Une grande maison pleine d'amis",
+"Un van aménagé",
+"Un appartement en ville"
+],
+[
+"f11",
+"l",
+"Ton plus grand rêve, même un peu fou ?"
+],
+[
+"f12",
+"l",
+"La peur que tu aimerais dépasser ?"
+],
+[
+"f13",
+"l",
+"La personne qui t'a le plus inspiré·e dans ta vie ?"
+],
+[
+"f14",
+"l",
+"Le conseil que tu donnerais à toi, enfant ?"
+],
+[
+"f15",
+"l",
+"Une chose que tu aimerais apprendre avant tes 50 ans ?"
+],
+[
+"f16",
+"l",
+"Le pays où tu aimerais vivre un an ?"
+],
+[
+"f17",
+"l",
+"La valeur sur laquelle tu ne transigerais jamais ?"
+],
+[
+"f18",
+"l",
+"Ce qui te fait te sentir vraiment vivant·e ?"
+],
+[
+"f19",
+"l",
+"Un projet qu'on devrait faire ensemble cette année ?"
+],
+[
+"f20",
+"l",
+"Le moment de ta vie dont tu es le plus fier·e ?"
+],
+[
+"f21",
+"p",
+"De quoi as-tu besoin de ma part quand tu vas mal ?"
+],
+[
+"f22",
+"p",
+"Qu'est-ce que tu aimerais qu'on améliore ensemble, en douceur ?"
+],
+[
+"f23",
+"p",
+"Comment imagines-tu nos vieux jours ?"
+],
+[
+"f24",
+"p",
+"Quelle leçon ta famille t'a-t-elle transmise ?"
+],
+[
+"f25",
+"p",
+"Qu'est-ce qui te fait te sentir aimé·e, vraiment ?"
+],
+[
+"f26",
+"p",
+"Qu'est-ce que la confiance veut dire pour toi ?"
+],
+[
+"f27",
+"p",
+"Quel est le rêve que tu n'as encore jamais dit à personne ?"
+],
+[
+"f28",
+"p",
+"Qu'aimerais-tu qu'on dise de toi dans 30 ans ?"
+],
+[
+"f29",
+"p",
+"Qu'est-ce qui te rend heureux·se, là, en ce moment ?"
+],
+[
+"f30",
+"p",
+"Quel moment t'a fait grandir le plus ?"
+],
+[
+"f31",
+"p",
+"Qu'est-ce que tu ne veux jamais perdre dans notre couple ?"
+],
+[
+"f32",
+"p",
+"Si on pouvait tout plaquer pour un an, on ferait quoi ?"
+],
+[
+"f33",
+"p",
+"Quel est ton rapport au temps qui passe ?"
+],
+[
+"f34",
+"p",
+"Qu'est-ce qui te donne de l'espoir ?"
+],
+[
+"f35",
+"p",
+"Quelle est la chose la plus courageuse que tu aies faite ?"
+],
+[
+"f36",
+"p",
+"Comment aimerais-tu qu'on se réconcilie après une dispute ?"
+],
+[
+"f37",
+"p",
+"De quoi es-tu reconnaissant·e aujourd'hui ?"
+],
+[
+"f38",
+"p",
+"Quelle version de toi aimerais-tu devenir dans 5 ans ?"
+],
+[
+"f39",
+"p",
+"Qu'est-ce qu'une journée « parfaitement ordinaire » pour nous ?"
+],
+[
+"f40",
+"p",
+"Quelle promesse aimerais-tu qu'on se fasse ?"
+]
+]

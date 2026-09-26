@@ -1,0 +1,84 @@
+/* 💞 Nous deux (features/nous): a warm gradient hero, cards that flip in,
+   verdict stamps that thump, telepathy gauges that fill, a beating heart. */
+:root {
+  --nd-accent: #ff6fa8;
+}
+.nd-hero {
+  color: #fff;
+  border: none;
+  background: linear-gradient(135deg, #ff6fa8, #b36ae2 55%, #5b8def);
+  background-size: 200% 200%;
+  animation: nd-sheen 9s ease-in-out infinite, fade-up 0.5s ease-out both;
+}
+.nd-float {
+  display: inline-block;
+  animation: nd-float 3.2s ease-in-out infinite;
+}
+.nd-daily {
+  color: #fff;
+  border: none;
+  background: linear-gradient(135deg, #ff6fa8, #b36ae2);
+}
+.nd-tab-on {
+  background: var(--nd-accent);
+  border-color: var(--nd-accent);
+}
+.nd-badge {
+  background: #e2534f;
+  animation: qz-pop 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.nd-card {
+  border-top: 5px solid var(--nd, var(--nd-accent));
+  animation: nd-flip 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  transform-origin: 50% 0;
+}
+.nd-pill {
+  background: var(--nd, var(--nd-accent));
+}
+.nd-heart {
+  animation: nd-beat 0.5s ease-out;
+}
+.nd-gauge {
+  background: linear-gradient(90deg, #ff6fa8, #b36ae2);
+  transition: width 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.nd-stamp {
+  display: inline-block;
+  animation: nd-stamp 0.45s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.nd-note {
+  background: color-mix(in srgb, var(--nd-accent) 12%, var(--color-surface));
+}
+@keyframes nd-sheen {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes nd-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-6px) rotate(4deg); }
+}
+@keyframes nd-flip {
+  from { opacity: 0; transform: perspective(700px) rotateX(-70deg) translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes nd-beat {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+}
+@keyframes nd-stamp {
+  0% { opacity: 0; transform: scale(2.4) rotate(-14deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-6deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nd-hero,
+  .nd-float,
+  .nd-card,
+  .nd-heart,
+  .nd-stamp,
+  .nd-badge {
+    animation: none;
+  }
+  .nd-gauge {
+    transition: none;
+  }
+}

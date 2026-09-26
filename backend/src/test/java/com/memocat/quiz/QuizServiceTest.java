@@ -1,11 +1,9 @@
 package com.memocat.quiz;
 
 import com.memocat.domain.QuizProgress;
-import com.memocat.domain.QuizSelfAnswer;
 import com.memocat.domain.User;
 import com.memocat.quiz.dto.QuizDtos;
 import com.memocat.repository.QuizProgressRepository;
-import com.memocat.repository.QuizSelfAnswerRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ConflictException;
 import com.memocat.web.ContentValidationException;
@@ -34,7 +32,6 @@ class QuizServiceTest {
     private final QuizBank bank = new QuizBank();
     private final UserRepository users = mock(UserRepository.class);
     private final QuizProgressRepository progress = mock(QuizProgressRepository.class);
-    private final QuizSelfAnswerRepository selfAnswers = mock(QuizSelfAnswerRepository.class);
     private Instant now = Instant.parse("2026-09-26T10:00:00Z");
     private final Clock clock = new Clock() {
         @Override
@@ -52,7 +49,7 @@ class QuizServiceTest {
             return now;
         }
     };
-    private final QuizService quiz = new QuizService(bank, users, progress, selfAnswers, clock);
+    private final QuizService quiz = new QuizService(bank, users, progress, clock);
     private final User lou = new User("lou", "h", "Lou");
     private final User sam = new User("sam", "h", "Sam");
     private final List<QuizProgress> saved = new ArrayList<>();
@@ -146,29 +143,5 @@ class QuizServiceTest {
         assertThatThrownBy(() -> quiz.answer("lou", run.id(), 7)).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> quiz.start("lou", new QuizDtos.Start("nope", 1))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> quiz.start("lou", new QuizDtos.Start("cinema", 9))).isInstanceOf(ContentValidationException.class);
-    }
-
-    @Test
-    void toiEtMoiNeedsThePartnersAnswersThenAsksAboutThem() {
-        when(selfAnswers.findByUserId(2L)).thenReturn(List.of());
-        assertThatThrownBy(() -> quiz.start("lou", new QuizDtos.Start("toi", null))).isInstanceOf(ConflictException.class);
-
-        when(selfAnswers.findByUserId(2L)).thenReturn(List.of(
-                new QuizSelfAnswer(sam, "saison", 2), new QuizSelfAnswer(sam, "repas", 0), new QuizSelfAnswer(sam, "animal", 1)));
-        QuizDtos.Run run = quiz.start("lou", new QuizDtos.Start("toi", null));
-
-        assertThat(run.question().about()).isEqualTo("Sam");
-        assertThat(run.question().total()).isEqualTo(3);
-        String text = run.question().text();
-        int expected = text.startsWith("Saison") ? 2 : text.startsWith("Repas") ? 0 : 1;
-        assertThat(quiz.answer("lou", run.id(), expected).correct()).isTrue();
-    }
-
-    @Test
-    void myOwnAnswersAreCheckedAndKept() {
-        when(selfAnswers.findByUserIdAndQuestionId(1L, "saison")).thenReturn(Optional.empty());
-        quiz.selfAnswer("lou", new QuizDtos.SelfAnswer("saison", 3));
-        assertThatThrownBy(() -> quiz.selfAnswer("lou", new QuizDtos.SelfAnswer("saison", 4))).isInstanceOf(ContentValidationException.class);
-        assertThatThrownBy(() -> quiz.selfAnswer("lou", new QuizDtos.SelfAnswer("inconnue", 0))).isInstanceOf(ContentValidationException.class);
     }
 }

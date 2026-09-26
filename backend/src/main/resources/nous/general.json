@@ -1,0 +1,572 @@
+[
+[
+"matin",
+"c",
+"Plutôt du matin ou du soir ?",
+"Lève-tôt",
+"Couche-tard",
+"Les deux",
+"Ni l'un ni l'autre"
+],
+[
+"repas",
+"c",
+"Repas préféré de la journée ?",
+"Petit-déjeuner",
+"Déjeuner",
+"Goûter",
+"Dîner"
+],
+[
+"saison",
+"c",
+"Saison préférée ?",
+"Printemps",
+"Été",
+"Automne",
+"Hiver"
+],
+[
+"vacances",
+"c",
+"Vacances idéales ?",
+"Plage",
+"Montagne",
+"Grande ville",
+"Road trip"
+],
+[
+"soiree",
+"c",
+"Soirée parfaite ?",
+"Film sous la couette",
+"Resto",
+"Soirée entre amis",
+"Jeux vidéo"
+],
+[
+"boisson",
+"c",
+"Boisson du matin ?",
+"Café",
+"Thé",
+"Chocolat",
+"Jus de fruits"
+],
+[
+"animal",
+"c",
+"Animal préféré ?",
+"Chat",
+"Chien",
+"Oiseau",
+"Autre"
+],
+[
+"gout",
+"c",
+"Plutôt sucré ou salé ?",
+"Sucré",
+"Salé",
+"Les deux",
+"Aucun des deux"
+],
+[
+"film",
+"c",
+"Genre de film préféré ?",
+"Comédie",
+"Horreur",
+"Science-fiction",
+"Romance"
+],
+[
+"musique",
+"c",
+"Musique du moment ?",
+"Pop",
+"Rap",
+"Rock",
+"Électro"
+],
+[
+"dimanche",
+"c",
+"Dimanche idéal ?",
+"Grasse matinée",
+"Balade dehors",
+"Ménage & rangement",
+"Brunch"
+],
+[
+"superpouvoir",
+"c",
+"Superpouvoir rêvé ?",
+"Voler",
+"Se téléporter",
+"Lire les pensées",
+"Être invisible"
+],
+[
+"cuisine",
+"c",
+"En cuisine, tu es plutôt…",
+"Grand chef",
+"Recettes simples",
+"Plats préparés",
+"Livraison"
+],
+[
+"dispute",
+"c",
+"Après une dispute, tu…",
+"Parles tout de suite",
+"As besoin de temps",
+"Fais un câlin",
+"Fais comme si de rien n'était"
+],
+[
+"reveil",
+"c",
+"Au réveil, tu…",
+"Te lèves direct",
+"Snoozes plusieurs fois",
+"Regardes ton téléphone",
+"Restes au lit à rêvasser"
+],
+[
+"peur",
+"c",
+"Ta plus grande peur ?",
+"Les araignées",
+"Le vide",
+"Le noir",
+"Parler en public"
+],
+[
+"cadeau",
+"c",
+"Cadeau préféré ?",
+"Une surprise",
+"Un voyage",
+"Un objet utile",
+"Un mot doux fait main"
+],
+[
+"fastfood",
+"c",
+"Fast-food préféré ?",
+"Burger",
+"Pizza",
+"Sushi",
+"Tacos"
+],
+[
+"climat",
+"c",
+"Tu préfères avoir…",
+"Trop chaud",
+"Trop froid",
+"Juste bien, jamais d'extrême",
+"Peu importe"
+],
+[
+"sport",
+"c",
+"Ton rapport au sport ?",
+"Tous les jours",
+"De temps en temps",
+"Seulement à la télé",
+"Jamais"
+],
+[
+"argent",
+"c",
+"Avec 1 000 € de surprise, tu…",
+"Voyages",
+"Économises",
+"Te fais plaisir",
+"Offres des cadeaux"
+],
+[
+"couleur",
+"c",
+"Couleur préférée ?",
+"Bleu",
+"Rouge",
+"Vert",
+"Noir"
+],
+[
+"dessert",
+"c",
+"Dessert préféré ?",
+"Chocolat",
+"Fruits",
+"Glace",
+"Fromage"
+],
+[
+"rangement",
+"c",
+"Ton bureau est plutôt…",
+"Impeccable",
+"Organisé à ma façon",
+"Un joyeux bazar",
+"Quel bureau ?"
+],
+[
+"serie",
+"c",
+"Tu regardes une série…",
+"Un épisode par soir",
+"Tout d'un coup",
+"Je décroche vite",
+"Je n'en regarde pas"
+],
+[
+"retard",
+"c",
+"En rendez-vous, tu es…",
+"En avance",
+"Pile à l'heure",
+"Un peu en retard",
+"Très en retard"
+],
+[
+"telephone",
+"c",
+"Temps d'écran par jour ?",
+"Moins d'1 h",
+"1 à 3 h",
+"3 à 5 h",
+"Plus de 5 h"
+],
+[
+"pizza",
+"c",
+"L'ananas sur la pizza ?",
+"Oui, j'adore",
+"Non, jamais",
+"Pourquoi pas",
+"Je n'ai jamais goûté"
+],
+[
+"langage",
+"c",
+"Ton langage de l'amour ?",
+"Les mots doux",
+"Les câlins",
+"Les cadeaux",
+"Les petits services"
+],
+[
+"weekend",
+"c",
+"Week-end improvisé ?",
+"On part loin",
+"On reste à la maison",
+"On voit des amis",
+"On sort en ville"
+],
+[
+"jeu",
+"c",
+"Au jeu, tu es…",
+"Mauvais·e perdant·e",
+"Fair-play",
+"Je triche un peu",
+"Je laisse gagner"
+],
+[
+"enfance",
+"c",
+"Enfant, tu voulais être…",
+"Artiste",
+"Scientifique",
+"Sportif·ve",
+"Aventurier·e"
+],
+[
+"lecture",
+"c",
+"Livre ou écran ?",
+"Livre papier",
+"Liseuse",
+"Écran",
+"Je lis peu"
+],
+[
+"voyage",
+"c",
+"Destination de rêve ?",
+"Japon",
+"Islande",
+"Amérique du Sud",
+"Afrique"
+],
+[
+"sommeil",
+"c",
+"Position pour dormir ?",
+"Sur le dos",
+"Sur le ventre",
+"Sur le côté",
+"En étoile"
+],
+[
+"humeur",
+"c",
+"Pour te remonter le moral ?",
+"Chocolat",
+"Musique à fond",
+"Parler à quelqu'un",
+"Dormir"
+],
+[
+"plage",
+"c",
+"À la plage, tu…",
+"Bronzes",
+"Nages",
+"Lis",
+"Fais la sieste"
+],
+[
+"anniversaire",
+"c",
+"Pour ton anniversaire, tu préfères…",
+"Une grande fête",
+"Un dîner à deux",
+"Une surprise",
+"Qu'on l'oublie"
+],
+[
+"rire",
+"c",
+"Qu'est-ce qui te fait le plus rire ?",
+"Les blagues nulles",
+"Les vidéos d'animaux",
+"Les situations absurdes",
+"Les gaffes des autres"
+],
+[
+"futur",
+"c",
+"Dans 10 ans, tu te vois…",
+"À la campagne",
+"En grande ville",
+"Au bord de la mer",
+"À l'étranger"
+],
+[
+"g01",
+"c",
+"Ta pâte à tartiner idéale ?",
+"Chocolat-noisette",
+"Confiture",
+"Beurre salé",
+"Miel"
+],
+[
+"g02",
+"c",
+"Chaussettes au lit ?",
+"Toujours",
+"Jamais",
+"Seulement l'hiver",
+"Je les perds dans la nuit"
+],
+[
+"g03",
+"c",
+"Sous la douche, tu…",
+"Chantes à tue-tête",
+"Réfléchis à ta vie",
+"Fais vite",
+"Restes des heures"
+],
+[
+"g04",
+"c",
+"Ton application la plus utilisée ?",
+"Messagerie",
+"Réseaux sociaux",
+"Musique",
+"Jeux"
+],
+[
+"g05",
+"c",
+"Au supermarché, tu…",
+"Suis la liste",
+"Improvises tout",
+"Craques sur les gâteaux",
+"Évites d'y aller"
+],
+[
+"g06",
+"c",
+"Tu te perds, tu…",
+"Demandes ton chemin",
+"Sors le GPS",
+"Continues tout droit",
+"Fais demi-tour"
+],
+[
+"g07",
+"c",
+"Café ou thé en terrasse ?",
+"Café serré",
+"Thé fumant",
+"Chocolat chaud",
+"Un verre bien frais"
+],
+[
+"g08",
+"c",
+"Ton émoji le plus envoyé ?",
+"😂",
+"❤️",
+"🥺",
+"👍"
+],
+[
+"g09",
+"c",
+"Tu dors avec…",
+"Un seul oreiller",
+"Plein d'oreillers",
+"Une peluche",
+"Mon/ma partenaire en oreiller"
+],
+[
+"g10",
+"c",
+"Ta manière de manger une frite ?",
+"Une par une",
+"Par poignées",
+"Trempée dans la sauce",
+"Je vole celles de l'autre"
+],
+[
+"g11",
+"c",
+"Musique en voiture ?",
+"Karaoké à fond",
+"Podcast",
+"Radio",
+"Silence"
+],
+[
+"g12",
+"c",
+"Ton rapport aux plantes ?",
+"Main verte",
+"Elles survivent par miracle",
+"Plantes en plastique",
+"RIP toutes les plantes"
+],
+[
+"g13",
+"c",
+"Ton pire défaut au quotidien ?",
+"Râleur·se",
+"Tête en l'air",
+"Trop perfectionniste",
+"Toujours en retard"
+],
+[
+"g14",
+"c",
+"En soirée, tu es…",
+"Sur la piste de danse",
+"Près du buffet",
+"Dans la cuisine à discuter",
+"Parti·e la première"
+],
+[
+"g15",
+"c",
+"Ton plat de réconfort ?",
+"Pâtes",
+"Soupe",
+"Raclette",
+"Pizza"
+],
+[
+"g16",
+"l",
+"Ta chanson qu'on pourrait passer en boucle sans que tu t'en lasses ?"
+],
+[
+"g17",
+"l",
+"Le plat que tu commanderais pour ton dernier repas sur Terre ?"
+],
+[
+"g18",
+"l",
+"Ton film doudou, celui que tu revois toujours ?"
+],
+[
+"g19",
+"l",
+"Le prénom que tu aurais aimé avoir ?"
+],
+[
+"g20",
+"l",
+"Ton odeur préférée au monde ?"
+],
+[
+"g21",
+"l",
+"Le mot que tu dis beaucoup trop souvent ?"
+],
+[
+"g22",
+"l",
+"Ta petite manie que peu de gens connaissent ?"
+],
+[
+"g23",
+"l",
+"L'objet dont tu ne pourrais jamais te séparer ?"
+],
+[
+"g24",
+"l",
+"Ta madeleine de Proust (goût d'enfance) ?"
+],
+[
+"g25",
+"p",
+"Quelle est la dernière chose qui t'a vraiment fait rire ?"
+],
+[
+"g26",
+"p",
+"Qu'est-ce qui t'a rendu·e fier·e cette semaine ?"
+],
+[
+"g27",
+"p",
+"Si on avait un jour de congé demain, on ferait quoi ?"
+],
+[
+"g28",
+"p",
+"Quelle habitude aimerais-tu prendre cette année ?"
+],
+[
+"g29",
+"p",
+"Quel est ton petit plaisir coupable du moment ?"
+],
+[
+"g30",
+"p",
+"Raconte-moi ta journée idéale, du réveil au coucher."
+]
+]

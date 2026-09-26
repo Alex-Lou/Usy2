@@ -1,0 +1,143 @@
+import { useEffect, useMemo, useState } from "react";
+import { ApiError } from "../../lib/api/client";
+import { forgetMine, getMine, MAX_TEXT, saveMine, type NousMine, type NousTheme } from "./api";
+import { FilterChip } from "./NousCards";
+
+/**
+ * ✍️ My answers about me: a tap for a choice, a few words otherwise. Only
+ * the other one's guesses ever reveal them; changing one lets them guess again.
+ */
+export function MineTab({ themes, partnerName, onChange }: { themes: NousTheme[]; partnerName: string; onChange: () => void }) {
+  const [items, setItems] = useState<NousMine[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [theme, setTheme] = useState<string>("all");
+  const [todo, setTodo] = useState(true);
+
+  useEffect(() => {
+    getMine().then(setItems).catch(() => setFailed(true));
+  }, []);
+
+  const shown = useMemo(
+    () => (items ?? []).filter((q) => (theme === "all" || q.theme === theme) && (!todo || (q.choice == null && q.answer == null))),
+    [items, theme, todo],
+  );
+  const done = (items ?? []).filter((q) => q.choice != null || q.answer != null).length;
+
+  const saved = (next: NousMine) => {
+    setItems((list) => list?.map((q) => (q.id === next.id ? next : q)) ?? null);
+    onChange();
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="text-sm text-text-muted">
+        Réponds sur toi : {partnerName} devra deviner. <b className="tabular-nums">{done}/{items?.length ?? "…"}</b> réponses.
+      </p>
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar" role="tablist" aria-label="Thèmes">
+        <FilterChip on={theme === "all"} onClick={() => setTheme("all")}>Tous</FilterChip>
+        {themes.map((t) => <FilterChip key={t.id} on={theme === t.id} color={t.color} onClick={() => setTheme(t.id)}>{t.emoji} {t.label}</FilterChip>)}
+      </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" checked={todo} onChange={(e) => setTodo(e.target.checked)} /> Seulement celles sans réponse
+      </label>
+
+      {failed && <p className="card p-4 text-sm">Tes réponses ne se chargent pas.</p>}
+      {!items && !failed && <div className="card h-64 animate-pulse" />}
+      {items && shown.length === 0 && <p className="card p-6 text-center text-sm text-text-muted">{todo ? "Tout est répondu ici 🎉" : "Rien ici."}</p>}
+
+      <ul className="flex flex-col gap-3">
+        {shown.slice(0, 30).map((q) => (
+          <MineItem key={q.id} q={q} color={themes.find((t) => t.id === q.theme)?.color ?? "#ff6fa8"} partnerName={partnerName} onSaved={saved} />
+        ))}
+      </ul>
+      {shown.length > 30 && <p className="text-center text-xs text-text-muted">Réponds à celles-ci, les suivantes arrivent ensuite.</p>}
+    </div>
+  );
+}
+
+function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: string; partnerName: string; onSaved: (q: NousMine) => void }) {
+  const [text, setText] = useState(q.answer ?? "");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [flash, setFlash] = useState(false);
+  const answered = q.choice != null || q.answer != null;
+
+  const save = async (choice: number | null, words: string | null) => {
+    setBusy(true);
+    setError(null);
+    try {
+      await saveMine(q.id, choice, words);
+      onSaved({ ...q, choice, answer: words?.trim() ?? null });
+      setFlash(true);
+      window.setTimeout(() => setFlash(false), 900);
+    } catch (e) {
+      setError(e instanceof ApiError ? e.message : "Pas enregistré, réessaie.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  const forget = async () => {
+    setBusy(true);
+    try {
+      await forgetMine(q.id);
+      setText("");
+      onSaved({ ...q, choice: null, answer: null });
+    } catch {
+      setError("Pas effacé, réessaie.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <li className="card qz-slide flex flex-col gap-2 p-4" style={{ borderLeft: `4px solid ${color}` }}>
+      <p className="font-semibold leading-snug">{q.text}</p>
+      {q.kind === "c" ? (
+        <div className="grid grid-cols-2 gap-2" role="group" aria-label="Ta réponse">
+          {q.options.map((o, i) => (
+            <button
+              key={o}
+              type="button"
+              disabled={busy}
+              aria-pressed={q.choice === i}
+              onClick={() => void save(i, null)}
+              className={"press rounded-token border-2 px-3 py-2 text-left text-sm font-semibold transition " + (q.choice === i ? "text-white" : "border-border hover:-translate-y-0.5")}
+              style={q.choice === i ? { background: color, borderColor: color } : undefined}
+            >
+              {o}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-1.5">
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value.slice(0, MAX_TEXT))}
+            rows={2}
+            maxLength={MAX_TEXT}
+            placeholder="Ta réponse, avec tes mots…"
+            aria-label="Ta réponse"
+            className="w-full resize-y rounded-token border border-border bg-surface-2 px-3 py-2 text-sm"
+          />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={busy || !text.trim() || text.trim() === (q.answer ?? "")}
+              onClick={() => void save(null, text.trim())}
+              className="btn-brand press rounded-token px-3 py-1.5 text-sm font-semibold disabled:opacity-40"
+            >
+              {answered ? "Modifier" : "Enregistrer"}
+            </button>
+            <span className="ml-auto text-xs tabular-nums text-text-muted">{text.length}/{MAX_TEXT}</span>
+          </div>
+        </div>
+      )}
+      <div className="flex items-center gap-3 text-xs text-text-muted">
+        {flash && <span className="qz-pop font-semibold" style={{ color }}>✓ Enregistré</span>}
+        {answered && !flash && <span>Changer ta réponse laisse {partnerName} deviner à nouveau.</span>}
+        {answered && <button type="button" onClick={() => void forget()} disabled={busy} className="ml-auto underline">Effacer</button>}
+      </div>
+      {error && <p className="text-xs text-danger" role="alert">{error}</p>}
+    </li>
+  );
+}

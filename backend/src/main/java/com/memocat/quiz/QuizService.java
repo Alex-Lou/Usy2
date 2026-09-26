@@ -1,11 +1,9 @@
 package com.memocat.quiz;
 
 import com.memocat.domain.QuizProgress;
-import com.memocat.domain.QuizSelfAnswer;
 import com.memocat.domain.User;
 import com.memocat.quiz.dto.QuizDtos;
 import com.memocat.repository.QuizProgressRepository;
-import com.memocat.repository.QuizSelfAnswerRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ConflictException;
 import com.memocat.web.ContentValidationException;
@@ -29,8 +27,7 @@ import java.util.stream.Collectors;
 
 /**
  * The quiz: a map of levels per theme (5 each, the next one opens with a
- * star), and "Toi & moi" where each answers about themself and the other
- * guesses. A run is held by the server (questions, right answers, timing) so
+ * star; "Toi & moi" now lives in 💞 Nous deux). A run is held by the server (questions, right answers, timing) so
  * the phone only learns an answer once it has answered; runs live in memory
  * for 30 minutes (a restart just means starting the level again).
  */
@@ -39,14 +36,12 @@ public class QuizService {
 
     static final int PER_RUN = 10;
     static final int SECONDS = 20;
-    static final int MIN_SELF = 3;
     private static final Duration GRACE = Duration.ofSeconds(3);
     private static final Duration RUN_TTL = Duration.ofMinutes(30);
     private static final int MAX_RUNS = 200;
-    public static final String TOI = "toi";
 
-    /** A question as played: its options in the order shown, which one is right, and who it is about. */
-    record Item(String text, List<String> options, int correct, String about) {
+    /** A question as played: its options in the order shown and which one is right. */
+    record Item(String text, List<String> options, int correct) {
     }
 
     /**
@@ -91,27 +86,25 @@ public class QuizService {
         }
 
         String levelKey() {
-            return theme.equals(TOI) ? TOI : QuizBank.key(theme, level);
+            return QuizBank.key(theme, level);
         }
     }
 
     private final QuizBank bank;
     private final UserRepository users;
     private final QuizProgressRepository progress;
-    private final QuizSelfAnswerRepository selfAnswers;
     private final Clock clock;
     private final Map<String, Run> runs = new ConcurrentHashMap<>();
 
     @Autowired
-    public QuizService(QuizBank bank, UserRepository users, QuizProgressRepository progress, QuizSelfAnswerRepository selfAnswers) {
-        this(bank, users, progress, selfAnswers, Clock.systemUTC());
+    public QuizService(QuizBank bank, UserRepository users, QuizProgressRepository progress) {
+        this(bank, users, progress, Clock.systemUTC());
     }
 
-    QuizService(QuizBank bank, UserRepository users, QuizProgressRepository progress, QuizSelfAnswerRepository selfAnswers, Clock clock) {
+    QuizService(QuizBank bank, UserRepository users, QuizProgressRepository progress, Clock clock) {
         this.bank = bank;
         this.users = users;
         this.progress = progress;
-        this.selfAnswers = selfAnswers;
         this.clock = clock;
     }
 
@@ -128,39 +121,18 @@ public class QuizService {
             }
             return new QuizDtos.Theme(t.id(), t.label(), t.emoji(), t.color(), levels);
         }).toList();
-        Optional<User> partner = partner(me);
-        QuizProgress toi = mine.get(TOI);
-        QuizDtos.Toi toiDto = new QuizDtos.Toi(bank.self().size(), selfAnswers.findByUserId(me.getId()).size(),
-                partner.map(p -> selfAnswers.findByUserId(p.getId()).size()).orElse(0),
-                partner.map(User::getDisplayName).orElse(null),
-                toi == null ? 0 : toi.getStars(), toi == null ? 0 : toi.getBestScore());
-        return new QuizDtos.Overview(themes, toiDto);
+        return new QuizDtos.Overview(themes);
     }
 
-    /** Starts a level (or a "Toi & moi" guessing run): its questions shuffled, the first one served. */
+    /** Starts a level: its questions shuffled, the first one served. */
     @Transactional(readOnly = true)
     public QuizDtos.Run start(String username, QuizDtos.Start request) {
         User me = user(username);
         String theme = request == null ? null : request.theme();
         List<Item> items;
-        int level = 0;
-        if (TOI.equals(theme)) {
-            User partner = partner(me).orElseThrow(() -> new ConflictException("Personne à deviner pour l'instant"));
-            List<QuizSelfAnswer> answered = new ArrayList<>(selfAnswers.findByUserId(partner.getId()));
-            if (answered.size() < MIN_SELF) {
-                throw new ConflictException(partner.getDisplayName() + " doit d'abord répondre à au moins " + MIN_SELF + " questions sur soi");
-            }
-            Collections.shuffle(answered, ThreadLocalRandom.current());
-            items = answered.stream()
-                    .flatMap(a -> bank.selfQuestion(a.getQuestionId()).stream()
-                            .filter(q -> a.getChoice() >= 0 && a.getChoice() < q.options().size())
-                            .map(q -> new Item(q.text(), q.options(), a.getChoice(), partner.getDisplayName())))
-                    .limit(PER_RUN)
-                    .toList();
-        } else {
-            level = request.level() == null ? 0 : request.level();
-            items = levelItems(me, theme, level);
-        }
+        int level;
+        level = request.level() == null ? 0 : request.level();
+        items = levelItems(me, theme, level);
         if (items.isEmpty()) {
             throw new ConflictException("Pas de questions ici pour l'instant");
         }
@@ -267,28 +239,6 @@ public class QuizService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public List<QuizDtos.SelfItem> selfList(String username) {
-        User me = user(username);
-        Map<String, Integer> mine = selfAnswers.findByUserId(me.getId()).stream()
-                .collect(Collectors.toMap(QuizSelfAnswer::getQuestionId, QuizSelfAnswer::getChoice));
-        return bank.self().stream().map(q -> new QuizDtos.SelfItem(q.id(), q.text(), q.options(), mine.get(q.id()))).toList();
-    }
-
-    @Transactional
-    public void selfAnswer(String username, QuizDtos.SelfAnswer request) {
-        User me = user(username);
-        QuizBank.SelfQuestion q = bank.selfQuestion(request == null || request.id() == null ? "" : request.id())
-                .orElseThrow(() -> new ContentValidationException("Question inconnue"));
-        if (request.choice() < 0 || request.choice() >= q.options().size()) {
-            throw new ContentValidationException("Réponse invalide");
-        }
-        QuizSelfAnswer a = selfAnswers.findByUserIdAndQuestionId(me.getId(), q.id())
-                .orElseGet(() -> new QuizSelfAnswer(me, q.id(), request.choice()));
-        a.setChoice(request.choice());
-        selfAnswers.save(a);
-    }
-
     private QuizDtos.Result finish(User me, Run run) {
         int total = run.items.size();
         int stars = stars(run.correct, total);
@@ -297,7 +247,7 @@ public class QuizService {
         boolean hadStar = p.getStars() > 0;
         boolean newBest = p.record(stars, run.score);
         progress.save(p);
-        boolean unlockedNext = !run.theme.equals(TOI) && run.level < QuizBank.LEVELS && !hadStar && stars > 0;
+        boolean unlockedNext = run.level < QuizBank.LEVELS && !hadStar && stars > 0;
         return new QuizDtos.Result(run.score, run.correct, total, stars, p.getBestScore(), newBest, unlockedNext, null, false);
     }
 
@@ -308,14 +258,14 @@ public class QuizService {
 
     private static QuizDtos.Question question(Run run) {
         Item item = run.items.get(run.index);
-        return new QuizDtos.Question(run.index + 1, run.items.size(), item.text(), item.options(), SECONDS, item.about());
+        return new QuizDtos.Question(run.index + 1, run.items.size(), item.text(), item.options(), SECONDS);
     }
 
     /** A bank question with its options in a random order (the right one moves with them). */
     private static Item shuffled(QuizBank.Question q) {
         List<Integer> order = new ArrayList<>(List.of(0, 1, 2, 3).subList(0, q.options().size()));
         Collections.shuffle(order, ThreadLocalRandom.current());
-        return new Item(q.text(), order.stream().map(q.options()::get).toList(), order.indexOf(0), null);
+        return new Item(q.text(), order.stream().map(q.options()::get).toList(), order.indexOf(0));
     }
 
     private static boolean unlocked(Map<String, QuizProgress> mine, String theme, int level) {

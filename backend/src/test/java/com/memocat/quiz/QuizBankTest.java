@@ -30,10 +30,4 @@ class QuizBankTest {
             }
         }
     }
-
-    @Test
-    void toiEtMoiHasItsQuestions() {
-        assertThat(bank.self()).hasSize(40);
-        assertThat(bank.self()).allSatisfy(q -> assertThat(q.options()).hasSize(4));
-    }
 }

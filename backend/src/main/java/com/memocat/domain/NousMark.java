@@ -10,10 +10,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-/** "Toi & moi": what a person answered about themself (the other one then guesses it). */
+import java.time.Instant;
+
+/** 💞 Nous deux: a card someone keeps as a favourite, or marked "on en a parlé". */
 @Entity
-@Table(name = "quiz_self_answer")
-public class QuizSelfAnswer {
+@Table(name = "nous_mark")
+public class NousMark {
+
+    public static final String FAV = "fav";
+    public static final String TALKED = "talked";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,26 +32,29 @@ public class QuizSelfAnswer {
     private String questionId;
 
     @Column(nullable = false)
-    private short choice;
+    private String kind;
 
-    protected QuizSelfAnswer() {
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt = Instant.now();
+
+    protected NousMark() {
     }
 
-    public QuizSelfAnswer(User user, String questionId, int choice) {
+    public NousMark(User user, String questionId, String kind) {
         this.user = user;
         this.questionId = questionId;
-        this.choice = (short) choice;
+        this.kind = kind;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public String getQuestionId() {
         return questionId;
     }
 
-    public int getChoice() {
-        return choice;
-    }
-
-    public void setChoice(int choice) {
-        this.choice = (short) choice;
+    public String getKind() {
+        return kind;
     }
 }

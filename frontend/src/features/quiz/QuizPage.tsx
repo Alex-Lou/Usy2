@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { onCoupleActivity } from "../couple/activity";
-import { getChallenges, getQuiz, MIX, playChallenge, startChallenge, startRun, TOI, type QuizChallenges, type QuizOverview, type QuizTheme } from "./api";
+import { getChallenges, getQuiz, MIX, playChallenge, startChallenge, startRun, type QuizChallenges, type QuizOverview, type QuizTheme } from "./api";
 import { ChallengePicker, DuelsCard, DuelView } from "./QuizDuels";
 import { QuizPlay } from "./QuizPlay";
-import { QuizSelf } from "./QuizSelf";
 
 const THEME_KEY = "memocat.quiz.theme";
 // The path winds: where each level sits across the map (percent from the left).
@@ -14,9 +13,9 @@ const PATH_X = [50, 78, 50, 22, 50];
 type Playing = { theme: string; level: number | null; challenge?: { id?: number } };
 
 /**
- * 🧠 Quiz: a map per theme (5 levels, the next one opens with a star),
- * "Toi & moi" (answer about yourself, guess about the other), and "défis"
- * (the other one plays the very same questions; see QuizDuels).
+ * 🧠 Quiz: a map per theme (5 levels, the next one opens with a star), and
+ * "défis" (the other one plays the very same questions; see QuizDuels).
+ * "Toi & moi" moved to 💞 Nous deux (features/nous).
  */
 export function QuizPage() {
   const [data, setData] = useState<QuizOverview | null>(null);
@@ -29,7 +28,6 @@ export function QuizPage() {
     }
   });
   const [playing, setPlaying] = useState<Playing | null>(null);
-  const [answering, setAnswering] = useState(false);
   const [duels, setDuels] = useState<QuizChallenges | null>(null);
   const [picking, setPicking] = useState(false);
   const [params, setParams] = useSearchParams();
@@ -66,18 +64,15 @@ export function QuizPage() {
   const theme = data?.themes.find((t) => t.id === themeId) ?? data?.themes[0];
   const back = () => {
     setPlaying(null);
-    setAnswering(false);
     setPicking(false);
     setDuel(null);
     if (params.has("duel")) setParams({}, { replace: true });
     load();
   };
 
-  if (answering) return <Frame><QuizSelf onClose={back} /></Frame>;
   if (duel != null) return <Frame><DuelView key={duel} id={duel} onBack={back} /></Frame>;
   if (playing) {
     const t = data?.themes.find((x) => x.id === playing.theme);
-    const isToi = playing.theme === TOI;
     const isMix = playing.theme === MIX;
     const level = playing.level ?? 0;
     const ch = playing.challenge;
@@ -88,11 +83,11 @@ export function QuizPage() {
         <QuizPlay
           key={`${playing.theme}-${level}-${ch?.id ?? (ch ? "new" : "")}`}
           begin={begin}
-          color={isToi ? "#ff6fa8" : isMix ? "#7c6cf0" : t?.color ?? "#7c6cf0"}
-          title={isToi ? `Toi & moi · ${data?.toi.partnerName ?? ""}` : ch ? `🎯 Défi · ${label}` : label}
-          partnerName={duels?.partnerName ?? data?.toi.partnerName}
+          color={isMix ? "#7c6cf0" : t?.color ?? "#7c6cf0"}
+          title={ch ? `🎯 Défi · ${label}` : label}
+          partnerName={duels?.partnerName}
           onExit={back}
-          onNext={!isToi && !ch && level < 5 ? () => setPlaying({ theme: playing.theme, level: level + 1 }) : undefined}
+          onNext={!ch && level < 5 ? () => setPlaying({ theme: playing.theme, level: level + 1 }) : undefined}
           onDuel={(id) => {
             setPlaying(null);
             setDuel(id);
@@ -140,7 +135,6 @@ export function QuizPage() {
               onOpen={setDuel}
             />
           )}
-          <ToiCard toi={data.toi} onAnswer={() => setAnswering(true)} onGuess={() => setPlaying({ theme: TOI, level: null })} />
 
           <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar" role="tablist" aria-label="Thèmes">
             {data.themes.map((t) => {
@@ -171,29 +165,6 @@ export function QuizPage() {
 
 function Frame({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto flex max-w-xl flex-col gap-4">{children}</div>;
-}
-
-function ToiCard({ toi, onAnswer, onGuess }: { toi: QuizOverview["toi"]; onAnswer: () => void; onGuess: () => void }) {
-  const canGuess = toi.partnerName !== null && toi.partnerAnswered >= 3;
-  return (
-    <section className="card relative overflow-hidden p-4 animate-fade-up" aria-label="Toi & moi">
-      <div className="pointer-events-none absolute -right-6 -top-6 text-7xl opacity-15" aria-hidden="true">💞</div>
-      <h2 className="font-display text-lg font-bold">💞 Toi & moi</h2>
-      <p className="text-sm text-text-muted">
-        Réponds sur toi, puis devine les réponses de {toi.partnerName ?? "ton binôme"}.
-        {toi.stars > 0 && ` Meilleur score : ${toi.best} pts, ${"⭐".repeat(toi.stars)}`}
-      </p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        <button type="button" onClick={onAnswer} className="chip press text-sm">✍️ Mes réponses {toi.mine}/{toi.total}</button>
-        <button type="button" onClick={onGuess} disabled={!canGuess} className="btn-brand press rounded-token px-3 py-1.5 text-sm font-semibold disabled:opacity-50">
-          🎯 Deviner {toi.partnerName ?? ""}
-        </button>
-      </div>
-      {!canGuess && toi.partnerName && (
-        <p className="mt-2 text-xs text-text-muted">{toi.partnerName} a répondu à {toi.partnerAnswered} question{toi.partnerAnswered > 1 ? "s" : ""} sur soi : il en faut 3 pour jouer.</p>
-      )}
-    </section>
-  );
 }
 
 /** The winding path of a theme's levels: done ones show their stars, the next one pulses, locked ones wait. */
