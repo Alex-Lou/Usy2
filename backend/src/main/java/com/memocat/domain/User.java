@@ -62,6 +62,10 @@ public class User {
     @Column(name = "tokens_valid_after")
     private Instant tokensValidAfter;
 
+    /** "Actus": my Reddit home feed's private link, sealed by SecretBox (null: none). */
+    @Column(name = "news_reddit_feed")
+    private String newsRedditFeed;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -141,6 +145,14 @@ public class User {
 
     public void setColorMode(String colorMode) {
         this.colorMode = colorMode;
+    }
+
+    public String getNewsRedditFeed() {
+        return newsRedditFeed;
+    }
+
+    public void setNewsRedditFeed(String newsRedditFeed) {
+        this.newsRedditFeed = newsRedditFeed;
     }
 
     public Instant getTokensValidAfter() {

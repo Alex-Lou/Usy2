@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { ApiError } from "../../lib/api/client";
+import { RedditHome } from "./RedditHome";
 import { saveNewsPrefs, type Follow, type FollowKind, type NewsPrefs, type NewsSource } from "./api";
 
 const KINDS: { id: FollowKind; label: string; icon: string; placeholder: string; hint: string }[] = [
@@ -9,6 +10,7 @@ const KINDS: { id: FollowKind; label: string; icon: string; placeholder: string;
   { id: "bluesky", label: "Bluesky", icon: "🦋", placeholder: "korben.info", hint: "Le pseudo du compte (ex. korben.info)." },
   { id: "mastodon", label: "Mastodon", icon: "🐘", placeholder: "Gargron@mastodon.social", hint: "pseudo@serveur" },
   { id: "reddit", label: "Reddit", icon: "👽", placeholder: "pcgaming", hint: "Le nom du subreddit, sans r/." },
+  { id: "youtube", label: "YouTube Shorts", icon: "▶️", placeholder: "@chaine ou lien de la chaîne", hint: "Les Shorts d'une chaîne : son @pseudo (ex. @Squeezie) ou le lien de sa page YouTube. Ils se lisent ici." },
   { id: "xpost", label: "Post X", icon: "𝕏", placeholder: "https://x.com/…/status/…", hint: "Colle le lien d'un post X : il s'affiche via FxTwitter, sans compte." },
 ];
 
@@ -126,6 +128,7 @@ export function NewsSettings({ sources, prefs, onSaved, onClose }: { sources: Ne
         </form>
         <p className="text-[11px] text-text-muted">{current.hint}</p>
       </section>
+      <RedditHome />
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
     </div>
   );

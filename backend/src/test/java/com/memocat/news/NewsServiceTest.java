@@ -1,9 +1,13 @@
 package com.memocat.news;
 
+import com.memocat.config.JwtProperties;
+import com.memocat.domain.User;
 import com.memocat.link.PageFetcher;
 import com.memocat.profile.ProfileService;
 import com.memocat.profile.dto.NewsPrefsDto;
 import com.memocat.profile.dto.NewsPrefsDto.Follow;
+import com.memocat.repository.UserRepository;
+import com.memocat.security.SecretBox;
 import com.memocat.web.ContentValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +40,8 @@ class NewsServiceTest {
 
     @Mock private ProfileService profiles;
     @Mock private PageFetcher fetcher;
+    @Mock private UserRepository users;
+    private final SecretBox box = box();
     private NewsService service;
 
     private static final String RSS = """
@@ -47,7 +53,81 @@ class NewsServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new NewsService(profiles, fetcher, Clock.fixed(Instant.parse("2026-09-25T10:00:00Z"), ZoneOffset.UTC));
+        service = new NewsService(profiles, fetcher, users, box, Clock.fixed(Instant.parse("2026-09-25T10:00:00Z"), ZoneOffset.UTC));
+    }
+
+    private static SecretBox box() {
+        JwtProperties props = new JwtProperties();
+        props.setSecret("test-secret-test-secret-test-secret-42");
+        return new SecretBox(props);
+    }
+
+    private static final String SHORTS = """
+            <feed xmlns="http://www.w3.org/2005/Atom">
+              <entry><title>Mon short</title><link rel="alternate" href="https://www.youtube.com/watch?v=abcDEF12345"/>
+                <author><name>Ma chaîne</name></author><published>2026-09-24T10:00:00+00:00</published>
+                <media:group><media:thumbnail url="https://i.ytimg.com/vi/abcDEF12345/hqdefault.jpg"/></media:group></entry>
+            </feed>""";
+
+    @Test
+    void aYoutubeChannelIsKeptAsItsHandleOrItsId() {
+        NewsPrefsDto saved = service.savePrefs("lou", new NewsPrefsDto(true, List.of(), List.of(
+                new Follow("youtube", "https://www.youtube.com/@MaChaine/shorts?si=abc"),
+                new Follow("youtube", "https://youtube.com/channel/UCabcdefghijklmnopqrstuv"))));
+        assertThat(saved.follows()).extracting(Follow::handle).containsExactly("@MaChaine", "UCabcdefghijklmnopqrstuv");
+        assertThatThrownBy(() -> service.savePrefs("lou", new NewsPrefsDto(true, List.of(), List.of(new Follow("youtube", "https://evil.example/@x")))))
+                .isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
+    void aChannelsShortsAreFoundThroughItsPageThenItsShortsFeed() {
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of(), List.of(new Follow("youtube", "@MaChaine"))));
+        when(fetcher.fetch(eq(URI.create("https://www.youtube.com/@MaChaine")), anyInt(), anyString()))
+                .thenReturn(body("<link rel=\"canonical\" href=\"https://www.youtube.com/channel/UCabcdefghijklmnopqrstuv\">", "text/html"));
+        when(fetcher.fetch(eq(URI.create("https://www.youtube.com/feeds/videos.xml?playlist_id=UUSHabcdefghijklmnopqrstuv")), anyInt(), anyString(), anyString()))
+                .thenReturn(body(SHORTS, "application/atom+xml"));
+
+        var items = service.items("lou");
+
+        assertThat(items).singleElement().satisfies(i -> {
+            assertThat(i.kind()).isEqualTo("youtube");
+            assertThat(i.url()).isEqualTo("https://www.youtube.com/shorts/abcDEF12345");
+            assertThat(i.image()).isEqualTo("https://i.ytimg.com/vi/abcDEF12345/hqdefault.jpg");
+            assertThat(i.sourceLabel()).isEqualTo("@MaChaine");
+        });
+    }
+
+    @Test
+    void myRedditHomeLinkIsSealedAndNeverShownBack() {
+        User lou = new User("lou", "h", "Lou");
+        when(users.findByUsername("lou")).thenReturn(Optional.of(lou));
+
+        String account = service.saveRedditHome("lou", " https://old.reddit.com/.rss?feed=0123456789abcdef&user=LouR ");
+
+        assertThat(account).isEqualTo("LouR");
+        assertThat(lou.getNewsRedditFeed()).doesNotContain("0123456789abcdef").isNotBlank();
+        assertThat(box.open(lou.getNewsRedditFeed())).contains("https://www.reddit.com/.rss?feed=0123456789abcdef&user=LouR");
+        assertThat(service.redditHomeUser("lou")).contains("LouR");
+    }
+
+    @Test
+    void myRedditHomeIsReadWithMyOtherSources() {
+        User lou = new User("lou", "h", "Lou");
+        lou.setNewsRedditFeed(box.seal("https://www.reddit.com/.rss?feed=0123456789abcdef&user=LouR"));
+        when(users.findByUsername("lou")).thenReturn(Optional.of(lou));
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of(), List.of()));
+        when(fetcher.fetch(eq(URI.create("https://www.reddit.com/.rss?feed=0123456789abcdef&user=LouR")), anyInt(), anyString(), anyString()))
+                .thenReturn(body(RSS, "application/atom+xml"));
+
+        assertThat(service.items("lou")).extracting(i -> i.sourceLabel()).containsOnly("Reddit · mon fil");
+    }
+
+    @Test
+    void aWrongRedditLinkIsRefused() {
+        assertThatThrownBy(() -> service.saveRedditHome("lou", "https://www.reddit.com/r/pcgaming"))
+                .isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.saveRedditHome("lou", "https://evil.example/.rss?feed=0123456789abcdef&user=LouR"))
+                .isInstanceOf(ContentValidationException.class);
     }
 
     private static Optional<PageFetcher.Fetched> body(String s, String type) {
