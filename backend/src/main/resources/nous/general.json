@@ -15,7 +15,9 @@
 "Petit-déjeuner",
 "Déjeuner",
 "Goûter",
-"Dîner"
+"Dîner",
+"Le brunch",
+"Les grignotages de minuit"
 ],
 [
 "saison",
@@ -33,7 +35,15 @@
 "Plage",
 "Montagne",
 "Grande ville",
-"Road trip"
+"Road trip",
+"Campagne",
+"Île tropicale",
+"Camping",
+"Croisière",
+"Ski",
+"Festival",
+"Voyage culturel",
+"Chez la famille"
 ],
 [
 "soiree",
@@ -42,7 +52,15 @@
 "Film sous la couette",
 "Resto",
 "Soirée entre amis",
-"Jeux vidéo"
+"Jeux vidéo",
+"Concert",
+"Dîner à la maison",
+"Jeux de société",
+"Karaoké",
+"Balade de nuit",
+"Bar ou boîte",
+"Spa et détente",
+"Cinéma"
 ],
 [
 "boisson",
@@ -51,7 +69,12 @@
 "Café",
 "Thé",
 "Chocolat",
-"Jus de fruits"
+"Jus de fruits",
+"Eau",
+"Café au lait",
+"Chicorée",
+"Smoothie",
+"Rien du tout"
 ],
 [
 "animal",
@@ -60,7 +83,15 @@
 "Chat",
 "Chien",
 "Oiseau",
-"Autre"
+"Autre",
+"Lapin",
+"Cheval",
+"Loutre",
+"Poisson",
+"Tortue",
+"Renard",
+"Panda",
+"Hamster"
 ],
 [
 "gout",
@@ -78,7 +109,15 @@
 "Comédie",
 "Horreur",
 "Science-fiction",
-"Romance"
+"Romance",
+"Action",
+"Animation",
+"Thriller",
+"Drame",
+"Fantastique",
+"Policier",
+"Documentaire",
+"Comédie musicale"
 ],
 [
 "musique",
@@ -87,7 +126,15 @@
 "Pop",
 "Rap",
 "Rock",
-"Électro"
+"Électro",
+"Chanson française",
+"Jazz",
+"Classique",
+"R'n'B / Soul",
+"Métal",
+"Reggae",
+"K-pop",
+"Musiques de films"
 ],
 [
 "dimanche",
@@ -96,7 +143,13 @@
 "Grasse matinée",
 "Balade dehors",
 "Ménage & rangement",
-"Brunch"
+"Brunch",
+"Jeux vidéo",
+"Cuisiner",
+"Voir la famille",
+"Sport",
+"Série toute la journée",
+"Sortie culturelle"
 ],
 [
 "superpouvoir",
@@ -105,7 +158,13 @@
 "Voler",
 "Se téléporter",
 "Lire les pensées",
-"Être invisible"
+"Être invisible",
+"Arrêter le temps",
+"Guérir",
+"Parler toutes les langues",
+"Super force",
+"Voyager dans le temps",
+"Respirer sous l'eau"
 ],
 [
 "cuisine",
@@ -114,7 +173,10 @@
 "Grand chef",
 "Recettes simples",
 "Plats préparés",
-"Livraison"
+"Livraison",
+"Pâtissier·e du dimanche",
+"Aide-cuisinier·e qui goûte tout",
+"Cuisine du monde"
 ],
 [
 "dispute",
@@ -123,7 +185,10 @@
 "Parles tout de suite",
 "As besoin de temps",
 "Fais un câlin",
-"Fais comme si de rien n'était"
+"Fais comme si de rien n'était",
+"Écris un message",
+"Vas marcher pour te calmer",
+"Fais rire l'autre"
 ],
 [
 "reveil",
@@ -132,7 +197,10 @@
 "Te lèves direct",
 "Snoozes plusieurs fois",
 "Regardes ton téléphone",
-"Restes au lit à rêvasser"
+"Restes au lit à rêvasser",
+"Fais du sport",
+"Prends un café avant tout",
+"Mets de la musique"
 ],
 [
 "peur",
@@ -141,7 +209,15 @@
 "Les araignées",
 "Le vide",
 "Le noir",
-"Parler en public"
+"Parler en public",
+"Les serpents",
+"La solitude",
+"L'échec",
+"Les hôpitaux",
+"L'eau profonde",
+"Les clowns",
+"Les orages",
+"Les piqûres"
 ],
 [
 "cadeau",
@@ -150,7 +226,13 @@
 "Une surprise",
 "Un voyage",
 "Un objet utile",
-"Un mot doux fait main"
+"Un mot doux fait main",
+"Une expérience (concert, atelier…)",
+"Des fleurs",
+"Un livre",
+"Du temps ensemble",
+"Un vêtement",
+"Des gourmandises"
 ],
 [
 "fastfood",
@@ -159,7 +241,15 @@
 "Burger",
 "Pizza",
 "Sushi",
-"Tacos"
+"Tacos",
+"Kebab",
+"Poke bowl",
+"Fish & chips",
+"Bagel",
+"Nouilles sautées",
+"Hot-dog",
+"Poulet frit",
+"Galettes et crêpes"
 ],
 [
 "climat",
@@ -186,7 +276,11 @@
 "Voyages",
 "Économises",
 "Te fais plaisir",
-"Offres des cadeaux"
+"Offres des cadeaux",
+"Donnes à une association",
+"Investis",
+"Fais la fête",
+"Répares ce qui est cassé"
 ],
 [
 "couleur",
@@ -195,7 +289,15 @@
 "Bleu",
 "Rouge",
 "Vert",
-"Noir"
+"Noir",
+"Jaune",
+"Rose",
+"Violet",
+"Orange",
+"Blanc",
+"Gris",
+"Marron",
+"Turquoise"
 ],
 [
 "dessert",
@@ -204,7 +306,15 @@
 "Chocolat",
 "Fruits",
 "Glace",
-"Fromage"
+"Fromage",
+"Tarte",
+"Crème brûlée",
+"Tiramisu",
+"Crêpes",
+"Macarons",
+"Cheesecake",
+"Mousse au chocolat",
+"Rien, merci"
 ],
 [
 "rangement",
@@ -258,7 +368,8 @@
 "Les mots doux",
 "Les câlins",
 "Les cadeaux",
-"Les petits services"
+"Les petits services",
+"Le temps passé ensemble"
 ],
 [
 "weekend",
@@ -267,7 +378,11 @@
 "On part loin",
 "On reste à la maison",
 "On voit des amis",
-"On sort en ville"
+"On sort en ville",
+"Nature et rando",
+"Une activité nouvelle",
+"On dort toute la journée",
+"On cuisine un festin"
 ],
 [
 "jeu",
@@ -285,7 +400,15 @@
 "Artiste",
 "Scientifique",
 "Sportif·ve",
-"Aventurier·e"
+"Aventurier·e",
+"Vétérinaire",
+"Astronaute",
+"Pompier·ère",
+"Enseignant·e",
+"Chanteur·se",
+"Médecin",
+"Cuisinier·e",
+"Détective"
 ],
 [
 "lecture",
@@ -294,7 +417,11 @@
 "Livre papier",
 "Liseuse",
 "Écran",
-"Je lis peu"
+"Je lis peu",
+"Livres audio",
+"BD / mangas",
+"Magazines",
+"Articles en ligne"
 ],
 [
 "voyage",
@@ -303,7 +430,15 @@
 "Japon",
 "Islande",
 "Amérique du Sud",
-"Afrique"
+"Afrique",
+"Canada",
+"Italie",
+"Grèce",
+"Thaïlande",
+"Australie",
+"Nouvelle-Zélande",
+"États-Unis",
+"Écosse"
 ],
 [
 "sommeil",
@@ -312,7 +447,9 @@
 "Sur le dos",
 "Sur le ventre",
 "Sur le côté",
-"En étoile"
+"En étoile",
+"En boule",
+"Collé·e à l'autre"
 ],
 [
 "humeur",
@@ -321,7 +458,13 @@
 "Chocolat",
 "Musique à fond",
 "Parler à quelqu'un",
-"Dormir"
+"Dormir",
+"Un câlin",
+"Une série doudou",
+"Sortir prendre l'air",
+"Faire du sport",
+"Cuisiner",
+"Jouer"
 ],
 [
 "plage",
@@ -330,7 +473,13 @@
 "Bronzes",
 "Nages",
 "Lis",
-"Fais la sieste"
+"Fais la sieste",
+"Construis des châteaux de sable",
+"Joues au ballon",
+"Manges des glaces",
+"Cherches des coquillages",
+"Fais de la plongée",
+"Restes à l'ombre"
 ],
 [
 "anniversaire",
@@ -339,7 +488,10 @@
 "Une grande fête",
 "Un dîner à deux",
 "Une surprise",
-"Qu'on l'oublie"
+"Qu'on l'oublie",
+"Un week-end surprise",
+"Une journée rien qu'à moi",
+"Un repas en famille"
 ],
 [
 "rire",
@@ -348,7 +500,14 @@
 "Les blagues nulles",
 "Les vidéos d'animaux",
 "Les situations absurdes",
-"Les gaffes des autres"
+"Les gaffes des autres",
+"Les jeux de mots",
+"Les imitations",
+"Les chutes (sans bobo)",
+"Les mèmes",
+"Les comédies",
+"L'humour noir",
+"Mes propres blagues"
 ],
 [
 "futur",
@@ -357,7 +516,11 @@
 "À la campagne",
 "En grande ville",
 "Au bord de la mer",
-"À l'étranger"
+"À l'étranger",
+"Dans un van",
+"À la montagne",
+"Là où on est aujourd'hui",
+"Partout, en voyageant"
 ],
 [
 "g01",
@@ -366,7 +529,11 @@
 "Chocolat-noisette",
 "Confiture",
 "Beurre salé",
-"Miel"
+"Miel",
+"Pâte de spéculoos",
+"Beurre de cacahuète",
+"Rien, nature",
+"Crème de marrons"
 ],
 [
 "g02",
@@ -384,7 +551,8 @@
 "Chantes à tue-tête",
 "Réfléchis à ta vie",
 "Fais vite",
-"Restes des heures"
+"Restes des heures",
+"Parles tout·e seul·e"
 ],
 [
 "g04",
@@ -393,7 +561,13 @@
 "Messagerie",
 "Réseaux sociaux",
 "Musique",
-"Jeux"
+"Jeux",
+"Vidéos",
+"Photos",
+"Mails",
+"Actualités",
+"Cartes / GPS",
+"Sport / santé"
 ],
 [
 "g05",
@@ -420,7 +594,9 @@
 "Café serré",
 "Thé fumant",
 "Chocolat chaud",
-"Un verre bien frais"
+"Un verre bien frais",
+"Café glacé",
+"Limonade"
 ],
 [
 "g08",
@@ -429,7 +605,15 @@
 "😂",
 "❤️",
 "🥺",
-"👍"
+"👍",
+"😘",
+"😍",
+"🙃",
+"😭",
+"🤣",
+"🙏",
+"🔥",
+"✨"
 ],
 [
 "g09",
@@ -456,7 +640,9 @@
 "Karaoké à fond",
 "Podcast",
 "Radio",
-"Silence"
+"Silence",
+"Playlist de voyage",
+"Discussion non-stop"
 ],
 [
 "g12",
@@ -474,7 +660,11 @@
 "Râleur·se",
 "Tête en l'air",
 "Trop perfectionniste",
-"Toujours en retard"
+"Toujours en retard",
+"Gourmand·e",
+"Têtu·e",
+"Distrait·e par le téléphone",
+"Trop bavard·e"
 ],
 [
 "g14",
@@ -483,7 +673,10 @@
 "Sur la piste de danse",
 "Près du buffet",
 "Dans la cuisine à discuter",
-"Parti·e la première"
+"Parti·e la première",
+"En train de prendre des photos",
+"Avec l'animal de la maison",
+"Au karaoké"
 ],
 [
 "g15",
@@ -492,7 +685,15 @@
 "Pâtes",
 "Soupe",
 "Raclette",
-"Pizza"
+"Pizza",
+"Purée",
+"Gratin",
+"Ramen",
+"Crêpes",
+"Chocolat chaud",
+"Burger",
+"Couscous",
+"Riz cantonais"
 ],
 [
 "g16",

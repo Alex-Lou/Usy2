@@ -1,6 +1,6 @@
 import { apiRequest } from "../../lib/api/client";
 
-/** {@code c}: a choice · {@code l}: own words (both answered, then guessed) · {@code p}: just to talk. */
+/** {@code c}: choices (several can be ticked) · {@code l}: own words (both answered, then guessed) · {@code p}: just to talk. */
 export type Kind = "c" | "l" | "p";
 export type Verdict = "right" | "close" | "wrong";
 
@@ -52,7 +52,8 @@ export interface NousMine {
   kind: Kind;
   text: string;
   options: string[];
-  choice: number | null;
+  /** The options I ticked. */
+  choices: number[] | null;
   answer: string | null;
 }
 
@@ -71,9 +72,9 @@ export interface NousReveal {
   kind: Kind;
   text: string;
   options: string[];
-  guessChoice: number | null;
+  guessChoices: number[] | null;
   guessText: string | null;
-  answerChoice: number | null;
+  answerChoices: number[] | null;
   answerText: string | null;
   verdict: Verdict | null;
   note: string | null;
@@ -92,12 +93,17 @@ export const getNous = () => apiRequest<NousOverview>("/api/nous");
 export const getCards = (theme?: string) => apiRequest<NousCard[]>(`/api/nous/cards${theme ? `?theme=${encodeURIComponent(theme)}` : ""}`);
 export const markCard = (id: string, kind: "fav" | "talked", on: boolean) => apiRequest<void>("/api/nous/marks", { method: "PUT", body: { id, kind, on } });
 export const getMine = () => apiRequest<NousMine[]>("/api/nous/me");
-export const saveMine = (id: string, choice: number | null, text: string | null) => apiRequest<void>("/api/nous/me", { method: "PUT", body: { id, choice, text } });
+export const saveMine = (id: string, choices: number[] | null, text: string | null) => apiRequest<void>("/api/nous/me", { method: "PUT", body: { id, choices, text } });
 export const forgetMine = (id: string) => apiRequest<void>(`/api/nous/me/${encodeURIComponent(id)}`, { method: "DELETE" });
 export const getToGuess = () => apiRequest<NousToGuess[]>("/api/nous/guess");
-export const sendGuess = (id: string, choice: number | null, text: string | null) => apiRequest<NousReveal>("/api/nous/guess", { method: "POST", body: { id, choice, text } });
+export const sendGuess = (id: string, choices: number[] | null, text: string | null) => apiRequest<NousReveal>("/api/nous/guess", { method: "POST", body: { id, choices, text } });
 export const getHistory = () => apiRequest<NousHistory>("/api/nous/history");
 export const judgeGuess = (guessId: number, verdict: Verdict, note: string | null) => apiRequest<NousReveal>(`/api/nous/judge/${guessId}`, { method: "POST", body: { verdict, note } });
+
+/** Ticked options, in their order (toggling one in or out). */
+export function toggled(list: number[], i: number): number[] {
+  return list.includes(i) ? list.filter((x) => x !== i) : [...list, i].sort((a, b) => a - b);
+}
 
 export const VERDICTS: Record<Verdict, { label: string; emoji: string; color: string }> = {
   right: { label: "Juste !", emoji: "🎯", color: "#3fbf7f" },

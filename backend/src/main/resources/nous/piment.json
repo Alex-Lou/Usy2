@@ -6,7 +6,11 @@
 "Mon regard",
 "Mon sourire",
 "Ma voix",
-"Mon humour"
+"Mon humour",
+"Mes mains",
+"Mon parfum",
+"Mon rire",
+"Mes câlins"
 ],
 [
 "s02",
@@ -15,7 +19,11 @@
 "Dans le cou",
 "Sur le front",
 "Un vrai baiser de cinéma",
-"Un bisou volé"
+"Un bisou volé",
+"Sur la joue",
+"Un bisou esquimau",
+"Sur la main",
+"Un bisou papillon"
 ],
 [
 "s03",
@@ -24,7 +32,11 @@
 "Un dîner aux chandelles",
 "Un slow dans la cuisine",
 "Un bain à deux",
-"Une nuit à la belle étoile"
+"Une nuit à la belle étoile",
+"Un coucher de soleil",
+"Un pique-nique",
+"Une danse sous la pluie",
+"Un petit-déj au lit"
 ],
 [
 "s04",
@@ -42,7 +54,11 @@
 "Massage",
 "Film + plaid",
 "Jeu à deux",
-"Danse improvisée"
+"Danse improvisée",
+"Cuisiner ensemble",
+"Bain moussant",
+"Karaoké à deux",
+"Regarder les étoiles"
 ],
 [
 "s06",
@@ -51,7 +67,11 @@
 "Un regard appuyé",
 "Un mot doux à l'oreille",
 "Une main dans le dos",
-"Un parfum"
+"Un parfum",
+"Un sourire en coin",
+"Un rire",
+"Une surprise",
+"Une attention inattendue"
 ],
 [
 "s07",
@@ -60,7 +80,11 @@
 "Sous la pluie",
 "En haut d'une colline",
 "Sur un quai de gare",
-"Dans l'ascenseur"
+"Dans l'ascenseur",
+"Sous la neige",
+"Au bord de la mer",
+"Sous les étoiles",
+"Dans la cuisine"
 ],
 [
 "s08",
@@ -69,7 +93,10 @@
 "Des messages taquins",
 "Des regards en public",
 "Des petits mots cachés",
-"Des chatouilles"
+"Des chatouilles",
+"Des compliments",
+"Des clins d'œil",
+"Des sous-entendus drôles"
 ],
 [
 "s09",
@@ -87,7 +114,10 @@
 "M'invites à dîner",
 "M'écris une lettre",
 "Me prépares un bain",
-"Me fais rire"
+"Me fais rire",
+"M'emmènes en week-end",
+"Me fais un massage",
+"Me regardes comme au premier jour"
 ],
 [
 "s11",

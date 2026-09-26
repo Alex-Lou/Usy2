@@ -100,16 +100,33 @@ class NousServiceTest {
 
     @Test
     void anAnswerStaysHiddenUntilGuessedThenAChoiceIsJudgedAtOnce() {
-        nous.answer("sam", new NousDtos.Answer("saison", 2, null));
+        nous.answer("sam", new NousDtos.Answer("saison", List.of(2), null));
 
         assertThat(nous.toGuess("lou")).singleElement().satisfies(q -> assertThat(q.id()).isEqualTo("saison"));
-        NousDtos.Reveal r = nous.guess("lou", new NousDtos.Answer("saison", 2, null));
+        NousDtos.Reveal r = nous.guess("lou", new NousDtos.Answer("saison", List.of(2), null));
 
         assertThat(r.verdict()).isEqualTo(NousGuess.RIGHT);
-        assertThat(r.answerChoice()).isEqualTo(2);
+        assertThat(r.answerChoices()).containsExactly(2);
         assertThat(nous.toGuess("lou")).isEmpty();
-        assertThatThrownBy(() -> nous.guess("lou", new NousDtos.Answer("saison", 1, null))).isInstanceOf(ConflictException.class);
+        assertThatThrownBy(() -> nous.guess("lou", new NousDtos.Answer("saison", List.of(1), null))).isInstanceOf(ConflictException.class);
         assertThat(nous.overview("lou").me().percent()).isEqualTo(100);
+        verify(events, never()).publishEvent(any(Object.class));
+    }
+
+    @Test
+    void severalTicksTheSameAreRightSomeInCommonCloseNoneWrong() {
+        nous.answer("sam", new NousDtos.Answer("film", List.of(0, 5, 10), null));
+        nous.answer("sam", new NousDtos.Answer("musique", List.of(1, 4), null));
+        nous.answer("sam", new NousDtos.Answer("couleur", List.of(0), null));
+        assertThat(nous.mine("sam", "general").stream().filter(m -> m.id().equals("film")).findFirst().orElseThrow().choices())
+                .containsExactly(0, 5, 10);
+
+        assertThat(nous.guess("lou", new NousDtos.Answer("film", List.of(10, 0, 5), null)).verdict()).isEqualTo(NousGuess.RIGHT);
+        assertThat(nous.guess("lou", new NousDtos.Answer("musique", List.of(1, 2), null)).verdict()).isEqualTo(NousGuess.CLOSE);
+        NousDtos.Reveal wrong = nous.guess("lou", new NousDtos.Answer("couleur", List.of(3, 4), null));
+        assertThat(wrong.verdict()).isEqualTo(NousGuess.WRONG);
+        assertThat(wrong.guessChoices()).containsExactly(3, 4);
+        assertThat(wrong.answerChoices()).containsExactly(0);
         verify(events, never()).publishEvent(any(Object.class));
     }
 
@@ -134,12 +151,12 @@ class NousServiceTest {
 
     @Test
     void changingAnAnswerClearsTheGuessesAboutIt() {
-        nous.answer("sam", new NousDtos.Answer("saison", 2, null));
-        nous.guess("lou", new NousDtos.Answer("saison", 0, null));
-        nous.answer("sam", new NousDtos.Answer("saison", 2, null));
+        nous.answer("sam", new NousDtos.Answer("saison", List.of(2), null));
+        nous.guess("lou", new NousDtos.Answer("saison", List.of(0), null));
+        nous.answer("sam", new NousDtos.Answer("saison", List.of(2), null));
         assertThat(savedGuesses).hasSize(1); // same answer: kept
 
-        nous.answer("sam", new NousDtos.Answer("saison", 3, null));
+        nous.answer("sam", new NousDtos.Answer("saison", List.of(3), null));
 
         assertThat(savedGuesses).isEmpty();
         assertThat(nous.toGuess("lou")).hasSize(1);
@@ -147,12 +164,14 @@ class NousServiceTest {
 
     @Test
     void badAnswersAreRefused() {
-        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("saison", 4, null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("saison", List.of(4), null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("saison", List.of(), null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("saison", null, null))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("t05", null, "   "))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("t05", null, "x".repeat(281)))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("t23", null, "juste pour parler"))).isInstanceOf(ContentValidationException.class);
-        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("nope", 0, null))).isInstanceOf(ContentValidationException.class);
-        assertThatThrownBy(() -> nous.guess("lou", new NousDtos.Answer("saison", 0, null))).isInstanceOf(ConflictException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("nope", List.of(0), null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.guess("lou", new NousDtos.Answer("saison", List.of(0), null))).isInstanceOf(ConflictException.class);
     }
 
     @Test

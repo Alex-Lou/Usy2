@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 import java.time.Instant;
 
-/** 💞 Nous deux: what a person answered about themself (a choice, or their own words). */
+/** 💞 Nous deux: what a person answered about themself (ticked choices as a bit set, or their own words). */
 @Entity
 @Table(name = "nous_answer")
 public class NousAnswer {
@@ -28,7 +28,8 @@ public class NousAnswer {
     @Column(name = "question_id", nullable = false)
     private String questionId;
 
-    private Short choice;
+    /** Bit i set: option i ticked. */
+    private Integer choices;
 
     @Column(name = "answer_text")
     private String text;
@@ -52,8 +53,8 @@ public class NousAnswer {
         return questionId;
     }
 
-    public Integer getChoice() {
-        return choice == null ? null : choice.intValue();
+    public Integer getChoices() {
+        return choices;
     }
 
     public String getText() {
@@ -61,10 +62,9 @@ public class NousAnswer {
     }
 
     /** @return whether the answer changed (the other person's guesses then no longer hold). */
-    public boolean set(Integer newChoice, String newText, Instant now) {
-        Short c = newChoice == null ? null : newChoice.shortValue();
-        boolean changed = !java.util.Objects.equals(choice, c) || !java.util.Objects.equals(text, newText);
-        choice = c;
+    public boolean set(Integer newChoices, String newText, Instant now) {
+        boolean changed = !java.util.Objects.equals(choices, newChoices) || !java.util.Objects.equals(text, newText);
+        choices = newChoices;
         text = newText;
         updatedAt = now;
         return changed;

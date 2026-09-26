@@ -15,7 +15,13 @@
 "La famille",
 "La liberté",
 "La sécurité",
-"L'aventure"
+"L'aventure",
+"L'amour",
+"La santé",
+"La créativité",
+"Les amis",
+"La justice",
+"La spiritualité"
 ],
 [
 "f03",
@@ -33,7 +39,11 @@
 "Être seul·e un moment",
 "Voir du monde",
 "La nature",
-"Créer quelque chose"
+"Créer quelque chose",
+"Le sport",
+"La musique",
+"Dormir",
+"Les câlins"
 ],
 [
 "f05",
@@ -51,7 +61,12 @@
 "La gentillesse",
 "Le courage",
 "L'humour",
-"L'honnêteté"
+"L'honnêteté",
+"La patience",
+"La générosité",
+"La loyauté",
+"La curiosité",
+"La confiance en soi"
 ],
 [
 "f07",
@@ -60,7 +75,11 @@
 "Le travail",
 "L'argent",
 "La santé",
-"Le regard des autres"
+"Le regard des autres",
+"Le temps qui passe",
+"Les conflits",
+"L'avenir",
+"Le manque de sommeil"
 ],
 [
 "f08",
@@ -69,7 +88,11 @@
 "Être entouré·e",
 "Être libre",
 "Laisser une trace",
-"Être en paix"
+"Être en paix",
+"Faire ce qu'on aime",
+"Voyager",
+"Aider les autres",
+"Fonder une famille"
 ],
 [
 "f09",
@@ -78,7 +101,13 @@
 "Artisan·e",
 "Artiste",
 "Soigner les gens",
-"Ouvrir un café"
+"Ouvrir un café",
+"Enseigner",
+"Travailler dehors",
+"Tech / informatique",
+"Écrire",
+"Cuisiner",
+"Travailler avec les animaux"
 ],
 [
 "f10",
@@ -87,7 +116,11 @@
 "Un petit nid douillet",
 "Une grande maison pleine d'amis",
 "Un van aménagé",
-"Un appartement en ville"
+"Un appartement en ville",
+"Une maison à la campagne",
+"Une maison au bord de la mer",
+"Une cabane dans les bois",
+"Un loft"
 ],
 [
 "f11",

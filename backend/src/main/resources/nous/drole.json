@@ -6,7 +6,11 @@
 "Une patate douce",
 "Un poireau",
 "Un piment",
-"Un brocoli"
+"Un brocoli",
+"Une carotte",
+"Une tomate (oui, c'est un fruit)",
+"Un radis",
+"Un champignon (bon, presque)"
 ],
 [
 "d02",
@@ -24,7 +28,11 @@
 "Un éclair",
 "Un croissant",
 "Un chou à la crème",
-"Une madeleine"
+"Une madeleine",
+"Un macaron",
+"Un mille-feuille",
+"Un cookie",
+"Un donut"
 ],
 [
 "d04",
@@ -51,7 +59,11 @@
 "Un chat paresseux",
 "Une loutre",
 "Un aigle",
-"Un paresseux (le vrai)"
+"Un paresseux (le vrai)",
+"Un dauphin",
+"Un panda",
+"Un chien fou",
+"Un hibou"
 ],
 [
 "d07",
@@ -69,7 +81,11 @@
 "Pâtes",
 "Pizza",
 "Sushi",
-"Crêpes"
+"Crêpes",
+"Burger",
+"Raclette",
+"Tacos",
+"Riz"
 ],
 [
 "d09",
@@ -87,7 +103,11 @@
 "Imitations",
 "Danse ridicule",
 "Chanter faux avec passion",
-"Faire des bruits d'animaux"
+"Faire des bruits d'animaux",
+"Jongler",
+"Siffler fort",
+"Dormir n'importe où",
+"Retenir toutes les paroles"
 ],
 [
 "d11",
@@ -96,7 +116,10 @@
 "Chez les dinosaures",
 "En 3000",
 "Voir mes parents jeunes",
-"Au moyen âge"
+"Au moyen âge",
+"Dans l'Égypte antique",
+"Dans les années 80",
+"Au jour de notre rencontre"
 ],
 [
 "d12",
@@ -123,7 +146,11 @@
 "Rock",
 "Pop sucrée",
 "Rap",
-"Chorale de fin de soirée"
+"Chorale de fin de soirée",
+"Jazz",
+"Électro",
+"Métal",
+"Folk"
 ],
 [
 "d15",
@@ -150,7 +177,11 @@
 "Vanille",
 "Feu de bois",
 "Linge propre",
-"Cookie tout chaud"
+"Cookie tout chaud",
+"Fleur d'oranger",
+"Lavande",
+"Café",
+"Monoï"
 ],
 [
 "d18",
@@ -159,7 +190,11 @@
 "Un canapé",
 "Une couette",
 "Un grille-pain",
-"Un téléphone"
+"Un téléphone",
+"Une lampe",
+"Un livre",
+"Un plaid",
+"Une boîte à musique"
 ],
 [
 "d19",
@@ -177,7 +212,9 @@
 "Un dragon de poche",
 "Une licorne",
 "Un phénix",
-"Un chat qui parle"
+"Un chat qui parle",
+"Un griffon",
+"Un pégase"
 ],
 [
 "d21",
