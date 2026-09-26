@@ -4,8 +4,46 @@
 
 const OUTLINE = "#4a3b33";
 
+// Accessories taken from the free emoji sets (wear/, credits in wear/CREDITS.md),
+// each set where it sits on Moka: its box (x, y, width; square) and a tilt.
+const WEAR_URLS = Object.fromEntries(
+  Object.entries(import.meta.glob("./wear/*.svg", { eager: true, query: "?url", import: "default" }) as Record<string, string>).map(
+    ([path, url]) => [path.slice("./wear/".length, -".svg".length), url],
+  ),
+);
+const WEAR: Record<string, { at: "head" | "neck"; x: number; y: number; w: number; r?: number }> = {
+  // Head: on top, between the ears.
+  gradcap: { at: "head", x: 54, y: -6, w: 50, r: -8 },
+  casquette: { at: "head", x: 51, y: -7, w: 58, r: -6 },
+  capeline: { at: "head", x: 50, y: -12, w: 60 },
+  "couronne-or": { at: "head", x: 60, y: -2, w: 40 },
+  gibus: { at: "head", x: 57, y: -4, w: 46, r: 6 },
+  hibiscus: { at: "head", x: 96, y: 24, w: 24, r: 12 },
+  "noeud-tete": { at: "head", x: 44, y: 20, w: 30, r: -18 },
+  // Face: the lenses over the eyes (67, 62) and (93, 62).
+  "lunettes-rondes": { at: "head", x: 52, y: 34, w: 56 },
+  "lunettes-noires": { at: "head", x: 51, y: 33, w: 58 },
+  "masque-ski": { at: "head", x: 55, y: 28, w: 50 },
+  // Neck: hanging under the chin (the head hides their tops).
+  cravate: { at: "neck", x: 70, y: 86, w: 20 },
+  "echarpe-laine": { at: "neck", x: 57, y: 76, w: 46 },
+  medaille: { at: "neck", x: 65, y: 80, w: 30 },
+  clochette: { at: "neck", x: 71, y: 88, w: 18 },
+  "noeud-rouge": { at: "neck", x: 64, y: 78, w: 32 },
+  "perles-bois": { at: "neck", x: 60, y: 72, w: 40 },
+};
+
+function Wear({ id }: { id: string }) {
+  const p = WEAR[id];
+  const url = WEAR_URLS[id];
+  if (!p || !url) return null;
+  const c = p.w / 2;
+  return <image href={url} x={p.x} y={p.y} width={p.w} height={p.w} transform={p.r ? `rotate(${p.r} ${p.x + c} ${p.y + c})` : undefined} />;
+}
+
 /** Neck slot (one worn at a time; the server enforces it). */
 export function NeckItem({ id }: { id: string }) {
+  if (WEAR[id]?.at === "neck") return <Wear id={id} />;
   if (id === "collar")
     return (
       <g>
@@ -145,6 +183,9 @@ export function HeadItems({ wearing }: { wearing: string[] }) {
           <path d="M89.5 25 q-1 -17 3 -21 q3.5 4 -0.5 22 z" fill="#ffc2da" stroke="none" />
         </g>
       )}
+      {wearing.filter((id) => WEAR[id]?.at === "head").map((id) => (
+        <Wear key={id} id={id} />
+      ))}
     </>
   );
 }

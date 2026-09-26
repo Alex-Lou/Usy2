@@ -65,6 +65,16 @@ class PetServiceTest {
     }
 
     @Test
+    void theAccessoriesFitTheirTableAndSlots() {
+        java.util.Set<String> ids = new java.util.HashSet<>();
+        for (PetCatalog.Item item : PetCatalog.ITEMS) {
+            assertThat(ids.add(item.id())).as("unique %s", item.id()).isTrue();
+            assertThat(item.id()).matches("[a-z0-9-]{1,20}"); // pet_item.item is varchar(20)
+            assertThat(item.slot()).isIn("neck", "head", "face", "home", "coat");
+        }
+    }
+
+    @Test
     void fishingRoundFeedsTheCatAndEarnsCoins() {
         PetDto dto = service.playRound("lou", PetService.FISH, 12);
         assertThat(dto.satiety()).isEqualTo(50 + 24);  // 2 per fish

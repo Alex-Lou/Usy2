@@ -4,13 +4,11 @@
 // light and stops entirely for people who prefer reduced motion.
 
 import { HeadItems, NeckItem } from "./accessories";
+import { coatOf } from "./coat";
 
 export type CatPose = "idle" | "sleep" | "purr" | "eat" | "play" | "startle" | "hungry" | "bath";
 
 const OUTLINE = "#4a3b33";
-const FUR = "#fff4e6";
-const BELLY = "#fffaf3";
-const STRIPE = "#ecc9a0";
 const PINK = "#ff86b8";
 const BLUSH = "#ffb0d6";
 const EYE = "#3a3350";
@@ -168,6 +166,7 @@ export function CatSprite({
   /** Fill the parent's width instead of a fixed size (e.g. inside the house scene). */
   fluid?: boolean;
 }) {
+  const coat = coatOf(wearing);
   return (
     <svg
       width={fluid ? "100%" : size}
@@ -188,35 +187,35 @@ export function CatSprite({
         {/* Tail: a two-tone tube (outline under fur) swaying from its base. */}
         <g className="pet-tail">
           <path d="M104 116 C 132 116, 142 94, 130 76" stroke={OUTLINE} strokeWidth="13" fill="none" strokeLinecap="round" />
-          <path d="M104 116 C 132 116, 142 94, 130 76" stroke={FUR} strokeWidth="8.4" fill="none" strokeLinecap="round" />
-          <path d="M133 86 q-6 -2 -9 -8" stroke={STRIPE} strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path d="M104 116 C 132 116, 142 94, 130 76" stroke={coat.fur} strokeWidth="8.4" fill="none" strokeLinecap="round" />
+          <path d="M133 86 q-6 -2 -9 -8" stroke={coat.stripe} strokeWidth="3" fill="none" strokeLinecap="round" />
         </g>
 
         <g className="pet-body">
-          <ellipse cx="80" cy="104" rx="31" ry="25" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
-          <ellipse cx="80" cy="109" rx="17" ry="15" fill={BELLY} />
-          <path d="M53 100 q5 -3 9 1 M55 108 q5 -3 8 1" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          <ellipse cx="80" cy="104" rx="31" ry="25" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.6" />
+          <ellipse cx="80" cy="109" rx="17" ry="15" fill={coat.belly} />
+          <path d="M53 100 q5 -3 9 1 M55 108 q5 -3 8 1" stroke={coat.stripe} strokeWidth="2.4" fill="none" strokeLinecap="round" />
           {wearing.map((id) => (
             <NeckItem key={id} id={id} />
           ))}
         </g>
 
-        <ellipse cx="67" cy="127" rx="9" ry="5.4" fill={FUR} stroke={OUTLINE} strokeWidth="2.2" />
+        <ellipse cx="67" cy="127" rx="9" ry="5.4" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.2" />
         <g className="pet-paw-r">
-          <ellipse cx="93" cy="127" rx="9" ry="5.4" fill={FUR} stroke={OUTLINE} strokeWidth="2.2" />
+          <ellipse cx="93" cy="127" rx="9" ry="5.4" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.2" />
         </g>
 
         <g className="pet-head">
           <g className="pet-ear-l">
-            <path d="M52 46 L45 15 L73 34 Z" fill={FUR} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
+            <path d="M52 46 L45 15 L73 34 Z" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
             <path d="M54 40 L50 22 L67 33 Z" fill={PINK} />
           </g>
           <g className="pet-ear-r">
-            <path d="M108 46 L115 15 L87 34 Z" fill={FUR} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
+            <path d="M108 46 L115 15 L87 34 Z" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
             <path d="M106 40 L110 22 L93 33 Z" fill={PINK} />
           </g>
-          <ellipse cx="80" cy="60" rx="35" ry="30" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
-          <path d="M74 33 q1.5 5 0 9 M80 31.5 v10 M86 33 q-1.5 5 0 9" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          <ellipse cx="80" cy="60" rx="35" ry="30" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.6" />
+          <path d="M74 33 q1.5 5 0 9 M80 31.5 v10 M86 33 q-1.5 5 0 9" stroke={coat.stripe} strokeWidth="2.4" fill="none" strokeLinecap="round" />
           <Eyes pose={pose} look={look} />
           <ellipse cx="57" cy="72" rx="5.4" ry="3.2" fill={BLUSH} opacity="0.75" />
           <ellipse cx="103" cy="72" rx="5.4" ry="3.2" fill={BLUSH} opacity="0.75" />
