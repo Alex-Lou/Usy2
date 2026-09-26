@@ -1,14 +1,15 @@
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { AssetImage } from "../../components/AssetImage";
 import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Avatar } from "../../components/ui/Avatar";
 import { LinkPreview } from "../../components/rich/LinkPreview";
-import { firstUrl, linkify } from "../../components/rich/links";
+import { firstUrl } from "../../components/rich/links";
 import { Icon } from "../../components/ui/Icon";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import { ImageViewer } from "../chat/ImageViewer";
 import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
+import { usePeople, withMentions } from "./mentions";
 import type { Post } from "./types";
 
 function timeAgo(iso: string): string {
@@ -42,6 +43,7 @@ export function PostCard({
   const isOwn = post.author.id === currentUserId;
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(post.text);
+  const people = usePeople();
   const [showComments, setShowComments] = useState(initialShowComments);
   const [commentCount, setCommentCount] = useState(post.commentCount);
   const [busy, setBusy] = useState(false);
@@ -132,7 +134,9 @@ export function PostCard({
           </div>
         </div>
       ) : (
-        <p className="whitespace-pre-wrap break-words leading-relaxed">{linkify(post.text)}</p>
+        <p className="whitespace-pre-wrap break-words leading-relaxed">
+          {withMentions(post.text, people).map((n, i) => <Fragment key={i}>{n}</Fragment>)}
+        </p>
       )}
 
       {!editing && !post.imageAssetId && firstUrl(post.text) && <LinkPreview url={firstUrl(post.text)!} className="mt-3" />}

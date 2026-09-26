@@ -61,7 +61,7 @@ public class PostService {
         User author = requireUser(username);
         Asset image = resolveAsset(imageAssetId);
         Post post = postRepository.save(new Post(author, validateText(text, image != null), image));
-        events.publishEvent(FeedActivity.post(author, post));
+        events.publishEvent(FeedActivity.post(author, post, Mentions.in(post.getText(), userRepository.findAll(), author.getId())));
         return postMapper.toDto(post, author.getId());
     }
 
