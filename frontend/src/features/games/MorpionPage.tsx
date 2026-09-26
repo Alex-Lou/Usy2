@@ -11,6 +11,7 @@ import { useAuth } from "../auth/useAuth";
 import { getGame, startGame } from "./api";
 import { createGameClient, sendMove } from "./gameClient";
 import { Confetti } from "./Confetti";
+import { ShareScore } from "./ShareScore";
 import type { GamesState, ScoreDto } from "./types";
 
 const TYPE = "morpion" as const;
@@ -130,7 +131,10 @@ export function MorpionPage() {
           })}
         </div>
 
-        <div className="mt-4 flex justify-center">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          {game && finished && iPlay && (
+            <ShareScore text={game.draw ? "⭕ Match nul au Morpion 🤝 Revanche ?" : iWon ? "⭕ Gagné au Morpion ! 🎉" : `⭕ Victoire de ${nameOf(game.winnerUserId)} au Morpion 🏆 Revanche ?`} />
+          )}
           {!game || finished ? (
             <Button onClick={newGame} disabled={starting || !connected}>
               <Icon name="sparkles" size={18} />
