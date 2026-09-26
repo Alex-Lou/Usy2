@@ -59,7 +59,7 @@ function saveFolded(folded: boolean) {
 
 /**
  * The "Nous" banner at the top of the feed: since when, both moods (mine is
- * one tap to change), the other person's latest note, countdowns and
+ * one tap to change), the latest note of each of us (newest first), countdowns and
  * "ce jour-là" memories. The full space lives in the profile "Nous" tab.
  * It folds down to its first line to leave room for the feed.
  */
@@ -79,6 +79,7 @@ export function CoupleStrip() {
   if (!couple) return null;
 
   const theirNote = couple.latestNotes.find((n) => n.author.id !== myId);
+  const notes = [...couple.latestNotes].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
   const countdowns = countdownsFrom(people);
 
   function toggle() {
@@ -131,18 +132,18 @@ export function CoupleStrip() {
             }
           />
 
-          {theirNote && (
-            <div className="rounded-token border-l-4 border-primary bg-bg-2/60 px-3 py-2">
-              <p className="whitespace-pre-wrap break-words text-text">{linkify(theirNote.text)}</p>
-              {firstUrl(theirNote.text) && <LinkPreview url={firstUrl(theirNote.text)!} className="my-1.5 max-w-sm" />}
+          {notes.map((note) => (
+            <div key={note.id} className="rounded-token border-l-4 border-primary bg-bg-2/60 px-3 py-2">
+              <p className="whitespace-pre-wrap break-words text-text">{linkify(note.text)}</p>
+              {firstUrl(note.text) && <LinkPreview url={firstUrl(note.text)!} className="my-1.5 max-w-sm" />}
               <p className="text-[11px] text-text-muted">
-                <ProfileLink userId={theirNote.author.id} className="hover:underline">
-                  {theirNote.author.displayName}
+                <ProfileLink userId={note.author.id} className="hover:underline">
+                  {note.author.displayName}
                 </ProfileLink>{" "}
-                · {ago(theirNote.createdAt)}
+                · {ago(note.createdAt)}
               </p>
             </div>
-          )}
+          ))}
           {writing ? (
             <NoteComposer
               autoFocus
