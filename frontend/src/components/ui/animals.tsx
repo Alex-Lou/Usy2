@@ -1,6 +1,6 @@
 import type { Species } from "../../app/companion";
-import otterFishUrl from "../companions/loutre-poisson.svg";
-import otterUrl from "../companions/loutreNoFish.svg";
+import otterFishUrl from "../companions/loutreFishBis-poisson.svg";
+import otterUrl from "../companions/loutreHeadBis.svg";
 
 // Hand-drawn, chibi/Ghibli-cute animal faces. Drawn in a 64×64 space with the
 // head centered at (32,34). Reused as a standalone face, an empty-state mascot,
@@ -96,17 +96,17 @@ export function PenguinHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
 }
 
 /**
- * The otter: Lou's partner's drawing (loutreNoFish.svg, as drawn) with its fish
- * as a layer of its own (loutre-poisson.svg: the fish paths of loutre.svg,
- * unchanged), so the fish can flap now and then. Eyelids drawn over the eyes
- * blink; the 2100 drawing box is fitted into the 64 box.
+ * The otter: Lou's partner's drawing (loutreHeadBis.svg, as drawn) with its fish
+ * as a layer of its own (loutreFishBis-poisson.svg: the fish paths of
+ * LoutreFishBis.svg, unchanged), so the fish can flap now and then. Eyelids
+ * drawn over the eyes blink; the 2100 drawing box is fitted into the 64 box.
  */
-const OTTER_FIT = "translate(32 33) scale(0.035) translate(-1050 -1014)";
+const OTTER_FIT = "translate(32 33) scale(0.031) translate(-1050 -1124)";
 const OTTER_EYES = [
-  [708, 1040],
-  [1390, 1034],
+  [687, 1140],
+  [1407, 1134],
 ] as const;
-const FISH_PIVOT = [1076, 1300] as const; // where the fish sits in the mouth
+const FISH_PIVOT = [1076, 1480] as const; // where the fish sits in the mouth
 
 function OtterHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
   return (
@@ -120,8 +120,8 @@ function OtterHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
       <g className={eyesClosed ? undefined : "mc-otter-lids"}>
         {OTTER_EYES.map(([x, y]) => (
           <g key={x}>
-            <ellipse cx={x} cy={y - 4} rx="178" ry="152" fill="#9f8275" />
-            <path d={`M${x - 150} ${y + 10} q150 90 300 0`} stroke="#2b211c" strokeWidth="30" strokeLinecap="round" fill="none" />
+            <ellipse cx={x} cy={y - 2} rx="178" ry="140" fill="#9f8275" />
+            <path d={`M${x - 150} ${y + 30} q150 90 300 0`} stroke="#2f241f" strokeWidth="34" strokeLinecap="round" fill="none" />
           </g>
         ))}
       </g>

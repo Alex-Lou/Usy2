@@ -277,10 +277,11 @@ svg.mc-badge-face .mc-head {
    drawn over the eyes). The fish turns around the point where it is held. */
 .mc-face--otter .mc-otter-fish {
   transform-box: fill-box;
-  transform-origin: 51.24% 61.9%;
+  transform-origin: 51.24% 70.48%;
   animation: mc-otter-flop 7s ease-in-out infinite;
 }
-.mc-face--otter .mc-otter-lids {
+.mc-face--otter .mc-otter-lids,
+.mc-otter-body .mc-otter-lids {
   opacity: 0;
   animation: mc-pingu-blink 4.6s infinite;
 }
@@ -289,6 +290,12 @@ svg.mc-badge-face .mc-head {
 }
 .mc-hello svg.mc-badge-face .mc-otter-lids {
   animation: mc-otter-hello-blink 1.8s ease-in-out;
+}
+/* The living otter's whole body (bodies.tsx) breathes, like the penguin's. */
+.mc-otter-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: mc-pingu-breathe 3.4s ease-in-out infinite;
 }
 @keyframes mc-otter-flop {
   0%, 80%, 100% { transform: rotate(0); }
@@ -308,7 +315,9 @@ svg.mc-badge-face .mc-head {
 }
 @media (prefers-reduced-motion: reduce) {
   .mc-face--otter .mc-otter-fish,
-  .mc-face--otter .mc-otter-lids {
+  .mc-face--otter .mc-otter-lids,
+  .mc-otter-body,
+  .mc-otter-body .mc-otter-lids {
     animation: none;
   }
 }

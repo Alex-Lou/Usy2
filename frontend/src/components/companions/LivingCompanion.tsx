@@ -4,7 +4,7 @@ import { BUBBLE_LIFE, CompanionBrain, type BubbleKind, type Kind } from "./brain
 
 const BUBBLE: Record<BubbleKind, string> = { z: "z", note: "♪", heart: "♥", howl: "Aouuu" };
 const BUBBLE_COLOR: Record<BubbleKind, string> = { z: "#7cc6e8", note: "#b18cff", heart: "#ff86b8", howl: "#a9b8ff" };
-const HEAD_TOP: Record<Kind, number> = { penguin: 66, wolf: 58, cat: 58, otter: 56 };
+const HEAD_TOP: Record<Kind, number> = { penguin: 66, wolf: 58, cat: 58, otter: 48 };
 /** Relative sizes, so the wolf stands a little taller than the kitten and the penguin. */
 const SIZE: Record<Kind, number> = { penguin: 1, wolf: 1.2, cat: 1.05, otter: 1.05 };
 const LABEL: Record<Kind, string> = { penguin: "le pingouin", wolf: "le loup", cat: "le chat", otter: "la loutre" };
