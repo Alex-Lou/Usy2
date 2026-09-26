@@ -41,6 +41,13 @@ const GAMES: GameCard[] = [
     emoji: "⚡",
   },
   {
+    to: "/jeux/bataille",
+    title: "Bataille navale",
+    tagline: "Placez vos flottes, un tir chacun… Le gagnant choisit le thème de la revanche.",
+    mode: "À deux · tour par tour",
+    emoji: "🚢",
+  },
+  {
     to: "/jeux/morpion",
     title: "Morpion",
     tagline: "Alignez vos compagnons, à deux, en temps réel.",
