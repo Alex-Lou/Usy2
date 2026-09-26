@@ -14,6 +14,7 @@ export const SPECIES = [
   "penguin",
   "otter-plain",
   "otter",
+  "siamese",
 ] as const;
 
 export type Species = (typeof SPECIES)[number];
@@ -31,6 +32,7 @@ export const SPECIES_LABELS: Record<Species, string> = {
   penguin: "Pingouin",
   "otter-plain": "Loutre",
   otter: "Loutre au poisson",
+  siamese: "Chat siamois",
 };
 
 function valid(value: string | null | undefined): Species {
