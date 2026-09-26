@@ -1,4 +1,6 @@
+import { useId } from "react";
 import type { Species } from "../../app/companion";
+import siameseUrl from "../companions/chat.svg";
 import otterFishUrl from "../companions/loutreFishBis-poisson.svg";
 import otterUrl from "../companions/loutreHeadBis.svg";
 
@@ -125,6 +127,48 @@ function OtterHead({ eyesClosed = false, fish = true }: { eyesClosed?: boolean; 
           <g key={x}>
             <ellipse cx={x} cy={y - 2} rx="178" ry="140" fill="#9f8275" />
             <path d={`M${x - 150} ${y + 30} q150 90 300 0`} stroke="#2f241f" strokeWidth="34" strokeLinecap="round" fill="none" />
+          </g>
+        ))}
+      </g>
+    </g>
+  );
+}
+
+/**
+ * The Siamese cat: Lou's partner's drawing (chat.svg, as drawn). Each ear is the
+ * same drawing again, cut to the ear, that flicks now and then around its base;
+ * eyelids drawn over the eyes blink. The 2100 drawing box is fitted into the 64 box.
+ */
+const SIAMESE_FIT = "translate(32 33) scale(0.045) translate(-1050 -993)";
+const SIAMESE_EYES = [
+  [774, 1094],
+  [1321, 1097],
+] as const;
+const SIAMESE_EARS = [
+  { side: "l", pivot: [620, 760], points: "360,380 600,380 840,650 780,760 360,760" },
+  { side: "r", pivot: [1480, 760], points: "1740,380 1500,380 1260,650 1320,760 1740,760" },
+] as const;
+
+function SiameseHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
+  const id = useId().replace(/:/g, "");
+  return (
+    <g className="mc-face mc-face--siamese" transform={SIAMESE_FIT}>
+      <image href={siameseUrl} x="0" y="0" width="2100" height="2100" />
+      {SIAMESE_EARS.map(({ side, pivot: [px, py], points }) => (
+        <g key={side} transform={`translate(${px} ${py})`}>
+          <clipPath id={`${id}-ear-${side}`}>
+            <polygon points={points} transform={`translate(${-px} ${-py})`} />
+          </clipPath>
+          <g className={`mc-siamese-ear mc-siamese-ear--${side}`}>
+            <image href={siameseUrl} x={-px} y={-py} width="2100" height="2100" clipPath={`url(#${id}-ear-${side})`} />
+          </g>
+        </g>
+      ))}
+      <g className={eyesClosed ? undefined : "mc-siamese-lids"}>
+        {SIAMESE_EYES.map(([x, y]) => (
+          <g key={x}>
+            <ellipse cx={x} cy={y} rx="152" ry="134" fill="#f3cda1" />
+            <path d={`M${x - 130} ${y + 10} q130 80 260 0`} stroke="#5d4c36" strokeWidth="30" strokeLinecap="round" fill="none" />
           </g>
         ))}
       </g>
@@ -295,6 +339,8 @@ export function AnimalFace({ species, eyesClosed = false }: { species: Species; 
       return <OtterHead eyesClosed={eyesClosed} />;
     case "otter-plain":
       return <OtterHead eyesClosed={eyesClosed} fish={false} />;
+    case "siamese":
+      return <SiameseHead eyesClosed={eyesClosed} />;
     case "parrot":
       return (
         <g>
