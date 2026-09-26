@@ -3,8 +3,11 @@ package com.memocat.news;
 import com.memocat.link.PageFetcher;
 import com.memocat.news.dto.NewsItemDto;
 import com.memocat.news.dto.NewsSourceDto;
+import com.memocat.domain.User;
 import com.memocat.profile.ProfileService;
 import com.memocat.profile.dto.NewsPrefsDto;
+import com.memocat.repository.UserRepository;
+import com.memocat.security.SecretBox;
 import com.memocat.web.ContentValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,11 +65,18 @@ public class NewsService {
             "bluesky", Pattern.compile("^@?([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+)$"),
             "mastodon", Pattern.compile("^@?([A-Za-z0-9_]{1,30})@([a-zA-Z0-9-]{1,63}(?:\\.[a-zA-Z0-9-]{1,63})+)$"),
             "reddit", Pattern.compile("^(?:r/)?([A-Za-z0-9_]{2,21})$"),
+            // A YouTube channel (its Shorts): @handle, channel id, or either one's link.
+            "youtube", Pattern.compile("^(?:https?://(?:www\\.|m\\.)?youtube\\.com/)?(?:channel/(UC[A-Za-z0-9_-]{22})|(UC[A-Za-z0-9_-]{22})|@([A-Za-z0-9._-]{3,30}))(?:[/?#].*)?$"),
             "xpost", Pattern.compile("^https://(?:www\\.)?(?:x|twitter)\\.com/([A-Za-z0-9_]{1,15})/status/(\\d{1,25})(?:[/?#].*)?$"),
             // Any site or feed I add myself: its address, the feed is found on the page if needed.
             "rss", Pattern.compile("^(?i:(https?)://)?([a-zA-Z0-9-]{1,63}(?:\\.[a-zA-Z0-9-]{1,63})+)(/[^\\s\"'<>]*)?$"));
     private static final Map<String, String> KIND_LABEL = Map.of(
-            "bluesky", "Bluesky", "mastodon", "Mastodon", "reddit", "Reddit", "xpost", "X", "rss", "Site");
+            "bluesky", "Bluesky", "mastodon", "Mastodon", "reddit", "Reddit", "xpost", "X", "rss", "Site", "youtube", "YouTube");
+    // My Reddit home feed's private link (reddit.com/prefs/feeds), kept only as feed + user.
+    private static final Pattern REDDIT_HOME = Pattern.compile("^https://(?:www\\.|old\\.)?reddit\\.com/\\.rss\\?(\\S+)$");
+    private static final Pattern REDDIT_FEED = Pattern.compile("(?:^|&)feed=([A-Za-z0-9]{8,80})(?:&|$)");
+    private static final Pattern REDDIT_USER = Pattern.compile("(?:^|&)user=([A-Za-z0-9_-]{3,20})(?:&|$)");
+    private static final Pattern CHANNEL_ID = Pattern.compile("youtube\\.com/channel/(UC[A-Za-z0-9_-]{22})");
 
     private record Target(String key, String label, String kind, URI uri, Function<byte[], List<FeedParser.Entry>> parse) {
     }
@@ -76,7 +86,11 @@ public class NewsService {
 
     private final ProfileService profiles;
     private final PageFetcher fetcher;
+    private final UserRepository users;
+    private final SecretBox box;
     private final Clock clock;
+    /** @handle → channel id, found once on the channel's page. */
+    private final Map<String, String> channelIds = new ConcurrentHashMap<>();
     private final Map<String, Cached> cache = new ConcurrentHashMap<>();
     private final Map<String, PageFetcher.Fetched> images = Collections.synchronizedMap(new LinkedHashMap<>(64, 0.75f, true) {
         @Override
@@ -86,13 +100,15 @@ public class NewsService {
     });
 
     @Autowired
-    public NewsService(ProfileService profiles, PageFetcher fetcher) {
-        this(profiles, fetcher, Clock.systemUTC());
+    public NewsService(ProfileService profiles, PageFetcher fetcher, UserRepository users, SecretBox box) {
+        this(profiles, fetcher, users, box, Clock.systemUTC());
     }
 
-    NewsService(ProfileService profiles, PageFetcher fetcher, Clock clock) {
+    NewsService(ProfileService profiles, PageFetcher fetcher, UserRepository users, SecretBox box, Clock clock) {
         this.profiles = profiles;
         this.fetcher = fetcher;
+        this.users = users;
+        this.box = box;
         this.clock = clock;
     }
 
@@ -137,7 +153,9 @@ public class NewsService {
         if (!Boolean.TRUE.equals(prefs.enabled())) {
             return List.of();
         }
-        List<Target> targets = targets(prefs);
+        List<Target> targets = new ArrayList<>(targets(prefs));
+        redditHomeLink(username).ifPresent(link -> targets.add(new Target(redditHomeKey(username), "Reddit · mon fil", "reddit",
+                URI.create(link), FeedParser::parseFeed)));
         if (targets.isEmpty()) {
             return List.of();
         }
@@ -200,7 +218,8 @@ public class NewsService {
         }
         try {
             boolean json = t.kind().equals("bluesky") || t.kind().equals("x");
-            Optional<PageFetcher.Fetched> body = fetcher.fetch(t.uri(), MAX_FEED_BYTES, json ? "application/json" : FEED_ACCEPT, AGENT);
+            URI uri = t.kind().equals("youtube") ? shortsFeed(t.uri()) : t.uri();
+            Optional<PageFetcher.Fetched> body = fetcher.fetch(uri, MAX_FEED_BYTES, json ? "application/json" : FEED_ACCEPT, AGENT);
             if (body.isEmpty()) {
                 throw new IllegalStateException("no answer");
             }
@@ -256,11 +275,76 @@ public class NewsService {
                         URI.create("https://api.fxtwitter.com/" + m.group(1) + "/status/" + m.group(2)), FeedParser::parseFxTweet));
                 case "rss" -> out.add(new Target(key, m.group(2).toLowerCase().replaceFirst("^www\\.", ""), "site",
                         URI.create(f.handle()), FeedParser::parseFeed));
+                case "youtube" -> out.add(new Target(key, m.group(3) != null ? "@" + m.group(3) : "YouTube", "youtube",
+                        URI.create(m.group(3) != null ? "https://www.youtube.com/@" + m.group(3)
+                                : "https://www.youtube.com/channel/" + (m.group(1) != null ? m.group(1) : m.group(2))),
+                        FeedParser::parseYoutubeShorts));
                 default -> {
                 }
             }
         }
         return out;
+    }
+
+    /**
+     * A channel's Shorts feed (its "UUSH…" playlist). A channel given by its
+     * @handle is looked up once on its page (served to link-preview robots
+     * without any consent screen), then remembered.
+     */
+    private URI shortsFeed(URI channel) {
+        String path = channel.getPath();
+        String id = path.startsWith("/channel/") ? path.substring("/channel/".length()) : channelIds.get(path);
+        if (id == null) {
+            byte[] page = fetcher.fetch(channel, 1_500_000, "text/html")
+                    .orElseThrow(() -> new IllegalStateException("no answer")).body();
+            Matcher m = CHANNEL_ID.matcher(new String(page, StandardCharsets.UTF_8));
+            if (!m.find()) {
+                throw new IllegalStateException("channel id not found");
+            }
+            id = m.group(1);
+            channelIds.put(path, id);
+        }
+        return URI.create("https://www.youtube.com/feeds/videos.xml?playlist_id=UUSH" + id.substring(2));
+    }
+
+    /** The Reddit account whose home feed I added (never the link itself), or empty. */
+    public Optional<String> redditHomeUser(String username) {
+        return redditHomeLink(username).map(link -> {
+            Matcher m = REDDIT_USER.matcher(URI.create(link).getRawQuery());
+            return m.find() ? m.group(1) : "?";
+        });
+    }
+
+    /** Adds (or replaces) my Reddit home feed from its private link; returns the Reddit account. */
+    public String saveRedditHome(String username, String link) {
+        Matcher whole = REDDIT_HOME.matcher(link == null ? "" : link.strip());
+        Matcher feed = whole.matches() ? REDDIT_FEED.matcher(whole.group(1)) : null;
+        Matcher user = whole.matches() ? REDDIT_USER.matcher(whole.group(1)) : null;
+        if (feed == null || !feed.find() || !user.find()) {
+            throw new ContentValidationException("Lien invalide : colle le lien RSS de ton fil d'accueil Reddit (…reddit.com/.rss?feed=…&user=…)");
+        }
+        User me = users.findByUsername(username).orElseThrow();
+        me.setNewsRedditFeed(box.seal("https://www.reddit.com/.rss?feed=" + feed.group(1) + "&user=" + user.group(1)));
+        users.save(me);
+        cache.remove(redditHomeKey(username));
+        return user.group(1);
+    }
+
+    public void removeRedditHome(String username) {
+        User me = users.findByUsername(username).orElseThrow();
+        me.setNewsRedditFeed(null);
+        users.save(me);
+        cache.remove(redditHomeKey(username));
+    }
+
+    private Optional<String> redditHomeLink(String username) {
+        return users.findByUsername(username)
+                .map(User::getNewsRedditFeed)
+                .flatMap(box::open);
+    }
+
+    private static String redditHomeKey(String username) {
+        return "reddithome:" + username;
     }
 
     private static NewsPrefsDto.Follow normalize(NewsPrefsDto.Follow f) {
@@ -274,6 +358,7 @@ public class NewsService {
         }
         String clean = switch (f.kind()) {
             case "bluesky", "reddit" -> m.group(1);
+            case "youtube" -> m.group(3) != null ? "@" + m.group(3) : (m.group(1) != null ? m.group(1) : m.group(2));
             case "mastodon" -> m.group(1) + "@" + m.group(2).toLowerCase();
             case "rss" -> (m.group(1) == null ? "https" : m.group(1).toLowerCase()) + "://" + m.group(2).toLowerCase()
                     + (m.group(3) == null ? "" : m.group(3));

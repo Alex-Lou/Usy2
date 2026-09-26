@@ -26,7 +26,8 @@ import java.util.List;
 public class SecurityConfig {
 
     /**
-     * What the browser may load: only this app's own files, plus Google Fonts.
+     * What the browser may load: only this app's own files, plus Google Fonts
+     * and the YouTube (no-cookie) player for Shorts.
      * Blocks any injected script from running or sending data elsewhere.
      */
     static final String CONTENT_SECURITY_POLICY = String.join("; ",
@@ -38,6 +39,8 @@ public class SecurityConfig {
             "media-src 'self' blob:",
             "connect-src 'self'",
             "worker-src 'self'",
+            // Shorts in "Actus" play in YouTube's privacy-enhanced player, and only there.
+            "frame-src https://www.youtube-nocookie.com",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",
