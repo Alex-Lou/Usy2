@@ -137,7 +137,7 @@ public class QuizChallengeService {
         }
         c.start(clock.instant());
         List<QuizService.Item> items = read(c.getItems()).stream()
-                .map(s -> new QuizService.Item(s.t(), s.o(), s.c(), null)).toList();
+                .map(s -> new QuizService.Item(s.t(), s.o(), s.c())).toList();
         Long challengeId = c.getId();
         Long meId = me.getId();
         String myName = me.getDisplayName();

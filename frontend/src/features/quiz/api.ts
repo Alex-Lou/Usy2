@@ -15,18 +15,8 @@ export interface QuizTheme {
   levels: QuizLevel[];
 }
 
-export interface QuizToi {
-  total: number;
-  mine: number;
-  partnerAnswered: number;
-  partnerName: string | null;
-  stars: number;
-  best: number;
-}
-
 export interface QuizOverview {
   themes: QuizTheme[];
-  toi: QuizToi;
 }
 
 export interface QuizQuestion {
@@ -35,8 +25,6 @@ export interface QuizQuestion {
   text: string;
   options: string[];
   seconds: number;
-  /** The partner's name when guessing about them ("Toi & moi"). */
-  about: string | null;
 }
 
 export interface QuizRun {
@@ -69,14 +57,6 @@ export interface QuizAnswered {
   result: QuizResult | null;
 }
 
-export interface SelfItem {
-  id: string;
-  text: string;
-  options: string[];
-  choice: number | null;
-}
-
-export const TOI = "toi";
 export const MIX = "mix";
 
 /** A "défi" as I see it: "play" (mine to play), "wait" (sent, not played back yet) or "done". */
@@ -132,5 +112,3 @@ export const getChallenges = () => apiRequest<QuizChallenges>("/api/quiz/challen
 export const startChallenge = (theme: string, level: number | null) => apiRequest<QuizRun>("/api/quiz/challenges", { method: "POST", body: { theme, level } });
 export const playChallenge = (id: number) => apiRequest<QuizRun>(`/api/quiz/challenges/${id}/play`, { method: "POST" });
 export const getDuel = (id: number) => apiRequest<QuizDuel>(`/api/quiz/challenges/${id}`);
-export const getSelf = () => apiRequest<SelfItem[]>("/api/quiz/me");
-export const saveSelf = (id: string, choice: number) => apiRequest<void>("/api/quiz/me", { method: "PUT", body: { id, choice } });

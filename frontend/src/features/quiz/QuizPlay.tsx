@@ -150,7 +150,6 @@ export function QuizPlay({ begin, color, title, partnerName, onExit, onNext, onD
       </div>
 
       <div key={question.index} className="qz-slide card relative p-5">
-        {question.about && <p className="mb-1 text-xs font-semibold uppercase tracking-wide" style={{ color }}>À propos de {question.about}</p>}
         <h2 className="font-display text-xl font-bold leading-snug">{question.text}</h2>
         {picked && picked.gained > 0 && <span className="qz-float absolute right-4 top-3 font-display text-xl font-bold" style={{ color }}>+{picked.gained}</span>}
       </div>

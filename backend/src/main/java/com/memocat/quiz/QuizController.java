@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 
-/** The quiz: my map, a run (start, answer), my own "Toi & moi" answers, and the duels ("défis"). */
+/** The quiz: my map, a run (start, answer), and the duels ("défis"). */
 @RestController
 @RequestMapping("/api/quiz")
 public class QuizController {
@@ -40,17 +40,6 @@ public class QuizController {
     @PostMapping("/runs/{id}/answer")
     public QuizDtos.Answered answer(Principal principal, @PathVariable String id, @RequestBody QuizDtos.Answer request) {
         return quiz.answer(principal.getName(), id, request == null ? -1 : request.choice());
-    }
-
-    @GetMapping("/me")
-    public List<QuizDtos.SelfItem> mine(Principal principal) {
-        return quiz.selfList(principal.getName());
-    }
-
-    @PutMapping("/me")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void answerMine(Principal principal, @RequestBody QuizDtos.SelfAnswer request) {
-        quiz.selfAnswer(principal.getName(), request);
     }
 
     /** "Défis": the ones I sent and received, and the win tally. */

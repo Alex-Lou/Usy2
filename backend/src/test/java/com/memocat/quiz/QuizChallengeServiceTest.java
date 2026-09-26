@@ -7,7 +7,6 @@ import com.memocat.domain.User;
 import com.memocat.quiz.dto.QuizDtos;
 import com.memocat.repository.QuizChallengeRepository;
 import com.memocat.repository.QuizProgressRepository;
-import com.memocat.repository.QuizSelfAnswerRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ConflictException;
 import com.memocat.web.ResourceNotFoundException;
@@ -39,7 +38,6 @@ class QuizChallengeServiceTest {
     private final QuizBank bank = new QuizBank();
     private final UserRepository users = mock(UserRepository.class);
     private final QuizProgressRepository progress = mock(QuizProgressRepository.class);
-    private final QuizSelfAnswerRepository selfAnswers = mock(QuizSelfAnswerRepository.class);
     private final QuizChallengeRepository repo = mock(QuizChallengeRepository.class);
     private final ApplicationEventPublisher events = mock(ApplicationEventPublisher.class);
     private Instant now = Instant.parse("2026-09-26T10:00:00Z");
@@ -59,7 +57,7 @@ class QuizChallengeServiceTest {
             return now;
         }
     };
-    private final QuizService quiz = new QuizService(bank, users, progress, selfAnswers, clock);
+    private final QuizService quiz = new QuizService(bank, users, progress, clock);
     private final QuizChallengeService duels = new QuizChallengeService(quiz, repo, users, events, new ObjectMapper(), clock);
     private final User lou = new User("lou", "h", "Lou");
     private final User sam = new User("sam", "h", "Sam");

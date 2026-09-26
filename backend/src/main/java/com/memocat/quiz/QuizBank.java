@@ -18,8 +18,7 @@ import java.util.Optional;
 
 /**
  * The quiz questions, read once from resources/quiz: one file per theme, each
- * entry {@code [level, question, right answer, wrong, wrong, wrong]}, and
- * toi.json for "Toi & moi" ({@code [id, question, option × 4]}). Entries that
+ * entry {@code [level, question, right answer, wrong, wrong, wrong]}. Entries that
  * don't fit (bad level, repeated or empty options) are skipped and logged;
  * QuizBankTest makes sure there are none.
  */
@@ -36,10 +35,6 @@ public class QuizBank {
     public record Question(String theme, int level, String text, List<String> options) {
     }
 
-    /** A "Toi & moi" question: no right answer until the person it is about has answered. */
-    public record SelfQuestion(String id, String text, List<String> options) {
-    }
-
     public static final List<Theme> THEMES = List.of(
             new Theme("histoire", "Histoire", "🏛️", "#e0a44a"),
             new Theme("geo", "Géographie", "🌍", "#3fa7d6"),
@@ -52,7 +47,6 @@ public class QuizBank {
             new Theme("cuisine", "Cuisine & gastronomie", "🍳", "#d9567c"));
 
     private final Map<String, List<Question>> byLevel = new LinkedHashMap<>();
-    private final List<SelfQuestion> self = new ArrayList<>();
 
     public QuizBank() {
         ObjectMapper json = new ObjectMapper();
@@ -68,15 +62,6 @@ public class QuizBank {
                         .add(new Question(t.id(), level, e.path(1).asText().strip(), options));
             }
         }
-        for (JsonNode e : read(json, "quiz/toi.json")) {
-            List<String> options = texts(e, 2, 6);
-            String id = e.path(0).asText("");
-            if (!id.matches("[a-z0-9]{2,20}") || options == null || self.stream().anyMatch(s -> s.id().equals(id))) {
-                log.warn("Quiz: skipped a Toi & moi question ({})", id);
-                continue;
-            }
-            self.add(new SelfQuestion(id, e.path(1).asText().strip(), options));
-        }
     }
 
     public static String key(String theme, int level) {
@@ -85,14 +70,6 @@ public class QuizBank {
 
     public List<Question> level(String theme, int level) {
         return byLevel.getOrDefault(key(theme, level), List.of());
-    }
-
-    public List<SelfQuestion> self() {
-        return self;
-    }
-
-    public Optional<SelfQuestion> selfQuestion(String id) {
-        return self.stream().filter(s -> s.id().equals(id)).findFirst();
     }
 
     public static Optional<Theme> theme(String id) {
