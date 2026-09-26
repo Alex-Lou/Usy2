@@ -120,6 +120,7 @@ export function QuizPage() {
           <h1 className="font-display text-2xl font-bold">Quiz</h1>
           <p className="text-sm text-text-muted">Un thème, un chemin, trois étoiles par niveau.</p>
         </div>
+        <Link to="/jeux/direct" className="chip press ml-auto shrink-0 text-sm font-semibold">⚡ En direct</Link>
       </header>
 
       {failed && <p className="card p-4 text-sm">Le quiz ne répond pas. <button type="button" onClick={load} className="underline">Réessayer</button></p>}

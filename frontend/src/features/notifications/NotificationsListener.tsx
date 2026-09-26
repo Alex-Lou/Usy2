@@ -5,6 +5,7 @@ import { useNotifications } from "../../app/notifications";
 import { useAuth } from "../auth/useAuth";
 import { emitCoupleActivity } from "../couple/activity";
 import type { CoupleActivity } from "../couple/types";
+import { emitLive, type LiveView } from "../live/api";
 import { emitCommentReactions, emitFeedActivity, type FeedActivity, type ReactionAdded } from "../feed/activity";
 import { createNotifClient, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
@@ -22,6 +23,7 @@ export function NotificationsListener() {
   const clientRef = useRef<Client | null>(null);
   const lastGameKeyRef = useRef<string>("");
   const lastListNotifRef = useRef<Map<number, number>>(new Map());
+  const lastLiveKeyRef = useRef<string>("");
   const navigate = useNavigate();
 
   const myId = user?.id ?? -1;
@@ -97,6 +99,19 @@ export function NotificationsListener() {
       }
     };
 
+    // ⚡ Live game: the open page follows; elsewhere, an invitation or a pause waiting on me rings.
+    const onLive = (g: LiveView) => {
+      emitLive(g);
+      if (g.hostId !== myId && g.guestId !== myId) return;
+      if (window.location.pathname.startsWith("/jeux/direct")) return; // watching it live
+      const other = g.hostId === myId ? g.guestName : g.hostName;
+      const key = `${g.id}:${g.status}:${g.index}`;
+      if (key === lastLiveKeyRef.current) return; // duplicate broadcast
+      lastLiveKeyRef.current = key;
+      if (g.status === "invited" && g.guestId === myId) notify(`${other} te propose une partie en direct ⚡ ${g.label}`, "/jeux/direct");
+      else if (g.status === "paused" && g.waiting.includes(myId)) notify(`${other} t'attend : la partie en direct est en pause ⏸`, "/jeux/direct");
+    };
+
     const client = createNotifClient(
       (m) => {
         if (m.sender.id === myId) return; // my own message
@@ -125,6 +140,7 @@ export function NotificationsListener() {
       onCouple,
       emitCommentReactions, // open comment lists update live
       onReaction,
+      onLive,
     );
     clientRef.current = client;
     const onVisibility = () => reportPresence(client);
