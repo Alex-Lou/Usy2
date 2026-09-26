@@ -14,15 +14,10 @@ public final class QuizDtos {
     public record Theme(String id, String label, String emoji, String color, List<Level> levels) {
     }
 
-    /** "Toi & moi": how many of the questions each one answered about themself, and my best guess run. */
-    public record Toi(int total, int mine, int partnerAnswered, String partnerName, int stars, int best) {
+    public record Overview(List<Theme> themes) {
     }
 
-    public record Overview(List<Theme> themes, Toi toi) {
-    }
-
-    /** {@code about}: the partner's name when I guess about them ("Toi & moi"). */
-    public record Question(int index, int total, String text, List<String> options, int seconds, String about) {
+    public record Question(int index, int total, String text, List<String> options, int seconds) {
     }
 
     public record Run(String id, String theme, int level, Question question) {
@@ -37,16 +32,10 @@ public final class QuizDtos {
     public record Answered(boolean correct, int correctIndex, int gained, int score, int streak, Question next, Result result) {
     }
 
-    public record SelfItem(String id, String text, List<String> options, Integer choice) {
-    }
-
     public record Start(String theme, Integer level) {
     }
 
     public record Answer(int choice) {
-    }
-
-    public record SelfAnswer(String id, int choice) {
     }
 
     /**

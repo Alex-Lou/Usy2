@@ -29,6 +29,10 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     public static final String QUIZ_CHALLENGE = "quiz-challenge";
     /** A quiz "défi" was played back: the duel is over. */
     public static final String QUIZ_DONE = "quiz-done";
+    /** 💞 Nous deux: a guess in words about the other one, waiting for their verdict (refId: the guess). */
+    public static final String NOUS_GUESS = "nous-guess";
+    /** 💞 Nous deux: a guess was judged (detail: right / close / wrong). */
+    public static final String NOUS_JUDGED = "nous-judged";
 
     public static CoupleActivity of(String kind, User actor, String detail, Long refId) {
         return new CoupleActivity(kind, actor.getId(), actor.getDisplayName(), detail, refId);

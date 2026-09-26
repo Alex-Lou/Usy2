@@ -15,7 +15,7 @@ const GAMES: GameCard[] = [
   {
     to: "/jeux/quiz",
     title: "Quiz",
-    tagline: "9 thèmes, 450 questions sur un chemin de niveaux… et « Toi & moi » pour deviner l'autre.",
+    tagline: "9 thèmes, 450 questions sur un chemin de niveaux… et des défis à se lancer.",
     mode: "Solo · à deux",
     emoji: "🧠",
   },
@@ -68,6 +68,19 @@ export function GamesHub() {
           <p className="text-sm text-text-muted">On joue ensemble ? 💕</p>
         </div>
       </header>
+
+      <Link
+        to="/jeux/nous"
+        className="nd-hero card group relative mb-4 flex items-center gap-4 overflow-hidden p-5 press animate-fade-up"
+        aria-label="Nous deux : questions entre amoureux et devine-moi"
+      >
+        <span className="nd-float text-5xl" aria-hidden="true">💞</span>
+        <span className="flex-1">
+          <span className="block font-display text-xl font-bold">Nous deux</span>
+          <span className="block text-sm opacity-90">Questions entre amoureux, et devine ce que l'autre a répondu…</span>
+        </span>
+        <span className="rounded-full bg-white/25 px-3 py-1.5 text-sm font-semibold">Jouer →</span>
+      </Link>
 
       <div className="grid gap-4 sm:grid-cols-2">
         {GAMES.map((g, i) => (
