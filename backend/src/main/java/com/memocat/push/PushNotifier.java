@@ -66,15 +66,20 @@ public class PushNotifier {
     public void onFeedActivity(FeedActivity a) {
         for (User recipient : othersThan(a.actorId())) {
             boolean theirPost = recipient.getId().equals(a.postAuthorId());
+            boolean tagged = a.mentionedIds() != null && a.mentionedIds().contains(recipient.getId());
+            boolean answered = recipient.getId().equals(a.replyToId());
             String body = switch (a.kind()) {
-                case FeedActivity.POST -> a.actorName() + " a publié un nouveau post ✨";
-                case FeedActivity.COMMENT -> a.actorName() + (theirPost ? " a commenté ton post 💬" : " a commenté un post 💬");
+                case FeedActivity.POST -> a.actorName() + (tagged ? " t'a identifié·e dans un post 🏷️" : " a publié un nouveau post ✨");
+                case FeedActivity.COMMENT -> a.actorName() + (answered ? " a répondu à ton commentaire 💬"
+                        : tagged ? " t'a identifié·e dans un commentaire 🏷️"
+                        : theirPost ? " a commenté ton post 💬" : " a commenté un post 💬");
                 case FeedActivity.REACTION -> theirPost ? a.actorName() + " a réagi " + a.emoji() + " à ton post" : null;
                 default -> null;
             };
             if (body != null) {
-                // Opens that very post (with its comments for a comment).
-                String url = "/posts/" + a.postId() + (FeedActivity.COMMENT.equals(a.kind()) ? "?comments=1" : "");
+                // Opens that very post (with its comments, on that very comment, for a comment).
+                String url = "/posts/" + a.postId() + (FeedActivity.COMMENT.equals(a.kind())
+                        ? "?comments=1" + (a.commentId() == null ? "" : "&comment=" + a.commentId()) : "");
                 notify(recipient, new PushPayload(TITLE, body, url, "post-" + a.postId()), false);
             }
         }

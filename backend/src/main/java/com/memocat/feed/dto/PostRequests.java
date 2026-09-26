@@ -14,7 +14,8 @@ public final class PostRequests {
     public record UpdatePost(String text, Long imageAssetId) {
     }
 
-    public record CreateComment(String text) {
+    /** {@code parentId}: the comment it answers (a reply to a reply joins the same thread), or null. */
+    public record CreateComment(String text, Long parentId) {
     }
 
     public record Reaction(@NotNull String emoji) {
