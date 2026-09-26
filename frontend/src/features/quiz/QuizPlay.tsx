@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "../../lib/api/client";
 import { Confetti } from "../games/Confetti";
-import { answerRun, startRun, type QuizQuestion, type QuizResult } from "./api";
+import { answerRun, type QuizQuestion, type QuizResult, type QuizRun } from "./api";
 
 const LETTERS = ["A", "B", "C", "D"];
 const PAUSE_MS = 1300; // time to see the right answer before the next question
@@ -11,15 +11,18 @@ type Picked = { choice: number; correctIndex: number; gained: number } | null;
 /**
  * One run: a question at a time with its countdown ring, the answer checked
  * by the server (right one shown, wrong one shakes), points flying up, a streak
- * bonus, then the stars. {@code onNext} is only offered when the next level opened.
+ * bonus, then the stars. {@code begin} starts it (a level, "Toi & moi" or a
+ * "défi"); {@code onNext} is only offered when the next level opened, and a
+ * duel ends on its own card ({@code onDuel} opens the finished duel).
  */
-export function QuizPlay({ theme, level, color, title, onExit, onNext }: {
-  theme: string;
-  level: number | null;
+export function QuizPlay({ begin, color, title, partnerName, onExit, onNext, onDuel }: {
+  begin: () => Promise<QuizRun>;
   color: string;
   title: string;
+  partnerName?: string | null;
   onExit: () => void;
   onNext?: () => void;
+  onDuel?: (id: number) => void;
 }) {
   const [runId, setRunId] = useState<string | null>(null);
   const [question, setQuestion] = useState<QuizQuestion | null>(null);
@@ -31,6 +34,8 @@ export function QuizPlay({ theme, level, color, title, onExit, onNext }: {
   const [attempt, setAttempt] = useState(0);
   const busy = useRef(false);
   const pending = useRef<{ next: QuizQuestion | null; result: QuizResult | null } | null>(null);
+  const beginRef = useRef(begin);
+  beginRef.current = begin;
 
   useEffect(() => {
     let alive = true;
@@ -41,7 +46,7 @@ export function QuizPlay({ theme, level, color, title, onExit, onNext }: {
     setStreak(0);
     setPicked(null);
     setError(null);
-    startRun(theme, level)
+    beginRef.current()
       .then((r) => {
         if (!alive) return;
         setRunId(r.id);
@@ -51,7 +56,7 @@ export function QuizPlay({ theme, level, color, title, onExit, onNext }: {
     return () => {
       alive = false;
     };
-  }, [theme, level, attempt]);
+  }, [attempt]);
 
   const answer = useCallback(
     async (choice: number) => {
@@ -116,6 +121,7 @@ export function QuizPlay({ theme, level, color, title, onExit, onNext }: {
     );
   }
 
+  if (result?.challengeId != null) return <DuelEndCard result={result} color={color} title={title} partnerName={partnerName ?? null} onExit={onExit} onDuel={onDuel} />;
   if (result) return <ResultCard result={result} color={color} title={title} onReplay={() => setAttempt((a) => a + 1)} onExit={onExit} onNext={result.unlockedNext ? onNext : undefined} />;
 
   if (!question) {
@@ -207,6 +213,34 @@ function Countdown({ seconds, running, color }: { seconds: number; running: bool
       </svg>
       <span className={"text-sm font-bold tabular-nums " + (left <= 5 ? "text-danger" : "")}>{left}</span>
     </span>
+  );
+}
+
+/** The end of a duel run: sent (the other one plays next), or played back (see who won). */
+function DuelEndCard({ result, color, title, partnerName, onExit, onDuel }: {
+  result: QuizResult;
+  color: string;
+  title: string;
+  partnerName: string | null;
+  onExit: () => void;
+  onDuel?: (id: number) => void;
+}) {
+  const who = partnerName ?? "Ton binôme";
+  return (
+    <div className="card relative flex flex-col items-center gap-3 overflow-hidden p-6 text-center" data-quiz-result="">
+      <p className="text-sm text-text-muted">{title}</p>
+      <span className="qz-pop text-5xl" aria-hidden="true">{result.challengeDone ? "🏁" : "🎯"}</span>
+      <p className="qz-pop font-display text-4xl font-bold tabular-nums" style={{ color }}>{result.score} pts</p>
+      <p className="text-sm text-text-muted">{result.correct} bonne{result.correct > 1 ? "s" : ""} réponse{result.correct > 1 ? "s" : ""} sur {result.total}</p>
+      {result.challengeDone ? (
+        <button type="button" onClick={() => onDuel?.(result.challengeId!)} className="btn-brand press rounded-token px-4 py-2 font-semibold">
+          Voir qui a gagné →
+        </button>
+      ) : (
+        <p className="qz-pop chip text-sm font-semibold">🎯 Défi envoyé : à {who} de jouer !</p>
+      )}
+      <button type="button" onClick={onExit} className="chip press">Retour aux défis</button>
+    </div>
   );
 }
 

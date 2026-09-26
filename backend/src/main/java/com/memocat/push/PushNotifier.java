@@ -120,6 +120,10 @@ public class PushNotifier {
             case CoupleActivity.MOOD -> new PushPayload(TITLE, a.actorName() + " a changé d'humeur : " + a.detail(), "/", "mood");
             case CoupleActivity.NOTE -> new PushPayload(TITLE, a.actorName() + " t'a laissé un mot", "/", "note");
             case CoupleActivity.THINKING -> new PushPayload(TITLE, a.actorName() + " pense à toi 💭", "/", "thinking");
+            case CoupleActivity.QUIZ_CHALLENGE -> new PushPayload(TITLE, a.actorName() + " te lance un défi quiz 🎯 " + a.detail(),
+                    "/jeux/quiz", "quiz-" + a.refId());
+            case CoupleActivity.QUIZ_DONE -> new PushPayload(TITLE, a.actorName() + " a relevé ton défi quiz 🏁 Qui a gagné ?",
+                    "/jeux/quiz?duel=" + a.refId(), "quiz-" + a.refId());
             default -> null; // sync-only changes
         };
         if (payload == null) {

@@ -14,15 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 
-/** The quiz: my map, a run (start, answer), and my own "Toi & moi" answers. */
+/** The quiz: my map, a run (start, answer), my own "Toi & moi" answers, and the duels ("défis"). */
 @RestController
 @RequestMapping("/api/quiz")
 public class QuizController {
 
     private final QuizService quiz;
+    private final QuizChallengeService challenges;
 
-    public QuizController(QuizService quiz) {
+    public QuizController(QuizService quiz, QuizChallengeService challenges) {
         this.quiz = quiz;
+        this.challenges = challenges;
     }
 
     @GetMapping
@@ -49,5 +51,27 @@ public class QuizController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void answerMine(Principal principal, @RequestBody QuizDtos.SelfAnswer request) {
         quiz.selfAnswer(principal.getName(), request);
+    }
+
+    /** "Défis": the ones I sent and received, and the win tally. */
+    @GetMapping("/challenges")
+    public QuizDtos.Challenges challenges(Principal principal) {
+        return challenges.list(principal.getName());
+    }
+
+    /** Plays my side of a new duel (a level of mine, or theme "mix"); it is sent when I finish. */
+    @PostMapping("/challenges")
+    public QuizDtos.Run challenge(Principal principal, @RequestBody QuizDtos.Start request) {
+        return challenges.create(principal.getName(), request);
+    }
+
+    @PostMapping("/challenges/{id}/play")
+    public QuizDtos.Run playChallenge(Principal principal, @PathVariable long id) {
+        return challenges.play(principal.getName(), id);
+    }
+
+    @GetMapping("/challenges/{id}")
+    public QuizDtos.Duel duel(Principal principal, @PathVariable long id) {
+        return challenges.duel(principal.getName(), id);
     }
 }
