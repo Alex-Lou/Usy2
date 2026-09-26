@@ -41,6 +41,7 @@ public final class FeedParser {
     private static final Pattern SPACES = Pattern.compile("\\s+");
     private static final Pattern FEED_LINK = Pattern.compile("<link[^>]+type=[\"']application/(?:rss|atom)\\+xml[\"'][^>]*>", Pattern.CASE_INSENSITIVE);
     private static final Pattern HREF = Pattern.compile("href=[\"']([^\"']+)[\"']", Pattern.CASE_INSENSITIVE);
+    private static final Pattern YOUTUBE_VIDEO = Pattern.compile("(?:[?&]v=|/shorts/)([A-Za-z0-9_-]{11})");
     private static final ObjectMapper JSON = new ObjectMapper();
 
     private FeedParser() {
@@ -77,6 +78,18 @@ public final class FeedParser {
                     safeUrl(image(e, html)),
                     author == null ? null : clean(firstText(author, "name"), 80),
                     date(firstText(e, "published", "updated"))));
+        }
+        return out;
+    }
+
+    /** A channel's Shorts playlist feed: each entry points at its Short (youtube.com/shorts/ID). */
+    public static List<Entry> parseYoutubeShorts(byte[] body) {
+        List<Entry> out = new ArrayList<>();
+        for (Entry e : parseFeed(body)) {
+            Matcher m = YOUTUBE_VIDEO.matcher(e.url() == null ? "" : e.url());
+            if (m.find()) {
+                out.add(new Entry(e.title(), null, "https://www.youtube.com/shorts/" + m.group(1), e.image(), e.author(), e.publishedAt()));
+            }
         }
         return out;
     }
