@@ -33,7 +33,7 @@ import java.util.Set;
 public class ProfileService {
 
     static final Set<String> COMPANIONS = Set.of(
-            "cat", "dog", "wolf", "rabbit", "lizard", "raccoon", "capybara", "robin", "parrot", "penguin");
+            "cat", "dog", "wolf", "rabbit", "lizard", "raccoon", "capybara", "robin", "parrot", "penguin", "otter");
     private static final int MAX_BIO = 200;
 
     private static final ThemeDto DEFAULT_THEME = new ThemeDto(
