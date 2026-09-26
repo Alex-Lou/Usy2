@@ -18,8 +18,10 @@ type Gesture =
  * that scales and turns it; keys move (arrows), scale (+ −), turn (r) and
  * remove it (Suppr).
  */
-export function DecorLayer({ items, labels, editing, selected, onSelect, onChange, onRemove, stageRef }: {
+export function DecorLayer({ items, labels, night = false, editing, selected, onSelect, onChange, onRemove, stageRef }: {
   items: Placed[];
+  /** At night, objects sit in the same dim light as the scene (not while editing). */
+  night?: boolean;
   labels: Record<string, string>;
   editing: boolean;
   selected: number | null;
@@ -90,7 +92,12 @@ export function DecorLayer({ items, labels, editing, selected, onSelect, onChang
   };
 
   return (
-    <div className={`absolute inset-0 ${editing ? "z-20" : "pointer-events-none"}`} onPointerDown={() => editing && onSelect(null)} aria-hidden={!editing}>
+    <div
+      className={`absolute inset-0 ${editing ? "z-20" : "pointer-events-none"}`}
+      style={night && !editing ? { filter: "brightness(0.72) saturate(0.85)" } : undefined}
+      onPointerDown={() => editing && onSelect(null)}
+      aria-hidden={!editing}
+    >
       {items.map((p, i) => {
         const url = decorUrl(p.item);
         if (!url) return null;

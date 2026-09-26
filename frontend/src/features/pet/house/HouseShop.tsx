@@ -1,7 +1,8 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Icon } from "../../../components/ui/Icon";
 import { decorUrl } from "./decorAssets";
-import { buyHouseItem, chooseSurface, type House, type HouseItem, type SurfaceSlot } from "./houseApi";
+import { Garden } from "./Garden";
+import { buyHouseItem, chooseSurface, type House, type HouseItem, type Scene, type SurfaceSlot } from "./houseApi";
 import { Room } from "./Room";
 
 export const SHELVES: { id: string; label: string }[] = [
@@ -26,6 +27,10 @@ const ROOM_SLOTS: { slot: SurfaceSlot; label: string }[] = [
   { slot: "view", label: "Vue par la fenêtre" },
   { slot: "ceiling", label: "Plafond" },
 ];
+const GARDEN_SLOTS: { slot: SurfaceSlot; label: string }[] = [
+  { slot: "house", label: "La maison" },
+  { slot: "ground", label: "Le sol du jardin" },
+];
 
 const fold = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 
@@ -34,9 +39,10 @@ const fold = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").to
  * as often as wanted, and the room's surfaces (one of each kind), each shown
  * in a little preview of the room itself. Bought with the shared purse.
  */
-export function HouseShop({ house, night, initialTab = "objects", onChange, onPlace, onClose }: {
+export function HouseShop({ house, scene, night, initialTab = "objects", onChange, onPlace, onClose }: {
   initialTab?: "objects" | "room";
   house: House;
+  scene: Scene;
   night: boolean;
   onChange: (h: House) => void;
   onPlace: (itemId: string) => void;
@@ -89,7 +95,7 @@ export function HouseShop({ house, night, initialTab = "objects", onChange, onPl
                 onClick={() => setTab(t)}
                 className={`rounded-full px-3 py-1 press ${tab === t ? "btn-brand" : "text-text-muted"}`}
               >
-                {t === "objects" ? "Objets" : "Pièce"}
+                {t === "objects" ? "Objets" : scene === "inside" ? "Pièce" : "Dehors"}
               </button>
             ))}
           </div>
@@ -152,7 +158,7 @@ export function HouseShop({ house, night, initialTab = "objects", onChange, onPl
           </>
         ) : (
           <div className="flex flex-col gap-4 overflow-y-auto p-4">
-            {ROOM_SLOTS.map(({ slot, label }) => {
+            {(scene === "inside" ? ROOM_SLOTS : GARDEN_SLOTS).map(({ slot, label }) => {
               const choices = house.items.filter((i) => i.slot === slot);
               const current = choices.find((i) => i.equipped)?.id ?? null;
               return (
@@ -161,7 +167,7 @@ export function HouseShop({ house, night, initialTab = "objects", onChange, onPl
                   <div className="-mx-1 flex gap-2.5 overflow-x-auto px-1 pb-1 no-scrollbar">
                     <SurfaceCard
                       label="D'origine"
-                      preview={<Room night={night} />}
+                      preview={scene === "inside" ? <Room night={night} /> : <Garden night={night} />}
                       on={current === null}
                       action={current === null ? null : { text: "Remettre", onClick: () => void run(slot, () => chooseSurface(current, false)) }}
                     />
@@ -169,7 +175,7 @@ export function HouseShop({ house, night, initialTab = "objects", onChange, onPl
                       <SurfaceCard
                         key={item.id}
                         label={item.label.replace(/^Vue : (.)/, (_, c: string) => c.toUpperCase())}
-                        preview={<Room night={night} surfaces={{ [slot]: item.id }} />}
+                        preview={scene === "inside" ? <Room night={night} surfaces={{ [slot]: item.id }} /> : <Garden night={night} surfaces={{ [slot]: item.id }} />}
                         on={item.equipped}
                         action={
                           item.equipped ? null
