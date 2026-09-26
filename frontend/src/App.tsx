@@ -15,6 +15,7 @@ const MorpionPage = lazy(() => import("./features/games/MorpionPage").then((m) =
 const SnakePage = lazy(() => import("./features/games/SnakePage").then((m) => ({ default: m.SnakePage })));
 const QuizPage = lazy(() => import("./features/quiz/QuizPage").then((m) => ({ default: m.QuizPage })));
 const NousPage = lazy(() => import("./features/nous/NousPage").then((m) => ({ default: m.NousPage })));
+const LivePage = lazy(() => import("./features/live/LivePage").then((m) => ({ default: m.LivePage })));
 const SudokuPage = lazy(() => import("./features/games/sudoku/SudokuPage").then((m) => ({ default: m.SudokuPage })));
 const PostPage = lazy(() => import("./features/feed/PostPage").then((m) => ({ default: m.PostPage })));
 const FishingPage = lazy(() => import("./features/pet/games/FishingPage").then((m) => ({ default: m.FishingPage })));
@@ -47,6 +48,7 @@ export function App() {
         <Route path="/jeux/sudoku" element={<SudokuPage />} />
         <Route path="/jeux/quiz" element={<QuizPage />} />
         <Route path="/jeux/nous" element={<NousPage />} />
+        <Route path="/jeux/direct" element={<LivePage />} />
         <Route path="/jeux/chat" element={<PetHousePage />} />
         <Route path="/jeux/chat/peche" element={<FishingPage />} />
         {/* My four spaces (see SpaceSwitcher), all under /profile. */}
