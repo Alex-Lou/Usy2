@@ -48,17 +48,24 @@ public class PageFetcher {
 
     /** Same, as another client (feeds and public APIs prefer an honest reader name). */
     public Optional<Fetched> fetch(URI start, int maxBytes, String accept, String userAgent) {
+        return fetch(start, maxBytes, accept, userAgent, null);
+    }
+
+    /** Same, sending {@code cookie} too, but only to the starting host (never to a redirect elsewhere). */
+    public Optional<Fetched> fetch(URI start, int maxBytes, String accept, String userAgent, String cookie) {
         URI uri = start;
         for (int hop = 0; hop <= MAX_REDIRECTS; hop++) {
             uri = safety.check(uri.toString());
             try {
-                HttpRequest req = HttpRequest.newBuilder(uri)
+                HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
                         .timeout(Duration.ofSeconds(6))
                         .header("User-Agent", userAgent)
                         .header("Accept", accept)
-                        .header("Accept-Language", "fr,en;q=0.8")
-                        .GET()
-                        .build();
+                        .header("Accept-Language", "fr,en;q=0.8");
+                if (cookie != null && start.getHost().equalsIgnoreCase(uri.getHost())) {
+                    builder.header("Cookie", cookie);
+                }
+                HttpRequest req = builder.GET().build();
                 HttpResponse<InputStream> res = http.send(req, HttpResponse.BodyHandlers.ofInputStream());
                 int status = res.statusCode();
                 if (status >= 300 && status < 400) {

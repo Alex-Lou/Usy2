@@ -16,8 +16,14 @@ public record NewsPrefsDto(Boolean enabled, List<String> sources, List<Follow> f
     /**
      * A public account or post, readable without any sign-in: {@code kind} is
      * "bluesky" (handle), "mastodon" (user@instance), "reddit" (subreddit) or
-     * "xpost" (the link of one post on X, read through FxTwitter).
+     * "xpost" (the link of one post on X, read through FxTwitter) or "youtube"
+     * (a channel's Shorts). {@code label}: the name shown for it, when the
+     * handle alone isn't readable (a YouTube channel id); null otherwise.
      */
-    public record Follow(String kind, String handle) {
+    public record Follow(String kind, String handle, String label) {
+
+        public Follow(String kind, String handle) {
+            this(kind, handle, null);
+        }
     }
 }
