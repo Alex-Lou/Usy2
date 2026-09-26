@@ -1,0 +1,531 @@
+/* 🚢 Bataille navale (features/naval): four themed seas (océan néon, cartoon,
+   pirates, espace), ships that bob, a radar sweep on your turn, shells that
+   fly in and burst or splash, ships that sink, a sea that shakes when hit. */
+
+.nv-board {
+  --nv-line: rgba(255, 255, 255, 0.12);
+  --nv-aim: rgba(255, 255, 255, 0.14);
+  --nv-accent: #4ff0ff;
+  --nv-shell: #ffe27a;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  touch-action: manipulation;
+  user-select: none;
+}
+.nv-board--small {
+  width: min(100%, 240px);
+  margin-inline: auto;
+  border-radius: 12px;
+}
+.nv-sea {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.nv-cell {
+  border: 0.5px solid var(--nv-line);
+  background: transparent;
+  padding: 0;
+}
+button.nv-cell:enabled {
+  cursor: crosshair;
+}
+button.nv-cell:enabled:hover,
+button.nv-cell:enabled:focus-visible {
+  background: var(--nv-aim);
+  box-shadow: inset 0 0 0 2px var(--nv-accent);
+  outline: none;
+}
+.nv-ghost {
+  z-index: 1;
+  margin: 2px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--nv-accent) 40%, transparent);
+  pointer-events: none;
+}
+.nv-ghost--bad {
+  background: rgba(255, 70, 90, 0.5);
+}
+
+/* Ships */
+.nv-ship {
+  position: relative;
+  z-index: 2;
+  padding: 4% 3%;
+  border: 0;
+  background: none;
+  pointer-events: none;
+  animation: nv-bob 3.6s ease-in-out infinite;
+}
+.nv-ship--v {
+  padding: 3% 4%;
+}
+button.nv-ship {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.nv-ship-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+.nv-ship--selected {
+  animation: nv-lift 1.1s ease-in-out infinite;
+  outline: 2px dashed var(--nv-accent);
+  outline-offset: -1px;
+  border-radius: 8px;
+}
+.nv-ship--sunk {
+  animation: nv-sink 1.4s ease-in 0.5s both;
+}
+.nv-captain {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -58%);
+  pointer-events: none;
+}
+.nv-lamp {
+  animation: nv-blink 2.4s ease-in-out infinite;
+}
+.nv-puff {
+  animation: nv-puff 2s ease-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.nv-sail {
+  animation: nv-sail 3s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: 30% 50%;
+}
+.nv-engine {
+  animation: nv-flicker 0.18s steps(2) infinite;
+}
+.nv-cockpit {
+  animation: nv-blink 3s ease-in-out infinite;
+}
+
+/* Shots */
+.nv-mark {
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+}
+.nv-mark::before,
+.nv-mark::after {
+  content: "";
+  position: absolute;
+}
+.nv-mark--late {
+  animation: nv-appear 0.2s 0.55s both;
+}
+.nv-fx {
+  position: relative;
+  z-index: 4;
+  pointer-events: none;
+}
+.nv-shell {
+  position: absolute;
+  inset: 32%;
+  border-radius: 50%;
+  background: var(--nv-shell);
+  box-shadow: 0 0 10px var(--nv-shell);
+  animation: nv-fly 0.5s cubic-bezier(0.35, 0, 0.75, 0.6) both, nv-gone 0.01s 0.55s forwards;
+}
+.nv-impact {
+  position: absolute;
+  inset: -60%;
+  border-radius: 50%;
+  opacity: 0;
+  animation: nv-burst 0.7s ease-out 0.5s both;
+}
+.nv-impact--hit {
+  background: radial-gradient(circle, #fff6c2 0 12%, #ffb13b 28%, #ff5a36 45%, rgba(255, 90, 54, 0) 68%);
+}
+.nv-impact--sunk {
+  inset: -140%;
+  animation-duration: 1s;
+}
+.nv-impact--miss {
+  background: none;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  animation-name: nv-ripple;
+}
+.nv-shake {
+  animation: nv-shake 0.5s ease-in-out 0.5s;
+}
+
+/* 🌊 Océan néon */
+.nv-ocean {
+  --nv-line: rgba(79, 240, 255, 0.13);
+  --nv-accent: #4ff0ff;
+  --nv-shell: #ffe27a;
+  color: #e9fbff;
+}
+.nv-ocean .nv-sea {
+  background:
+    radial-gradient(120% 60% at 50% 110%, rgba(79, 240, 255, 0.18), transparent 60%),
+    repeating-radial-gradient(circle at 20% 30%, rgba(79, 240, 255, 0.07) 0 2px, transparent 2px 22px),
+    linear-gradient(180deg, #051426, #0a2c4d);
+  background-size: 100% 100%, 180% 180%, 100% 100%;
+  animation: nv-waves 14s linear infinite;
+}
+.nv-ocean .nv-ship-svg {
+  filter: drop-shadow(0 0 4px rgba(79, 240, 255, 0.55));
+}
+.nv-ocean .nv-mark--hit::before {
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff3b0, #ff8a3d 55%, rgba(255, 60, 40, 0) 72%);
+  box-shadow: 0 0 12px #ff7a3d;
+  animation: nv-flicker 0.9s ease-in-out infinite alternate;
+}
+.nv-ocean .nv-mark--hit::after {
+  width: 40%;
+  height: 40%;
+  border-radius: 50%;
+  background: rgba(190, 200, 210, 0.45);
+  animation: nv-smoke 2.4s ease-out infinite;
+}
+.nv-ocean .nv-mark--miss::before {
+  inset: 34%;
+  border-radius: 50%;
+  border: 2px solid rgba(79, 240, 255, 0.7);
+}
+
+/* 🐾 Cartoon compagnons */
+.nv-cartoon {
+  --nv-line: rgba(255, 255, 255, 0.4);
+  --nv-aim: rgba(255, 255, 255, 0.35);
+  --nv-accent: #ff6fa8;
+  --nv-shell: #ff6fa8;
+  color: #2c2340;
+}
+.nv-cartoon .nv-sea {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.55) 0 3%, transparent 3.5%),
+    radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.45) 0 2%, transparent 2.5%),
+    radial-gradient(circle at 40% 85%, rgba(255, 255, 255, 0.5) 0 2.5%, transparent 3%),
+    linear-gradient(180deg, #9fe0ff, #5cb9f4);
+  background-size: 50% 50%, 60% 60%, 45% 45%, 100% 100%;
+  animation: nv-bubbles 12s linear infinite;
+}
+.nv-cartoon .nv-mark--hit::after {
+  content: "💥";
+  font-size: clamp(10px, 5.5cqw, 26px);
+  animation: nv-wobble 1.4s ease-in-out infinite;
+}
+.nv-cartoon .nv-mark--miss::before {
+  inset: 32%;
+  border-radius: 50%;
+  background: #2f7fc9;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 3px rgba(47, 127, 201, 0.3);
+}
+
+/* 🏴‍☠️ Pirates */
+.nv-pirate {
+  --nv-line: rgba(90, 58, 20, 0.28);
+  --nv-aim: rgba(120, 70, 20, 0.18);
+  --nv-accent: #a0522d;
+  --nv-shell: #2b2b2b;
+  color: #3d2412;
+}
+.nv-pirate .nv-sea {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(120, 70, 20, 0.25) 0 6%, transparent 6.5%),
+    radial-gradient(ellipse at center, transparent 55%, rgba(110, 70, 25, 0.45)),
+    repeating-linear-gradient(8deg, rgba(120, 80, 30, 0.05) 0 3px, transparent 3px 9px),
+    linear-gradient(135deg, #f4e2b8, #e3c68c);
+}
+.nv-pirate .nv-mark--hit::after {
+  content: "🔥";
+  font-size: clamp(10px, 5.5cqw, 26px);
+  animation: nv-flicker 0.7s ease-in-out infinite alternate;
+}
+.nv-pirate .nv-mark--miss::after {
+  content: "✕";
+  font-weight: 800;
+  font-size: clamp(9px, 4.5cqw, 20px);
+  color: rgba(61, 36, 18, 0.75);
+}
+.nv-pirate .nv-impact--miss {
+  border-color: rgba(61, 36, 18, 0.6);
+}
+
+/* 🚀 Espace */
+.nv-space {
+  --nv-line: rgba(160, 140, 255, 0.14);
+  --nv-aim: rgba(160, 140, 255, 0.18);
+  --nv-accent: #b388ff;
+  --nv-shell: #7cf7ff;
+  color: #eee9ff;
+}
+.nv-space .nv-sea {
+  background:
+    radial-gradient(1px 1px at 12% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 38% 72%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 66% 28%, #fff, transparent),
+    radial-gradient(1px 1px at 82% 84%, #fff, transparent),
+    radial-gradient(1px 1px at 22% 58%, #cfd8ff, transparent),
+    radial-gradient(60% 50% at 75% 30%, rgba(140, 80, 255, 0.28), transparent),
+    radial-gradient(50% 40% at 20% 80%, rgba(40, 160, 255, 0.2), transparent),
+    #06041a;
+  background-size: 120px 120px, 150px 150px, 110px 110px, 170px 170px, 90px 90px, 100% 100%, 100% 100%, auto;
+  animation: nv-stars 40s linear infinite;
+}
+.nv-space .nv-ship {
+  animation-name: nv-drift;
+}
+.nv-space .nv-mark--hit::before {
+  inset: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff, #c08bff 45%, rgba(120, 60, 255, 0) 70%);
+  box-shadow: 0 0 14px #b388ff;
+  animation: nv-blink 1.2s ease-in-out infinite;
+}
+.nv-space .nv-mark--miss::before {
+  inset: 42%;
+  border-radius: 50%;
+  background: rgba(200, 200, 230, 0.55);
+}
+.nv-space .nv-impact--hit {
+  background: radial-gradient(circle, #fff 0 10%, #7cf7ff 25%, #b388ff 45%, rgba(120, 60, 255, 0) 70%);
+}
+
+/* Radar sweep on your turn */
+.nv-radar {
+  position: absolute;
+  inset: -50%;
+  z-index: 1;
+  pointer-events: none;
+  background: conic-gradient(from 0deg, color-mix(in srgb, var(--nv-accent) 38%, transparent), transparent 55deg);
+  mix-blend-mode: screen;
+  animation: nv-spin 3.6s linear infinite;
+}
+.nv-pirate .nv-radar,
+.nv-cartoon .nv-radar {
+  mix-blend-mode: normal;
+  opacity: 0.45;
+}
+
+/* Around the boards */
+.nv-toast {
+  position: sticky;
+  top: 8px;
+  z-index: 20;
+  align-self: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: nv-toast 2.6s ease-out both;
+}
+.nv-toast--good {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #ff6fa8, #7c6cf0);
+}
+.nv-banner {
+  padding: 10px 14px;
+  border-radius: 14px;
+  text-align: center;
+  font-weight: 700;
+  background: var(--color-surface-2, rgba(255, 255, 255, 0.06));
+}
+.nv-banner--turn {
+  color: #fff;
+  background: linear-gradient(135deg, #ff6fa8, #7c6cf0, #4fb3ff);
+  background-size: 200% 200%;
+  animation: nv-glow 2.4s ease-in-out infinite;
+}
+.nv-dots::after {
+  content: "";
+  animation: nv-dots 1.4s steps(4) infinite;
+}
+.nv-chip--on {
+  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.nv-len {
+  margin-left: 4px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+.nv-result {
+  animation: qz-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.nv-theme-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 108px;
+  padding: 12px;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  text-align: left;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.nv-theme-card--on {
+  border-color: var(--nv-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--nv-accent) 35%, transparent);
+}
+.nv-theme-card.nv-ocean {
+  --nv-accent: #4ff0ff;
+  color: #e9fbff;
+}
+.nv-theme-card.nv-cartoon {
+  --nv-accent: #ff6fa8;
+  color: #2c2340;
+}
+.nv-theme-card.nv-pirate {
+  --nv-accent: #a0522d;
+  color: #3d2412;
+}
+.nv-theme-card.nv-space {
+  --nv-accent: #b388ff;
+  color: #eee9ff;
+}
+.nv-board {
+  container-type: inline-size;
+}
+
+@keyframes nv-bob {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-3%) rotate(-0.6deg); }
+}
+@keyframes nv-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(1.5%, -2%); }
+}
+@keyframes nv-lift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6%); }
+}
+@keyframes nv-sink {
+  0% { transform: none; filter: none; }
+  25% { transform: translateX(-2%) rotate(-3deg); }
+  45% { transform: translateX(2%) rotate(3deg); }
+  100% { transform: translateY(10%) rotate(6deg) scale(0.94); filter: grayscale(0.85) brightness(0.7); opacity: 0.6; }
+}
+@keyframes nv-fly {
+  from { transform: translate(calc(var(--dx) * 250%), calc(var(--dy) * 250%)) scale(2); opacity: 0.3; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes nv-gone {
+  to { opacity: 0; visibility: hidden; }
+}
+@keyframes nv-burst {
+  0% { opacity: 1; transform: scale(0.2); }
+  60% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+@keyframes nv-ripple {
+  0% { opacity: 0.9; transform: scale(0.15); }
+  100% { opacity: 0; transform: scale(1.1); }
+}
+@keyframes nv-appear {
+  from { opacity: 0; transform: scale(0.3); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes nv-shake {
+  0%, 100% { transform: none; }
+  20% { transform: translate(-6px, 2px); }
+  40% { transform: translate(5px, -3px); }
+  60% { transform: translate(-4px, 1px); }
+  80% { transform: translate(3px, 0); }
+}
+@keyframes nv-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@keyframes nv-flicker {
+  from { opacity: 0.75; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1.06); }
+}
+@keyframes nv-smoke {
+  0% { opacity: 0.6; transform: translate(0, 0) scale(0.6); }
+  100% { opacity: 0; transform: translate(10%, -120%) scale(1.6); }
+}
+@keyframes nv-puff {
+  0% { opacity: 0.8; transform: translateY(0) scale(0.6); }
+  100% { opacity: 0; transform: translateY(-6px) scale(1.8); }
+}
+@keyframes nv-sail {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(1.25); }
+}
+@keyframes nv-wobble {
+  0%, 100% { transform: rotate(-8deg) scale(1); }
+  50% { transform: rotate(8deg) scale(1.1); }
+}
+@keyframes nv-waves {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to { background-position: 0 0, 180% 60%, 0 0; }
+}
+@keyframes nv-bubbles {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 0 -100%, 20% -120%, -10% -90%, 0 0; }
+}
+@keyframes nv-stars {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: -120px 0, -150px 0, -110px 0, -170px 0, -90px 0, 0 0, 0 0, 0 0; }
+}
+@keyframes nv-spin {
+  to { transform: rotate(1turn); }
+}
+@keyframes nv-toast {
+  0% { opacity: 0; transform: translateY(-10px) scale(0.9); }
+  10% { opacity: 1; transform: none; }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes nv-glow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes nv-dots {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nv-board *,
+  .nv-board .nv-sea,
+  .nv-banner--turn,
+  .nv-toast,
+  .nv-shake {
+    animation: none !important;
+  }
+  .nv-radar,
+  .nv-fx {
+    display: none;
+  }
+  .nv-ship--sunk {
+    filter: grayscale(0.85) brightness(0.7);
+    opacity: 0.6;
+  }
+}
