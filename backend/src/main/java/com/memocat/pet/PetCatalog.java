@@ -37,7 +37,7 @@ public final class PetCatalog {
             new Item("capeline", "Capeline", "head", 70),
             new Item("couronne-or", "Couronne royale", "head", 180),
             new Item("gibus", "Haut-de-forme de gala", "head", 130),
-            new Item("hibiscus", "Fleur à l'oreille", "head", 35),
+            new Item("fleur-oreille", "Fleur à l'oreille", "head", 35),
             new Item("noeud-tete", "Nœud dans les poils", "head", 40),
             new Item("lunettes-rondes", "Lunettes bleues", "face", 60),
             new Item("lunettes-noires", "Lunettes de star", "face", 75),
