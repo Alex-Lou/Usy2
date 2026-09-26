@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Skeleton } from "../../components/ui/Skeleton";
-import { getNews, getNewsPrefs, getNewsSources, type NewsItem, type NewsPrefs, type NewsSource } from "./api";
+import { getFailingSources, getNews, getNewsPrefs, getNewsSources, type NewsItem, type NewsPrefs, type NewsSource } from "./api";
 import { KIND_ICON, NewsCard } from "./NewsCard";
 import { NewsSettings } from "./NewsSettings";
 
@@ -13,14 +13,19 @@ export function NewsTab() {
   const [prefs, setPrefs] = useState<NewsPrefs | null>(null);
   const [items, setItems] = useState<NewsItem[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [muted, setMuted] = useState<string[]>([]);
   const [editing, setEditing] = useState(false);
   const [only, setOnly] = useState<string | null>(null);
 
   const load = useCallback(() => {
     setFailed(false);
     setItems(null);
+    setMuted([]);
     getNews()
-      .then(setItems)
+      .then((got) => {
+        setItems(got);
+        getFailingSources().then(setMuted).catch(() => {});
+      })
       .catch(() => {
         setItems([]);
         setFailed(true);
@@ -68,6 +73,12 @@ export function NewsTab() {
           }}
           onClose={() => setEditing(false)}
         />
+      )}
+
+      {muted.length > 0 && (
+        <p className="text-xs text-text-muted" role="status">
+          ⚠️ Sans réponse pour l'instant : {muted.join(", ")}. Nouvel essai dans quelques minutes (↻).
+        </p>
       )}
 
       {chips.length > 1 && (
