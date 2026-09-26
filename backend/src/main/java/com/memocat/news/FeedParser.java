@@ -94,6 +94,62 @@ public final class FeedParser {
         return out;
     }
 
+    /**
+     * The channels on a YouTube search page (channels filter): read from the
+     * page's own data (ytInitialData), at most {@code max}. Nothing found (or a
+     * page YouTube changed) gives an empty list.
+     */
+    public static List<com.memocat.news.dto.YoutubeChannelDto> parseYoutubeChannels(byte[] html, int max) {
+        String page = new String(html, java.nio.charset.StandardCharsets.UTF_8);
+        int marker = page.indexOf("ytInitialData");
+        int start = marker < 0 ? -1 : page.indexOf('{', marker);
+        if (start < 0) {
+            return List.of();
+        }
+        JsonNode data;
+        try {
+            data = JSON.readTree(page.substring(start)); // the first object; what follows is ignored
+        } catch (Exception e) {
+            return List.of();
+        }
+        List<com.memocat.news.dto.YoutubeChannelDto> out = new ArrayList<>();
+        collectChannels(data, out, max);
+        return out;
+    }
+
+    private static void collectChannels(JsonNode node, List<com.memocat.news.dto.YoutubeChannelDto> out, int max) {
+        if (out.size() >= max || node == null || !node.isContainerNode()) {
+            return;
+        }
+        JsonNode c = node.get("channelRenderer");
+        if (c != null) {
+            String id = c.path("channelId").asText("");
+            if (id.matches("UC[A-Za-z0-9_-]{22}") && out.stream().noneMatch(x -> x.id().equals(id))) {
+                String base = c.path("navigationEndpoint").path("browseEndpoint").path("canonicalBaseUrl").asText("");
+                String handle = base.startsWith("/@") ? base.substring(1) : null;
+                String subscribers = null;
+                for (String field : List.of("subscriberCountText", "videoCountText")) {
+                    String t = c.path(field).path("simpleText").asText("");
+                    if (handle == null && t.startsWith("@")) {
+                        handle = t;
+                    } else if (subscribers == null && t.matches("(?i).*(abonn|subscriber).*")) {
+                        subscribers = t;
+                    }
+                }
+                JsonNode thumbs = c.path("thumbnail").path("thumbnails");
+                String image = thumbs.isArray() && !thumbs.isEmpty() ? thumbs.get(thumbs.size() - 1).path("url").asText(null) : null;
+                if (image != null && image.startsWith("//")) {
+                    image = "https:" + image;
+                }
+                out.add(new com.memocat.news.dto.YoutubeChannelDto(id, clean(c.path("title").path("simpleText").asText(""), 80),
+                        handle == null ? null : clean(handle, 40), safeUrl(image), subscribers == null ? null : clean(subscribers, 40)));
+            }
+        }
+        for (JsonNode child : node) {
+            collectChannels(child, out, max);
+        }
+    }
+
     /** app.bsky.feed.getAuthorFeed: the account's own recent posts. */
     public static List<Entry> parseBluesky(byte[] body) {
         List<Entry> out = new ArrayList<>();

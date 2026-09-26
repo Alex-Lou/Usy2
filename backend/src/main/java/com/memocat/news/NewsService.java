@@ -3,6 +3,7 @@ package com.memocat.news;
 import com.memocat.link.PageFetcher;
 import com.memocat.news.dto.NewsItemDto;
 import com.memocat.news.dto.NewsSourceDto;
+import com.memocat.news.dto.YoutubeChannelDto;
 import com.memocat.domain.User;
 import com.memocat.profile.ProfileService;
 import com.memocat.profile.dto.NewsPrefsDto;
@@ -27,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -76,6 +78,11 @@ public class NewsService {
     private static final Pattern REDDIT_HOME = Pattern.compile("^https://(?:www\\.|old\\.)?reddit\\.com/\\.rss\\?(\\S+)$");
     private static final Pattern REDDIT_FEED = Pattern.compile("(?:^|&)feed=([A-Za-z0-9]{8,80})(?:&|$)");
     private static final Pattern REDDIT_USER = Pattern.compile("(?:^|&)user=([A-Za-z0-9_-]{3,20})(?:&|$)");
+    // YouTube shows a cookie-consent page to servers in Europe unless consent is already given.
+    private static final String YOUTUBE_COOKIE = "SOCS=CAI; CONSENT=YES+";
+    private static final String BROWSER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
+    static final int MAX_SEARCH_HITS = 10;
+    private static final int MAX_SEARCHES_KEPT = 50;
     private static final Pattern CHANNEL_ID = Pattern.compile("youtube\\.com/channel/(UC[A-Za-z0-9_-]{22})");
 
     private record Target(String key, String label, String kind, URI uri, Function<byte[], List<FeedParser.Entry>> parse) {
@@ -89,6 +96,13 @@ public class NewsService {
     private final UserRepository users;
     private final SecretBox box;
     private final Clock clock;
+    /** Recent channel searches (query → channels), so retyping costs nothing; bounded. */
+    private final Map<String, List<YoutubeChannelDto>> searches = Collections.synchronizedMap(new LinkedHashMap<>(16, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, List<YoutubeChannelDto>> eldest) {
+            return size() > MAX_SEARCHES_KEPT;
+        }
+    });
     /** @handle → channel id, found once on the channel's page. */
     private final Map<String, String> channelIds = new ConcurrentHashMap<>();
     private final Map<String, Cached> cache = new ConcurrentHashMap<>();
@@ -178,7 +192,8 @@ public class NewsService {
 
     /** A picture of an item already read (never an arbitrary address). */
     public Optional<PageFetcher.Fetched> image(String url) {
-        boolean known = cache.values().stream().anyMatch(c -> c.items().stream().anyMatch(i -> url.equals(i.image())));
+        boolean known = cache.values().stream().anyMatch(c -> c.items().stream().anyMatch(i -> url.equals(i.image())))
+                || searchImage(url);
         if (!known) {
             return Optional.empty();
         }
@@ -194,6 +209,12 @@ public class NewsService {
             return got;
         } catch (RuntimeException e) {
             return Optional.empty();
+        }
+    }
+
+    private boolean searchImage(String url) {
+        synchronized (searches) {
+            return searches.values().stream().anyMatch(list -> list.stream().anyMatch(c -> url.equals(c.image())));
         }
     }
 
@@ -219,7 +240,9 @@ public class NewsService {
         try {
             boolean json = t.kind().equals("bluesky") || t.kind().equals("x");
             URI uri = t.kind().equals("youtube") ? shortsFeed(t.uri()) : t.uri();
-            Optional<PageFetcher.Fetched> body = fetcher.fetch(uri, MAX_FEED_BYTES, json ? "application/json" : FEED_ACCEPT, AGENT);
+            Optional<PageFetcher.Fetched> body = t.kind().equals("youtube")
+                    ? fetcher.fetch(uri, MAX_FEED_BYTES, FEED_ACCEPT, AGENT, YOUTUBE_COOKIE)
+                    : fetcher.fetch(uri, MAX_FEED_BYTES, json ? "application/json" : FEED_ACCEPT, AGENT);
             if (body.isEmpty()) {
                 throw new IllegalStateException("no answer");
             }
@@ -275,7 +298,7 @@ public class NewsService {
                         URI.create("https://api.fxtwitter.com/" + m.group(1) + "/status/" + m.group(2)), FeedParser::parseFxTweet));
                 case "rss" -> out.add(new Target(key, m.group(2).toLowerCase().replaceFirst("^www\\.", ""), "site",
                         URI.create(f.handle()), FeedParser::parseFeed));
-                case "youtube" -> out.add(new Target(key, m.group(3) != null ? "@" + m.group(3) : "YouTube", "youtube",
+                case "youtube" -> out.add(new Target(key, f.label() != null ? f.label() : m.group(3) != null ? "@" + m.group(3) : "YouTube", "youtube",
                         URI.create(m.group(3) != null ? "https://www.youtube.com/@" + m.group(3)
                                 : "https://www.youtube.com/channel/" + (m.group(1) != null ? m.group(1) : m.group(2))),
                         FeedParser::parseYoutubeShorts));
@@ -287,6 +310,48 @@ public class NewsService {
     }
 
     /**
+     * YouTube channels matching a few words, read from YouTube's own search
+     * page (channels only): pick one and its Shorts are followed by channel id.
+     * Their pictures can then be shown through {@link #image}.
+     */
+    public List<YoutubeChannelDto> searchYoutube(String query) {
+        String q = query == null ? "" : query.strip().replaceAll("\\s+", " ");
+        if (q.length() < 2 || q.length() > 60) {
+            throw new ContentValidationException("Tape entre 2 et 60 caractères");
+        }
+        String key = q.toLowerCase(Locale.ROOT);
+        List<YoutubeChannelDto> kept = searches.get(key);
+        if (kept != null) {
+            return kept;
+        }
+        URI uri = URI.create("https://www.youtube.com/results?search_query=" + URLEncoder.encode(q, StandardCharsets.UTF_8)
+                + "&sp=EgIQAg%253D%253D"); // filter: channels
+        List<YoutubeChannelDto> found = fetcher.fetch(uri, 3_000_000, "text/html", BROWSER_AGENT, YOUTUBE_COOKIE)
+                .map(page -> FeedParser.parseYoutubeChannels(page.body(), MAX_SEARCH_HITS))
+                .orElseThrow(() -> new ContentValidationException("YouTube ne répond pas, réessaie un peu plus tard"));
+        searches.put(key, found);
+        return found;
+    }
+
+    /** The names of my sources that answered nothing on their last try (to say so in the tab). */
+    public List<String> failing(String username) {
+        NewsPrefsDto prefs = prefs(username);
+        if (!Boolean.TRUE.equals(prefs.enabled())) {
+            return List.of();
+        }
+        List<Target> targets = new ArrayList<>(targets(prefs));
+        redditHomeLink(username).ifPresent(link -> targets.add(new Target(redditHomeKey(username), "Reddit · mon fil", "reddit",
+                URI.create(link), FeedParser::parseFeed)));
+        return targets.stream()
+                .filter(t -> {
+                    Cached c = cache.get(t.key());
+                    return c != null && c.failed() && c.items().isEmpty();
+                })
+                .map(Target::label)
+                .toList();
+    }
+
+    /**
      * A channel's Shorts feed (its "UUSH…" playlist). A channel given by its
      * @handle is looked up once on its page (served to link-preview robots
      * without any consent screen), then remembered.
@@ -295,7 +360,7 @@ public class NewsService {
         String path = channel.getPath();
         String id = path.startsWith("/channel/") ? path.substring("/channel/".length()) : channelIds.get(path);
         if (id == null) {
-            byte[] page = fetcher.fetch(channel, 1_500_000, "text/html")
+            byte[] page = fetcher.fetch(channel, 1_500_000, "text/html", BROWSER_AGENT, YOUTUBE_COOKIE)
                     .orElseThrow(() -> new IllegalStateException("no answer")).body();
             Matcher m = CHANNEL_ID.matcher(new String(page, StandardCharsets.UTF_8));
             if (!m.find()) {
@@ -364,6 +429,7 @@ public class NewsService {
                     + (m.group(3) == null ? "" : m.group(3));
             default -> "https://x.com/" + m.group(1) + "/status/" + m.group(2);
         };
-        return new NewsPrefsDto.Follow(f.kind(), clean);
+        String label = f.kind().equals("youtube") && f.label() != null ? FeedParser.clean(f.label(), 80) : null;
+        return new NewsPrefsDto.Follow(f.kind(), clean, label == null || label.isBlank() ? null : label);
     }
 }

@@ -82,9 +82,9 @@ class NewsServiceTest {
     @Test
     void aChannelsShortsAreFoundThroughItsPageThenItsShortsFeed() {
         when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of(), List.of(new Follow("youtube", "@MaChaine"))));
-        when(fetcher.fetch(eq(URI.create("https://www.youtube.com/@MaChaine")), anyInt(), anyString()))
+        when(fetcher.fetch(eq(URI.create("https://www.youtube.com/@MaChaine")), anyInt(), anyString(), anyString(), anyString()))
                 .thenReturn(body("<link rel=\"canonical\" href=\"https://www.youtube.com/channel/UCabcdefghijklmnopqrstuv\">", "text/html"));
-        when(fetcher.fetch(eq(URI.create("https://www.youtube.com/feeds/videos.xml?playlist_id=UUSHabcdefghijklmnopqrstuv")), anyInt(), anyString(), anyString()))
+        when(fetcher.fetch(eq(URI.create("https://www.youtube.com/feeds/videos.xml?playlist_id=UUSHabcdefghijklmnopqrstuv")), anyInt(), anyString(), anyString(), anyString()))
                 .thenReturn(body(SHORTS, "application/atom+xml"));
 
         var items = service.items("lou");
@@ -95,6 +95,58 @@ class NewsServiceTest {
             assertThat(i.image()).isEqualTo("https://i.ytimg.com/vi/abcDEF12345/hqdefault.jpg");
             assertThat(i.sourceLabel()).isEqualTo("@MaChaine");
         });
+    }
+
+    private static final String SEARCH_PAGE = """
+            <html><script>var ytInitialData = {"contents":{"sectionListRenderer":{"contents":[{"itemSectionRenderer":{"contents":[
+              {"channelRenderer":{"channelId":"UCabcdefghijklmnopqrstuv","title":{"simpleText":"Ma Chaîne"},
+                "navigationEndpoint":{"browseEndpoint":{"canonicalBaseUrl":"/@MaChaine"}},
+                "thumbnail":{"thumbnails":[{"url":"//yt3.ggpht.com/small"},{"url":"//yt3.ggpht.com/big"}]},
+                "subscriberCountText":{"simpleText":"@MaChaine"},"videoCountText":{"simpleText":"1,2 M d'abonnés"}}},
+              {"videoRenderer":{"videoId":"x"}}]}}]}}};</script></html>""";
+
+    @Test
+    void searchingYoutubeListsChannelsOnceThenRemembers() {
+        when(fetcher.fetch(any(URI.class), anyInt(), eq("text/html"), anyString(), anyString())).thenReturn(body(SEARCH_PAGE, "text/html"));
+
+        var hits = service.searchYoutube("  ma   chaîne ");
+        service.searchYoutube("Ma Chaîne");
+
+        assertThat(hits).singleElement().satisfies(c -> {
+            assertThat(c.id()).isEqualTo("UCabcdefghijklmnopqrstuv");
+            assertThat(c.title()).isEqualTo("Ma Chaîne");
+            assertThat(c.handle()).isEqualTo("@MaChaine");
+            assertThat(c.image()).isEqualTo("https://yt3.ggpht.com/big");
+            assertThat(c.subscribers()).isEqualTo("1,2 M d'abonnés");
+        });
+        ArgumentCaptor<URI> asked = ArgumentCaptor.forClass(URI.class);
+        verify(fetcher, times(1)).fetch(asked.capture(), anyInt(), anyString(), anyString(), anyString());
+        assertThat(asked.getValue().toString()).startsWith("https://www.youtube.com/results?search_query=ma+cha%C3%AEne");
+
+        // its picture may now be shown, and only because it was in a search
+        when(fetcher.fetch(eq(URI.create("https://yt3.ggpht.com/big")), anyInt(), anyString(), anyString())).thenReturn(body("png", "image/png"));
+        assertThat(service.image("https://yt3.ggpht.com/big")).isPresent();
+        assertThatThrownBy(() -> service.searchYoutube("a")).isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
+    void aChannelPickedFromSearchKeepsItsName() {
+        NewsPrefsDto saved = service.savePrefs("lou", new NewsPrefsDto(true, List.of(), List.of(
+                new Follow("youtube", "UCabcdefghijklmnopqrstuv", "Ma <b>Chaîne</b>"))));
+        assertThat(saved.follows()).singleElement().satisfies(f -> {
+            assertThat(f.handle()).isEqualTo("UCabcdefghijklmnopqrstuv");
+            assertThat(f.label()).isEqualTo("Ma Chaîne");
+        });
+    }
+
+    @Test
+    void aSourceThatAnswersNothingIsListedAsFailing() {
+        when(profiles.newsPrefs("lou")).thenReturn(new NewsPrefsDto(true, List.of(), List.of(new Follow("reddit", "pcgaming"))));
+        when(fetcher.fetch(any(URI.class), anyInt(), anyString(), anyString())).thenReturn(Optional.empty());
+
+        service.items("lou");
+
+        assertThat(service.failing("lou")).containsExactly("r/pcgaming");
     }
 
     @Test
