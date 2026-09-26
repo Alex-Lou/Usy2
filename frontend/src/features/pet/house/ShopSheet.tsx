@@ -4,7 +4,7 @@ import { buyItem, wearItem } from "../api";
 import { CatSprite } from "../CatSprite";
 import { wornItems, type Pet, type PetItem } from "../types";
 
-const SLOT_LABEL: Record<PetItem["slot"], string> = { neck: "Cou", head: "Tête", face: "Visage", home: "Maison" };
+const SLOT_LABEL: Record<PetItem["slot"], string> = { neck: "Cou", head: "Tête", face: "Visage", home: "Maison", coat: "Pelage" };
 
 /**
  * The accessory shop: each item is previewed on the cat itself. Bought with
