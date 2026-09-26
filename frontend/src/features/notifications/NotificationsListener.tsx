@@ -6,6 +6,7 @@ import { useAuth } from "../auth/useAuth";
 import { emitCoupleActivity } from "../couple/activity";
 import type { CoupleActivity } from "../couple/types";
 import { emitLive, type LiveView } from "../live/api";
+import { emitNaval, type NavalPing } from "../naval/api";
 import { emitCommentReactions, emitFeedActivity, type FeedActivity, type ReactionAdded } from "../feed/activity";
 import { createNotifClient, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
@@ -24,6 +25,7 @@ export function NotificationsListener() {
   const lastGameKeyRef = useRef<string>("");
   const lastListNotifRef = useRef<Map<number, number>>(new Map());
   const lastLiveKeyRef = useRef<string>("");
+  const lastNavalKeyRef = useRef<string>("");
   const navigate = useNavigate();
 
   const myId = user?.id ?? -1;
@@ -112,6 +114,20 @@ export function NotificationsListener() {
       else if (g.status === "paused" && g.waiting.includes(myId)) notify(`${other} t'attend : la partie en direct est en pause ⏸`, "/jeux/direct");
     };
 
+    // 🚢 Battleship: the open page re-fetches; elsewhere, a new battle, my turn or a defeat rings.
+    const onNaval = (p: NavalPing) => {
+      emitNaval(p);
+      if (p.hostId !== myId && p.guestId !== myId) return;
+      if (window.location.pathname.startsWith("/jeux/bataille")) return; // watching it
+      const other = p.hostId === myId ? p.guestName : p.hostName;
+      const key = p.status === "placing" ? `${p.id}:placing` : `${p.id}:${p.status}:${p.shots}`;
+      if (key === lastNavalKeyRef.current) return; // duplicate broadcast
+      lastNavalKeyRef.current = key;
+      if (p.status === "placing" && p.guestId === myId) notify(`${other} lance une bataille navale 🚢 Place ta flotte !`, "/jeux/bataille");
+      else if (p.status === "playing" && p.turnId === myId) notify(p.shots === 0 ? "Les deux flottes sont prêtes : à toi de tirer ⚓" : `${other} a tiré${p.hit ? " et touché 💥" : " dans l'eau 💦"} — à toi ⚓`, "/jeux/bataille");
+      else if (p.status === "done" && p.winnerId != null && p.winnerId !== myId) notify(`${other} a coulé toute ta flotte 🏳️ Revanche ?`, "/jeux/bataille");
+    };
+
     const client = createNotifClient(
       (m) => {
         if (m.sender.id === myId) return; // my own message
@@ -141,6 +157,7 @@ export function NotificationsListener() {
       emitCommentReactions, // open comment lists update live
       onReaction,
       onLive,
+      onNaval,
     );
     clientRef.current = client;
     const onVisibility = () => reportPresence(client);

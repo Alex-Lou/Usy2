@@ -6,11 +6,12 @@ import type { CoupleActivity } from "../couple/types";
 import type { CommentReactionsChange, FeedActivity, ReactionAdded } from "../feed/activity";
 import type { GamesState } from "../games/types";
 import type { LiveView } from "../live/api";
+import type { NavalPing } from "../naval/api";
 
 /**
  * One app-wide STOMP connection dedicated to notifications: it listens to the
  * broadcast topics (/topic/messages, /topic/games, /topic/feed, /topic/couple,
- * /topic/comment-reactions, /topic/reactions, /topic/live) so the bell can react to the other person's activity from
+ * /topic/comment-reactions, /topic/reactions, /topic/live, /topic/naval) so the bell can react to the other person's activity from
  * anywhere in the app. Auto-reconnects like the other clients.
  */
 export function createNotifClient(
@@ -21,6 +22,7 @@ export function createNotifClient(
   onCommentReactions?: (c: CommentReactionsChange) => void,
   onReaction?: (r: ReactionAdded) => void,
   onLive?: (g: LiveView) => void,
+  onNaval?: (p: NavalPing) => void,
 ): Client {
   const token = getToken();
   const client = new Client({
@@ -40,6 +42,9 @@ export function createNotifClient(
       }
       if (onLive) {
         client.subscribe("/topic/live", (f: IMessage) => onLive(JSON.parse(f.body) as LiveView));
+      }
+      if (onNaval) {
+        client.subscribe("/topic/naval", (f: IMessage) => onNaval(JSON.parse(f.body) as NavalPing));
       }
       reportPresence(client);
     },
