@@ -1,3 +1,4 @@
+import { MotionConfig, motion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { onCoupleActivity } from "../couple/activity";
@@ -45,6 +46,7 @@ export function NousPage() {
   const partner = data?.partnerName ?? "ton amour";
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="mx-auto flex max-w-xl flex-col gap-4" data-nous="">
       <header className="flex items-center gap-3 animate-fade-up">
         <Link to="/jeux" aria-label="Retour aux jeux" className="chip press text-sm">←</Link>
@@ -74,12 +76,13 @@ export function NousPage() {
                   role="tab"
                   aria-selected={tab === t.id}
                   onClick={() => go(t.id)}
-                  className={"chip press relative shrink-0 text-sm " + (tab === t.id ? "nd-tab-on font-semibold text-white" : "text-text-muted")}
+                  className={"chip press relative shrink-0 text-sm " + (tab === t.id ? "font-semibold text-white" : "text-text-muted")}
                 >
-                  {t.label}
-                  {t.id === "mine" && <span className="ml-1 text-xs opacity-80">{data.myAnswers}/{data.answerable}</span>}
+                  {tab === t.id && <motion.span layoutId="nd-tab" className="nd-tab-pill absolute inset-0 rounded-full" transition={{ type: "spring", stiffness: 420, damping: 32 }} aria-hidden="true" />}
+                  <span className="relative">{t.label}</span>
+                  {t.id === "mine" && <span className="relative ml-1 text-xs opacity-80">{data.myAnswers}/{data.answerable}</span>}
                   {badge != null && badge > 0 && (
-                    <span className="nd-badge ml-1.5 inline-grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] font-bold text-white" aria-label={`${badge} en attente`}>{badge}</span>
+                    <span className="nd-badge relative ml-1.5 inline-grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] font-bold text-white" aria-label={`${badge} en attente`}>{badge}</span>
                   )}
                 </button>
               );
@@ -94,6 +97,7 @@ export function NousPage() {
         </>
       )}
     </div>
+    </MotionConfig>
   );
 }
 

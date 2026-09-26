@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../lib/api/client";
 import { Confetti } from "../games/Confetti";
@@ -69,8 +70,12 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
         {reveal.verdict === "right" && <Confetti />}
         <p className="font-semibold leading-snug">{reveal.text}</p>
         <div className="grid gap-2 sm:grid-cols-2">
-          <Bubble who="Ta devinette" body={said(reveal, "guess")} muted />
-          <Bubble who={`La réponse de ${partnerName}`} body={said(reveal, "answer")} color={color} />
+          <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ type: "spring", stiffness: 300, damping: 24 }}>
+            <Bubble who="Ta devinette" body={said(reveal, "guess")} muted />
+          </motion.div>
+          <motion.div initial={{ opacity: 0, rotateY: 90 }} animate={{ opacity: 1, rotateY: 0 }} transition={{ delay: 0.15, type: "spring", stiffness: 260, damping: 20 }}>
+            <Bubble who={`La réponse de ${partnerName}`} body={said(reveal, "answer")} color={color} />
+          </motion.div>
         </div>
         <Stamp verdict={reveal.verdict} partnerName={partnerName} />
         <button type="button" onClick={next} className="btn-brand press self-center rounded-token px-5 py-2 font-semibold">
@@ -135,13 +140,15 @@ export function JudgeTab({ themes, partnerName, onChange }: Props & { onChange: 
   if (items.length === 0) return <p className="card p-6 text-center text-sm text-text-muted">Rien à juger ⚖️ Tu es à jour.</p>;
   return (
     <ul className="flex flex-col gap-3">
-      {items.map((r) => (
-        <JudgeItem key={r.guessId} r={r} color={colorOf(themes, r.theme)} partnerName={partnerName}
-          onDone={() => {
-            setItems((list) => list?.filter((x) => x.guessId !== r.guessId) ?? null);
-            onChange();
-          }} />
-      ))}
+      <AnimatePresence initial={false}>
+        {items.map((r) => (
+          <JudgeItem key={r.guessId} r={r} color={colorOf(themes, r.theme)} partnerName={partnerName}
+            onDone={() => {
+              setItems((list) => list?.filter((x) => x.guessId !== r.guessId) ?? null);
+              onChange();
+            }} />
+        ))}
+      </AnimatePresence>
     </ul>
   );
 }
@@ -164,7 +171,7 @@ function JudgeItem({ r, color, partnerName, onDone }: { r: NousReveal; color: st
     }
   };
   return (
-    <li className="card qz-slide relative flex flex-col gap-3 p-4" style={{ borderLeft: `4px solid ${color}` }} data-nous-judge={r.guessId}>
+    <motion.li layout exit={{ opacity: 0, x: 90, transition: { duration: 0.25 } }} className="card qz-slide relative flex flex-col gap-3 p-4" style={{ borderLeft: `4px solid ${color}` }} data-nous-judge={r.guessId}>
       <p className="font-semibold leading-snug">{r.text}</p>
       <div className="grid gap-2 sm:grid-cols-2">
         <Bubble who="Ta réponse" body={r.answerText ?? "—"} color={color} />
@@ -189,7 +196,7 @@ function JudgeItem({ r, color, partnerName, onDone }: { r: NousReveal; color: st
         </>
       )}
       {error && <p className="text-xs text-danger" role="alert">{error}</p>}
-    </li>
+    </motion.li>
   );
 }
 
@@ -255,8 +262,15 @@ function Stamp({ verdict, partnerName }: { verdict: Verdict | null; partnerName:
   if (!verdict) return <p className="qz-pop self-center text-sm font-semibold text-text-muted">⏳ {partnerName} va juger ta réponse…</p>;
   const v = VERDICTS[verdict];
   return (
-    <p className="nd-stamp self-center rounded-token border-4 px-4 py-1 font-display text-2xl font-black uppercase tracking-wider" style={{ color: v.color, borderColor: v.color }} role="status">
+    <motion.p
+      initial={{ opacity: 0, scale: 2.6, rotate: -18 }}
+      animate={{ opacity: 1, scale: 1, rotate: -6 }}
+      transition={{ delay: 0.35, type: "spring", stiffness: 520, damping: 16 }}
+      className="self-center rounded-token border-4 px-4 py-1 font-display text-2xl font-black uppercase tracking-wider"
+      style={{ color: v.color, borderColor: v.color }}
+      role="status"
+    >
       {v.emoji} {v.label}
-    </p>
+    </motion.p>
   );
 }
