@@ -1,4 +1,6 @@
 import type { Species } from "../../app/companion";
+import otterFishUrl from "../companions/loutre-poisson.svg";
+import otterUrl from "../companions/loutreNoFish.svg";
 
 // Hand-drawn, chibi/Ghibli-cute animal faces. Drawn in a 64×64 space with the
 // head centered at (32,34). Reused as a standalone face, an empty-state mascot,
@@ -90,6 +92,40 @@ export function PenguinHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
       </g>
       {eyesClosed && <path d="M18 36 q3.3 2.6 6.6 0 M39.4 36 q3.3 2.6 6.6 0" stroke={EYE} strokeWidth="1.8" fill="none" strokeLinecap="round" />}
     </>
+  );
+}
+
+/**
+ * The otter: Lou's partner's drawing (loutreNoFish.svg, as drawn) with its fish
+ * as a layer of its own (loutre-poisson.svg: the fish paths of loutre.svg,
+ * unchanged), so the fish can flap now and then. Eyelids drawn over the eyes
+ * blink; the 2100 drawing box is fitted into the 64 box.
+ */
+const OTTER_FIT = "translate(32 33) scale(0.035) translate(-1050 -1014)";
+const OTTER_EYES = [
+  [708, 1040],
+  [1390, 1034],
+] as const;
+const FISH_PIVOT = [1076, 1300] as const; // where the fish sits in the mouth
+
+function OtterHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
+  return (
+    <g className="mc-face mc-face--otter" transform={OTTER_FIT}>
+      <image href={otterUrl} x="0" y="0" width="2100" height="2100" />
+      <g transform={`translate(${FISH_PIVOT[0]} ${FISH_PIVOT[1]})`}>
+        <g className="mc-otter-fish">
+          <image href={otterFishUrl} x={-FISH_PIVOT[0]} y={-FISH_PIVOT[1]} width="2100" height="2100" />
+        </g>
+      </g>
+      <g className={eyesClosed ? undefined : "mc-otter-lids"}>
+        {OTTER_EYES.map(([x, y]) => (
+          <g key={x}>
+            <ellipse cx={x} cy={y - 4} rx="178" ry="152" fill="#9f8275" />
+            <path d={`M${x - 150} ${y + 10} q150 90 300 0`} stroke="#2b211c" strokeWidth="30" strokeLinecap="round" fill="none" />
+          </g>
+        ))}
+      </g>
+    </g>
   );
 }
 
@@ -252,6 +288,8 @@ export function AnimalFace({ species, eyesClosed = false }: { species: Species; 
           <Blush />
         </g>
       );
+    case "otter":
+      return <OtterHead eyesClosed={eyesClosed} />;
     case "parrot":
       return (
         <g>
