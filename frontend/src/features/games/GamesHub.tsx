@@ -13,6 +13,13 @@ interface GameCard {
 
 const GAMES: GameCard[] = [
   {
+    to: "/jeux/quiz",
+    title: "Quiz",
+    tagline: "9 thèmes, 450 questions sur un chemin de niveaux… et « Toi & moi » pour deviner l'autre.",
+    mode: "Solo · à deux",
+    emoji: "🧠",
+  },
+  {
     to: "/jeux/chat",
     title: "La maison du chat",
     tagline: "Nourrissez-le, brossez-le, jouez au laser… et offrez-lui des accessoires.",
