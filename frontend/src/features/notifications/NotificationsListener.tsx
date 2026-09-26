@@ -70,6 +70,10 @@ export function NotificationsListener() {
         notify(`${a.actorName} t'a laissé un mot`);
       } else if (a.kind === "thinking") {
         notify(`${a.actorName} pense à toi 💭`);
+      } else if ((a.kind === "quiz-challenge" || a.kind === "quiz-done") && !window.location.pathname.startsWith("/jeux/quiz")) {
+        // On the quiz page the duel list updates by itself.
+        if (a.kind === "quiz-challenge") notify(`${a.actorName} te lance un défi quiz 🎯 ${a.detail ?? ""}`, "/jeux/quiz");
+        else notify(`${a.actorName} a relevé ton défi quiz 🏁 Qui a gagné ?`, `/jeux/quiz?duel=${a.refId}`);
       } else if (a.kind === "list" && a.refId != null) {
         const last = lastListNotifRef.current.get(a.refId) ?? 0;
         lastListNotifRef.current.set(a.refId, Date.now());
