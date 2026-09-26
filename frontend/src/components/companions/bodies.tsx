@@ -1,4 +1,6 @@
+import { useId } from "react";
 import { AnimalFace } from "../ui/animals";
+import siameseBodyUrl from "./chatBody.svg";
 import otterBodyUrl from "./loutreBodyBis.svg";
 import penguinUrl from "./PnguinoBody.svg";
 import type { CompanionBrain, Kind } from "./brain";
@@ -10,6 +12,7 @@ const OUTLINE = "#4a3b33";
 export function CompanionBody({ kind, b }: { kind: Kind; b: CompanionBrain }) {
   if (kind === "penguin") return <PenguinBody b={b} />;
   if (kind === "otter") return <OtterBody b={b} />;
+  if (kind === "siamese") return <SiameseBody b={b} />;
   return <FourLegs kind={kind} b={b} />;
 }
 
@@ -72,6 +75,55 @@ function OtterBody({ b }: { b: CompanionBrain }) {
               <g key={x}>
                 <ellipse cx={x} cy="1033" rx="84" ry="64" fill="#9f8275" />
                 <path d={`M${x - 64} 1045 q64 36 128 0`} stroke="#2f241f" strokeWidth="16" strokeLinecap="round" fill="none" />
+              </g>
+            ))}
+          </g>
+        </g>
+      </g>
+    </g>
+  );
+}
+
+// Lou's partner's whole-body Siamese (chatBody.svg, used as is): drawn three
+// quarters facing left, so it is mirrored. It trots, hops, breathes, crouches
+// before a pounce, flattens for a nap; its tail (cut out of the same drawing)
+// swings around its root; eyelids drawn over its eyes blink. Its own
+// coordinates: 2100 box, feet at y 2001, centre x 1060.
+const SIAMESE_SCALE = 62 / 1700; // the drawing's height (1700) → 62 units
+const SIAMESE_EYES = [
+  [634, 738],
+  [950, 735],
+] as const;
+// The tail, above the back; the piece reaches a little lower than the cut so it
+// still covers the join while it swings. It turns around its root.
+const SIAMESE_TAIL = { cut: "1430,500 1790,500 1790,960 1430,960", points: "1430,500 1790,500 1790,985 1430,985", pivot: [1590, 975] } as const;
+
+function SiameseBody({ b }: { b: CompanionBrain }) {
+  const id = useId().replace(/:/g, "");
+  const stretch = 1 - b.lift / 50;
+  const trot = b.stride !== 0 ? 1 + Math.sin(b.stride * 4) * 0.025 : 1;
+  const flat = 1 - b.lying * 0.22;
+  const [px, py] = SIAMESE_TAIL.pivot;
+  const cut = `M${SIAMESE_TAIL.cut.replace(/ /g, " L")} Z`;
+  return (
+    <g transform={`translate(0 ${b.lying * 4}) rotate(${b.tilt} 0 -14) scale(${(1 / stretch) * (1 + b.lying * 0.08)} ${stretch * flat * trot * b.squash})`}>
+      <g transform={`scale(${-SIAMESE_SCALE} ${SIAMESE_SCALE}) translate(-1060 -2001)`}>
+        <g className="mc-siamese-body">
+          <clipPath id={`${id}-body`}>
+            <path clipRule="evenodd" d={`M0 0 H2100 V2100 H0 Z ${cut}`} />
+          </clipPath>
+          <clipPath id={`${id}-tail`}>
+            <polygon points={SIAMESE_TAIL.points} />
+          </clipPath>
+          <g transform={`rotate(${b.wag * 0.5} ${px} ${py})`}>
+            <image href={siameseBodyUrl} x="0" y="0" width="2100" height="2100" clipPath={`url(#${id}-tail)`} />
+          </g>
+          <image href={siameseBodyUrl} x="0" y="0" width="2100" height="2100" clipPath={`url(#${id}-body)`} />
+          <g className={b.eyesClosed ? undefined : "mc-siamese-body-lids"}>
+            {SIAMESE_EYES.map(([x, y]) => (
+              <g key={x}>
+                <ellipse cx={x} cy={y} rx="80" ry="74" fill="#f4cda1" />
+                <path d={`M${x - 68} ${y + 8} q68 40 136 0`} stroke="#5d4c36" strokeWidth="18" strokeLinecap="round" fill="none" />
               </g>
             ))}
           </g>

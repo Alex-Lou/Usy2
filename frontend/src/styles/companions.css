@@ -291,8 +291,9 @@ svg.mc-badge-face .mc-head {
 .mc-hello svg.mc-badge-face .mc-otter-lids {
   animation: mc-otter-hello-blink 1.8s ease-in-out;
 }
-/* The Siamese cat (animals.tsx): an ear flicks or folds now and then, the
-   whiskers twitch, it blinks. Each piece turns around the point its group is
+/* The Siamese cat (animals.tsx): the left ear flicks or folds now and then,
+   the right one folds down (her drawing of it, swapped in for under a second),
+   the whiskers twitch, it blinks. Each piece turns around the point its group is
    moved to (transform-origin 0 0). The ear tips are always shown (the drawing
    below them is cut away, so they can fold); the whiskers only while they
    move (at rest the drawing below is the whiskers). */
@@ -304,8 +305,12 @@ svg.mc-badge-face .mc-head {
 .mc-face--siamese .mc-siamese-ear--l {
   animation: mc-siamese-ear-l 7.4s ease-in-out infinite;
 }
-.mc-face--siamese .mc-siamese-ear--r {
-  animation: mc-siamese-ear-r 9.7s ease-in-out infinite;
+.mc-face--siamese .mc-siamese-ear-down {
+  opacity: 0;
+  animation: mc-siamese-fold 8.3s linear infinite;
+}
+.mc-face--siamese .mc-siamese-ear-up {
+  animation: mc-siamese-unfold 8.3s linear infinite;
 }
 .mc-face--siamese .mc-siamese-whisk {
   opacity: 0;
@@ -322,8 +327,11 @@ svg.mc-badge-face .mc-head {
 .mc-hello svg.mc-badge-face .mc-siamese-ear--l {
   animation: mc-siamese-hello-l 1.8s ease-in-out;
 }
-.mc-hello svg.mc-badge-face .mc-siamese-ear--r {
-  animation: mc-siamese-hello-r 1.8s ease-in-out;
+.mc-hello svg.mc-badge-face .mc-siamese-ear-down {
+  animation: mc-siamese-fold-hello 1.8s linear;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-ear-up {
+  animation: mc-siamese-unfold-hello 1.8s linear;
 }
 .mc-hello svg.mc-badge-face .mc-siamese-whisk {
   animation: mc-siamese-whisk-hello 1.8s ease-in-out;
@@ -340,13 +348,15 @@ svg.mc-badge-face .mc-head {
   93% { transform: rotate(-2deg); }
   96% { transform: none; }
 }
-@keyframes mc-siamese-ear-r {
-  0%, 12%, 30%, 70%, 100% { transform: none; }
-  16%, 25% { transform: rotate(-5deg) scaleY(0.66); }
-  73% { transform: rotate(4deg); }
-  76% { transform: rotate(-2deg); }
-  79% { transform: rotate(2deg); }
-  82% { transform: none; }
+/* The folded ear fades in over the upright one (which only then goes), stays
+   under a second, and the upright one is back before it fades out: no gap. */
+@keyframes mc-siamese-fold {
+  0%, 60%, 70.2%, 100% { opacity: 0; }
+  61%, 69.2% { opacity: 1; }
+}
+@keyframes mc-siamese-unfold {
+  0%, 61%, 69.2%, 100% { opacity: 1; }
+  61.1%, 69.1% { opacity: 0; }
 }
 @keyframes mc-siamese-whisk-l {
   0%, 71.9%, 94.1%, 100% { transform: none; opacity: 0; }
@@ -370,11 +380,13 @@ svg.mc-badge-face .mc-head {
   62% { transform: rotate(-4deg); }
   78% { transform: rotate(2deg); }
 }
-@keyframes mc-siamese-hello-r {
-  0%, 100% { transform: none; }
-  15%, 45% { transform: rotate(-5deg) scaleY(0.7); }
-  62% { transform: rotate(4deg); }
-  78% { transform: rotate(-2deg); }
+@keyframes mc-siamese-fold-hello {
+  0%, 12%, 62%, 100% { opacity: 0; }
+  16%, 58% { opacity: 1; }
+}
+@keyframes mc-siamese-unfold-hello {
+  0%, 16%, 58%, 100% { opacity: 1; }
+  16.5%, 57.5% { opacity: 0; }
 }
 @keyframes mc-siamese-whisk-hello {
   0%, 100% { transform: none; opacity: 0; }
@@ -384,6 +396,8 @@ svg.mc-badge-face .mc-head {
 }
 @media (prefers-reduced-motion: reduce) {
   .mc-face--siamese .mc-siamese-ear,
+  .mc-face--siamese .mc-siamese-ear-down,
+  .mc-face--siamese .mc-siamese-ear-up,
   .mc-face--siamese .mc-siamese-whisk,
   .mc-face--siamese .mc-siamese-lids {
     animation: none;
@@ -395,6 +409,16 @@ svg.mc-badge-face .mc-head {
   transform-box: fill-box;
   transform-origin: 50% 100%;
   animation: mc-pingu-breathe 3.4s ease-in-out infinite;
+}
+/* The living Siamese's whole body (bodies.tsx) breathes and blinks too. */
+.mc-siamese-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: mc-pingu-breathe 3.6s ease-in-out infinite;
+}
+.mc-siamese-body .mc-siamese-body-lids {
+  opacity: 0;
+  animation: mc-pingu-blink 5.1s infinite;
 }
 @keyframes mc-otter-flop {
   0%, 80%, 100% { transform: rotate(0); }
@@ -416,7 +440,9 @@ svg.mc-badge-face .mc-head {
   .mc-face--otter .mc-otter-fish,
   .mc-face--otter .mc-otter-lids,
   .mc-otter-body,
-  .mc-otter-body .mc-otter-lids {
+  .mc-otter-body .mc-otter-lids,
+  .mc-siamese-body,
+  .mc-siamese-body .mc-siamese-body-lids {
     animation: none;
   }
 }

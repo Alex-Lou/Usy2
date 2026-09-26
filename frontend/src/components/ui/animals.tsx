@@ -1,6 +1,7 @@
 import { useId } from "react";
 import type { Species } from "../../app/companion";
 import siameseUrl from "../companions/chat.svg";
+import siameseFoldUrl from "../companions/chatNoreille.svg";
 import otterFishUrl from "../companions/loutreFishBis-poisson.svg";
 import otterUrl from "../companions/loutreHeadBis.svg";
 
@@ -135,21 +136,28 @@ function OtterHead({ eyesClosed = false, fish = true }: { eyesClosed?: boolean; 
 }
 
 /**
- * The Siamese cat: Lou's partner's drawing (chat.svg, as drawn). The tip of each
- * ear is the same drawing, cut to it, that flicks and folds now and then; the
- * whiskers (cut out too) twitch; eyelids drawn over the eyes blink. The 2100 drawing box is fitted into the 64 box.
+ * The Siamese cat: Lou's partner's drawing (chat.svg, as drawn). The tip of the
+ * left ear is the same drawing, cut to it, that flicks and folds now and then;
+ * the right ear folds down for real, now and then: its corner of the drawing
+ * gives way to the same corner of her second drawing (chatNoreille.svg, the ear
+ * folded). The whiskers (cut out too) twitch; eyelids drawn over the eyes blink.
+ * The 2100 drawing box is fitted into the 64 box.
  */
 const SIAMESE_FIT = "translate(32 33) scale(0.045) translate(-1050 -993)";
 const SIAMESE_EYES = [
   [774, 1094],
   [1321, 1097],
 ] as const;
-// The top of each ear is cut out of the drawing (and the drawing below it
+// The top of the left ear is cut out of the drawing (and the drawing below it
 // left out: the ear can fold); it overlaps the rest a little below the cut.
 const SIAMESE_EARS = [
   { side: "l", pivot: [600, 630], cut: "360,380 640,380 840,620 360,620", points: "360,380 640,380 857,640 360,640" },
-  { side: "r", pivot: [1500, 630], cut: "1740,380 1460,380 1260,620 1740,620", points: "1740,380 1460,380 1243,640 1740,640" },
 ] as const;
+// The corner around the right ear, where the two drawings differ, cut out of the
+// head; its edge runs where they are alike (the dark tuft, then the cheek). The
+// two pieces reach a little past it, so no seam shows along the cut.
+const SIAMESE_FOLD = "1290,380 1800,380 1800,1140 1600,1140 1470,1000 1400,880 1330,800 1290,700";
+const SIAMESE_FOLD_PIECE = "1272,370 1810,370 1810,1156 1592,1156 1455,1010 1386,892 1315,812 1272,704";
 // The whiskers of each cheek: shown cut out only while they twitch (at rest, the drawing).
 const SIAMESE_WHISKERS = [
   { side: "l", pivot: [900, 1420], points: "640,1330 875,1330 875,1430 850,1462 740,1470 690,1445" },
@@ -172,13 +180,19 @@ function SiamesePiece({ clipId, pivot: [px, py], points, className }: { clipId: 
 
 function SiameseHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
   const id = useId().replace(/:/g, "");
-  const cuts = SIAMESE_EARS.map(({ cut }) => `M${cut.replace(/ /g, " L")} Z`).join(" ");
+  const path = (points: string) => `M${points.replace(/ /g, " L")} Z`;
+  const cuts = [...SIAMESE_EARS.map(({ cut }) => cut), SIAMESE_FOLD].map(path).join(" ");
   return (
     <g className="mc-face mc-face--siamese" transform={SIAMESE_FIT}>
       <clipPath id={`${id}-head`}>
         <path clipRule="evenodd" d={`M0 0 H2100 V2100 H0 Z ${cuts}`} />
       </clipPath>
       <image href={siameseUrl} x="0" y="0" width="2100" height="2100" clipPath={`url(#${id}-head)`} />
+      <clipPath id={`${id}-fold`}>
+        <polygon points={SIAMESE_FOLD_PIECE} />
+      </clipPath>
+      <image href={siameseUrl} x="0" y="0" width="2100" height="2100" clipPath={`url(#${id}-fold)`} className="mc-siamese-ear-up" />
+      <image href={siameseFoldUrl} x="0" y="0" width="2100" height="2100" clipPath={`url(#${id}-fold)`} className="mc-siamese-ear-down" />
       {SIAMESE_EARS.map(({ side, pivot, points }) => (
         <SiamesePiece key={side} clipId={`${id}-ear-${side}`} pivot={pivot} points={points} className={`mc-siamese-ear mc-siamese-ear--${side}`} />
       ))}
