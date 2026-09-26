@@ -97,3 +97,12 @@
   .animate-jolt { animation: jolt 0.3s ease-in-out both; }
 }
 @keyframes jolt { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* House decor: garlands sway under the ceiling (Room.tsx). */
+@layer utilities {
+  .room-swing { transform-box: view-box; animation: room-swing 3.4s ease-in-out infinite; }
+}
+@keyframes room-swing { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .room-swing, .room-star { animation: none; }
+}
