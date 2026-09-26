@@ -5,7 +5,8 @@ import java.util.Optional;
 
 /**
  * The accessories on sale. One item per slot can be worn at a time
- * (neck, head, face) and one cushion in the house.
+ * (neck, head, face), one cushion in the house, and one coat (Moka's fur
+ * colours; none: Moka's own cream).
  */
 public final class PetCatalog {
 
@@ -29,7 +30,32 @@ public final class PetCatalog {
             new Item("party", "Chapeau de fête", "head", 40),
             new Item("bunny", "Serre-tête lapin", "head", 50),
             new Item("wizard", "Chapeau de magicien", "head", 110),
-            new Item("tophat", "Haut-de-forme", "head", 100));
+            new Item("tophat", "Haut-de-forme", "head", 100),
+            // Drawn from the free emoji sets, like the house decor (see the app's pet/wear/).
+            new Item("gradcap", "Toque de diplôme", "head", 90),
+            new Item("casquette", "Casquette", "head", 45),
+            new Item("capeline", "Capeline", "head", 70),
+            new Item("couronne-or", "Couronne royale", "head", 180),
+            new Item("gibus", "Haut-de-forme de gala", "head", 130),
+            new Item("hibiscus", "Fleur à l'oreille", "head", 35),
+            new Item("noeud-tete", "Nœud dans les poils", "head", 40),
+            new Item("lunettes-rondes", "Lunettes bleues", "face", 60),
+            new Item("lunettes-noires", "Lunettes de star", "face", 75),
+            new Item("masque-ski", "Masque de ski", "face", 65),
+            new Item("cravate", "Cravate", "neck", 55),
+            new Item("echarpe-laine", "Écharpe en laine", "neck", 60),
+            new Item("medaille", "Médaille d'or", "neck", 120),
+            new Item("clochette", "Clochette", "neck", 30),
+            new Item("noeud-rouge", "Grand nœud rouge", "neck", 45),
+            new Item("perles-bois", "Collier de perles en bois", "neck", 50),
+            // Coats: one at a time, Moka's own colours when none is worn.
+            new Item("pelage-roux", "Pelage roux", "coat", 120),
+            new Item("pelage-noir", "Pelage noir", "coat", 120),
+            new Item("pelage-gris", "Pelage gris perle", "coat", 120),
+            new Item("pelage-choco", "Pelage chocolat", "coat", 140),
+            new Item("pelage-creme", "Pelage crème et moka", "coat", 150),
+            new Item("pelage-neige", "Pelage blanc neige", "coat", 150),
+            new Item("pelage-lavande", "Pelage lavande", "coat", 200));
 
     private PetCatalog() {
     }
