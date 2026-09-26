@@ -17,8 +17,8 @@ public final class NousDtos {
                        boolean answered) {
     }
 
-    /** Guesses judged so far: right counts 2, close 1; {@code percent} null until one is judged. */
-    public record Score(int right, int close, int wrong, int pending, Integer percent) {
+    /** Guesses judged so far by verdict; {@code percent}: the average of their points, null until one is judged. */
+    public record Score(int right, int close, int some, int wrong, int pending, Integer percent) {
     }
 
     /**
@@ -39,11 +39,13 @@ public final class NousDtos {
 
     /**
      * A guess with the answer it was about: {@code verdict} right / close /
-     * wrong, or null while the author hasn't judged it.
+     * some / wrong, or null while the author hasn't judged it; {@code points}
+     * 0–100 (choices: ticks in common ÷ ticks in all, {@code common} and
+     * {@code union}; words: right 100, close 50, wrong 0).
      */
     public record Reveal(long guessId, String id, String theme, String kind, String text, List<String> options,
                          List<Integer> guessChoices, String guessText, List<Integer> answerChoices, String answerText,
-                         String verdict, String note, Instant createdAt) {
+                         String verdict, String note, Instant createdAt, Integer points, Integer common, Integer union) {
     }
 
     /** {@code mine}: my guesses about the other; {@code theirs}: their guesses about me. */

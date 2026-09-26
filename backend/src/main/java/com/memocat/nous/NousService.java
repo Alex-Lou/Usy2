@@ -86,7 +86,7 @@ public class NousService {
         NousDtos.Card daily = daily(all).map(q -> card(q, me, mine, marksOf())).orElse(null);
         return new NousDtos.Overview(partner.map(User::getDisplayName).orElse(null), themes,
                 (int) all.stream().filter(NousBank.Question::guessable).count(), mine.size(), theirs.size(), toGuess, toJudge,
-                score(myGuesses), score(aboutMe), daily);
+                score(myGuesses, partner.map(p -> byQuestion(p.getId())).orElse(Map.of())), score(aboutMe, byQuestion(me.getId())), daily);
     }
 
     /** The cards of a theme (all of them when {@code theme} is blank). */
@@ -235,9 +235,30 @@ public class NousService {
     }
 
     private static NousDtos.Reveal reveal(NousGuess g, NousBank.Question q, NousAnswer answer) {
+        Marked m = marked(g, q, answer);
         return new NousDtos.Reveal(g.getId() == null ? 0 : g.getId(), q.id(), q.theme(), q.kind(), q.text(), q.options(),
                 list(g.getChoices()), g.getText(), answer == null ? null : list(answer.getChoices()), answer == null ? null : answer.getText(),
-                g.getVerdict(), g.getNote(), g.getCreatedAt());
+                m.verdict(), g.getNote(), g.getCreatedAt(), m.points(), m.common(), m.union());
+    }
+
+    /** How a guess scored: its verdict and points (null while waiting for a verdict in words). */
+    record Marked(String verdict, Integer points, Integer common, Integer union) {
+    }
+
+    /**
+     * Ticked choices are scored from the ticks themselves (so every guess follows
+     * the same rule): ticks in common ÷ ticks in all. Words by their verdict.
+     */
+    static Marked marked(NousGuess g, NousBank.Question q, NousAnswer answer) {
+        if (NousBank.CHOICE.equals(q.kind()) && g.getChoices() != null && answer != null && answer.getChoices() != null) {
+            int common = Integer.bitCount(g.getChoices() & answer.getChoices());
+            int union = Integer.bitCount(g.getChoices() | answer.getChoices());
+            int points = union == 0 ? 0 : Math.round(100f * common / union);
+            return new Marked(verdict(g.getChoices(), answer.getChoices()), points, common, union);
+        }
+        String v = g.getVerdict();
+        Integer points = v == null ? null : NousGuess.RIGHT.equals(v) ? 100 : NousGuess.CLOSE.equals(v) ? 50 : 0;
+        return new Marked(v, points, null, null);
     }
 
     private NousDtos.Card card(NousBank.Question q, User me, Set<String> mine, List<NousMark> all) {
@@ -257,24 +278,34 @@ public class NousService {
         return Optional.of(pool.get((int) Math.floorMod(day * 7919L, pool.size())));
     }
 
-    private static NousDtos.Score score(List<NousGuess> list) {
+    /** Counts by verdict, and the average points of the judged guesses ({@code answersOf}: the author's answers). */
+    private NousDtos.Score score(List<NousGuess> list, Map<String, NousAnswer> answersOf) {
         int right = 0;
         int close = 0;
+        int some = 0;
         int wrong = 0;
         int pending = 0;
+        int total = 0;
         for (NousGuess g : list) {
-            if (g.getVerdict() == null) {
+            Optional<NousBank.Question> q = bank.question(g.getQuestionId());
+            if (q.isEmpty()) {
+                continue;
+            }
+            Marked m = marked(g, q.get(), answersOf.get(g.getQuestionId()));
+            if (m.verdict() == null || m.points() == null) {
                 pending++;
-            } else if (NousGuess.RIGHT.equals(g.getVerdict())) {
-                right++;
-            } else if (NousGuess.CLOSE.equals(g.getVerdict())) {
-                close++;
-            } else {
-                wrong++;
+                continue;
+            }
+            total += m.points();
+            switch (m.verdict()) {
+                case NousGuess.RIGHT -> right++;
+                case NousGuess.CLOSE -> close++;
+                case NousGuess.SOME -> some++;
+                default -> wrong++;
             }
         }
-        int judged = right + close + wrong;
-        return new NousDtos.Score(right, close, wrong, pending, judged == 0 ? null : Math.round(100f * (2 * right + close) / (2 * judged)));
+        int judged = right + close + some + wrong;
+        return new NousDtos.Score(right, close, some, wrong, pending, judged == 0 ? null : Math.round((float) total / judged));
     }
 
     private List<NousMark> marksOf() {
@@ -308,10 +339,21 @@ public class NousService {
         return mask;
     }
 
-    /** The same ticks: right; some in common: close; none: wrong. */
+    /**
+     * Ticks in common ÷ ticks in all (by either of us): all of them right,
+     * half or more close, some under half, none wrong.
+     */
     static String verdict(int guessed, Integer answer) {
         int a = answer == null ? 0 : answer;
-        return guessed == a ? NousGuess.RIGHT : (guessed & a) != 0 ? NousGuess.CLOSE : NousGuess.WRONG;
+        int common = Integer.bitCount(guessed & a);
+        int union = Integer.bitCount(guessed | a);
+        if (union > 0 && common == union) {
+            return NousGuess.RIGHT;
+        }
+        if (common == 0) {
+            return NousGuess.WRONG;
+        }
+        return 2 * common >= union ? NousGuess.CLOSE : NousGuess.SOME;
     }
 
     private static List<Integer> list(Integer mask) {

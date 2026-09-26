@@ -114,20 +114,42 @@ class NousServiceTest {
     }
 
     @Test
-    void severalTicksTheSameAreRightSomeInCommonCloseNoneWrong() {
+    void severalTicksScoreTheirShareInCommon() {
         nous.answer("sam", new NousDtos.Answer("film", List.of(0, 5, 10), null));
+        nous.answer("sam", new NousDtos.Answer("vacances", List.of(0, 1, 2), null));
         nous.answer("sam", new NousDtos.Answer("musique", List.of(1, 4), null));
         nous.answer("sam", new NousDtos.Answer("couleur", List.of(0), null));
         assertThat(nous.mine("sam", "general").stream().filter(m -> m.id().equals("film")).findFirst().orElseThrow().choices())
                 .containsExactly(0, 5, 10);
 
-        assertThat(nous.guess("lou", new NousDtos.Answer("film", List.of(10, 0, 5), null)).verdict()).isEqualTo(NousGuess.RIGHT);
-        assertThat(nous.guess("lou", new NousDtos.Answer("musique", List.of(1, 2), null)).verdict()).isEqualTo(NousGuess.CLOSE);
-        NousDtos.Reveal wrong = nous.guess("lou", new NousDtos.Answer("couleur", List.of(3, 4), null));
-        assertThat(wrong.verdict()).isEqualTo(NousGuess.WRONG);
-        assertThat(wrong.guessChoices()).containsExactly(3, 4);
-        assertThat(wrong.answerChoices()).containsExactly(0);
+        NousDtos.Reveal all = nous.guess("lou", new NousDtos.Answer("film", List.of(10, 0, 5), null));
+        assertThat(all.verdict()).isEqualTo(NousGuess.RIGHT);
+        assertThat(all.points()).isEqualTo(100);
+        NousDtos.Reveal two = nous.guess("lou", new NousDtos.Answer("vacances", List.of(0, 1), null));  // 2 in common of 3
+        assertThat(two.verdict()).isEqualTo(NousGuess.CLOSE);
+        assertThat(two.points()).isEqualTo(67);
+        assertThat(two.common()).isEqualTo(2);
+        assertThat(two.union()).isEqualTo(3);
+        NousDtos.Reveal one = nous.guess("lou", new NousDtos.Answer("musique", List.of(1, 2), null));    // 1 in common of 3
+        assertThat(one.verdict()).isEqualTo(NousGuess.SOME);
+        assertThat(one.points()).isEqualTo(33);
+        NousDtos.Reveal none = nous.guess("lou", new NousDtos.Answer("couleur", List.of(3, 4), null));
+        assertThat(none.verdict()).isEqualTo(NousGuess.WRONG);
+        assertThat(none.points()).isZero();
+        assertThat(none.guessChoices()).containsExactly(3, 4);
+        assertThat(none.answerChoices()).containsExactly(0);
+
+        NousDtos.Score score = nous.overview("lou").me();
+        assertThat(score.percent()).isEqualTo(50); // (100 + 67 + 33 + 0) / 4
+        assertThat(List.of(score.right(), score.close(), score.some(), score.wrong())).containsExactly(1, 1, 1, 1);
         verify(events, never()).publishEvent(any(Object.class));
+    }
+
+    @Test
+    void theShareCountsExtraTicksAsMuchAsMissingOnes() {
+        assertThat(NousService.verdict(0b1111, 0b0111)).isEqualTo(NousGuess.CLOSE); // 3 of 4: 75 %
+        assertThat(NousService.verdict(0b1001, 0b0111)).isEqualTo(NousGuess.SOME);  // 1 of 4: 25 %
+        assertThat(NousService.verdict(0b0001, 0b0011)).isEqualTo(NousGuess.CLOSE); // 1 of 2: 50 %
     }
 
     @Test
