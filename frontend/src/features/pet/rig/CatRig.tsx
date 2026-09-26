@@ -1,4 +1,5 @@
 import { HeadItems, NeckItem } from "../accessories";
+import { coatOf, CoatContext, useCoat } from "../coat";
 import type { EyeShape, Frame, MouthShape } from "./frame";
 
 // Moka, drawn in three views in the app's chibi style — sitting (front),
@@ -7,10 +8,6 @@ import type { EyeShape, Frame, MouthShape } from "./frame";
 // drawings share a 160×140 box whose ground centre is (80, 131).
 
 const OUTLINE = "#4a3b33";
-const FUR = "#fff4e6";
-const FUR_FAR = "#f1e0cb"; // legs and ear on the far side, a touch darker for depth
-const BELLY = "#fffaf3";
-const STRIPE = "#ecc9a0";
 const PINK = "#ff86b8";
 const BLUSH = "#ffb0d6";
 const EYE = "#3a3350";
@@ -89,12 +86,13 @@ function Mouth({ shape, t }: { shape: MouthShape; t: number }) {
 }
 
 /** A two-tone tube (outline under fur), used for the tail and the legs. */
-function Tube({ d, width, puff = 0, color = FUR }: { d: string; width: number; puff?: number; color?: string }) {
+function Tube({ d, width, puff = 0, color }: { d: string; width: number; puff?: number; color?: string }) {
+  const coat = useCoat();
   const w = width * (1 + puff * 0.7);
   return (
     <>
       <path d={d} stroke={OUTLINE} strokeWidth={w + 4.6} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <path d={d} stroke={color} strokeWidth={w} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={d} stroke={color ?? coat.fur} strokeWidth={w} fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </>
   );
 }
@@ -103,40 +101,41 @@ const breathe = (f: Frame, amount: number) => Math.sin(f.breath) * amount * f.br
 
 // ——— Sitting, facing us ———
 function SitView({ f, wearing }: { f: Frame; wearing: string[] }) {
+  const coat = useCoat();
   const b = breathe(f, 0.022);
   // The right front paw: on the ground, or raised to the mouth (then drawn over the face).
   const paw = (
     <g transform={`translate(${-9 * f.paw} ${-45 * f.paw}) rotate(${-25 * f.paw} 93 127)`}>
-      <ellipse cx="93" cy="127" rx="9" ry="5.4" fill={FUR} stroke={OUTLINE} strokeWidth="2.2" />
+      <ellipse cx="93" cy="127" rx="9" ry="5.4" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.2" />
     </g>
   );
   return (
     <g>
       <g transform={`rotate(${f.tail} 104 116)`}>
         <Tube d="M104 116 C 132 116, 142 94, 130 76" width={8.4} puff={f.tailPuff} />
-        <path d="M133 86 q-6 -2 -9 -8" stroke={STRIPE} strokeWidth="3" fill="none" strokeLinecap="round" />
+        <path d="M133 86 q-6 -2 -9 -8" stroke={coat.stripe} strokeWidth="3" fill="none" strokeLinecap="round" />
       </g>
       <g transform={`translate(80 129) scale(${1 - b * 0.5} ${1 + b}) translate(-80 -129)`}>
-        <ellipse cx="80" cy="104" rx="31" ry="25" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
-        <ellipse cx="80" cy="109" rx="17" ry="15" fill={BELLY} />
-        <path d="M53 100 q5 -3 9 1 M55 108 q5 -3 8 1" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+        <ellipse cx="80" cy="104" rx="31" ry="25" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.6" />
+        <ellipse cx="80" cy="109" rx="17" ry="15" fill={coat.belly} />
+        <path d="M53 100 q5 -3 9 1 M55 108 q5 -3 8 1" stroke={coat.stripe} strokeWidth="2.4" fill="none" strokeLinecap="round" />
         {wearing.map((id) => (
           <NeckItem key={id} id={id} />
         ))}
       </g>
-      <ellipse cx="67" cy="127" rx="9" ry="5.4" fill={FUR} stroke={OUTLINE} strokeWidth="2.2" />
+      <ellipse cx="67" cy="127" rx="9" ry="5.4" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.2" />
       {f.paw < 0.5 && paw}
       <g transform={`translate(${f.headX} ${f.headY - b * 40}) rotate(${f.headTilt} 80 88)`}>
         <g transform={`rotate(${-f.earL} 60 42)`}>
-          <path d="M52 46 L45 15 L73 34 Z" fill={FUR} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
+          <path d="M52 46 L45 15 L73 34 Z" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
           <path d="M54 40 L50 22 L67 33 Z" fill={PINK} />
         </g>
         <g transform={`rotate(${f.earR} 100 42)`}>
-          <path d="M108 46 L115 15 L87 34 Z" fill={FUR} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
+          <path d="M108 46 L115 15 L87 34 Z" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
           <path d="M106 40 L110 22 L93 33 Z" fill={PINK} />
         </g>
-        <ellipse cx="80" cy="60" rx="35" ry="30" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
-        <path d="M74 33 q1.5 5 0 9 M80 31.5 v10 M86 33 q-1.5 5 0 9" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+        <ellipse cx="80" cy="60" rx="35" ry="30" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.6" />
+        <path d="M74 33 q1.5 5 0 9 M80 31.5 v10 M86 33 q-1.5 5 0 9" stroke={coat.stripe} strokeWidth="2.4" fill="none" strokeLinecap="round" />
         <Eye c={[67, 62]} rx={5.2} ry={5.8} shape={f.eyes} blink={f.blink} look={[f.lookX, f.lookY]} far />
         <Eye c={[93, 62]} rx={5.2} ry={5.8} shape={f.eyes} blink={f.blink} look={[f.lookX, f.lookY]} />
         <ellipse cx="57" cy="72" rx="5.4" ry="3.2" fill={BLUSH} opacity={f.blush} />
@@ -165,6 +164,7 @@ const LEGS: { hip: number; phase: number; far: boolean }[] = [
 ];
 
 function Leg({ hip, phase, far, f, lower }: { hip: number; phase: number; far: boolean; f: Frame; lower: number }) {
+  const coat = useCoat();
   const hipY = 104 + lower;
   const length = 131 - hipY;
   const a = Math.sin(f.walk + phase) * 0.46 * f.stride;
@@ -173,13 +173,14 @@ function Leg({ hip, phase, far, f, lower }: { hip: number; phase: number; far: b
   const fy = hipY + Math.cos(a) * length - lift;
   return (
     <g>
-      <Tube d={`M${hip} ${hipY} L${fx} ${fy - 3}`} width={9} color={far ? FUR_FAR : FUR} />
-      <ellipse cx={fx + 1.5} cy={fy - 1.2} rx="6.4" ry="3.8" fill={far ? FUR_FAR : FUR} stroke={OUTLINE} strokeWidth="2" />
+      <Tube d={`M${hip} ${hipY} L${fx} ${fy - 3}`} width={9} color={far ? coat.furFar : coat.fur} />
+      <ellipse cx={fx + 1.5} cy={fy - 1.2} rx="6.4" ry="3.8" fill={far ? coat.furFar : coat.fur} stroke={OUTLINE} strokeWidth="2" />
     </g>
   );
 }
 
 function SideView({ f, wearing }: { f: Frame; wearing: string[] }) {
+  const coat = useCoat();
   const lower = 9 * f.crouch;
   const b = breathe(f, 0.02);
   return (
@@ -191,12 +192,12 @@ function SideView({ f, wearing }: { f: Frame; wearing: string[] }) {
       <g transform={`translate(0 ${lower}) rotate(${f.lean} 78 112)`}>
         <g transform={`rotate(${f.tail} 46 96)`}>
           <Tube d="M46 96 C 28 94, 18 78, 24 58" width={8.4} puff={f.tailPuff} />
-          <path d="M22 70 q6 -1 9 -6" stroke={STRIPE} strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path d="M22 70 q6 -1 9 -6" stroke={coat.stripe} strokeWidth="3" fill="none" strokeLinecap="round" />
         </g>
         <g transform={`translate(78 118) scale(${1 - b * 0.4} ${1 + b}) translate(-78 -118)`}>
-          <ellipse cx="78" cy="98" rx="37" ry="21" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
-          <ellipse cx="84" cy="109" rx="21" ry="8" fill={BELLY} />
-          <path d="M60 80 q3 5 0 9 M70 78 q3 5 0 9 M80 78 q3 5 0 9" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          <ellipse cx="78" cy="98" rx="37" ry="21" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.6" />
+          <ellipse cx="84" cy="109" rx="21" ry="8" fill={coat.belly} />
+          <path d="M60 80 q3 5 0 9 M70 78 q3 5 0 9 M80 78 q3 5 0 9" stroke={coat.stripe} strokeWidth="2.4" fill="none" strokeLinecap="round" />
         </g>
       </g>
       <g transform={`translate(${f.headX} ${f.headY + lower}) rotate(${f.headTilt} 104 86)`}>
@@ -206,15 +207,15 @@ function SideView({ f, wearing }: { f: Frame; wearing: string[] }) {
           ))}
         </g>
         <g transform={`rotate(${-f.earL} 100 44)`}>
-          <path d="M92 48 L90 18 L113 38 Z" fill={FUR_FAR} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
+          <path d="M92 48 L90 18 L113 38 Z" fill={coat.furFar} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
           <path d="M94 42 L93 25 L107 37 Z" fill={PINK} opacity="0.85" />
         </g>
-        <ellipse cx="112" cy="64" rx="31" ry="27" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
+        <ellipse cx="112" cy="64" rx="31" ry="27" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.6" />
         <g transform={`rotate(${f.earR} 130 42)`}>
-          <path d="M119 42 L134 13 L143 45 Z" fill={FUR} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
+          <path d="M119 42 L134 13 L143 45 Z" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
           <path d="M123 40 L133 22 L138 41 Z" fill={PINK} />
         </g>
-        <path d="M106 39 q1 4 0 8 M112 38 v9" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+        <path d="M106 39 q1 4 0 8 M112 38 v9" stroke={coat.stripe} strokeWidth="2.4" fill="none" strokeLinecap="round" />
         <Eye c={[101, 62]} rx={4.4} ry={5.2} shape={f.eyes} blink={f.blink} look={[f.lookX + 0.4, f.lookY]} far />
         <Eye c={[123, 62]} rx={5.2} ry={5.8} shape={f.eyes} blink={f.blink} look={[f.lookX + 0.4, f.lookY]} />
         <ellipse cx="95" cy="73" rx="4.2" ry="2.6" fill={BLUSH} opacity={f.blush} />
@@ -234,28 +235,29 @@ function SideView({ f, wearing }: { f: Frame; wearing: string[] }) {
 
 // ——— Curled up, asleep ———
 function CurlView({ f, wearing }: { f: Frame; wearing: string[] }) {
+  const coat = useCoat();
   const b = breathe(f, 0.035);
   return (
     <g>
       <g transform={`translate(88 131) scale(${1 + b * 0.3} ${1 + b}) translate(-88 -131)`}>
-        <ellipse cx="88" cy="110" rx="44" ry="22" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
-        <path d="M84 90 q3 5 0 9 M96 90 q3 5 0 9 M108 93 q3 4 0 8" stroke={STRIPE} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+        <ellipse cx="88" cy="110" rx="44" ry="22" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.6" />
+        <path d="M84 90 q3 5 0 9 M96 90 q3 5 0 9 M108 93 q3 4 0 8" stroke={coat.stripe} strokeWidth="2.4" fill="none" strokeLinecap="round" />
       </g>
       <g transform={`rotate(${f.tail * 0.3} 128 116)`}>
         <Tube d="M128 114 C 140 132, 98 138, 60 130" width={8.4} puff={f.tailPuff} />
-        <path d="M76 133 q-4 -4 -3 -8" stroke={STRIPE} strokeWidth="3" fill="none" strokeLinecap="round" />
+        <path d="M76 133 q-4 -4 -3 -8" stroke={coat.stripe} strokeWidth="3" fill="none" strokeLinecap="round" />
       </g>
-      <ellipse cx="74" cy="124" rx="10" ry="5.4" fill={FUR} stroke={OUTLINE} strokeWidth="2.2" />
+      <ellipse cx="74" cy="124" rx="10" ry="5.4" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.2" />
       <g transform={`translate(${f.headX} ${f.headY - b * 12}) rotate(${f.headTilt} 56 118)`}>
         <g transform={`rotate(${-f.earL} 42 90)`}>
-          <path d="M36 92 L26 66 L52 80 Z" fill={FUR} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
+          <path d="M36 92 L26 66 L52 80 Z" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
           <path d="M37 86 L31 71 L47 80 Z" fill={PINK} />
         </g>
         <g transform={`rotate(${f.earR} 70 84)`}>
-          <path d="M62 82 L78 60 L80 90 Z" fill={FUR} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
+          <path d="M62 82 L78 60 L80 90 Z" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.4" strokeLinejoin="round" />
           <path d="M66 81 L76 67 L77 84 Z" fill={PINK} />
         </g>
-        <ellipse cx="56" cy="104" rx="27" ry="23" fill={FUR} stroke={OUTLINE} strokeWidth="2.6" />
+        <ellipse cx="56" cy="104" rx="27" ry="23" fill={coat.fur} stroke={OUTLINE} strokeWidth="2.6" />
         <Eye c={[46, 105]} rx={4.6} ry={5.2} shape={f.eyes} blink={f.blink} look={[f.lookX, f.lookY]} far />
         <Eye c={[66, 105]} rx={4.6} ry={5.2} shape={f.eyes} blink={f.blink} look={[f.lookX, f.lookY]} />
         <ellipse cx="38" cy="114" rx="4.4" ry="2.6" fill={BLUSH} opacity={f.blush} />
@@ -373,7 +375,9 @@ export function CatRig({ f, wearing, ground, scale = 1 }: { f: Frame; wearing: s
     <g transform={`translate(${f.x} ${ground}) scale(${scale})`}>
       <ellipse cx="0" cy="0" rx={f.view === "sit" ? 40 : 48} ry="5" fill="#000" opacity={0.16 * shadow} transform={`scale(${shadow} 1)`} />
       <g transform={`translate(${jitter} ${f.lift}) scale(${dir * turn * f.sx} ${f.sy}) translate(-80 -131)`}>
-        {f.view === "sit" ? <SitView f={f} wearing={wearing} /> : f.view === "side" ? <SideView f={f} wearing={wearing} /> : <CurlView f={f} wearing={wearing} />}
+        <CoatContext.Provider value={coatOf(wearing)}>
+          {f.view === "sit" ? <SitView f={f} wearing={wearing} /> : f.view === "side" ? <SideView f={f} wearing={wearing} /> : <CurlView f={f} wearing={wearing} />}
+        </CoatContext.Provider>
       </g>
       <g transform={`translate(0 ${f.lift}) translate(-80 -131)`}>
         <CatProp f={f} headX={headX} dir={dir} />
