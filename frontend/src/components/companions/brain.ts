@@ -1,11 +1,11 @@
 /**
- * A living companion's little mind (penguin, wolf or cat): it wanders about,
- * naps (more at night), visits Moka in the house, does its own trick — the
- * penguin belly-slides, the wolf howls, the cat pounces — and hops happily
+ * A living companion's little mind (penguin, wolf, cat or otter): it wanders
+ * about, naps (more at night), visits Moka in the house, does its own trick —
+ * the penguin and the otter belly-slide, the wolf howls, the cat pounces — and hops happily
  * when touched. Pure state, stepped by LivingCompanion's frame loop.
  */
 
-export type Kind = "penguin" | "wolf" | "cat";
+export type Kind = "penguin" | "wolf" | "cat" | "otter";
 export type State = "idle" | "walk" | "visit" | "nap" | "happy" | "trick";
 export type BubbleKind = "z" | "note" | "heart" | "howl";
 
@@ -30,6 +30,7 @@ const KINDS: Record<Kind, { speed: number; trickOdds: number; trickDur: number }
   penguin: { speed: 26, trickOdds: 15, trickDur: 6 }, // belly slide across the room
   wolf: { speed: 34, trickOdds: 12, trickDur: 2.6 }, // sits and howls
   cat: { speed: 38, trickOdds: 15, trickDur: 1.3 }, // crouches then pounces
+  otter: { speed: 30, trickOdds: 15, trickDur: 6 }, // belly slide too: otters love it
 };
 
 export const BUBBLE_LIFE = 1.6;
@@ -114,7 +115,7 @@ export class CompanionBrain {
         }
         break;
       case "trick":
-        if (this.kind === "penguin") this.slide(dt);
+        if (this.slides()) this.slide(dt);
         else if (this.kind === "wolf") this.howl(dt);
         else this.pounce(dt, env);
         break;
@@ -135,8 +136,8 @@ export class CompanionBrain {
     } else if (r < 15 + napOdds) {
       this.nextBubble = 0.6;
       this.go("nap", rand(7, 12));
-    } else if (r < 15 + napOdds + trickOdds && (this.kind !== "penguin" || room > 120)) {
-      if (this.kind === "penguin") {
+    } else if (r < 15 + napOdds + trickOdds && (!this.slides() || room > 120)) {
+      if (this.slides()) {
         this.target = this.x < (env.minX + env.maxX) / 2 ? rand(env.maxX - room * 0.25, env.maxX) : rand(env.minX, env.minX + room * 0.25);
         this.dir = this.target > this.x ? 1 : -1;
       } else if (this.kind === "cat") {
@@ -180,6 +181,11 @@ export class CompanionBrain {
       this.lift = -Math.abs(Math.sin(this.stride)) * 1.5; // a little trot bounce
       this.wag = Math.sin(this.clock * 6) * 14;
     }
+  }
+
+  /** The penguin and the otter belly-slide across the room for their trick. */
+  private slides() {
+    return this.kind === "penguin" || this.kind === "otter";
   }
 
   private slide(dt: number) {

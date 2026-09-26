@@ -49,6 +49,7 @@ function PenguinBody({ b }: { b: CompanionBrain }) {
 
 const COLORS = {
   wolf: { body: "#aab2be", far: "#8f97a3", light: "#eef1f5" },
+  otter: { body: "#9f8275", far: "#86695d", light: "#f4efec" },
   cat: { body: "#fff4e6", far: "#efdcc6", light: "#f2c9a0" },
 } as const;
 
@@ -63,7 +64,7 @@ function Leg({ x, color, swing, tuck, long = false }: { x: number; color: string
   );
 }
 
-function FourLegs({ kind, b }: { kind: "wolf" | "cat"; b: CompanionBrain }) {
+function FourLegs({ kind, b }: { kind: "wolf" | "cat" | "otter"; b: CompanionBrain }) {
   const c = COLORS[kind];
   const walking = b.stride !== 0;
   const swing = (phase: number) => (walking ? Math.sin(b.stride * 2 + phase) * 24 : 0);
@@ -76,7 +77,10 @@ function FourLegs({ kind, b }: { kind: "wolf" | "cat"; b: CompanionBrain }) {
       <Leg x={-14} color={c.far} swing={swing(Math.PI)} tuck={tuck} long={wolf} />
       <Leg x={9} color={c.far} swing={swing(0)} tuck={tuck} long={wolf} />
       <g transform={`rotate(${b.wag} -20 ${-21 - up})`}>
-        {wolf ? (
+        {kind === "otter" ? (
+          // A thick tail, tapering to a point.
+          <path d="M-20 -23 q-14 2 -26 10 q-3 3 1 3 q13 -3 25 -5 z" fill={c.far} stroke={OUTLINE} strokeWidth="1.8" strokeLinejoin="round" />
+        ) : wolf ? (
           // A big bushy tail with a pale tip.
           <>
             <path d="M-20 -25 q-12 -12 -27 -7 q-7 4 -4 11 q8 -3 13 1 q9 1 18 -5 z" fill="#8f97a3" stroke={OUTLINE} strokeWidth="1.8" strokeLinejoin="round" />
@@ -89,8 +93,11 @@ function FourLegs({ kind, b }: { kind: "wolf" | "cat"; b: CompanionBrain }) {
           </>
         )}
       </g>
-      <ellipse cx="-1" cy={-17 - up} rx={wolf ? 24 : 21} ry="12" fill={c.body} stroke={OUTLINE} strokeWidth="2" />
-      {wolf ? (
+      <ellipse cx="-1" cy={-17 - up} rx={wolf ? 24 : kind === "otter" ? 25 : 21} ry={kind === "otter" ? 10.5 : 12} fill={c.body} stroke={OUTLINE} strokeWidth="2" />
+      {kind === "otter" ? (
+        // A pale throat and belly.
+        <path d="M6 -24 q10 1 13 7 q-10 4 -20 3 q2 -6 7 -10 z" fill={c.light} />
+      ) : wolf ? (
         <>
           {/* Darker saddle on the back, a fluffy ruff at the chest. */}
           <path d="M-20 -26 q20 -13 38 -2 q-18 -5 -38 2 z" fill="#7f8794" />
@@ -102,7 +109,7 @@ function FourLegs({ kind, b }: { kind: "wolf" | "cat"; b: CompanionBrain }) {
       <Leg x={-10} color={c.body} swing={swing(0)} tuck={tuck} long={wolf} />
       <Leg x={13} color={c.body} swing={swing(Math.PI)} tuck={tuck} long={wolf} />
       <g transform={`rotate(${-b.raise * 30} 14 ${-26 - up})`}>
-        <g transform={`translate(${wolf ? -2 : -4.2} ${-56.4 - up}) scale(0.6)`}>
+        <g transform={`translate(${wolf ? -2 : kind === "otter" ? -1 : -4.2} ${-56.4 - up}) scale(0.6)`}>
           <AnimalFace species={kind} eyesClosed={b.eyesClosed} />
         </g>
       </g>

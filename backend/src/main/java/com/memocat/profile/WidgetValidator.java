@@ -38,7 +38,7 @@ public class WidgetValidator {
             "butterflies", "blossom", "heart-bubbles", "moon", "shooting-stars", "aurora",
             "fairy", "fireflies", "mushrooms", "clover", "fern", "leaves", "triquetra",
             "rain", "waves", "standing-stones", "candle", "tea", "snow",
-            "cat", "dog", "wolf", "rabbit", "lizard", "raccoon", "capybara", "robin", "parrot", "penguin");
+            "cat", "dog", "wolf", "rabbit", "lizard", "raccoon", "capybara", "robin", "parrot", "penguin", "otter");
 
     private static final Pattern DATE = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}([T ]\\d{2}:\\d{2}(:\\d{2})?)?$");
 

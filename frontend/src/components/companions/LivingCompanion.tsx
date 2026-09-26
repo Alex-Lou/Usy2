@@ -4,10 +4,10 @@ import { BUBBLE_LIFE, CompanionBrain, type BubbleKind, type Kind } from "./brain
 
 const BUBBLE: Record<BubbleKind, string> = { z: "z", note: "♪", heart: "♥", howl: "Aouuu" };
 const BUBBLE_COLOR: Record<BubbleKind, string> = { z: "#7cc6e8", note: "#b18cff", heart: "#ff86b8", howl: "#a9b8ff" };
-const HEAD_TOP: Record<Kind, number> = { penguin: 66, wolf: 58, cat: 58 };
+const HEAD_TOP: Record<Kind, number> = { penguin: 66, wolf: 58, cat: 58, otter: 56 };
 /** Relative sizes, so the wolf stands a little taller than the kitten and the penguin. */
-const SIZE: Record<Kind, number> = { penguin: 1, wolf: 1.2, cat: 1.05 };
-const LABEL: Record<Kind, string> = { penguin: "le pingouin", wolf: "le loup", cat: "le chat" };
+const SIZE: Record<Kind, number> = { penguin: 1, wolf: 1.2, cat: 1.05, otter: 1.05 };
+const LABEL: Record<Kind, string> = { penguin: "le pingouin", wolf: "le loup", cat: "le chat", otter: "la loutre" };
 
 /** Where a companion lives: the house (same 400×300 box as Room) or a side-menu tile. */
 export const SCENES = {
@@ -16,7 +16,7 @@ export const SCENES = {
 } as const;
 
 /** The companions that can live in the house or a side-menu tile. */
-export const LIVING_KINDS: Kind[] = ["penguin", "wolf", "cat"];
+export const LIVING_KINDS: Kind[] = ["penguin", "wolf", "cat", "otter"];
 export const isLivingKind = (v: string): v is Kind => (LIVING_KINDS as string[]).includes(v);
 
 function prefersReducedMotion(): boolean {
@@ -118,7 +118,10 @@ export function LivingCompanion({
       data-state={b.state}
     >
       {scene === "tile" &&
-        (kind === "penguin" ? (
+        (kind === "otter" ? (
+          // …a little pond for the otter…
+          <path d={`M10 ${box.ground - 2} q90 -8 180 0 l-3 7 q-87 6 -174 0 z`} fill="#bfe6f5" stroke="#86c6e0" strokeWidth="1.5" />
+        ) : kind === "penguin" ? (
           // A little ice floe to waddle on…
           <path d={`M8 ${box.ground - 2} q92 -9 184 0 l-4 7 q-88 6 -176 0 z`} fill="#dff3ff" stroke="#a9d8f0" strokeWidth="1.5" />
         ) : (
