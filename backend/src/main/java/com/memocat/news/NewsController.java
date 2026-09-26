@@ -2,6 +2,7 @@ package com.memocat.news;
 
 import com.memocat.news.dto.NewsItemDto;
 import com.memocat.news.dto.NewsSourceDto;
+import com.memocat.news.dto.YoutubeChannelDto;
 import com.memocat.profile.dto.NewsPrefsDto;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,18 @@ public class NewsController {
     @PutMapping("/prefs")
     public NewsPrefsDto savePrefs(Principal principal, @RequestBody NewsPrefsDto prefs) {
         return news.savePrefs(principal.getName(), prefs);
+    }
+
+    /** YouTube channels matching a few words (to pick one for its Shorts). */
+    @GetMapping("/youtube/search")
+    public List<YoutubeChannelDto> searchYoutube(@RequestParam String q) {
+        return news.searchYoutube(q);
+    }
+
+    /** My sources that answered nothing on their last try. */
+    @GetMapping("/failing")
+    public List<String> failing(Principal principal) {
+        return news.failing(principal.getName());
     }
 
     /** My Reddit home feed: which account (the private link itself never leaves the server). */

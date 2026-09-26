@@ -11,6 +11,16 @@ export interface NewsSource {
 export interface Follow {
   kind: FollowKind;
   handle: string;
+  /** The name shown for it when the handle isn't readable (a YouTube channel id). */
+  label?: string | null;
+}
+
+export interface YoutubeChannel {
+  id: string;
+  title: string;
+  handle: string | null;
+  image: string | null;
+  subscribers: string | null;
 }
 
 export interface NewsPrefs {
@@ -42,3 +52,7 @@ export const getNewsImage = (url: string) => fetchBlobUrl(`/api/news/image?url=$
 export const getRedditHome = () => apiRequest<{ user?: string }>("/api/news/reddit-home");
 export const saveRedditHome = (url: string) => apiRequest<{ user: string }>("/api/news/reddit-home", { method: "PUT", body: { url } });
 export const removeRedditHome = () => apiRequest<void>("/api/news/reddit-home", { method: "DELETE" });
+/** YouTube channels matching a few words, found by the server. */
+export const searchYoutube = (q: string) => apiRequest<YoutubeChannel[]>(`/api/news/youtube/search?q=${encodeURIComponent(q)}`);
+/** My sources that answered nothing on their last try. */
+export const getFailingSources = () => apiRequest<string[]>("/api/news/failing");
