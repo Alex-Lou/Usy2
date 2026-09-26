@@ -32,6 +32,38 @@
   animation: nd-flip 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
   transform-origin: 50% 0;
 }
+.nd-card--motion {
+  animation: none;
+  touch-action: pan-y;
+}
+.nd-tab-pill {
+  background: var(--nd-accent);
+}
+/* Swipe hints, fading in as the card is pushed. */
+.nd-swipe {
+  position: absolute;
+  top: 38%;
+  z-index: 2;
+  border: 4px solid currentColor;
+  border-radius: 12px;
+  padding: 4px 14px;
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.nd-swipe--fav {
+  left: 14px;
+  color: #ff6fa8;
+  transform: rotate(-10deg);
+}
+.nd-swipe--next {
+  right: 14px;
+  color: var(--color-text-muted);
+  transform: rotate(10deg);
+}
 .nd-pill {
   background: var(--nd, var(--nd-accent));
 }

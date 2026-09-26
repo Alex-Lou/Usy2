@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { ApiError } from "../../lib/api/client";
 import { forgetMine, getMine, MAX_TEXT, saveMine, toggled, type NousMine, type NousTheme } from "./api";
@@ -47,9 +48,11 @@ export function MineTab({ themes, partnerName, onChange }: { themes: NousTheme[]
       {items && shown.length === 0 && <p className="card p-6 text-center text-sm text-text-muted">{todo ? "Tout est répondu ici 🎉" : "Rien ici."}</p>}
 
       <ul className="flex flex-col gap-3">
-        {shown.slice(0, 30).map((q) => (
-          <MineItem key={q.id} q={q} color={themes.find((t) => t.id === q.theme)?.color ?? "#ff6fa8"} partnerName={partnerName} onSaved={saved} />
-        ))}
+        <AnimatePresence initial={false}>
+          {shown.slice(0, 30).map((q) => (
+            <MineItem key={q.id} q={q} color={themes.find((t) => t.id === q.theme)?.color ?? "#ff6fa8"} partnerName={partnerName} onSaved={saved} />
+          ))}
+        </AnimatePresence>
       </ul>
       {shown.length > 30 && <p className="text-center text-xs text-text-muted">Réponds à celles-ci, les suivantes arrivent ensuite.</p>}
     </div>
@@ -94,7 +97,7 @@ function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: stri
   };
 
   return (
-    <li className="card qz-slide flex flex-col gap-2 p-4" style={{ borderLeft: `4px solid ${color}` }}>
+    <motion.li layout exit={{ opacity: 0, scale: 0.9, height: 0, marginTop: -12, transition: { duration: 0.3 } }} className="card qz-slide flex flex-col gap-2 overflow-hidden p-4" style={{ borderLeft: `4px solid ${color}` }}>
       <p className="font-semibold leading-snug">{q.text}</p>
       {q.kind === "c" ? (
         <div className="flex flex-col gap-2">
@@ -139,6 +142,6 @@ function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: stri
         {answered && <button type="button" onClick={() => void forget()} disabled={busy} className="ml-auto underline">Effacer</button>}
       </div>
       {error && <p className="text-xs text-danger" role="alert">{error}</p>}
-    </li>
+    </motion.li>
   );
 }
