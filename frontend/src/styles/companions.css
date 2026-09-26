@@ -291,6 +291,57 @@ svg.mc-badge-face .mc-head {
 .mc-hello svg.mc-badge-face .mc-otter-lids {
   animation: mc-otter-hello-blink 1.8s ease-in-out;
 }
+/* The Siamese cat (animals.tsx): an ear flicks now and then, it blinks. */
+/* Each ear turns around its base: the point its group is moved to (transform-origin 0 0).
+   The cut-out ear only shows while it moves (at rest the drawing below is the ear). */
+.mc-face--siamese .mc-siamese-ear {
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: mc-siamese-flick 6.2s ease-in-out infinite;
+}
+.mc-face--siamese .mc-siamese-ear--r {
+  animation-name: mc-siamese-flick-r;
+  animation-duration: 8.3s;
+}
+.mc-face--siamese .mc-siamese-lids {
+  opacity: 0;
+  animation: mc-pingu-blink 5.1s infinite;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-ear {
+  animation: mc-siamese-hello 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-lids {
+  animation: mc-otter-hello-blink 1.8s ease-in-out;
+}
+@keyframes mc-siamese-flick {
+  0%, 85.9%, 98.1%, 100% { transform: rotate(0); opacity: 0; }
+  86%, 98% { transform: rotate(0); opacity: 1; }
+  89% { transform: rotate(-6deg); opacity: 1; }
+  92% { transform: rotate(3deg); opacity: 1; }
+  95% { transform: rotate(-3deg); opacity: 1; }
+}
+@keyframes mc-siamese-flick-r {
+  0%, 85.9%, 98.1%, 100% { transform: rotate(0); opacity: 0; }
+  86%, 98% { transform: rotate(0); opacity: 1; }
+  89% { transform: rotate(6deg); opacity: 1; }
+  92% { transform: rotate(-3deg); opacity: 1; }
+  95% { transform: rotate(3deg); opacity: 1; }
+}
+@keyframes mc-siamese-hello {
+  0%, 100% { transform: rotate(0); opacity: 0; }
+  1%, 80% { opacity: 1; }
+  15%, 50% { transform: rotate(-7deg); }
+  30%, 65% { transform: rotate(4deg); }
+  80% { transform: rotate(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-face--siamese .mc-siamese-ear,
+  .mc-face--siamese .mc-siamese-lids {
+    animation: none;
+  }
+}
+
 /* The living otter's whole body (bodies.tsx) breathes, like the penguin's. */
 .mc-otter-body {
   transform-box: fill-box;
