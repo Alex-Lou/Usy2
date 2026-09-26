@@ -55,10 +55,16 @@ export function NotificationsListener() {
       if (a.actorId === myId) return; // my own activity
       emitFeedActivity(a); // lets the feed show "new post" live
       const onFeedPage = window.location.pathname === "/" && document.visibilityState === "visible";
-      if (a.kind === "post" && !onFeedPage) {
-        notify(`${a.actorName} a publié un nouveau post ✨`, `/posts/${a.postId}`);
+      const tagged = a.mentionedIds?.includes(myId) ?? false;
+      if (a.kind === "post" && (tagged || !onFeedPage)) {
+        notify(tagged ? `${a.actorName} t'a identifié·e dans un post 🏷️` : `${a.actorName} a publié un nouveau post ✨`, `/posts/${a.postId}`);
       } else if (a.kind === "comment") {
-        notify(a.postAuthorId === myId ? `${a.actorName} a commenté ton post 💬` : `${a.actorName} a commenté un post 💬`, `/posts/${a.postId}?comments=1`);
+        const text =
+          a.replyToId === myId ? `${a.actorName} a répondu à ton commentaire 💬`
+          : tagged ? `${a.actorName} t'a identifié·e dans un commentaire 🏷️`
+          : a.postAuthorId === myId ? `${a.actorName} a commenté ton post 💬`
+          : `${a.actorName} a commenté un post 💬`;
+        notify(text, `/posts/${a.postId}?comments=1${a.commentId ? `&comment=${a.commentId}` : ""}`);
       } else if (a.kind === "reaction" && a.postAuthorId === myId) {
         notify(`${a.actorName} a réagi ${a.emoji ?? "❤️"} à ton post`, `/posts/${a.postId}`);
       }

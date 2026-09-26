@@ -32,7 +32,7 @@ export function isBare(text: string): boolean {
   return stickerOnly(text) !== null || isEmojiOnly(text);
 }
 
-function renderInline(text: string): ReactNode[] {
+function renderInline(text: string, renderText: (text: string) => ReactNode[]): ReactNode[] {
   const out: ReactNode[] = [];
   let last = 0;
   let key = 0;
@@ -41,7 +41,7 @@ function renderInline(text: string): ReactNode[] {
   while ((m = TOKEN.exec(text)) !== null) {
     const sticker = findSticker(m[1]);
     if (!sticker) continue; // unknown token: left as plain text
-    if (m.index > last) out.push(...linkify(text.slice(last, m.index)));
+    if (m.index > last) out.push(...renderText(text.slice(last, m.index)));
     out.push(
       <LiveSticker key={key++} className="mx-0.5 inline-block align-middle">
         {sticker.render(40)}
@@ -49,21 +49,22 @@ function renderInline(text: string): ReactNode[] {
     );
     last = m.index + m[0].length;
   }
-  if (last < text.length) out.push(...linkify(text.slice(last)));
+  if (last < text.length) out.push(...renderText(text.slice(last)));
   return out;
 }
 
 /**
  * Renders a comment/message body: a lone sticker or a few emojis are shown big;
  * otherwise text (escaped by React) with inline stickers and clickable links. Never injects HTML.
+ * {@code renderText}: how the plain text between stickers is shown (links by default).
  */
-export function RichBody({ text, className = "" }: { text: string; className?: string }) {
+export function RichBody({ text, className = "", renderText = linkify }: { text: string; className?: string; renderText?: (text: string) => ReactNode[] }) {
   const sticker = stickerOnly(text);
   if (sticker) return <LiveSticker className="block py-1">{sticker.render(96)}</LiveSticker>;
   if (isEmojiOnly(text)) return <p className="mc-emoji py-0.5 text-5xl">{text.trim()}</p>;
   return (
     <p className={`whitespace-pre-wrap break-words ${className}`}>
-      {renderInline(text).map((n, i) => (
+      {renderInline(text, renderText).map((n, i) => (
         <Fragment key={i}>{n}</Fragment>
       ))}
     </p>

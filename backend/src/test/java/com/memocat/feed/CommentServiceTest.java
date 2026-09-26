@@ -58,7 +58,7 @@ class CommentServiceTest {
         when(postRepository.findById(9L)).thenReturn(Optional.of(post));
         when(commentRepository.save(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        commentService.create("alex", 9L, "trop beau 😍");
+        commentService.create("alex", 9L, "trop beau 😍", null);
 
         ArgumentCaptor<FeedActivity> event = ArgumentCaptor.forClass(FeedActivity.class);
         verify(events).publishEvent(event.capture());
@@ -75,8 +75,62 @@ class CommentServiceTest {
         when(userRepository.findByUsername("alex")).thenReturn(Optional.of(commenter));
         when(postRepository.findById(9L)).thenReturn(Optional.of(post));
 
-        assertThatThrownBy(() -> commentService.create("alex", 9L, "   "))
+        assertThatThrownBy(() -> commentService.create("alex", 9L, "   ", null))
                 .isInstanceOf(ContentValidationException.class);
         verify(events, never()).publishEvent(any(Object.class));
+    }
+
+    @Test
+    void aReplyJoinsTheThreadOfItsCommentAndTagsWhoItNames() {
+        User lou = user(1L, "lou");
+        User sam = user(2L, "sam");
+        ReflectionTestUtils.setField(sam, "displayName", "Sam Martin");
+        Post post = new Post(lou, "hi", null);
+        ReflectionTestUtils.setField(post, "id", 9L);
+        Comment top = new Comment(post, sam, "joli !");
+        ReflectionTestUtils.setField(top, "id", 30L);
+        Comment reply = new Comment(post, lou, "merci", top);
+        ReflectionTestUtils.setField(reply, "id", 31L);
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(lou));
+        when(userRepository.findAll()).thenReturn(java.util.List.of(lou, sam));
+        when(postRepository.findById(9L)).thenReturn(Optional.of(post));
+        when(commentRepository.findById(31L)).thenReturn(Optional.of(reply));
+        when(commentRepository.save(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var dto = commentService.create("lou", 9L, "@Sam Martin oui, on y retourne !", 31L);
+
+        assertThat(dto.parentId()).as("a reply to a reply joins the thread").isEqualTo(30L);
+        ArgumentCaptor<FeedActivity> event = ArgumentCaptor.forClass(FeedActivity.class);
+        verify(events).publishEvent(event.capture());
+        assertThat(event.getValue().mentionedIds()).containsExactly(2L);
+        assertThat(event.getValue().replyToId()).as("the thread's author hears about it").isEqualTo(2L);
+    }
+
+    @Test
+    void aReplyMustAnswerACommentOfTheSamePost() {
+        User lou = user(1L, "lou");
+        Post post = new Post(lou, "hi", null);
+        ReflectionTestUtils.setField(post, "id", 9L);
+        Post other = new Post(lou, "autre", null);
+        ReflectionTestUtils.setField(other, "id", 10L);
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(lou));
+        when(postRepository.findById(9L)).thenReturn(Optional.of(post));
+        when(commentRepository.findById(40L)).thenReturn(Optional.of(new Comment(other, lou, "ailleurs")));
+
+        assertThatThrownBy(() -> commentService.create("lou", 9L, "ici", 40L)).isInstanceOf(ContentValidationException.class);
+        verify(events, never()).publishEvent(any(Object.class));
+    }
+
+    @Test
+    void aTagIsTheNameAfterAnAtNotGluedToMoreLetters() {
+        User lou = user(1L, "lou");
+        User sam = user(2L, "sam");
+        ReflectionTestUtils.setField(sam, "displayName", "Sam");
+        var people = java.util.List.of(lou, sam);
+        assertThat(Mentions.in("coucou @sam !", people, 1L)).containsExactly(2L);
+        assertThat(Mentions.in("@Sam", people, 1L)).containsExactly(2L);
+        assertThat(Mentions.in("@Samuel", people, 1L)).isEmpty();
+        assertThat(Mentions.in("sam sans arobase", people, 1L)).isEmpty();
+        assertThat(Mentions.in("moi @lou", people, 1L)).as("never oneself").isEmpty();
     }
 }

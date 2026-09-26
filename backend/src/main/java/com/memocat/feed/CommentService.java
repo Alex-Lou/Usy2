@@ -54,7 +54,7 @@ public class CommentService {
     public PageResponse<CommentDto> list(Long postId, int page, int size) {
         requirePost(postId);
         Pageable pageable = PageRequest.of(Math.max(page, 0), clampSize(size));
-        Page<Comment> result = commentRepository.findByPostIdOrderByCreatedAtAsc(postId, pageable);
+        Page<Comment> result = commentRepository.findThreads(postId, pageable);
         List<Long> ids = result.getContent().stream().map(Comment::getId).toList();
         Map<Long, List<CommentReactionDto>> reactions = ids.isEmpty() ? Map.of()
                 : reactionRepository.findByCommentIdInOrderByCreatedAtAsc(ids).stream().collect(Collectors.groupingBy(
@@ -62,13 +62,23 @@ public class CommentService {
         return PageResponse.of(result, c -> toDto(c, reactions.getOrDefault(c.getId(), List.of())));
     }
 
+    /** A comment, or a reply to {@code parentId} (a reply to a reply joins that same thread). */
     @Transactional
-    public CommentDto create(String username, Long postId, String text) {
+    public CommentDto create(String username, Long postId, String text, Long parentId) {
         User author = requireUser(username);
         Post post = requirePost(postId);
-        Comment comment = commentRepository.save(new Comment(post, author, validateText(text)));
-        events.publishEvent(FeedActivity.comment(author, post));
+        Comment parent = parentId == null ? null : threadOf(parentId, post);
+        Comment comment = commentRepository.save(new Comment(post, author, validateText(text), parent));
+        List<Long> mentioned = Mentions.in(comment.getText(), userRepository.findAll(), author.getId());
+        events.publishEvent(FeedActivity.comment(author, post, comment, mentioned));
         return toDto(comment, List.of());
+    }
+
+    private Comment threadOf(Long parentId, Post post) {
+        Comment parent = commentRepository.findById(parentId)
+                .filter(c -> c.getPost().getId().equals(post.getId()))
+                .orElseThrow(() -> new ContentValidationException("Ce commentaire n'existe plus"));
+        return parent.getParent() == null ? parent : parent.getParent();
     }
 
     @Transactional
@@ -88,7 +98,8 @@ public class CommentService {
                 UserDto.from(comment.getAuthor()),
                 comment.getText(),
                 comment.getCreatedAt(),
-                reactions);
+                reactions,
+                comment.getParent() == null ? null : comment.getParent().getId());
     }
 
     private String validateText(String text) {
