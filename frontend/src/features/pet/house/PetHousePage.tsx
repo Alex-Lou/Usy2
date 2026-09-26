@@ -19,6 +19,7 @@ const GUESTS: { id: Kind; icon: string; label: string; start: number }[] = [
   { id: "wolf", icon: "🐺", label: "Loup", start: 0.55 },
   { id: "cat", icon: "🐱", label: "Chaton", start: 0.8 },
   { id: "otter", icon: "🦦", label: "Loutre", start: 0.35 },
+  { id: "siamese", icon: "🐈", label: "Siamois", start: 0.68 },
 ];
 const GUESTS_KEY = "memocat.house.guests";
 const OLD_GUEST_KEY = "memocat.house.guest"; // one guest at a time, before
