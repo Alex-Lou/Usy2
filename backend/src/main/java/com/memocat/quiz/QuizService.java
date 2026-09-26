@@ -41,7 +41,7 @@ public class QuizService {
     private static final int MAX_RUNS = 200;
 
     /** A question as played: its options in the order shown and which one is right. */
-    record Item(String text, List<String> options, int correct) {
+    public record Item(String text, List<String> options, int correct) {
     }
 
     /**
@@ -144,7 +144,7 @@ public class QuizService {
     }
 
     /** Ten shuffled questions of one of my open levels. */
-    List<Item> levelItems(User me, String theme, int level) {
+    public List<Item> levelItems(User me, String theme, int level) {
         QuizBank.Theme t = QuizBank.theme(theme == null ? "" : theme).orElseThrow(() -> new ContentValidationException("Thème inconnu"));
         if (level < 1 || level > QuizBank.LEVELS) {
             throw new ContentValidationException("Niveau inconnu");
@@ -160,7 +160,7 @@ public class QuizService {
     }
 
     /** Ten questions picked across every theme (levels 1 to {@code maxLevel}). */
-    List<Item> mixItems(int maxLevel) {
+    public List<Item> mixItems(int maxLevel) {
         List<QuizBank.Question> pool = new ArrayList<>();
         for (QuizBank.Theme t : QuizBank.THEMES) {
             for (int l = 1; l <= maxLevel; l++) {

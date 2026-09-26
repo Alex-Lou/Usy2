@@ -54,6 +54,7 @@ export function NousPage() {
           <h1 className="font-display text-2xl font-bold">💞 Nous deux</h1>
           <p className="text-sm text-text-muted">Des questions pour se découvrir encore, et deviner l'autre.</p>
         </div>
+        <Link to="/jeux/direct" className="chip press ml-auto shrink-0 text-sm font-semibold">⚡ En direct</Link>
       </header>
 
       {failed && <p className="card p-4 text-sm">Nous deux ne répond pas. <button type="button" onClick={load} className="underline">Réessayer</button></p>}

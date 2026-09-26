@@ -34,6 +34,13 @@ const GAMES: GameCard[] = [
     emoji: "🎣",
   },
   {
+    to: "/jeux/direct",
+    title: "En direct",
+    tagline: "Quiz en duel ou « Même longueur d'onde » : la même question au même moment. Pas là ? La partie attend.",
+    mode: "À deux · en direct",
+    emoji: "⚡",
+  },
+  {
     to: "/jeux/morpion",
     title: "Morpion",
     tagline: "Alignez vos compagnons, à deux, en temps réel.",

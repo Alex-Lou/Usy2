@@ -138,6 +138,13 @@ public class PushNotifier {
         }
     }
 
+    /** ⚡ A live game waits for someone (invitation, pause, nudge): pushed even if urgent enough to wake. */
+    @Async(PushConfig.EXECUTOR)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onLiveNotice(com.memocat.live.LiveEvents.Notice n) {
+        users.findById(n.recipientId()).ifPresent(u -> notify(u, new PushPayload(TITLE, n.body(), n.url(), n.tag()), true));
+    }
+
     private static String verdict(String v) {
         return "right".equals(v) ? "juste ! 🎯" : "close".equals(v) ? "presque ! 😏" : "raté 🙈";
     }
