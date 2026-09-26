@@ -126,8 +126,10 @@ export class CompanionBrain {
   private pickNext(env: Env) {
     const room = env.maxX - env.minX;
     const r = Math.random() * 100;
-    const napOdds = env.night ? 30 : 10;
-    const trickOdds = KINDS[this.kind].trickOdds + (this.kind === "wolf" && env.night ? 15 : 0); // wolves howl at night
+    // The Siamese only strolls: its drawing does not lie down or crouch well.
+    const strolls = this.kind === "siamese";
+    const napOdds = strolls ? 0 : env.night ? 30 : 10;
+    const trickOdds = strolls ? 0 : KINDS[this.kind].trickOdds + (this.kind === "wolf" && env.night ? 15 : 0); // wolves howl at night
     if (env.friend && r < 15) {
       // Stand beside Moka (not on it), then face it.
       const { left, right } = env.friend;
