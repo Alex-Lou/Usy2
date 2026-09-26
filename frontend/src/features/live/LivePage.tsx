@@ -418,7 +418,6 @@ function RoundCard({ r, g, host, other, color, big }: { r: LiveRound; g: LiveVie
 
 const ENDED: Record<string, string> = {
   expired: "La partie s'est arrêtée : plus de 24 h sans nouvelles.",
-  abandon: "La partie a été abandonnée.",
   declined: "L'invitation a été refusée ou annulée.",
 };
 
@@ -428,6 +427,7 @@ function Final({ g, host, other, color, onNew }: { g: LiveView; host: boolean; o
   const played = g.rounds.filter((r) => r.host != null && r.guest != null);
   const compat = played.length ? Math.round(me / played.length) : 0;
   const finished = g.endedReason === "finished";
+  const abandoned = g.endedReason === "abandon"; // no winner then: just « Partie abandonnée »
   const reason = g.status === "cancelled" && g.endedReason === "expired" ? "L'invitation a expiré (24 h)." : ENDED[g.endedReason ?? ""];
   const title = g.kind === "quiz"
     ? me > them ? "🏆 Tu gagnes !" : me < them ? `🏆 ${other} gagne !` : "🤝 Égalité !"
@@ -437,8 +437,9 @@ function Final({ g, host, other, color, onNew }: { g: LiveView; host: boolean; o
       {finished && (g.kind === "quiz" ? me > them : compat >= 60) && <Confetti />}
       <div className="card flex flex-col items-center gap-2 p-6 text-center">
         <p className="text-sm font-semibold text-text-muted">{g.label}</p>
-        {g.status === "done" && (played.length > 0 || finished) && <p className="font-display text-2xl font-bold" style={{ color }}>{title}</p>}
-        {g.kind === "quiz" && g.status === "done" && <p className="tabular-nums">Toi <b>{me}</b> · {other} <b>{them}</b></p>}
+        {abandoned && <p className="font-display text-2xl font-bold">🏳️ Partie abandonnée</p>}
+        {!abandoned && g.status === "done" && (played.length > 0 || finished) && <p className="font-display text-2xl font-bold" style={{ color }}>{title}</p>}
+        {!abandoned && g.kind === "quiz" && g.status === "done" && <p className="tabular-nums">Toi <b>{me}</b> · {other} <b>{them}</b></p>}
         {g.kind === "nous" && finished && <p className="text-sm text-text-muted">{compat >= 80 ? "Deux têtes, un seul cœur." : compat >= 50 ? "Joliment accordés." : "Assez différents pour ne jamais s'ennuyer."}</p>}
         {reason && <p className="text-sm text-text-muted">{reason}</p>}
         <div className="mt-2 flex flex-wrap justify-center gap-2">
