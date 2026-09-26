@@ -13,8 +13,8 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 /**
- * 💞 Nous deux: one guess about the other person's answer. A choice is judged
- * at once; words wait for the verdict of the person it is about (right, close
+ * 💞 Nous deux: one guess about the other person's answer. Ticked choices
+ * (a bit set) are judged at once: the same ones right, some in common close; words wait for the verdict of the person it is about (right, close
  * or wrong, with a little note).
  */
 @Entity
@@ -40,7 +40,8 @@ public class NousGuess {
     @Column(name = "question_id", nullable = false)
     private String questionId;
 
-    private Short choice;
+    /** Bit i set: option i ticked. */
+    private Integer choices;
 
     @Column(name = "guess_text")
     private String text;
@@ -58,11 +59,11 @@ public class NousGuess {
     protected NousGuess() {
     }
 
-    public NousGuess(User guesser, User author, String questionId, Integer choice, String text, Instant now) {
+    public NousGuess(User guesser, User author, String questionId, Integer choices, String text, Instant now) {
         this.guesser = guesser;
         this.author = author;
         this.questionId = questionId;
-        this.choice = choice == null ? null : choice.shortValue();
+        this.choices = choices;
         this.text = text;
         this.createdAt = now;
     }
@@ -83,8 +84,8 @@ public class NousGuess {
         return questionId;
     }
 
-    public Integer getChoice() {
-        return choice == null ? null : choice.intValue();
+    public Integer getChoices() {
+        return choices;
     }
 
     public String getText() {

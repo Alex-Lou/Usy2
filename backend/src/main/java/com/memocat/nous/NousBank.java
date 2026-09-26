@@ -19,8 +19,8 @@ import java.util.Set;
 
 /**
  * 💞 Nous deux questions, read once from resources/nous (one file per theme),
- * each entry {@code [id, kind, question, option × 4 for a choice]}. Kinds:
- * {@code c} a choice and {@code l} one's own words (both answered about
+ * each entry {@code [id, kind, question, options (2 to 12) for a choice]}. Kinds:
+ * {@code c} choices (several can be ticked) and {@code l} one's own words (both answered about
  * oneself, then guessed by the other), {@code p} a card just to talk about.
  * Entries that don't fit are skipped and logged; NousBankTest makes sure
  * there are none.
@@ -32,6 +32,7 @@ public class NousBank {
     public static final String CHOICE = "c";
     public static final String WORDS = "l";
     public static final String TALK = "p";
+    public static final int MAX_OPTIONS = 12;
 
     public record Theme(String id, String label, String emoji, String color) {
     }
@@ -61,7 +62,7 @@ public class NousBank {
                 List<String> options = CHOICE.equals(kind) ? options(e) : List.of();
                 boolean ok = id.matches("[a-z0-9]{2,20}") && !byId.containsKey(id) && Set.of(CHOICE, WORDS, TALK).contains(kind)
                         && !text.isEmpty() && text.length() <= 140 && options != null
-                        && (CHOICE.equals(kind) ? options.size() == 4 : e.size() == 3);
+                        && (CHOICE.equals(kind) ? options.size() >= 2 && options.size() <= MAX_OPTIONS : e.size() == 3);
                 if (!ok) {
                     log.warn("Nous deux: skipped a question of {} ({})", t.id(), id);
                     continue;

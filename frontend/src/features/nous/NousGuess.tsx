@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { ApiError } from "../../lib/api/client";
 import { Confetti } from "../games/Confetti";
+import { Ticks } from "./Ticks";
 import {
-  getHistory, getToGuess, judgeGuess, MAX_NOTE, MAX_TEXT, sendGuess, VERDICTS,
+  getHistory, getToGuess, judgeGuess, MAX_NOTE, MAX_TEXT, sendGuess, toggled, VERDICTS,
   type NousReveal, type NousTheme, type NousToGuess, type Verdict,
 } from "./api";
 
@@ -12,12 +13,14 @@ const colorOf = (themes: NousTheme[], id: string) => themes.find((t) => t.id ===
 
 /**
  * 🔮 Guessing: one of the other one's answered questions at a time, then the
- * reveal. A choice gets its stamp at once; words wait for their verdict.
+ * reveal. Ticked choices get their stamp at once (the same: right, some in
+ * common: close); words wait for their verdict.
  */
 export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: () => void }) {
   const [queue, setQueue] = useState<NousToGuess[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [text, setText] = useState("");
+  const [ticks, setTicks] = useState<number[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reveal, setReveal] = useState<NousReveal | null>(null);
@@ -36,12 +39,12 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
   }, []);
 
   const current = queue?.[0];
-  const send = async (choice: number | null, words: string | null) => {
+  const send = async (choices: number[] | null, words: string | null) => {
     if (!current || busy) return;
     setBusy(true);
     setError(null);
     try {
-      setReveal(await sendGuess(current.id, choice, words));
+      setReveal(await sendGuess(current.id, choices, words));
       onChange();
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Devinette non envoyée, réessaie.");
@@ -52,6 +55,7 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
   const next = () => {
     setReveal(null);
     setText("");
+    setTicks([]);
     setQueue((q) => q?.slice(1) ?? null);
   };
 
@@ -93,14 +97,13 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
       </div>
       <h2 className="font-display text-xl font-bold leading-snug">{current.text}</h2>
       {current.kind === "c" ? (
-        <div className="grid gap-2.5 sm:grid-cols-2" role="group" aria-label="Ta devinette">
-          {current.options.map((o, i) => (
-            <button key={o} type="button" disabled={busy} onClick={() => void send(i, null)}
-              className="qz-option press rounded-token border-2 px-4 py-3 text-left font-semibold transition hover:-translate-y-0.5"
-              style={{ animationDelay: `${i * 60}ms` }}>
-              {o}
-            </button>
-          ))}
+        <div className="flex flex-col gap-2">
+          <p className="text-xs text-text-muted">Coche tout ce que {partnerName} a coché : les mêmes = 🎯, au moins une en commun = 😏.</p>
+          <Ticks options={current.options} ticked={ticks} color={color} disabled={busy} label="Ta devinette" onToggle={(i) => setTicks((t) => toggled(t, i))} />
+          <button type="button" disabled={busy || ticks.length === 0} onClick={() => void send(ticks, null)}
+            className="btn-brand press self-end rounded-token px-4 py-2 font-semibold disabled:opacity-40">
+            Deviner 🔮
+          </button>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
@@ -232,9 +235,9 @@ export function HistoryTab({ themes, partnerName }: Props) {
 }
 
 function said(r: NousReveal, which: "guess" | "answer"): string {
-  const choice = which === "guess" ? r.guessChoice : r.answerChoice;
+  const choices = which === "guess" ? r.guessChoices : r.answerChoices;
   const text = which === "guess" ? r.guessText : r.answerText;
-  if (choice != null) return r.options[choice] ?? "—";
+  if (choices != null) return choices.map((i) => r.options[i]).filter(Boolean).join(" · ") || "—";
   return text ?? "—";
 }
 

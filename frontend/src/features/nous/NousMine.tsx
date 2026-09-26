@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { ApiError } from "../../lib/api/client";
-import { forgetMine, getMine, MAX_TEXT, saveMine, type NousMine, type NousTheme } from "./api";
+import { forgetMine, getMine, MAX_TEXT, saveMine, toggled, type NousMine, type NousTheme } from "./api";
 import { FilterChip } from "./NousCards";
+import { Ticks } from "./Ticks";
 
 /**
- * ✍️ My answers about me: a tap for a choice, a few words otherwise. Only
+ * ✍️ My answers about me: tick one or several choices then « Valider », or a few words. Only
  * the other one's guesses ever reveal them; changing one lets them guess again.
  */
 export function MineTab({ themes, partnerName, onChange }: { themes: NousTheme[]; partnerName: string; onChange: () => void }) {
@@ -18,10 +19,10 @@ export function MineTab({ themes, partnerName, onChange }: { themes: NousTheme[]
   }, []);
 
   const shown = useMemo(
-    () => (items ?? []).filter((q) => (theme === "all" || q.theme === theme) && (!todo || (q.choice == null && q.answer == null))),
+    () => (items ?? []).filter((q) => (theme === "all" || q.theme === theme) && (!todo || (q.choices == null && q.answer == null))),
     [items, theme, todo],
   );
-  const done = (items ?? []).filter((q) => q.choice != null || q.answer != null).length;
+  const done = (items ?? []).filter((q) => q.choices != null || q.answer != null).length;
 
   const saved = (next: NousMine) => {
     setItems((list) => list?.map((q) => (q.id === next.id ? next : q)) ?? null);
@@ -57,17 +58,19 @@ export function MineTab({ themes, partnerName, onChange }: { themes: NousTheme[]
 
 function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: string; partnerName: string; onSaved: (q: NousMine) => void }) {
   const [text, setText] = useState(q.answer ?? "");
+  const [ticks, setTicks] = useState<number[]>(q.choices ?? []);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [flash, setFlash] = useState(false);
-  const answered = q.choice != null || q.answer != null;
+  const answered = q.choices != null || q.answer != null;
+  const ticksChanged = ticks.join() !== (q.choices ?? []).join();
 
-  const save = async (choice: number | null, words: string | null) => {
+  const save = async (choices: number[] | null, words: string | null) => {
     setBusy(true);
     setError(null);
     try {
-      await saveMine(q.id, choice, words);
-      onSaved({ ...q, choice, answer: words?.trim() ?? null });
+      await saveMine(q.id, choices, words);
+      onSaved({ ...q, choices, answer: words?.trim() ?? null });
       setFlash(true);
       window.setTimeout(() => setFlash(false), 900);
     } catch (e) {
@@ -81,7 +84,8 @@ function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: stri
     try {
       await forgetMine(q.id);
       setText("");
-      onSaved({ ...q, choice: null, answer: null });
+      setTicks([]);
+      onSaved({ ...q, choices: null, answer: null });
     } catch {
       setError("Pas effacé, réessaie.");
     } finally {
@@ -93,20 +97,17 @@ function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: stri
     <li className="card qz-slide flex flex-col gap-2 p-4" style={{ borderLeft: `4px solid ${color}` }}>
       <p className="font-semibold leading-snug">{q.text}</p>
       {q.kind === "c" ? (
-        <div className="grid grid-cols-2 gap-2" role="group" aria-label="Ta réponse">
-          {q.options.map((o, i) => (
-            <button
-              key={o}
-              type="button"
-              disabled={busy}
-              aria-pressed={q.choice === i}
-              onClick={() => void save(i, null)}
-              className={"press rounded-token border-2 px-3 py-2 text-left text-sm font-semibold transition " + (q.choice === i ? "text-white" : "border-border hover:-translate-y-0.5")}
-              style={q.choice === i ? { background: color, borderColor: color } : undefined}
-            >
-              {o}
-            </button>
-          ))}
+        <div className="flex flex-col gap-2">
+          <p className="text-xs text-text-muted">Plusieurs réponses possibles, puis valide.</p>
+          <Ticks options={q.options} ticked={ticks} color={color} disabled={busy} label="Ta réponse" onToggle={(i) => setTicks((t) => toggled(t, i))} />
+          <button
+            type="button"
+            disabled={busy || ticks.length === 0 || !ticksChanged}
+            onClick={() => void save(ticks, null)}
+            className="btn-brand press self-start rounded-token px-4 py-1.5 text-sm font-semibold disabled:opacity-40"
+          >
+            {answered ? "Valider les changements" : `Valider${ticks.length > 1 ? ` (${ticks.length})` : ""}`}
+          </button>
         </div>
       ) : (
         <div className="flex flex-col gap-1.5">
