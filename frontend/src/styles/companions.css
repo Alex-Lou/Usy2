@@ -291,52 +291,100 @@ svg.mc-badge-face .mc-head {
 .mc-hello svg.mc-badge-face .mc-otter-lids {
   animation: mc-otter-hello-blink 1.8s ease-in-out;
 }
-/* The Siamese cat (animals.tsx): an ear flicks now and then, it blinks. */
-/* Each ear turns around its base: the point its group is moved to (transform-origin 0 0).
-   The cut-out ear only shows while it moves (at rest the drawing below is the ear). */
-.mc-face--siamese .mc-siamese-ear {
-  opacity: 0;
+/* The Siamese cat (animals.tsx): an ear flicks or folds now and then, the
+   whiskers twitch, it blinks. Each piece turns around the point its group is
+   moved to (transform-origin 0 0). The ear tips are always shown (the drawing
+   below them is cut away, so they can fold); the whiskers only while they
+   move (at rest the drawing below is the whiskers). */
+.mc-face--siamese .mc-siamese-ear,
+.mc-face--siamese .mc-siamese-whisk {
   transform-box: view-box;
   transform-origin: 0 0;
-  animation: mc-siamese-flick 6.2s ease-in-out infinite;
+}
+.mc-face--siamese .mc-siamese-ear--l {
+  animation: mc-siamese-ear-l 7.4s ease-in-out infinite;
 }
 .mc-face--siamese .mc-siamese-ear--r {
-  animation-name: mc-siamese-flick-r;
-  animation-duration: 8.3s;
+  animation: mc-siamese-ear-r 9.7s ease-in-out infinite;
+}
+.mc-face--siamese .mc-siamese-whisk {
+  opacity: 0;
+  animation: mc-siamese-whisk-l 4.6s ease-in-out infinite;
+}
+.mc-face--siamese .mc-siamese-whisk--r {
+  animation-name: mc-siamese-whisk-r;
+  animation-delay: -1.9s;
 }
 .mc-face--siamese .mc-siamese-lids {
   opacity: 0;
   animation: mc-pingu-blink 5.1s infinite;
 }
-.mc-hello svg.mc-badge-face .mc-siamese-ear {
-  animation: mc-siamese-hello 1.8s ease-in-out;
+.mc-hello svg.mc-badge-face .mc-siamese-ear--l {
+  animation: mc-siamese-hello-l 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-ear--r {
+  animation: mc-siamese-hello-r 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-whisk {
+  animation: mc-siamese-whisk-hello 1.8s ease-in-out;
 }
 .mc-hello svg.mc-badge-face .mc-siamese-lids {
   animation: mc-otter-hello-blink 1.8s ease-in-out;
 }
-@keyframes mc-siamese-flick {
-  0%, 85.9%, 98.1%, 100% { transform: rotate(0); opacity: 0; }
-  86%, 98% { transform: rotate(0); opacity: 1; }
-  89% { transform: rotate(-6deg); opacity: 1; }
-  92% { transform: rotate(3deg); opacity: 1; }
-  95% { transform: rotate(-3deg); opacity: 1; }
+/* Fold (tip tucked in and down), then later a quick flick. */
+@keyframes mc-siamese-ear-l {
+  0%, 36%, 54%, 84%, 100% { transform: none; }
+  40%, 49% { transform: rotate(5deg) scaleY(0.66); }
+  87% { transform: rotate(-4deg); }
+  90% { transform: rotate(2deg); }
+  93% { transform: rotate(-2deg); }
+  96% { transform: none; }
 }
-@keyframes mc-siamese-flick-r {
-  0%, 85.9%, 98.1%, 100% { transform: rotate(0); opacity: 0; }
-  86%, 98% { transform: rotate(0); opacity: 1; }
-  89% { transform: rotate(6deg); opacity: 1; }
-  92% { transform: rotate(-3deg); opacity: 1; }
-  95% { transform: rotate(3deg); opacity: 1; }
+@keyframes mc-siamese-ear-r {
+  0%, 12%, 30%, 70%, 100% { transform: none; }
+  16%, 25% { transform: rotate(-5deg) scaleY(0.66); }
+  73% { transform: rotate(4deg); }
+  76% { transform: rotate(-2deg); }
+  79% { transform: rotate(2deg); }
+  82% { transform: none; }
 }
-@keyframes mc-siamese-hello {
-  0%, 100% { transform: rotate(0); opacity: 0; }
-  1%, 80% { opacity: 1; }
-  15%, 50% { transform: rotate(-7deg); }
-  30%, 65% { transform: rotate(4deg); }
-  80% { transform: rotate(0); }
+@keyframes mc-siamese-whisk-l {
+  0%, 71.9%, 94.1%, 100% { transform: none; opacity: 0; }
+  72%, 94% { transform: none; opacity: 1; }
+  76% { transform: rotate(-3.5deg); }
+  80% { transform: rotate(2.5deg); }
+  84% { transform: rotate(-3deg); }
+  88% { transform: rotate(2deg); }
+}
+@keyframes mc-siamese-whisk-r {
+  0%, 71.9%, 94.1%, 100% { transform: none; opacity: 0; }
+  72%, 94% { transform: none; opacity: 1; }
+  76% { transform: rotate(3.5deg); }
+  80% { transform: rotate(-2.5deg); }
+  84% { transform: rotate(3deg); }
+  88% { transform: rotate(-2deg); }
+}
+@keyframes mc-siamese-hello-l {
+  0%, 100% { transform: none; }
+  15%, 45% { transform: rotate(5deg) scaleY(0.7); }
+  62% { transform: rotate(-4deg); }
+  78% { transform: rotate(2deg); }
+}
+@keyframes mc-siamese-hello-r {
+  0%, 100% { transform: none; }
+  15%, 45% { transform: rotate(-5deg) scaleY(0.7); }
+  62% { transform: rotate(4deg); }
+  78% { transform: rotate(-2deg); }
+}
+@keyframes mc-siamese-whisk-hello {
+  0%, 100% { transform: none; opacity: 0; }
+  1%, 99% { opacity: 1; }
+  20%, 60% { transform: rotate(-3.5deg); }
+  40%, 80% { transform: rotate(3deg); }
 }
 @media (prefers-reduced-motion: reduce) {
   .mc-face--siamese .mc-siamese-ear,
+  .mc-face--siamese .mc-siamese-whisk,
   .mc-face--siamese .mc-siamese-lids {
     animation: none;
   }
