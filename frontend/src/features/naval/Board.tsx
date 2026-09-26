@@ -1,3 +1,4 @@
+import type { KeyboardEvent, PointerEvent } from "react";
 import type { Species } from "../../app/companion";
 import { Animal } from "../../components/ui/animals";
 import { LENGTHS, SIZE, type NavalTheme, type Shot } from "./api";
@@ -7,7 +8,7 @@ export interface BoardShip {
   type: number;
   cells: number[];
   sunk?: boolean;
-  selected?: boolean;
+  label?: string; // what a screen reader says of a ship you can move
 }
 
 /** The shot being animated: a shell flies in, then bursts (hit) or splashes (miss). */
@@ -24,14 +25,16 @@ export const cellName = (c: number) => `${ROWS[Math.floor(c / SIZE)]}${(c % SIZE
 /**
  * One 10×10 sea in the game's theme: the ships (as SVG, over their cells),
  * the shots (hit / miss marks) and the latest shot's animation. Cells are
- * buttons when {@code onCell} is given (aiming, or placing the fleet).
+ * buttons when {@code onCell} is given (aiming); ships are when {@code onShipDown}
+ * is (placing the fleet: they hold still and can be dragged, turned, moved by keys).
  */
-export function Board({ theme, ships, shots, onCell, onShip, onHover, canAim, effect, preview, radar, shake, small, captain, label }: {
+export function Board({ theme, ships, shots, onCell, onShipDown, onShipKey, onHover, canAim, effect, preview, radar, shake, small, captain, label }: {
   theme: NavalTheme;
   ships: BoardShip[];
   shots: Shot[];
   onCell?: (cell: number) => void;
-  onShip?: (type: number) => void;
+  onShipDown?: (type: number, e: PointerEvent<HTMLElement>) => void;
+  onShipKey?: (type: number, e: KeyboardEvent<HTMLElement>) => void;
   onHover?: (cell: number | null) => void;
   canAim?: (cell: number) => boolean;
   effect?: Effect | null;
@@ -51,7 +54,7 @@ export function Board({ theme, ships, shots, onCell, onShip, onHover, canAim, ef
   return (
     <div
       key={shake}
-      className={`nv-board nv-${theme} ${small ? "nv-board--small" : ""} ${shake ? "nv-shake" : ""}`}
+      className={`nv-board nv-${theme} ${small ? "nv-board--small" : ""} ${onShipDown ? "nv-board--placing" : ""} ${shake ? "nv-shake" : ""}`}
       role="grid"
       aria-label={label}
       onPointerLeave={() => onHover?.(null)}
@@ -85,12 +88,14 @@ export function Board({ theme, ships, shots, onCell, onShip, onHover, canAim, ef
       {ships.map((s) => {
         const vertical = s.cells.length > 1 && s.cells[1] - s.cells[0] === SIZE;
         const len = LENGTHS[s.type];
-        const Tag = onShip ? "button" : "div";
+        const Tag = onShipDown ? "button" : "div";
         return (
           <Tag
             key={`s${s.type}`}
-            {...(onShip ? { type: "button" as const, onClick: () => onShip(s.type), "aria-label": `Bateau ${s.type + 1}` } : { "aria-hidden": true })}
-            className={`nv-ship ${s.sunk ? "nv-ship--sunk" : ""} ${s.selected ? "nv-ship--selected" : ""} ${vertical ? "nv-ship--v" : ""}`}
+            {...(onShipDown
+              ? { type: "button" as const, onPointerDown: (e: PointerEvent<HTMLElement>) => onShipDown(s.type, e), onKeyDown: (e: KeyboardEvent<HTMLElement>) => onShipKey?.(s.type, e), "aria-label": s.label }
+              : { "aria-hidden": true })}
+            className={`nv-ship ${s.sunk ? "nv-ship--sunk" : ""} ${vertical ? "nv-ship--v" : ""}`}
             style={pos(s.cells[0], vertical ? len : 1, vertical ? 1 : len)}
           >
             <Ship theme={theme} type={s.type} length={len} vertical={vertical} />
