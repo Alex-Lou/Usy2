@@ -100,6 +100,7 @@ export function PenguinHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
  * as a layer of its own (loutreFishBis-poisson.svg: the fish paths of
  * LoutreFishBis.svg, unchanged), so the fish can flap now and then. Eyelids
  * drawn over the eyes blink; the 2100 drawing box is fitted into the 64 box.
+ * "otter-plain" is the same otter without its fish.
  */
 const OTTER_FIT = "translate(32 33) scale(0.031) translate(-1050 -1124)";
 const OTTER_EYES = [
@@ -108,15 +109,17 @@ const OTTER_EYES = [
 ] as const;
 const FISH_PIVOT = [1076, 1480] as const; // where the fish sits in the mouth
 
-function OtterHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
+function OtterHead({ eyesClosed = false, fish = true }: { eyesClosed?: boolean; fish?: boolean }) {
   return (
     <g className="mc-face mc-face--otter" transform={OTTER_FIT}>
       <image href={otterUrl} x="0" y="0" width="2100" height="2100" />
-      <g transform={`translate(${FISH_PIVOT[0]} ${FISH_PIVOT[1]})`}>
-        <g className="mc-otter-fish">
-          <image href={otterFishUrl} x={-FISH_PIVOT[0]} y={-FISH_PIVOT[1]} width="2100" height="2100" />
+      {fish && (
+        <g transform={`translate(${FISH_PIVOT[0]} ${FISH_PIVOT[1]})`}>
+          <g className="mc-otter-fish">
+            <image href={otterFishUrl} x={-FISH_PIVOT[0]} y={-FISH_PIVOT[1]} width="2100" height="2100" />
+          </g>
         </g>
-      </g>
+      )}
       <g className={eyesClosed ? undefined : "mc-otter-lids"}>
         {OTTER_EYES.map(([x, y]) => (
           <g key={x}>
@@ -290,6 +293,8 @@ export function AnimalFace({ species, eyesClosed = false }: { species: Species; 
       );
     case "otter":
       return <OtterHead eyesClosed={eyesClosed} />;
+    case "otter-plain":
+      return <OtterHead eyesClosed={eyesClosed} fish={false} />;
     case "parrot":
       return (
         <g>

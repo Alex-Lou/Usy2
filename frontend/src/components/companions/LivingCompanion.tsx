@@ -18,6 +18,8 @@ export const SCENES = {
 /** The companions that can live in the house or a side-menu tile. */
 export const LIVING_KINDS: Kind[] = ["penguin", "wolf", "cat", "otter"];
 export const isLivingKind = (v: string): v is Kind => (LIVING_KINDS as string[]).includes(v);
+/** The living body for a companion choice: the otter without its fish walks as the otter. */
+export const livingKindOf = (v: string): Kind | null => (v === "otter-plain" ? "otter" : isLivingKind(v) ? v : null);
 
 function prefersReducedMotion(): boolean {
   return typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
