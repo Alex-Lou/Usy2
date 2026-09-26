@@ -25,15 +25,20 @@ class NousBankTest {
             assertThat(q.kind()).isEqualTo(NousBank.CHOICE);
             assertThat(q.options()).containsExactly("Printemps", "Été", "Automne", "Hiver");
         });
+        assertThat(bank.question("film")).hasValueSatisfying(q -> assertThat(q.options()).startsWith("Comédie", "Horreur", "Science-fiction", "Romance").hasSize(12));
         assertThat(bank.question("futur")).isPresent();
     }
 
     @Test
-    void choicesHaveFourOptionsAndNoQuestionIsAskedTwice() {
+    void choicesHaveTwoToTwelveOptionsAndNoQuestionIsAskedTwice() {
         Set<String> seen = new HashSet<>();
         bank.all().forEach(q -> {
             assertThat(seen.add(q.text().toLowerCase())).as(q.text()).isTrue();
-            assertThat(q.options()).hasSize(NousBank.CHOICE.equals(q.kind()) ? 4 : 0);
+            if (NousBank.CHOICE.equals(q.kind())) {
+                assertThat(q.options()).as(q.id()).hasSizeBetween(2, NousBank.MAX_OPTIONS);
+            } else {
+                assertThat(q.options()).isEmpty();
+            }
         });
     }
 }

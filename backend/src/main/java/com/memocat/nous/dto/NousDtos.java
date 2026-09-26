@@ -12,7 +12,7 @@ public final class NousDtos {
     public record Theme(String id, String label, String emoji, String color, int total, int guessable) {
     }
 
-    /** A card: {@code kind} c (choice), l (own words) or p (just to talk); {@code talked} by either of us. */
+    /** A card: {@code kind} c (choices, several can be ticked), l (own words) or p (just to talk); {@code talked} by either of us. */
     public record Card(String id, String theme, String kind, String text, List<String> options, boolean fav, boolean talked,
                        boolean answered) {
     }
@@ -29,8 +29,8 @@ public final class NousDtos {
                            int toGuess, int toJudge, Score me, Score them, Card daily) {
     }
 
-    /** One of my questions (c or l) and what I answered, if I did. */
-    public record Mine(String id, String theme, String kind, String text, List<String> options, Integer choice, String answer) {
+    /** One of my questions (c or l) and what I answered, if I did ({@code choices}: the options I ticked). */
+    public record Mine(String id, String theme, String kind, String text, List<String> options, List<Integer> choices, String answer) {
     }
 
     /** One of the other's answered questions, to guess (no answer inside). */
@@ -42,7 +42,7 @@ public final class NousDtos {
      * wrong, or null while the author hasn't judged it.
      */
     public record Reveal(long guessId, String id, String theme, String kind, String text, List<String> options,
-                         Integer guessChoice, String guessText, Integer answerChoice, String answerText,
+                         List<Integer> guessChoices, String guessText, List<Integer> answerChoices, String answerText,
                          String verdict, String note, Instant createdAt) {
     }
 
@@ -50,7 +50,8 @@ public final class NousDtos {
     public record History(List<Reveal> mine, List<Reveal> theirs) {
     }
 
-    public record Answer(String id, Integer choice, String text) {
+    /** {@code choices}: the ticked options (for a choice question), or {@code text} (own words). */
+    public record Answer(String id, List<Integer> choices, String text) {
     }
 
     public record Mark(String id, String kind, boolean on) {

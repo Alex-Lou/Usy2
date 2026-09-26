@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 
 /**
  * 💞 Nous deux: cards to talk about (favourites, "on en a parlé"), answers
- * about oneself, and guesses about the other one. A guessed choice is judged
- * at once; guessed words wait for the verdict of the person it is about. An
+ * about oneself, and guesses about the other one. Guessed choices are judged
+ * at once (the same ticks right, some in common close, none wrong); guessed words wait for the verdict of the person it is about. An
  * answer stays hidden from the other one until they have guessed it; changing
  * it clears their guesses about it (they guess again).
  */
@@ -130,7 +130,7 @@ public class NousService {
                 .map(q -> {
                     NousAnswer a = mine.get(q.id());
                     return new NousDtos.Mine(q.id(), q.theme(), q.kind(), q.text(), q.options(),
-                            a == null ? null : a.getChoice(), a == null ? null : a.getText());
+                            a == null ? null : list(a.getChoices()), a == null ? null : a.getText());
                 }).toList();
     }
 
@@ -141,10 +141,10 @@ public class NousService {
         if (!q.guessable()) {
             throw new ContentValidationException("Cette carte est juste pour en parler");
         }
-        Integer choice = NousBank.CHOICE.equals(q.kind()) ? choice(q, request.choice()) : null;
+        Integer choices = NousBank.CHOICE.equals(q.kind()) ? mask(q, request.choices()) : null;
         String text = NousBank.WORDS.equals(q.kind()) ? words(request.text(), MAX_TEXT) : null;
         NousAnswer a = answers.findByUserIdAndQuestionId(me.getId(), q.id()).orElseGet(() -> new NousAnswer(me, q.id()));
-        if (a.set(choice, text, clock.instant())) {
+        if (a.set(choices, text, clock.instant())) {
             guesses.deleteByAuthorIdAndQuestionId(me.getId(), q.id());
         }
         answers.save(a);
@@ -172,7 +172,7 @@ public class NousService {
                 .map(q -> new NousDtos.ToGuess(q.id(), q.theme(), q.kind(), q.text(), q.options())).toList();
     }
 
-    /** One guess: the answer is revealed at once; a choice is judged, words wait for the other one's verdict. */
+    /** One guess: the answer is revealed at once; choices are judged, words wait for the other one's verdict. */
     @Transactional
     public NousDtos.Reveal guess(String username, NousDtos.Answer request) {
         User me = user(username);
@@ -185,9 +185,9 @@ public class NousService {
         }
         NousGuess g;
         if (NousBank.CHOICE.equals(q.kind())) {
-            int choice = choice(q, request.choice());
-            g = new NousGuess(me, partner, q.id(), choice, null, clock.instant());
-            g.judge(theirs.getChoice() != null && theirs.getChoice() == choice ? NousGuess.RIGHT : NousGuess.WRONG, null, clock.instant());
+            int guessed = mask(q, request.choices());
+            g = new NousGuess(me, partner, q.id(), guessed, null, clock.instant());
+            g.judge(verdict(guessed, theirs.getChoices()), null, clock.instant());
             g = guesses.save(g);
         } else {
             g = guesses.save(new NousGuess(me, partner, q.id(), null, words(request.text(), MAX_TEXT), clock.instant()));
@@ -236,7 +236,7 @@ public class NousService {
 
     private static NousDtos.Reveal reveal(NousGuess g, NousBank.Question q, NousAnswer answer) {
         return new NousDtos.Reveal(g.getId() == null ? 0 : g.getId(), q.id(), q.theme(), q.kind(), q.text(), q.options(),
-                g.getChoice(), g.getText(), answer == null ? null : answer.getChoice(), answer == null ? null : answer.getText(),
+                list(g.getChoices()), g.getText(), answer == null ? null : list(answer.getChoices()), answer == null ? null : answer.getText(),
                 g.getVerdict(), g.getNote(), g.getCreatedAt());
     }
 
@@ -293,11 +293,38 @@ public class NousService {
         return bank.question(id).orElseThrow(() -> new ContentValidationException("Question inconnue"));
     }
 
-    private static int choice(NousBank.Question q, Integer choice) {
-        if (choice == null || choice < 0 || choice >= q.options().size()) {
-            throw new ContentValidationException("Réponse invalide");
+    /** The ticked options as a bit set: at least one, each an option of the question. */
+    static int mask(NousBank.Question q, List<Integer> choices) {
+        if (choices == null || choices.isEmpty()) {
+            throw new ContentValidationException("Coche au moins une réponse");
         }
-        return choice;
+        int mask = 0;
+        for (Integer c : choices) {
+            if (c == null || c < 0 || c >= q.options().size()) {
+                throw new ContentValidationException("Réponse invalide");
+            }
+            mask |= 1 << c;
+        }
+        return mask;
+    }
+
+    /** The same ticks: right; some in common: close; none: wrong. */
+    static String verdict(int guessed, Integer answer) {
+        int a = answer == null ? 0 : answer;
+        return guessed == a ? NousGuess.RIGHT : (guessed & a) != 0 ? NousGuess.CLOSE : NousGuess.WRONG;
+    }
+
+    private static List<Integer> list(Integer mask) {
+        if (mask == null) {
+            return null;
+        }
+        List<Integer> out = new java.util.ArrayList<>();
+        for (int i = 0; i < NousBank.MAX_OPTIONS; i++) {
+            if ((mask & (1 << i)) != 0) {
+                out.add(i);
+            }
+        }
+        return out;
     }
 
     private static String words(String text, int max) {
