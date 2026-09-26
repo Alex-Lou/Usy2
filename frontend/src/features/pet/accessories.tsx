@@ -18,7 +18,7 @@ const WEAR: Record<string, { at: "head" | "neck"; x: number; y: number; w: numbe
   capeline: { at: "head", x: 50, y: -12, w: 60 },
   "couronne-or": { at: "head", x: 60, y: -2, w: 40 },
   gibus: { at: "head", x: 57, y: -4, w: 46, r: 6 },
-  hibiscus: { at: "head", x: 96, y: 24, w: 24, r: 12 },
+  "fleur-oreille": { at: "head", x: 96, y: 24, w: 24, r: 12 },
   "noeud-tete": { at: "head", x: 44, y: 20, w: 30, r: -18 },
   // Face: the lenses over the eyes (67, 62) and (93, 62).
   "lunettes-rondes": { at: "head", x: 52, y: 34, w: 56 },
