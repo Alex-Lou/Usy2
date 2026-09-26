@@ -135,34 +135,55 @@ function OtterHead({ eyesClosed = false, fish = true }: { eyesClosed?: boolean; 
 }
 
 /**
- * The Siamese cat: Lou's partner's drawing (chat.svg, as drawn). Each ear is the
- * same drawing again, cut to the ear, that flicks now and then around its base;
- * eyelids drawn over the eyes blink. The 2100 drawing box is fitted into the 64 box.
+ * The Siamese cat: Lou's partner's drawing (chat.svg, as drawn). The tip of each
+ * ear is the same drawing, cut to it, that flicks and folds now and then; the
+ * whiskers (cut out too) twitch; eyelids drawn over the eyes blink. The 2100 drawing box is fitted into the 64 box.
  */
 const SIAMESE_FIT = "translate(32 33) scale(0.045) translate(-1050 -993)";
 const SIAMESE_EYES = [
   [774, 1094],
   [1321, 1097],
 ] as const;
+// The top of each ear is cut out of the drawing (and the drawing below it
+// left out: the ear can fold); it overlaps the rest a little below the cut.
 const SIAMESE_EARS = [
-  { side: "l", pivot: [620, 760], points: "360,380 600,380 840,650 780,760 360,760" },
-  { side: "r", pivot: [1480, 760], points: "1740,380 1500,380 1260,650 1320,760 1740,760" },
+  { side: "l", pivot: [600, 630], cut: "360,380 640,380 840,620 360,620", points: "360,380 640,380 857,640 360,640" },
+  { side: "r", pivot: [1500, 630], cut: "1740,380 1460,380 1260,620 1740,620", points: "1740,380 1460,380 1243,640 1740,640" },
 ] as const;
+// The whiskers of each cheek: shown cut out only while they twitch (at rest, the drawing).
+const SIAMESE_WHISKERS = [
+  { side: "l", pivot: [900, 1420], points: "640,1330 875,1330 875,1430 850,1462 740,1470 690,1445" },
+  { side: "r", pivot: [1200, 1420], points: "1460,1330 1225,1330 1225,1430 1250,1462 1360,1470 1410,1445" },
+] as const;
+
+/** A piece of the Siamese drawing (clipped to {@code points}) that moves around {@code pivot}. */
+function SiamesePiece({ clipId, pivot: [px, py], points, className }: { clipId: string; pivot: readonly [number, number]; points: string; className: string }) {
+  return (
+    <g transform={`translate(${px} ${py})`}>
+      <clipPath id={clipId}>
+        <polygon points={points} transform={`translate(${-px} ${-py})`} />
+      </clipPath>
+      <g className={className}>
+        <image href={siameseUrl} x={-px} y={-py} width="2100" height="2100" clipPath={`url(#${clipId})`} />
+      </g>
+    </g>
+  );
+}
 
 function SiameseHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
   const id = useId().replace(/:/g, "");
+  const cuts = SIAMESE_EARS.map(({ cut }) => `M${cut.replace(/ /g, " L")} Z`).join(" ");
   return (
     <g className="mc-face mc-face--siamese" transform={SIAMESE_FIT}>
-      <image href={siameseUrl} x="0" y="0" width="2100" height="2100" />
-      {SIAMESE_EARS.map(({ side, pivot: [px, py], points }) => (
-        <g key={side} transform={`translate(${px} ${py})`}>
-          <clipPath id={`${id}-ear-${side}`}>
-            <polygon points={points} transform={`translate(${-px} ${-py})`} />
-          </clipPath>
-          <g className={`mc-siamese-ear mc-siamese-ear--${side}`}>
-            <image href={siameseUrl} x={-px} y={-py} width="2100" height="2100" clipPath={`url(#${id}-ear-${side})`} />
-          </g>
-        </g>
+      <clipPath id={`${id}-head`}>
+        <path clipRule="evenodd" d={`M0 0 H2100 V2100 H0 Z ${cuts}`} />
+      </clipPath>
+      <image href={siameseUrl} x="0" y="0" width="2100" height="2100" clipPath={`url(#${id}-head)`} />
+      {SIAMESE_EARS.map(({ side, pivot, points }) => (
+        <SiamesePiece key={side} clipId={`${id}-ear-${side}`} pivot={pivot} points={points} className={`mc-siamese-ear mc-siamese-ear--${side}`} />
+      ))}
+      {SIAMESE_WHISKERS.map(({ side, pivot, points }) => (
+        <SiamesePiece key={side} clipId={`${id}-whisk-${side}`} pivot={pivot} points={points} className={`mc-siamese-whisk mc-siamese-whisk--${side}`} />
       ))}
       <g className={eyesClosed ? undefined : "mc-siamese-lids"}>
         {SIAMESE_EYES.map(([x, y]) => (
