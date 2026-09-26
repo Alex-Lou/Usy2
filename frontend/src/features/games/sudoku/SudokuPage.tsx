@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../../../components/ui/Icon";
 import { Confetti } from "../Confetti";
+import { ShareScore } from "../ShareScore";
 import { boxOf, colOf, generate, LEVELS, PEERS, rowOf, type Level } from "./engine";
 
 const GAME_KEY = "memocat.sudoku.game";
@@ -292,6 +293,9 @@ export function SudokuPage() {
               <button type="button" onClick={() => start(game.level)} className="mt-1 rounded-full btn-brand px-5 py-2 text-sm font-semibold press">
                 Nouvelle grille
               </button>
+              <ShareScore
+                text={`🔢 Sudoku ${levelLabel} terminé en ${clock(game.seconds)}${best[game.level] === game.seconds ? " · nouveau record 🏆" : ""} (${game.mistakes} erreur${game.mistakes > 1 ? "s" : ""}, ${game.hints} indice${game.hints > 1 ? "s" : ""})`}
+              />
             </div>
           </div>
         )}

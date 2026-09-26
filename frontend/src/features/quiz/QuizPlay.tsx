@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "../../lib/api/client";
 import { Confetti } from "../games/Confetti";
+import { ShareScore } from "../games/ShareScore";
 import { answerRun, type QuizQuestion, type QuizResult, type QuizRun } from "./api";
 
 const LETTERS = ["A", "B", "C", "D"];
@@ -284,6 +285,7 @@ function ResultCard({ result, color, title, onReplay, onExit, onNext }: {
         {onNext && <button type="button" onClick={onNext} className="btn-brand press rounded-token px-4 py-2 font-semibold">Niveau suivant →</button>}
         <button type="button" onClick={onExit} className="chip press">Carte</button>
       </div>
+      <ShareScore text={`🎯 Quiz · ${title} : ${result.correct}/${result.total}${result.stars ? ` ${"⭐".repeat(result.stars)}` : ""} (${result.score} points)${result.newBest ? " · nouveau record 🏆" : ""}`} />
     </div>
   );
 }
