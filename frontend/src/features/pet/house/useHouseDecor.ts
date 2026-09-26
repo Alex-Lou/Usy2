@@ -41,47 +41,55 @@ export function useHouseDecor(scene: Scene) {
     setSave("idle");
   }, [house, scene]);
 
-  const stop = useCallback(() => {
-    setDraft(null);
-    setSelected(null);
-  }, []);
-
   const edit = useCallback((change: (items: Placed[]) => Placed[]) => {
     dirty.current = true;
     setDraft((d) => (d ? change(d) : d));
   }, []);
 
+  const flush = useCallback(async (items: Placed[], keepEditing: boolean) => {
+    setSave("saving");
+    try {
+      const h = await saveLayout(scene, { version: version.current, items });
+      dirty.current = false;
+      version.current = h.layouts[scene].version;
+      setHouse(h);
+      setSave("saved");
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 409) {
+        const h = await getHouse().catch(() => null);
+        if (h) {
+          dirty.current = false;
+          version.current = h.layouts[scene].version;
+          setHouse(h);
+          if (keepEditing) setDraft(h.layouts[scene].items);
+          setSelected(null);
+        }
+        setNote("La maison venait d'être changée : voici sa dernière version.");
+        setSave("idle");
+      } else {
+        setNote(e instanceof Error && e.message ? e.message : "Pas enregistré, réessaie.");
+        setSave("error");
+      }
+    }
+  }, [scene]);
+
   // Saves a moment after the last change (a drag is one change, not a hundred).
   useEffect(() => {
     if (!draft || !dirty.current) return;
-    const id = window.setTimeout(async () => {
-      setSave("saving");
-      try {
-        const h = await saveLayout(scene, { version: version.current, items: draft });
-        dirty.current = false;
-        version.current = h.layouts[scene].version;
-        setHouse(h);
-        setSave("saved");
-      } catch (e) {
-        if (e instanceof ApiError && e.status === 409) {
-          const h = await getHouse().catch(() => null);
-          if (h) {
-            dirty.current = false;
-            version.current = h.layouts[scene].version;
-            setHouse(h);
-            setDraft(h.layouts[scene].items);
-            setSelected(null);
-          }
-          setNote("La maison venait d'être changée : voici sa dernière version.");
-          setSave("idle");
-        } else {
-          setNote(e instanceof Error && e.message ? e.message : "Pas enregistré, réessaie.");
-          setSave("error");
-        }
-      }
-    }, 700);
+    const id = window.setTimeout(() => void flush(draft, true), 700);
     return () => window.clearTimeout(id);
-  }, [draft, scene]);
+  }, [draft, flush]);
+
+  /** Leaves edit mode; a change still waiting is saved right away (and shows meanwhile). */
+  const stop = useCallback(() => {
+    if (draft && dirty.current) {
+      const items = draft;
+      setHouse((h) => h && { ...h, layouts: { ...h.layouts, [scene]: { ...h.layouts[scene], items } } });
+      void flush(items, false);
+    }
+    setDraft(null);
+    setSelected(null);
+  }, [draft, flush, scene]);
 
   useEffect(() => {
     if (!note) return;

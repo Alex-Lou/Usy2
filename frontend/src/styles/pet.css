@@ -106,3 +106,12 @@
 @media (prefers-reduced-motion: reduce) {
   .room-swing, .room-star { animation: none; }
 }
+
+/* Outside (Garden.tsx): clouds drift slowly across the sky. */
+@layer utilities {
+  .garden-drift { animation: garden-drift 38s ease-in-out infinite alternate; }
+}
+@keyframes garden-drift { from { transform: translateX(-12px); } to { transform: translateX(34px); } }
+@media (prefers-reduced-motion: reduce) {
+  .garden-drift { animation: none; }
+}
