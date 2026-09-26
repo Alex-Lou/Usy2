@@ -1,0 +1,2152 @@
+[
+ {
+  "id": "canape",
+  "label": "Canapé et lampe",
+  "slot": "decor",
+  "price": 120,
+  "cat": "meubles",
+  "src": "fluent-emoji:couch-and-lamp"
+ },
+ {
+  "id": "lit",
+  "label": "Lit douillet",
+  "slot": "decor",
+  "price": 150,
+  "cat": "meubles",
+  "src": "fluent-emoji:bed"
+ },
+ {
+  "id": "chaise",
+  "label": "Chaise",
+  "slot": "decor",
+  "price": 40,
+  "cat": "meubles",
+  "src": "fluent-emoji:chair"
+ },
+ {
+  "id": "baignoire",
+  "label": "Baignoire",
+  "slot": "decor",
+  "price": 140,
+  "cat": "meubles",
+  "src": "fluent-emoji:bathtub"
+ },
+ {
+  "id": "douche",
+  "label": "Douche",
+  "slot": "decor",
+  "price": 90,
+  "cat": "meubles",
+  "src": "fluent-emoji:shower"
+ },
+ {
+  "id": "miroir",
+  "label": "Miroir",
+  "slot": "decor",
+  "price": 60,
+  "cat": "meubles",
+  "src": "fluent-emoji:mirror"
+ },
+ {
+  "id": "porte",
+  "label": "Porte",
+  "slot": "decor",
+  "price": 70,
+  "cat": "meubles",
+  "src": "fluent-emoji:door"
+ },
+ {
+  "id": "fenetre",
+  "label": "Fenêtre",
+  "slot": "decor",
+  "price": 60,
+  "cat": "meubles",
+  "src": "fluent-emoji:window"
+ },
+ {
+  "id": "echelle",
+  "label": "Échelle",
+  "slot": "decor",
+  "price": 30,
+  "cat": "meubles",
+  "src": "fluent-emoji:ladder"
+ },
+ {
+  "id": "ordinateur",
+  "label": "Ordinateur",
+  "slot": "decor",
+  "price": 160,
+  "cat": "meubles",
+  "src": "fluent-emoji:desktop-computer"
+ },
+ {
+  "id": "television",
+  "label": "Télévision",
+  "slot": "decor",
+  "price": 150,
+  "cat": "meubles",
+  "src": "fluent-emoji:television"
+ },
+ {
+  "id": "radio",
+  "label": "Radio",
+  "slot": "decor",
+  "price": 60,
+  "cat": "meubles",
+  "src": "fluent-emoji:radio"
+ },
+ {
+  "id": "telephone",
+  "label": "Téléphone",
+  "slot": "decor",
+  "price": 50,
+  "cat": "meubles",
+  "src": "fluent-emoji:telephone"
+ },
+ {
+  "id": "pendule",
+  "label": "Pendule",
+  "slot": "decor",
+  "price": 70,
+  "cat": "meubles",
+  "src": "fluent-emoji:mantelpiece-clock"
+ },
+ {
+  "id": "reveil",
+  "label": "Réveil",
+  "slot": "decor",
+  "price": 30,
+  "cat": "meubles",
+  "src": "fluent-emoji:alarm-clock"
+ },
+ {
+  "id": "sablier",
+  "label": "Sablier",
+  "slot": "decor",
+  "price": 40,
+  "cat": "meubles",
+  "src": "fluent-emoji:hourglass-not-done"
+ },
+ {
+  "id": "corbeille",
+  "label": "Corbeille",
+  "slot": "decor",
+  "price": 20,
+  "cat": "meubles",
+  "src": "fluent-emoji:wastebasket"
+ },
+ {
+  "id": "panier",
+  "label": "Panier",
+  "slot": "decor",
+  "price": 30,
+  "cat": "meubles",
+  "src": "fluent-emoji:basket"
+ },
+ {
+  "id": "seau",
+  "label": "Seau",
+  "slot": "decor",
+  "price": 20,
+  "cat": "meubles",
+  "src": "fluent-emoji:bucket"
+ },
+ {
+  "id": "balai",
+  "label": "Balai",
+  "slot": "decor",
+  "price": 20,
+  "cat": "meubles",
+  "src": "fluent-emoji:broom"
+ },
+ {
+  "id": "parapluie",
+  "label": "Parapluie",
+  "slot": "decor",
+  "price": 25,
+  "cat": "meubles",
+  "src": "fluent-emoji:closed-umbrella"
+ },
+ {
+  "id": "amphore",
+  "label": "Amphore",
+  "slot": "decor",
+  "price": 90,
+  "cat": "meubles",
+  "src": "fluent-emoji:amphora"
+ },
+ {
+  "id": "theiere",
+  "label": "Théière",
+  "slot": "decor",
+  "price": 40,
+  "cat": "meubles",
+  "src": "fluent-emoji:teapot"
+ },
+ {
+  "id": "sac-shopping",
+  "label": "Sacs de shopping",
+  "slot": "decor",
+  "price": 40,
+  "cat": "meubles",
+  "src": "fluent-emoji:shopping-bags"
+ },
+ {
+  "id": "globe",
+  "label": "Globe terrestre",
+  "slot": "decor",
+  "price": 80,
+  "cat": "objets",
+  "src": "fluent-emoji:globe-showing-europe-africa"
+ },
+ {
+  "id": "telescope",
+  "label": "Télescope",
+  "slot": "decor",
+  "price": 120,
+  "cat": "objets",
+  "src": "fluent-emoji:telescope"
+ },
+ {
+  "id": "microscope",
+  "label": "Microscope",
+  "slot": "decor",
+  "price": 90,
+  "cat": "objets",
+  "src": "fluent-emoji:microscope"
+ },
+ {
+  "id": "appareil-photo",
+  "label": "Appareil photo",
+  "slot": "decor",
+  "price": 80,
+  "cat": "objets",
+  "src": "fluent-emoji:camera"
+ },
+ {
+  "id": "camera",
+  "label": "Caméra",
+  "slot": "decor",
+  "price": 100,
+  "cat": "objets",
+  "src": "fluent-emoji:movie-camera"
+ },
+ {
+  "id": "casque",
+  "label": "Casque audio",
+  "slot": "decor",
+  "price": 60,
+  "cat": "objets",
+  "src": "fluent-emoji:headphone"
+ },
+ {
+  "id": "manette",
+  "label": "Manette",
+  "slot": "decor",
+  "price": 70,
+  "cat": "objets",
+  "src": "fluent-emoji:video-game"
+ },
+ {
+  "id": "joystick",
+  "label": "Joystick",
+  "slot": "decor",
+  "price": 60,
+  "cat": "objets",
+  "src": "fluent-emoji:joystick"
+ },
+ {
+  "id": "livres",
+  "label": "Pile de livres",
+  "slot": "decor",
+  "price": 40,
+  "cat": "objets",
+  "src": "fluent-emoji:books"
+ },
+ {
+  "id": "livre",
+  "label": "Livre ouvert",
+  "slot": "decor",
+  "price": 30,
+  "cat": "objets",
+  "src": "fluent-emoji:open-book"
+ },
+ {
+  "id": "carnet",
+  "label": "Carnet décoré",
+  "slot": "decor",
+  "price": 25,
+  "cat": "objets",
+  "src": "fluent-emoji:notebook-with-decorative-cover"
+ },
+ {
+  "id": "boulier",
+  "label": "Boulier",
+  "slot": "decor",
+  "price": 40,
+  "cat": "objets",
+  "src": "fluent-emoji:abacus"
+ },
+ {
+  "id": "boule-cristal",
+  "label": "Boule de cristal",
+  "slot": "decor",
+  "price": 120,
+  "cat": "objets",
+  "src": "fluent-emoji:crystal-ball"
+ },
+ {
+  "id": "cle",
+  "label": "Vieille clé",
+  "slot": "decor",
+  "price": 30,
+  "cat": "objets",
+  "src": "fluent-emoji:old-key"
+ },
+ {
+  "id": "boussole",
+  "label": "Boussole",
+  "slot": "decor",
+  "price": 40,
+  "cat": "objets",
+  "src": "fluent-emoji:compass"
+ },
+ {
+  "id": "parchemin",
+  "label": "Parchemin",
+  "slot": "decor",
+  "price": 30,
+  "cat": "objets",
+  "src": "fluent-emoji:scroll"
+ },
+ {
+  "id": "trophee",
+  "label": "Trophée",
+  "slot": "decor",
+  "price": 100,
+  "cat": "objets",
+  "src": "fluent-emoji:trophy"
+ },
+ {
+  "id": "diamant",
+  "label": "Diamant",
+  "slot": "decor",
+  "price": 150,
+  "cat": "objets",
+  "src": "fluent-emoji:gem-stone"
+ },
+ {
+  "id": "ciseaux",
+  "label": "Ciseaux",
+  "slot": "decor",
+  "price": 20,
+  "cat": "objets",
+  "src": "fluent-emoji:scissors"
+ },
+ {
+  "id": "fil",
+  "label": "Bobine de fil",
+  "slot": "decor",
+  "price": 20,
+  "cat": "objets",
+  "src": "fluent-emoji:thread"
+ },
+ {
+  "id": "palette",
+  "label": "Palette de peintre",
+  "slot": "decor",
+  "price": 60,
+  "cat": "objets",
+  "src": "fluent-emoji:artist-palette"
+ },
+ {
+  "id": "pinceau",
+  "label": "Pinceau",
+  "slot": "decor",
+  "price": 25,
+  "cat": "objets",
+  "src": "fluent-emoji:paintbrush"
+ },
+ {
+  "id": "crayon",
+  "label": "Crayon",
+  "slot": "decor",
+  "price": 20,
+  "cat": "objets",
+  "src": "fluent-emoji:pencil"
+ },
+ {
+  "id": "plume-ecrire",
+  "label": "Stylo plume",
+  "slot": "decor",
+  "price": 30,
+  "cat": "objets",
+  "src": "fluent-emoji:fountain-pen"
+ },
+ {
+  "id": "tableau",
+  "label": "Tableau",
+  "slot": "decor",
+  "price": 80,
+  "cat": "murs",
+  "src": "fluent-emoji:framed-picture"
+ },
+ {
+  "id": "carte-monde",
+  "label": "Carte du monde",
+  "slot": "decor",
+  "price": 60,
+  "cat": "murs",
+  "src": "fluent-emoji:world-map"
+ },
+ {
+  "id": "calendrier",
+  "label": "Calendrier",
+  "slot": "decor",
+  "price": 25,
+  "cat": "murs",
+  "src": "fluent-emoji:tear-off-calendar"
+ },
+ {
+  "id": "koinobori",
+  "label": "Koinobori",
+  "slot": "decor",
+  "price": 50,
+  "cat": "murs",
+  "src": "fluent-emoji:carp-streamer"
+ },
+ {
+  "id": "carillon",
+  "label": "Carillon à vent",
+  "slot": "decor",
+  "price": 40,
+  "cat": "murs",
+  "src": "fluent-emoji:wind-chime"
+ },
+ {
+  "id": "arc-en-ciel",
+  "label": "Arc-en-ciel",
+  "slot": "decor",
+  "price": 50,
+  "cat": "murs",
+  "src": "fluent-emoji:rainbow"
+ },
+ {
+  "id": "drapeau-pirate",
+  "label": "Drapeau pirate",
+  "slot": "decor",
+  "price": 40,
+  "cat": "murs",
+  "src": "fluent-emoji:pirate-flag"
+ },
+ {
+  "id": "drapeau-damier",
+  "label": "Drapeau à damier",
+  "slot": "decor",
+  "price": 30,
+  "cat": "murs",
+  "src": "fluent-emoji:chequered-flag"
+ },
+ {
+  "id": "fanion",
+  "label": "Fanion",
+  "slot": "decor",
+  "price": 20,
+  "cat": "murs",
+  "src": "fluent-emoji:triangular-flag"
+ },
+ {
+  "id": "ruban",
+  "label": "Ruban",
+  "slot": "decor",
+  "price": 25,
+  "cat": "murs",
+  "src": "fluent-emoji:ribbon"
+ },
+ {
+  "id": "rosette",
+  "label": "Rosette",
+  "slot": "decor",
+  "price": 30,
+  "cat": "murs",
+  "src": "fluent-emoji:rosette"
+ },
+ {
+  "id": "coeur-deco",
+  "label": "Cœur décoratif",
+  "slot": "decor",
+  "price": 20,
+  "cat": "murs",
+  "src": "fluent-emoji:heart-decoration"
+ },
+ {
+  "id": "coeur-ruban",
+  "label": "Cœur au ruban",
+  "slot": "decor",
+  "price": 30,
+  "cat": "murs",
+  "src": "fluent-emoji:heart-with-ribbon"
+ },
+ {
+  "id": "coeur-brille",
+  "label": "Cœur qui brille",
+  "slot": "decor",
+  "price": 30,
+  "cat": "murs",
+  "src": "fluent-emoji:sparkling-heart"
+ },
+ {
+  "id": "masques",
+  "label": "Masques de théâtre",
+  "slot": "decor",
+  "price": 50,
+  "cat": "murs",
+  "src": "fluent-emoji:performing-arts"
+ },
+ {
+  "id": "pancarte",
+  "label": "Pancarte",
+  "slot": "decor",
+  "price": 20,
+  "cat": "murs",
+  "src": "fluent-emoji:placard"
+ },
+ {
+  "id": "boule-disco",
+  "label": "Boule à facettes",
+  "slot": "decor",
+  "price": 110,
+  "cat": "murs",
+  "src": "fluent-emoji:mirror-ball"
+ },
+ {
+  "id": "plante",
+  "label": "Plante en pot",
+  "slot": "decor",
+  "price": 30,
+  "cat": "plantes",
+  "src": "fluent-emoji:potted-plant"
+ },
+ {
+  "id": "fougere",
+  "label": "Fougère en pot",
+  "slot": "decor",
+  "price": 35,
+  "cat": "plantes",
+  "src": "twemoji:potted-plant"
+ },
+ {
+  "id": "cactus",
+  "label": "Cactus",
+  "slot": "decor",
+  "price": 30,
+  "cat": "plantes",
+  "src": "fluent-emoji:cactus"
+ },
+ {
+  "id": "tulipe",
+  "label": "Tulipe",
+  "slot": "decor",
+  "price": 25,
+  "cat": "plantes",
+  "src": "fluent-emoji:tulip"
+ },
+ {
+  "id": "tournesol",
+  "label": "Tournesol",
+  "slot": "decor",
+  "price": 30,
+  "cat": "plantes",
+  "src": "fluent-emoji:sunflower"
+ },
+ {
+  "id": "rose",
+  "label": "Rose",
+  "slot": "decor",
+  "price": 30,
+  "cat": "plantes",
+  "src": "fluent-emoji:rose"
+ },
+ {
+  "id": "bouquet",
+  "label": "Bouquet",
+  "slot": "decor",
+  "price": 45,
+  "cat": "plantes",
+  "src": "fluent-emoji:bouquet"
+ },
+ {
+  "id": "fleur-cerisier",
+  "label": "Fleur de cerisier",
+  "slot": "decor",
+  "price": 25,
+  "cat": "plantes",
+  "src": "fluent-emoji:cherry-blossom"
+ },
+ {
+  "id": "hibiscus",
+  "label": "Hibiscus",
+  "slot": "decor",
+  "price": 25,
+  "cat": "plantes",
+  "src": "fluent-emoji:hibiscus"
+ },
+ {
+  "id": "lotus",
+  "label": "Lotus",
+  "slot": "decor",
+  "price": 35,
+  "cat": "plantes",
+  "src": "fluent-emoji:lotus"
+ },
+ {
+  "id": "pousse",
+  "label": "Jeune pousse",
+  "slot": "decor",
+  "price": 20,
+  "cat": "plantes",
+  "src": "fluent-emoji:seedling"
+ },
+ {
+  "id": "herbes",
+  "label": "Herbes",
+  "slot": "decor",
+  "price": 20,
+  "cat": "plantes",
+  "src": "fluent-emoji:herb"
+ },
+ {
+  "id": "trefle",
+  "label": "Trèfle à 4 feuilles",
+  "slot": "decor",
+  "price": 40,
+  "cat": "plantes",
+  "src": "fluent-emoji:four-leaf-clover"
+ },
+ {
+  "id": "champignon",
+  "label": "Champignon",
+  "slot": "decor",
+  "price": 25,
+  "cat": "plantes",
+  "src": "fluent-emoji:mushroom"
+ },
+ {
+  "id": "kadomatsu",
+  "label": "Kadomatsu",
+  "slot": "decor",
+  "price": 60,
+  "cat": "plantes",
+  "src": "fluent-emoji:pine-decoration"
+ },
+ {
+  "id": "arbre-voeux",
+  "label": "Arbre à vœux",
+  "slot": "decor",
+  "price": 60,
+  "cat": "plantes",
+  "src": "fluent-emoji:tanabata-tree"
+ },
+ {
+  "id": "sapin-noel",
+  "label": "Sapin de Noël",
+  "slot": "decor",
+  "price": 90,
+  "cat": "plantes",
+  "src": "fluent-emoji:christmas-tree"
+ },
+ {
+  "id": "bouquet-noto",
+  "label": "Bouquet des champs",
+  "slot": "decor",
+  "price": 45,
+  "cat": "plantes",
+  "src": "noto:bouquet"
+ },
+ {
+  "id": "tournesol-tw",
+  "label": "Grand tournesol",
+  "slot": "decor",
+  "price": 35,
+  "cat": "plantes",
+  "src": "twemoji:sunflower"
+ },
+ {
+  "id": "bougie",
+  "label": "Bougie",
+  "slot": "decor",
+  "price": 25,
+  "cat": "lumieres",
+  "src": "fluent-emoji:candle"
+ },
+ {
+  "id": "diya",
+  "label": "Lampe à huile",
+  "slot": "decor",
+  "price": 35,
+  "cat": "lumieres",
+  "src": "fluent-emoji:diya-lamp"
+ },
+ {
+  "id": "ampoule",
+  "label": "Ampoule",
+  "slot": "decor",
+  "price": 25,
+  "cat": "lumieres",
+  "src": "fluent-emoji:light-bulb"
+ },
+ {
+  "id": "lanterne",
+  "label": "Lanterne rouge",
+  "slot": "decor",
+  "price": 50,
+  "cat": "lumieres",
+  "src": "fluent-emoji:red-paper-lantern"
+ },
+ {
+  "id": "etincelles",
+  "label": "Étincelles",
+  "slot": "decor",
+  "price": 20,
+  "cat": "lumieres",
+  "src": "fluent-emoji:sparkles"
+ },
+ {
+  "id": "etoile-brille",
+  "label": "Étoile brillante",
+  "slot": "decor",
+  "price": 30,
+  "cat": "lumieres",
+  "src": "fluent-emoji:glowing-star"
+ },
+ {
+  "id": "feu",
+  "label": "Feu de cheminée",
+  "slot": "decor",
+  "price": 40,
+  "cat": "lumieres",
+  "src": "fluent-emoji:fire"
+ },
+ {
+  "id": "cierge-magique",
+  "label": "Cierge magique",
+  "slot": "decor",
+  "price": 30,
+  "cat": "lumieres",
+  "src": "fluent-emoji:sparkler"
+ },
+ {
+  "id": "feu-artifice",
+  "label": "Feu d'artifice",
+  "slot": "decor",
+  "price": 60,
+  "cat": "lumieres",
+  "src": "fluent-emoji:fireworks"
+ },
+ {
+  "id": "pelote",
+  "label": "Pelote de laine",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jouets",
+  "src": "fluent-emoji:yarn"
+ },
+ {
+  "id": "nounours",
+  "label": "Nounours",
+  "slot": "decor",
+  "price": 60,
+  "cat": "jouets",
+  "src": "fluent-emoji:teddy-bear"
+ },
+ {
+  "id": "ballon-foot",
+  "label": "Ballon de foot",
+  "slot": "decor",
+  "price": 25,
+  "cat": "jouets",
+  "src": "fluent-emoji:soccer-ball"
+ },
+ {
+  "id": "ballon-basket",
+  "label": "Ballon de basket",
+  "slot": "decor",
+  "price": 25,
+  "cat": "jouets",
+  "src": "fluent-emoji:basketball"
+ },
+ {
+  "id": "ballon-volley",
+  "label": "Ballon de volley",
+  "slot": "decor",
+  "price": 25,
+  "cat": "jouets",
+  "src": "fluent-emoji:volleyball"
+ },
+ {
+  "id": "balle",
+  "label": "Balle",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jouets",
+  "src": "fluent-emoji:softball"
+ },
+ {
+  "id": "boule-8",
+  "label": "Boule de billard",
+  "slot": "decor",
+  "price": 30,
+  "cat": "jouets",
+  "src": "fluent-emoji:pool-8-ball"
+ },
+ {
+  "id": "cerf-volant",
+  "label": "Cerf-volant",
+  "slot": "decor",
+  "price": 40,
+  "cat": "jouets",
+  "src": "fluent-emoji:kite"
+ },
+ {
+  "id": "yoyo",
+  "label": "Yo-yo",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jouets",
+  "src": "fluent-emoji:yo-yo"
+ },
+ {
+  "id": "puzzle",
+  "label": "Pièce de puzzle",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jouets",
+  "src": "fluent-emoji:puzzle-piece"
+ },
+ {
+  "id": "de",
+  "label": "Dé",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jouets",
+  "src": "fluent-emoji:game-die"
+ },
+ {
+  "id": "poupees-russes",
+  "label": "Poupées russes",
+  "slot": "decor",
+  "price": 50,
+  "cat": "jouets",
+  "src": "fluent-emoji:nesting-dolls"
+ },
+ {
+  "id": "baguette-magique",
+  "label": "Baguette magique",
+  "slot": "decor",
+  "price": 70,
+  "cat": "jouets",
+  "src": "fluent-emoji:magic-wand"
+ },
+ {
+  "id": "plume",
+  "label": "Plume",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jouets",
+  "src": "fluent-emoji:feather"
+ },
+ {
+  "id": "souris-jouet",
+  "label": "Souris",
+  "slot": "decor",
+  "price": 30,
+  "cat": "jouets",
+  "src": "fluent-emoji:mouse"
+ },
+ {
+  "id": "cheval-bois",
+  "label": "Cheval de manège",
+  "slot": "decor",
+  "price": 120,
+  "cat": "jouets",
+  "src": "fluent-emoji:carousel-horse"
+ },
+ {
+  "id": "ballon",
+  "label": "Ballon",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jouets",
+  "src": "fluent-emoji:balloon"
+ },
+ {
+  "id": "cadeau",
+  "label": "Cadeau",
+  "slot": "decor",
+  "price": 40,
+  "cat": "jouets",
+  "src": "fluent-emoji:wrapped-gift"
+ },
+ {
+  "id": "patins",
+  "label": "Patin à roulettes",
+  "slot": "decor",
+  "price": 40,
+  "cat": "jouets",
+  "src": "fluent-emoji:roller-skate"
+ },
+ {
+  "id": "canne-peche",
+  "label": "Canne à pêche",
+  "slot": "decor",
+  "price": 40,
+  "cat": "jouets",
+  "src": "fluent-emoji:fishing-pole"
+ },
+ {
+  "id": "poupees-hina",
+  "label": "Poupées hina",
+  "slot": "decor",
+  "price": 80,
+  "cat": "jouets",
+  "src": "fluent-emoji:japanese-dolls"
+ },
+ {
+  "id": "nounours-tw",
+  "label": "Ourson au nœud",
+  "slot": "decor",
+  "price": 60,
+  "cat": "jouets",
+  "src": "twemoji:teddy-bear"
+ },
+ {
+  "id": "guitare",
+  "label": "Guitare",
+  "slot": "decor",
+  "price": 90,
+  "cat": "musique",
+  "src": "twemoji:guitar"
+ },
+ {
+  "id": "violon",
+  "label": "Violon",
+  "slot": "decor",
+  "price": 110,
+  "cat": "musique",
+  "src": "twemoji:violin"
+ },
+ {
+  "id": "saxophone",
+  "label": "Saxophone",
+  "slot": "decor",
+  "price": 120,
+  "cat": "musique",
+  "src": "twemoji:saxophone"
+ },
+ {
+  "id": "trompette",
+  "label": "Trompette",
+  "slot": "decor",
+  "price": 90,
+  "cat": "musique",
+  "src": "twemoji:trumpet"
+ },
+ {
+  "id": "tambour",
+  "label": "Tambour",
+  "slot": "decor",
+  "price": 60,
+  "cat": "musique",
+  "src": "twemoji:drum"
+ },
+ {
+  "id": "tambour-long",
+  "label": "Tambour long",
+  "slot": "decor",
+  "price": 70,
+  "cat": "musique",
+  "src": "twemoji:long-drum"
+ },
+ {
+  "id": "banjo",
+  "label": "Banjo",
+  "slot": "decor",
+  "price": 80,
+  "cat": "musique",
+  "src": "twemoji:banjo"
+ },
+ {
+  "id": "accordeon",
+  "label": "Accordéon",
+  "slot": "decor",
+  "price": 100,
+  "cat": "musique",
+  "src": "twemoji:accordion"
+ },
+ {
+  "id": "maracas",
+  "label": "Maracas",
+  "slot": "decor",
+  "price": 30,
+  "cat": "musique",
+  "src": "twemoji:maracas"
+ },
+ {
+  "id": "flute",
+  "label": "Flûte",
+  "slot": "decor",
+  "price": 50,
+  "cat": "musique",
+  "src": "twemoji:flute"
+ },
+ {
+  "id": "piano",
+  "label": "Clavier",
+  "slot": "decor",
+  "price": 150,
+  "cat": "musique",
+  "src": "twemoji:musical-keyboard"
+ },
+ {
+  "id": "micro",
+  "label": "Micro de studio",
+  "slot": "decor",
+  "price": 70,
+  "cat": "musique",
+  "src": "twemoji:studio-microphone"
+ },
+ {
+  "id": "notes",
+  "label": "Notes de musique",
+  "slot": "decor",
+  "price": 20,
+  "cat": "musique",
+  "src": "twemoji:musical-notes"
+ },
+ {
+  "id": "partition",
+  "label": "Partition",
+  "slot": "decor",
+  "price": 25,
+  "cat": "musique",
+  "src": "twemoji:musical-score"
+ },
+ {
+  "id": "bol",
+  "label": "Bol de croquettes",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:bowl-with-spoon"
+ },
+ {
+  "id": "lait",
+  "label": "Verre de lait",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:glass-of-milk"
+ },
+ {
+  "id": "gateau",
+  "label": "Gâteau d'anniversaire",
+  "slot": "decor",
+  "price": 60,
+  "cat": "gourmandises",
+  "src": "noto:birthday-cake"
+ },
+ {
+  "id": "cupcake",
+  "label": "Cupcake",
+  "slot": "decor",
+  "price": 25,
+  "cat": "gourmandises",
+  "src": "noto:cupcake"
+ },
+ {
+  "id": "donut",
+  "label": "Donut",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:doughnut"
+ },
+ {
+  "id": "cookie",
+  "label": "Cookie",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:cookie"
+ },
+ {
+  "id": "sushi",
+  "label": "Sushi",
+  "slot": "decor",
+  "price": 30,
+  "cat": "gourmandises",
+  "src": "noto:sushi"
+ },
+ {
+  "id": "narutomaki",
+  "label": "Narutomaki",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:fish-cake-with-swirl"
+ },
+ {
+  "id": "the",
+  "label": "Tasse de thé",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:teacup-without-handle"
+ },
+ {
+  "id": "bubble-tea",
+  "label": "Bubble tea",
+  "slot": "decor",
+  "price": 25,
+  "cat": "gourmandises",
+  "src": "noto:bubble-tea"
+ },
+ {
+  "id": "glace",
+  "label": "Glace",
+  "slot": "decor",
+  "price": 25,
+  "cat": "gourmandises",
+  "src": "noto:ice-cream"
+ },
+ {
+  "id": "fraise",
+  "label": "Fraise",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:strawberry"
+ },
+ {
+  "id": "pasteque",
+  "label": "Pastèque",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:watermelon"
+ },
+ {
+  "id": "pomme",
+  "label": "Pomme",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:red-apple"
+ },
+ {
+  "id": "ananas",
+  "label": "Ananas",
+  "slot": "decor",
+  "price": 25,
+  "cat": "gourmandises",
+  "src": "noto:pineapple"
+ },
+ {
+  "id": "fromage",
+  "label": "Fromage",
+  "slot": "decor",
+  "price": 25,
+  "cat": "gourmandises",
+  "src": "noto:cheese-wedge"
+ },
+ {
+  "id": "croissant",
+  "label": "Croissant",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:croissant"
+ },
+ {
+  "id": "pizza",
+  "label": "Pizza",
+  "slot": "decor",
+  "price": 30,
+  "cat": "gourmandises",
+  "src": "noto:pizza"
+ },
+ {
+  "id": "bonbon",
+  "label": "Bonbon",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:candy"
+ },
+ {
+  "id": "sucette",
+  "label": "Sucette",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:lollipop"
+ },
+ {
+  "id": "dango",
+  "label": "Dango",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:dango"
+ },
+ {
+  "id": "chocolat",
+  "label": "Chocolat",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:chocolate-bar"
+ },
+ {
+  "id": "fraisier",
+  "label": "Fraisier",
+  "slot": "decor",
+  "price": 40,
+  "cat": "gourmandises",
+  "src": "noto:shortcake"
+ },
+ {
+  "id": "the-chaud",
+  "label": "Chocolat chaud",
+  "slot": "decor",
+  "price": 20,
+  "cat": "gourmandises",
+  "src": "noto:hot-beverage"
+ },
+ {
+  "id": "poisson-tropical",
+  "label": "Poisson tropical",
+  "slot": "decor",
+  "price": 40,
+  "cat": "animaux",
+  "src": "noto:tropical-fish"
+ },
+ {
+  "id": "poisson",
+  "label": "Poisson",
+  "slot": "decor",
+  "price": 30,
+  "cat": "animaux",
+  "src": "noto:fish"
+ },
+ {
+  "id": "oiseau",
+  "label": "Oiseau",
+  "slot": "decor",
+  "price": 40,
+  "cat": "animaux",
+  "src": "noto:bird"
+ },
+ {
+  "id": "poussin",
+  "label": "Poussin",
+  "slot": "decor",
+  "price": 40,
+  "cat": "animaux",
+  "src": "noto:hatching-chick"
+ },
+ {
+  "id": "hamster",
+  "label": "Hamster",
+  "slot": "decor",
+  "price": 60,
+  "cat": "animaux",
+  "src": "noto:hamster"
+ },
+ {
+  "id": "lapin",
+  "label": "Lapin",
+  "slot": "decor",
+  "price": 60,
+  "cat": "animaux",
+  "src": "noto:rabbit"
+ },
+ {
+  "id": "tortue",
+  "label": "Tortue",
+  "slot": "decor",
+  "price": 60,
+  "cat": "animaux",
+  "src": "noto:turtle"
+ },
+ {
+  "id": "escargot",
+  "label": "Escargot",
+  "slot": "decor",
+  "price": 30,
+  "cat": "animaux",
+  "src": "noto:snail"
+ },
+ {
+  "id": "papillon",
+  "label": "Papillon",
+  "slot": "decor",
+  "price": 30,
+  "cat": "animaux",
+  "src": "noto:butterfly"
+ },
+ {
+  "id": "coccinelle",
+  "label": "Coccinelle",
+  "slot": "decor",
+  "price": 25,
+  "cat": "animaux",
+  "src": "noto:lady-beetle"
+ },
+ {
+  "id": "abeille",
+  "label": "Abeille",
+  "slot": "decor",
+  "price": 25,
+  "cat": "animaux",
+  "src": "noto:honeybee"
+ },
+ {
+  "id": "hibou",
+  "label": "Hibou",
+  "slot": "decor",
+  "price": 70,
+  "cat": "animaux",
+  "src": "noto:owl"
+ },
+ {
+  "id": "perroquet",
+  "label": "Perroquet",
+  "slot": "decor",
+  "price": 80,
+  "cat": "animaux",
+  "src": "noto:parrot"
+ },
+ {
+  "id": "canard",
+  "label": "Canard",
+  "slot": "decor",
+  "price": 40,
+  "cat": "animaux",
+  "src": "noto:duck"
+ },
+ {
+  "id": "cygne",
+  "label": "Cygne",
+  "slot": "decor",
+  "price": 70,
+  "cat": "animaux",
+  "src": "noto:swan"
+ },
+ {
+  "id": "grenouille",
+  "label": "Grenouille",
+  "slot": "decor",
+  "price": 40,
+  "cat": "animaux",
+  "src": "noto:frog"
+ },
+ {
+  "id": "herisson",
+  "label": "Hérisson",
+  "slot": "decor",
+  "price": 60,
+  "cat": "animaux",
+  "src": "noto:hedgehog"
+ },
+ {
+  "id": "ecureuil",
+  "label": "Écureuil",
+  "slot": "decor",
+  "price": 60,
+  "cat": "animaux",
+  "src": "noto:chipmunk"
+ },
+ {
+  "id": "chien",
+  "label": "Chien",
+  "slot": "decor",
+  "price": 90,
+  "cat": "animaux",
+  "src": "noto:dog"
+ },
+ {
+  "id": "meduse",
+  "label": "Méduse",
+  "slot": "decor",
+  "price": 40,
+  "cat": "animaux",
+  "src": "noto:jellyfish"
+ },
+ {
+  "id": "dauphin",
+  "label": "Dauphin",
+  "slot": "decor",
+  "price": 80,
+  "cat": "animaux",
+  "src": "noto:dolphin"
+ },
+ {
+  "id": "baleine",
+  "label": "Baleine",
+  "slot": "decor",
+  "price": 100,
+  "cat": "animaux",
+  "src": "noto:spouting-whale"
+ },
+ {
+  "id": "panda",
+  "label": "Panda",
+  "slot": "decor",
+  "price": 90,
+  "cat": "animaux",
+  "src": "noto:panda"
+ },
+ {
+  "id": "koala",
+  "label": "Koala",
+  "slot": "decor",
+  "price": 90,
+  "cat": "animaux",
+  "src": "noto:koala"
+ },
+ {
+  "id": "renard",
+  "label": "Renard",
+  "slot": "decor",
+  "price": 80,
+  "cat": "animaux",
+  "src": "noto:fox"
+ },
+ {
+  "id": "licorne",
+  "label": "Licorne",
+  "slot": "decor",
+  "price": 150,
+  "cat": "animaux",
+  "src": "noto:unicorn"
+ },
+ {
+  "id": "citrouille",
+  "label": "Citrouille",
+  "slot": "decor",
+  "price": 40,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:jack-o-lantern"
+ },
+ {
+  "id": "fantome",
+  "label": "Fantôme",
+  "slot": "decor",
+  "price": 40,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:ghost"
+ },
+ {
+  "id": "toile",
+  "label": "Toile d'araignée",
+  "slot": "decor",
+  "price": 25,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:spider-web"
+ },
+ {
+  "id": "chauve-souris",
+  "label": "Chauve-souris",
+  "slot": "decor",
+  "price": 30,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:bat"
+ },
+ {
+  "id": "bonhomme-neige",
+  "label": "Bonhomme de neige",
+  "slot": "decor",
+  "price": 60,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:snowman"
+ },
+ {
+  "id": "flocon",
+  "label": "Flocon",
+  "slot": "decor",
+  "price": 20,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:snowflake"
+ },
+ {
+  "id": "confettis",
+  "label": "Boule à confettis",
+  "slot": "decor",
+  "price": 25,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:confetti-ball"
+ },
+ {
+  "id": "cotillon",
+  "label": "Cotillon",
+  "slot": "decor",
+  "price": 25,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:party-popper"
+ },
+ {
+  "id": "enveloppe-rouge",
+  "label": "Enveloppe rouge",
+  "slot": "decor",
+  "price": 20,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:red-envelope"
+ },
+ {
+  "id": "pere-noel",
+  "label": "Père Noël",
+  "slot": "decor",
+  "price": 90,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:santa-claus"
+ },
+ {
+  "id": "traineau",
+  "label": "Traîneau",
+  "slot": "decor",
+  "price": 50,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:sled"
+ },
+ {
+  "id": "lune-gateau",
+  "label": "Gâteau de lune",
+  "slot": "decor",
+  "price": 30,
+  "cat": "fete",
+  "src": "fluent-emoji-flat:moon-cake"
+ },
+ {
+  "id": "arbre",
+  "label": "Arbre",
+  "slot": "decor",
+  "price": 60,
+  "cat": "jardin",
+  "src": "fluent-emoji:deciduous-tree"
+ },
+ {
+  "id": "sapin",
+  "label": "Sapin",
+  "slot": "decor",
+  "price": 60,
+  "cat": "jardin",
+  "src": "fluent-emoji:evergreen-tree"
+ },
+ {
+  "id": "palmier",
+  "label": "Palmier",
+  "slot": "decor",
+  "price": 70,
+  "cat": "jardin",
+  "src": "fluent-emoji:palm-tree"
+ },
+ {
+  "id": "rocher",
+  "label": "Rocher",
+  "slot": "decor",
+  "price": 30,
+  "cat": "jardin",
+  "src": "fluent-emoji:rock"
+ },
+ {
+  "id": "buches",
+  "label": "Bûches",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jardin",
+  "src": "fluent-emoji:wood"
+ },
+ {
+  "id": "fontaine",
+  "label": "Fontaine",
+  "slot": "decor",
+  "price": 150,
+  "cat": "jardin",
+  "src": "fluent-emoji:fountain"
+ },
+ {
+  "id": "tente",
+  "label": "Tente",
+  "slot": "decor",
+  "price": 100,
+  "cat": "jardin",
+  "src": "fluent-emoji:tent"
+ },
+ {
+  "id": "boite-lettres",
+  "label": "Boîte aux lettres",
+  "slot": "decor",
+  "price": 50,
+  "cat": "jardin",
+  "src": "fluent-emoji:closed-mailbox-with-raised-flag"
+ },
+ {
+  "id": "feuille-morte",
+  "label": "Feuille morte",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jardin",
+  "src": "fluent-emoji:fallen-leaf"
+ },
+ {
+  "id": "erable",
+  "label": "Feuille d'érable",
+  "slot": "decor",
+  "price": 20,
+  "cat": "jardin",
+  "src": "fluent-emoji:maple-leaf"
+ },
+ {
+  "id": "epis",
+  "label": "Épis de riz",
+  "slot": "decor",
+  "price": 30,
+  "cat": "jardin",
+  "src": "fluent-emoji:sheaf-of-rice"
+ },
+ {
+  "id": "parasol",
+  "label": "Parasol",
+  "slot": "decor",
+  "price": 60,
+  "cat": "jardin",
+  "src": "fluent-emoji:umbrella-on-ground"
+ },
+ {
+  "id": "arbre-noto",
+  "label": "Grand chêne",
+  "slot": "decor",
+  "price": 70,
+  "cat": "jardin",
+  "src": "noto:deciduous-tree"
+ },
+ {
+  "id": "sapin-tw",
+  "label": "Sapin des neiges",
+  "slot": "decor",
+  "price": 60,
+  "cat": "jardin",
+  "src": "twemoji:evergreen-tree"
+ },
+ {
+  "id": "chapiteau",
+  "label": "Chapiteau",
+  "slot": "decor",
+  "price": 180,
+  "cat": "jardin",
+  "src": "fluent-emoji:circus-tent"
+ },
+ {
+  "id": "grande-roue",
+  "label": "Grande roue",
+  "slot": "decor",
+  "price": 200,
+  "cat": "jardin",
+  "src": "fluent-emoji:ferris-wheel"
+ },
+ {
+  "id": "manege",
+  "label": "Montagnes russes",
+  "slot": "decor",
+  "price": 200,
+  "cat": "jardin",
+  "src": "fluent-emoji:roller-coaster"
+ },
+ {
+  "id": "velo",
+  "label": "Vélo",
+  "slot": "decor",
+  "price": 100,
+  "cat": "vehicules",
+  "src": "fluent-emoji:bicycle"
+ },
+ {
+  "id": "trottinette",
+  "label": "Trottinette",
+  "slot": "decor",
+  "price": 60,
+  "cat": "vehicules",
+  "src": "fluent-emoji:kick-scooter"
+ },
+ {
+  "id": "scooter",
+  "label": "Scooter",
+  "slot": "decor",
+  "price": 140,
+  "cat": "vehicules",
+  "src": "fluent-emoji:motor-scooter"
+ },
+ {
+  "id": "voiture",
+  "label": "Voiture",
+  "slot": "decor",
+  "price": 200,
+  "cat": "vehicules",
+  "src": "fluent-emoji:automobile"
+ },
+ {
+  "id": "avion",
+  "label": "Petit avion",
+  "slot": "decor",
+  "price": 150,
+  "cat": "vehicules",
+  "src": "fluent-emoji:small-airplane"
+ },
+ {
+  "id": "fusee",
+  "label": "Fusée",
+  "slot": "decor",
+  "price": 180,
+  "cat": "vehicules",
+  "src": "fluent-emoji:rocket"
+ },
+ {
+  "id": "parachute",
+  "label": "Parachute",
+  "slot": "decor",
+  "price": 80,
+  "cat": "vehicules",
+  "src": "fluent-emoji:parachute"
+ },
+ {
+  "id": "voilier",
+  "label": "Voilier",
+  "slot": "decor",
+  "price": 110,
+  "cat": "vehicules",
+  "src": "fluent-emoji:sailboat"
+ },
+ {
+  "id": "nuage",
+  "label": "Nuage",
+  "slot": "decor",
+  "price": 20,
+  "cat": "ciel",
+  "src": "fluent-emoji:cloud"
+ },
+ {
+  "id": "soleil",
+  "label": "Soleil",
+  "slot": "decor",
+  "price": 40,
+  "cat": "ciel",
+  "src": "fluent-emoji:sun"
+ },
+ {
+  "id": "soleil-nuage",
+  "label": "Soleil voilé",
+  "slot": "decor",
+  "price": 30,
+  "cat": "ciel",
+  "src": "fluent-emoji:sun-behind-cloud"
+ },
+ {
+  "id": "lune",
+  "label": "Croissant de lune",
+  "slot": "decor",
+  "price": 30,
+  "cat": "ciel",
+  "src": "fluent-emoji:crescent-moon"
+ },
+ {
+  "id": "pleine-lune",
+  "label": "Pleine lune",
+  "slot": "decor",
+  "price": 40,
+  "cat": "ciel",
+  "src": "fluent-emoji:full-moon"
+ },
+ {
+  "id": "etoile-filante",
+  "label": "Étoile filante",
+  "slot": "decor",
+  "price": 40,
+  "cat": "ciel",
+  "src": "fluent-emoji:shooting-star"
+ },
+ {
+  "id": "etoile",
+  "label": "Étoile",
+  "slot": "decor",
+  "price": 20,
+  "cat": "ciel",
+  "src": "fluent-emoji:star"
+ },
+ {
+  "id": "nuage-pluie",
+  "label": "Nuage de pluie",
+  "slot": "decor",
+  "price": 25,
+  "cat": "ciel",
+  "src": "fluent-emoji:cloud-with-rain"
+ },
+ {
+  "id": "orage",
+  "label": "Orage",
+  "slot": "decor",
+  "price": 30,
+  "cat": "ciel",
+  "src": "fluent-emoji:cloud-with-lightning"
+ },
+ {
+  "id": "soleil-sourire",
+  "label": "Soleil souriant",
+  "slot": "decor",
+  "price": 40,
+  "cat": "ciel",
+  "src": "fluent-emoji:sun-with-face"
+ },
+ {
+  "id": "vue-montagnes",
+  "label": "Vue : montagnes à l'aube",
+  "slot": "view",
+  "price": 80,
+  "src": "fluent-emoji:sunrise-over-mountains"
+ },
+ {
+  "id": "vue-ville",
+  "label": "Vue : la ville",
+  "slot": "view",
+  "price": 80,
+  "src": "fluent-emoji:cityscape"
+ },
+ {
+  "id": "vue-ville-soir",
+  "label": "Vue : ville au crépuscule",
+  "slot": "view",
+  "price": 90,
+  "src": "fluent-emoji:cityscape-at-dusk"
+ },
+ {
+  "id": "vue-nuit",
+  "label": "Vue : nuit étoilée",
+  "slot": "view",
+  "price": 90,
+  "src": "fluent-emoji:night-with-stars"
+ },
+ {
+  "id": "vue-coucher",
+  "label": "Vue : coucher de soleil",
+  "slot": "view",
+  "price": 90,
+  "src": "fluent-emoji:sunset"
+ },
+ {
+  "id": "vue-voie-lactee",
+  "label": "Vue : voie lactée",
+  "slot": "view",
+  "price": 120,
+  "src": "fluent-emoji:milky-way"
+ },
+ {
+  "id": "vue-parc",
+  "label": "Vue : parc national",
+  "slot": "view",
+  "price": 90,
+  "src": "fluent-emoji:national-park"
+ },
+ {
+  "id": "vue-plage",
+  "label": "Vue : la plage",
+  "slot": "view",
+  "price": 100,
+  "src": "fluent-emoji:beach-with-umbrella"
+ },
+ {
+  "id": "vue-ile",
+  "label": "Vue : île déserte",
+  "slot": "view",
+  "price": 100,
+  "src": "fluent-emoji:desert-island"
+ },
+ {
+  "id": "vue-neige",
+  "label": "Vue : sommets enneigés",
+  "slot": "view",
+  "price": 100,
+  "src": "fluent-emoji:snow-capped-mountain"
+ },
+ {
+  "id": "vue-vagues",
+  "label": "Vue : la mer",
+  "slot": "view",
+  "price": 70,
+  "src": "fluent-emoji:water-wave"
+ },
+ {
+  "id": "vue-fuji",
+  "label": "Vue : mont Fuji",
+  "slot": "view",
+  "price": 110,
+  "src": "fluent-emoji:mount-fuji"
+ },
+ {
+  "id": "vue-pont",
+  "label": "Vue : pont de nuit",
+  "slot": "view",
+  "price": 90,
+  "src": "fluent-emoji:bridge-at-night"
+ },
+ {
+  "id": "vue-lune",
+  "label": "Vue : clair de lune",
+  "slot": "view",
+  "price": 90,
+  "src": "fluent-emoji:moon-viewing-ceremony"
+ },
+ {
+  "id": "vue-desert",
+  "label": "Vue : désert",
+  "slot": "view",
+  "price": 80,
+  "src": "fluent-emoji:desert"
+ },
+ {
+  "id": "maison",
+  "label": "Maison",
+  "slot": "house",
+  "price": 60,
+  "src": "fluent-emoji:house"
+ },
+ {
+  "id": "maisons",
+  "label": "Deux maisons",
+  "slot": "house",
+  "price": 120,
+  "src": "fluent-emoji:houses"
+ },
+ {
+  "id": "hutte",
+  "label": "Hutte",
+  "slot": "house",
+  "price": 60,
+  "src": "fluent-emoji:hut"
+ },
+ {
+  "id": "chateau",
+  "label": "Château",
+  "slot": "house",
+  "price": 200,
+  "src": "fluent-emoji:castle"
+ },
+ {
+  "id": "chateau-japon",
+  "label": "Château japonais",
+  "slot": "house",
+  "price": 200,
+  "src": "fluent-emoji:japanese-castle"
+ },
+ {
+  "id": "temple",
+  "label": "Temple",
+  "slot": "house",
+  "price": 180,
+  "src": "fluent-emoji:classical-building"
+ },
+ {
+  "id": "maison-tw",
+  "label": "Maison dessinée",
+  "slot": "house",
+  "price": 80,
+  "src": "twemoji:house-with-garden"
+ },
+ {
+  "id": "maison-noto",
+  "label": "Maison Noto",
+  "slot": "house",
+  "price": 80,
+  "src": "noto:house-with-garden"
+ },
+ {
+  "id": "maison-plate",
+  "label": "Maison plate",
+  "slot": "house",
+  "price": 70,
+  "src": "fluent-emoji-flat:house-with-garden"
+ },
+ {
+  "id": "mur-rayures",
+  "label": "Papier peint rayé",
+  "slot": "wall",
+  "price": 40
+ },
+ {
+  "id": "mur-pois",
+  "label": "Papier peint à pois",
+  "slot": "wall",
+  "price": 40
+ },
+ {
+  "id": "mur-fleurs",
+  "label": "Papier peint fleuri",
+  "slot": "wall",
+  "price": 80,
+  "src": "fluent-emoji:cherry-blossom"
+ },
+ {
+  "id": "mur-etoiles",
+  "label": "Papier peint étoilé",
+  "slot": "wall",
+  "price": 80,
+  "src": "fluent-emoji:star"
+ },
+ {
+  "id": "mur-pattes",
+  "label": "Papier peint pattes de chat",
+  "slot": "wall",
+  "price": 90,
+  "src": "fluent-emoji:paw-prints"
+ },
+ {
+  "id": "mur-coeurs",
+  "label": "Papier peint cœurs",
+  "slot": "wall",
+  "price": 80,
+  "src": "fluent-emoji:pink-heart"
+ },
+ {
+  "id": "mur-feuillage",
+  "label": "Papier peint feuillage",
+  "slot": "wall",
+  "price": 80,
+  "src": "fluent-emoji:herb"
+ },
+ {
+  "id": "mur-nuit",
+  "label": "Papier peint nuit",
+  "slot": "wall",
+  "price": 100,
+  "src": "fluent-emoji:crescent-moon"
+ },
+ {
+  "id": "mur-briques",
+  "label": "Mur de briques",
+  "slot": "wall",
+  "price": 90
+ },
+ {
+  "id": "mur-lambris",
+  "label": "Lambris en bois",
+  "slot": "wall",
+  "price": 90
+ },
+ {
+  "id": "sol-parquet-fonce",
+  "label": "Parquet foncé",
+  "slot": "floor",
+  "price": 60
+ },
+ {
+  "id": "sol-damier",
+  "label": "Carrelage en damier",
+  "slot": "floor",
+  "price": 80
+ },
+ {
+  "id": "sol-terracotta",
+  "label": "Tomettes",
+  "slot": "floor",
+  "price": 80
+ },
+ {
+  "id": "sol-tatami",
+  "label": "Tatami",
+  "slot": "floor",
+  "price": 100
+ },
+ {
+  "id": "sol-marbre",
+  "label": "Marbre",
+  "slot": "floor",
+  "price": 150
+ },
+ {
+  "id": "sol-moquette",
+  "label": "Moquette rose",
+  "slot": "floor",
+  "price": 60
+ },
+ {
+  "id": "sol-bois-blanc",
+  "label": "Parquet blanchi",
+  "slot": "floor",
+  "price": 70
+ },
+ {
+  "id": "plafond-lumieres",
+  "label": "Guirlande lumineuse",
+  "slot": "ceiling",
+  "price": 80
+ },
+ {
+  "id": "plafond-fanions",
+  "label": "Guirlande de fanions",
+  "slot": "ceiling",
+  "price": 60,
+  "src": "fluent-emoji:triangular-flag"
+ },
+ {
+  "id": "plafond-etoiles",
+  "label": "Guirlande d'étoiles",
+  "slot": "ceiling",
+  "price": 70,
+  "src": "fluent-emoji:star"
+ },
+ {
+  "id": "plafond-coeurs",
+  "label": "Guirlande de cœurs",
+  "slot": "ceiling",
+  "price": 70,
+  "src": "fluent-emoji:red-heart"
+ },
+ {
+  "id": "plafond-lampions",
+  "label": "Lampions",
+  "slot": "ceiling",
+  "price": 90,
+  "src": "fluent-emoji:red-paper-lantern"
+ },
+ {
+  "id": "plafond-ballons",
+  "label": "Ballons au plafond",
+  "slot": "ceiling",
+  "price": 60,
+  "src": "fluent-emoji:balloon"
+ },
+ {
+  "id": "sol-sable",
+  "label": "Sable",
+  "slot": "ground",
+  "price": 60
+ },
+ {
+  "id": "sol-neige",
+  "label": "Neige",
+  "slot": "ground",
+  "price": 80
+ },
+ {
+  "id": "sol-paves",
+  "label": "Pavés",
+  "slot": "ground",
+  "price": 80
+ },
+ {
+  "id": "sol-fleuri",
+  "label": "Prairie fleurie",
+  "slot": "ground",
+  "price": 100,
+  "src": "fluent-emoji:blossom"
+ }
+]
