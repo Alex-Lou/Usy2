@@ -444,7 +444,7 @@ function Final({ g, host, other, color, onNew }: { g: LiveView; host: boolean; o
         {reason && <p className="text-sm text-text-muted">{reason}</p>}
         <div className="mt-2 flex flex-wrap justify-center gap-2">
           <button type="button" onClick={onNew} className="btn-brand press rounded-token px-5 py-2 font-semibold">⚡ Nouvelle partie</button>
-          {g.status === "done" && played.length > 0 && (
+          {g.status === "done" && !abandoned && played.length > 0 && (
             <ShareScore
               text={g.kind === "quiz"
                 ? `⚡ Duel quiz en direct · ${g.label} : moi ${me} – ${them} ${other} · ${me > them ? "victoire 🏆" : me < them ? `victoire de ${other} 👑` : "égalité 🤝"}`
