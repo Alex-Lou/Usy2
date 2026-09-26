@@ -13,6 +13,7 @@ const ChatPage = lazy(() => import("./features/chat/ChatPage").then((m) => ({ de
 const GamesHub = lazy(() => import("./features/games/GamesHub").then((m) => ({ default: m.GamesHub })));
 const MorpionPage = lazy(() => import("./features/games/MorpionPage").then((m) => ({ default: m.MorpionPage })));
 const SnakePage = lazy(() => import("./features/games/SnakePage").then((m) => ({ default: m.SnakePage })));
+const QuizPage = lazy(() => import("./features/quiz/QuizPage").then((m) => ({ default: m.QuizPage })));
 const SudokuPage = lazy(() => import("./features/games/sudoku/SudokuPage").then((m) => ({ default: m.SudokuPage })));
 const PostPage = lazy(() => import("./features/feed/PostPage").then((m) => ({ default: m.PostPage })));
 const FishingPage = lazy(() => import("./features/pet/games/FishingPage").then((m) => ({ default: m.FishingPage })));
@@ -43,6 +44,7 @@ export function App() {
         <Route path="/jeux/morpion" element={<MorpionPage />} />
         <Route path="/jeux/snake" element={<SnakePage />} />
         <Route path="/jeux/sudoku" element={<SudokuPage />} />
+        <Route path="/jeux/quiz" element={<QuizPage />} />
         <Route path="/jeux/chat" element={<PetHousePage />} />
         <Route path="/jeux/chat/peche" element={<FishingPage />} />
         {/* My four spaces (see SpaceSwitcher), all under /profile. */}

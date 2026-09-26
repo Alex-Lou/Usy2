@@ -1,0 +1,198 @@
+import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getQuiz, TOI, type QuizOverview, type QuizTheme } from "./api";
+import { QuizPlay } from "./QuizPlay";
+import { QuizSelf } from "./QuizSelf";
+
+const THEME_KEY = "memocat.quiz.theme";
+// The path winds: where each level sits across the map (percent from the left).
+const PATH_X = [50, 78, 50, 22, 50];
+
+type Playing = { theme: string; level: number | null };
+
+/**
+ * 🧠 Quiz: a map per theme (5 levels, the next one opens with a star), and
+ * "Toi & moi" (answer about yourself, guess about the other).
+ */
+export function QuizPage() {
+  const [data, setData] = useState<QuizOverview | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [themeId, setThemeId] = useState<string>(() => {
+    try {
+      return localStorage.getItem(THEME_KEY) ?? "histoire";
+    } catch {
+      return "histoire";
+    }
+  });
+  const [playing, setPlaying] = useState<Playing | null>(null);
+  const [answering, setAnswering] = useState(false);
+
+  const load = useCallback(() => {
+    getQuiz()
+      .then((d) => {
+        setData(d);
+        setFailed(false);
+      })
+      .catch(() => setFailed(true));
+  }, []);
+  useEffect(load, [load]);
+
+  const choose = (id: string) => {
+    setThemeId(id);
+    try {
+      localStorage.setItem(THEME_KEY, id);
+    } catch {
+      /* per-device nicety only */
+    }
+  };
+
+  const theme = data?.themes.find((t) => t.id === themeId) ?? data?.themes[0];
+  const back = () => {
+    setPlaying(null);
+    setAnswering(false);
+    load();
+  };
+
+  if (answering) return <Frame><QuizSelf onClose={back} /></Frame>;
+  if (playing) {
+    const t = data?.themes.find((x) => x.id === playing.theme);
+    const isToi = playing.theme === TOI;
+    const level = playing.level ?? 0;
+    return (
+      <Frame>
+        <QuizPlay
+          key={`${playing.theme}-${level}`}
+          theme={playing.theme}
+          level={playing.level}
+          color={isToi ? "#ff6fa8" : t?.color ?? "#7c6cf0"}
+          title={isToi ? `Toi & moi · ${data?.toi.partnerName ?? ""}` : `${t?.emoji} ${t?.label} · niveau ${level}`}
+          onExit={back}
+          onNext={!isToi && level < 5 ? () => setPlaying({ theme: playing.theme, level: level + 1 }) : undefined}
+        />
+      </Frame>
+    );
+  }
+
+  return (
+    <Frame>
+      <header className="flex items-center gap-3 animate-fade-up">
+        <Link to="/jeux" aria-label="Retour aux jeux" className="chip press text-sm">←</Link>
+        <div>
+          <h1 className="font-display text-2xl font-bold">Quiz</h1>
+          <p className="text-sm text-text-muted">Un thème, un chemin, trois étoiles par niveau.</p>
+        </div>
+      </header>
+
+      {failed && <p className="card p-4 text-sm">Le quiz ne répond pas. <button type="button" onClick={load} className="underline">Réessayer</button></p>}
+      {!data && !failed && <div className="card h-80 animate-pulse" />}
+
+      {data && theme && (
+        <>
+          <ToiCard toi={data.toi} onAnswer={() => setAnswering(true)} onGuess={() => setPlaying({ theme: TOI, level: null })} />
+
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar" role="tablist" aria-label="Thèmes">
+            {data.themes.map((t) => {
+              const stars = t.levels.reduce((n, l) => n + l.stars, 0);
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={t.id === theme.id}
+                  onClick={() => choose(t.id)}
+                  className={"chip press flex shrink-0 items-center gap-1.5 text-sm " + (t.id === theme.id ? "font-semibold text-white" : "text-text-muted")}
+                  style={t.id === theme.id ? { background: t.color, borderColor: t.color } : undefined}
+                >
+                  <span aria-hidden="true">{t.emoji}</span> {t.label}
+                  <span className="text-xs opacity-80">⭐{stars}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <LevelPath key={theme.id} theme={theme} onPlay={(level) => setPlaying({ theme: theme.id, level })} />
+        </>
+      )}
+    </Frame>
+  );
+}
+
+function Frame({ children }: { children: React.ReactNode }) {
+  return <div className="mx-auto flex max-w-xl flex-col gap-4">{children}</div>;
+}
+
+function ToiCard({ toi, onAnswer, onGuess }: { toi: QuizOverview["toi"]; onAnswer: () => void; onGuess: () => void }) {
+  const canGuess = toi.partnerName !== null && toi.partnerAnswered >= 3;
+  return (
+    <section className="card relative overflow-hidden p-4 animate-fade-up" aria-label="Toi & moi">
+      <div className="pointer-events-none absolute -right-6 -top-6 text-7xl opacity-15" aria-hidden="true">💞</div>
+      <h2 className="font-display text-lg font-bold">💞 Toi & moi</h2>
+      <p className="text-sm text-text-muted">
+        Réponds sur toi, puis devine les réponses de {toi.partnerName ?? "ton binôme"}.
+        {toi.stars > 0 && ` Meilleur score : ${toi.best} pts, ${"⭐".repeat(toi.stars)}`}
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button type="button" onClick={onAnswer} className="chip press text-sm">✍️ Mes réponses {toi.mine}/{toi.total}</button>
+        <button type="button" onClick={onGuess} disabled={!canGuess} className="btn-brand press rounded-token px-3 py-1.5 text-sm font-semibold disabled:opacity-50">
+          🎯 Deviner {toi.partnerName ?? ""}
+        </button>
+      </div>
+      {!canGuess && toi.partnerName && (
+        <p className="mt-2 text-xs text-text-muted">{toi.partnerName} a répondu à {toi.partnerAnswered} question{toi.partnerAnswered > 1 ? "s" : ""} sur soi : il en faut 3 pour jouer.</p>
+      )}
+    </section>
+  );
+}
+
+/** The winding path of a theme's levels: done ones show their stars, the next one pulses, locked ones wait. */
+function LevelPath({ theme, onPlay }: { theme: QuizTheme; onPlay: (level: number) => void }) {
+  const next = theme.levels.find((l) => l.unlocked && l.stars === 0)?.level;
+  const height = theme.levels.length * 104;
+  const points = theme.levels.map((_, i) => [PATH_X[i % PATH_X.length], 52 + i * 104] as const);
+  const d = points.map(([x, y], i) => {
+    if (i === 0) return `M ${x} ${y}`;
+    const [px, py] = points[i - 1];
+    return `C ${px} ${py + 52}, ${x} ${y - 52}, ${x} ${y}`;
+  }).join(" ");
+  return (
+    <section className="card relative overflow-hidden p-2" aria-label={`Niveaux ${theme.label}`} style={{ ["--qz" as string]: theme.color }}>
+      <div className="pointer-events-none absolute -left-4 top-4 text-8xl opacity-10" aria-hidden="true">{theme.emoji}</div>
+      <div className="relative mx-auto w-full max-w-sm" style={{ height }}>
+        <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
+          <path d={d} fill="none" stroke={theme.color} strokeOpacity="0.35" strokeWidth="6" strokeLinecap="round" strokeDasharray="1 12" vectorEffect="non-scaling-stroke" />
+        </svg>
+        {theme.levels.map((l, i) => {
+          const [x, y] = points[i];
+          const current = l.level === next;
+          return (
+            <button
+              key={l.level}
+              type="button"
+              disabled={!l.unlocked}
+              onClick={() => onPlay(l.level)}
+              aria-label={`Niveau ${l.level}${l.unlocked ? "" : ", verrouillé"}${l.stars ? `, ${l.stars} étoile${l.stars > 1 ? "s" : ""}` : ""}`}
+              className="qz-node absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 press disabled:cursor-not-allowed"
+              style={{ left: `${x}%`, top: y, animationDelay: `${i * 80}ms` }}
+            >
+              <span
+                className={"grid h-16 w-16 place-items-center rounded-full border-4 font-display text-2xl font-bold shadow-lg " + (current ? "qz-pulse" : "")}
+                style={
+                  l.unlocked
+                    ? { background: theme.color, borderColor: "color-mix(in srgb, #fff 70%, " + theme.color + ")", color: "#fff" }
+                    : { background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text-muted)" }
+                }
+              >
+                {l.unlocked ? l.level : "🔒"}
+              </span>
+              <span className="text-sm leading-none" aria-hidden="true">
+                {[0, 1, 2].map((s) => (
+                  <span key={s} className={s < l.stars ? "" : "opacity-25 grayscale"}>⭐</span>
+                ))}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
