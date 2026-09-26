@@ -8,7 +8,7 @@ const SAVE_TEXT: Record<SaveState, string> = { idle: "", saving: "Enregistrement
  * ✏️ Decorating: add objects, change the room, and for the object picked in
  * the scene, size, turn, mirror, bring forward or back, copy, remove.
  */
-export function DecorBar({ selected, count, save, onChange, onOrder, onCopy, onRemove, onObjects, onRoom, onDone }: {
+export function DecorBar({ selected, count, save, onChange, onOrder, onCopy, onRemove, onObjects, onRoom, roomLabel, onDone }: {
   selected: Placed | null;
   count: number;
   save: SaveState;
@@ -18,6 +18,7 @@ export function DecorBar({ selected, count, save, onChange, onOrder, onCopy, onR
   onRemove: () => void;
   onObjects: () => void;
   onRoom: () => void;
+  roomLabel: string;
   onDone: () => void;
 }) {
   const tool = "grid h-10 min-w-10 place-items-center rounded-token border border-border bg-surface px-2 text-sm press hover:border-primary/50 disabled:opacity-40";
@@ -25,7 +26,7 @@ export function DecorBar({ selected, count, save, onChange, onOrder, onCopy, onR
     <div className="card flex flex-col gap-2.5 p-3" aria-label="Décorer">
       <div className="flex flex-wrap items-center gap-2">
         <button type="button" onClick={onObjects} className="rounded-full btn-brand px-4 py-2 text-sm font-semibold press">＋ Objets</button>
-        <button type="button" onClick={onRoom} className="chip press text-sm">🎨 Pièce</button>
+        <button type="button" onClick={onRoom} className="chip press text-sm">{roomLabel}</button>
         <span className="text-xs text-text-muted" aria-live="polite">{SAVE_TEXT[save] || `${count} objet${count > 1 ? "s" : ""}`}</span>
         <button type="button" onClick={onDone} className="ml-auto rounded-full border border-primary px-3 py-1.5 text-sm font-semibold text-primary press">✓ Terminé</button>
       </div>
