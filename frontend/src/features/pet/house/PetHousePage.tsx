@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { Link } from "react-router-dom";
 import type { Kind } from "../../../components/companions/brain";
 import { LivingCompanion } from "../../../components/companions/LivingCompanion";
@@ -9,9 +9,14 @@ import { HOUSE, LivingCat } from "../rig/LivingCat";
 import { setSoundEnabled, soundEnabled } from "../rig/sound";
 import { MOOD_TEXT, wornItems, type PetAction } from "../types";
 import { usePet } from "../usePet";
+import { DecorBar } from "./DecorBar";
+import { DecorLayer } from "./DecorLayer";
+import { surface } from "./houseApi";
+import { HouseShop } from "./HouseShop";
 import { createPetClient } from "./petClient";
 import { isNight, Room } from "./Room";
 import { ShopSheet } from "./ShopSheet";
+import { useHouseDecor } from "./useHouseDecor";
 
 // Companions keep Moka company: any of them, several or none, chosen on each device.
 const GUESTS: { id: Kind; icon: string; label: string; start: number }[] = [
@@ -80,13 +85,18 @@ function Gauge({ label, value, icon }: { label: string; value: number; icon: str
 /**
  * The cat's house (Jeux): the same shared cat as in Messages, with more ways
  * to care for it — rub it with the brush, chase the laser, bath, nap in the
- * basket — a purse earned by caring, and a shop of accessories.
+ * basket — a purse earned by caring, a shop of accessories, and the room
+ * itself to decorate together (Décorer: surfaces, and objects placed freely).
  */
 export function PetHousePage() {
   const { user } = useAuth();
   const { pet, setPet, pose, caption, act, react, onActivity } = usePet(user?.id);
   const [tool, setTool] = useState<Tool>(null);
   const [shop, setShop] = useState(false);
+  const decor = useHouseDecor("inside");
+  const [decorShop, setDecorShop] = useState<"objects" | "room" | null>(null);
+  const followHouse = decor.follow;
+  const labels = useMemo(() => Object.fromEntries((decor.house?.items ?? []).map((i) => [i.id, i.label])), [decor.house]);
   const [guests, setGuests] = useState<Kind[]>(readGuests);
   const [guestMenu, setGuestMenu] = useState(false);
   const guestRef = useRef<HTMLDivElement>(null);
@@ -115,9 +125,15 @@ export function PetHousePage() {
   const onActivityRef = useRef(onActivity);
   onActivityRef.current = onActivity;
   useEffect(() => {
-    const client = createPetClient((a) => onActivityRef.current(a));
+    const client = createPetClient(
+      (a) => onActivityRef.current(a),
+      (a) => {
+        followHouse(a.house);
+        setPet((p) => p && { ...p, coins: a.house.coins });
+      },
+    );
     return () => void client.deactivate();
-  }, []);
+  }, [followHouse, setPet]);
 
   const care = useCallback(
     async (action: PetAction) => {
@@ -127,6 +143,11 @@ export function PetHousePage() {
     },
     [act, pet?.coins],
   );
+
+  function remove(i: number) {
+    decor.edit((items) => items.filter((_, k) => k !== i));
+    decor.setSelected(null);
+  }
 
   function pick(id: (typeof TOOLS)[number]["id"]) {
     travelled.current = 0;
@@ -316,7 +337,21 @@ export function PetHousePage() {
         }}
         className={"relative aspect-[4/3] w-full touch-none select-none overflow-hidden rounded-token border border-border " + (tool ? "cursor-none" : "")}
       >
-        <Room night={night} />
+        <Room
+          night={night}
+          furnished={(decor.draft ?? decor.house?.layouts.inside.items ?? []).length > 0}
+          surfaces={{ wall: surface(decor.house, "wall"), floor: surface(decor.house, "floor"), view: surface(decor.house, "view"), ceiling: surface(decor.house, "ceiling") }}
+        />
+        <DecorLayer
+          items={decor.draft ?? decor.house?.layouts.inside.items ?? []}
+          labels={labels}
+          editing={decor.editing}
+          selected={decor.selected}
+          onSelect={decor.setSelected}
+          onChange={(i, patch) => decor.edit((items) => items.map((p, k) => (k === i ? { ...p, ...patch } : p)))}
+          onRemove={remove}
+          stageRef={stageRef}
+        />
         <LivingCat
           mode="house"
           pose={shownPose}
@@ -324,7 +359,7 @@ export function PetHousePage() {
           pointer={sceneDot}
           sound={sound}
           catRef={catRef}
-          onTap={tool ? undefined : () => void care("pet")}
+          onTap={tool || decor.editing ? undefined : () => void care("pet")}
           label={`Toucher ${pet.name}`}
         />
         {GUESTS.filter((g) => guests.includes(g.id)).map((g) => (
@@ -366,6 +401,33 @@ export function PetHousePage() {
         )}
       </div>
 
+      {decor.note && <p role="status" className="rounded-token border border-border bg-surface px-3 py-2 text-center text-sm">{decor.note}</p>}
+      {decor.editing ? (
+        <DecorBar
+          selected={decor.selected != null && decor.draft ? decor.draft[decor.selected] : null}
+          count={decor.draft?.length ?? 0}
+          save={decor.save}
+          onChange={(patch) => decor.selected != null && decor.edit((items) => items.map((p, k) => (k === decor.selected ? { ...p, ...patch } : p)))}
+          onOrder={(front) => {
+            const i = decor.selected;
+            if (i == null || !decor.draft) return;
+            const p = decor.draft[i];
+            decor.edit((items) => (front ? [...items.filter((_, k) => k !== i), p] : [p, ...items.filter((_, k) => k !== i)]));
+            decor.setSelected(front ? decor.draft.length - 1 : 0);
+          }}
+          onCopy={() => {
+            const i = decor.selected;
+            if (i == null || !decor.draft) return;
+            const p = decor.draft[i];
+            decor.edit((items) => [...items, { ...p, x: Math.min(1, p.x + 0.05), y: Math.min(1, p.y + 0.04) }]);
+            decor.setSelected(decor.draft.length);
+          }}
+          onRemove={() => decor.selected != null && remove(decor.selected)}
+          onObjects={() => setDecorShop("objects")}
+          onRoom={() => setDecorShop("room")}
+          onDone={decor.stop}
+        />
+      ) : (
       <div className="grid grid-cols-6 gap-1.5">
         {TOOLS.map((t) => (
           <button
@@ -383,13 +445,44 @@ export function PetHousePage() {
           </button>
         ))}
       </div>
+      )}
       <p className="text-center text-[11px] text-text-muted">
         {pet.coinsLeftToday > 0
           ? `Chaque soin rapporte des pièces (encore ${pet.coinsLeftToday} aujourd'hui).`
           : `Plus de pièces aujourd'hui, mais ${pet.name} apprécie toujours autant.`}
       </p>
+      {!decor.editing && (
+        <button
+          type="button"
+          disabled={!decor.house}
+          onClick={() => {
+            setTool(null);
+            decor.start();
+          }}
+          className="self-center rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold press hover:border-primary/50 disabled:opacity-40"
+        >
+          ✏️ Décorer la maison
+        </button>
+      )}
 
       {shop && <ShopSheet pet={pet} onChange={setPet} onClose={() => setShop(false)} />}
+      {decorShop && decor.house && (
+        <HouseShop
+          house={decor.house}
+          night={night}
+          initialTab={decorShop}
+          onChange={(h) => {
+            decor.follow(h);
+            setPet((p) => p && { ...p, coins: h.coins });
+          }}
+          onPlace={(id) => {
+            if (!decor.editing) decor.start();
+            decor.place(id);
+            setDecorShop(null);
+          }}
+          onClose={() => setDecorShop(null)}
+        />
+      )}
     </div>
   );
 }
