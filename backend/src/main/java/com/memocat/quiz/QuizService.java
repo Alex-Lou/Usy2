@@ -45,7 +45,18 @@ public class QuizService {
     private static final int MAX_RUNS = 200;
     public static final String TOI = "toi";
 
-    private record Item(String text, List<String> options, int correct, String about) {
+    /** A question as played: its options in the order shown, which one is right, and who it is about. */
+    record Item(String text, List<String> options, int correct, String about) {
+    }
+
+    /**
+     * Told about a run that isn't an ordinary level (a "défi", QuizChallengeService):
+     * each answer as it comes, then the end, which it scores itself (no stars kept).
+     */
+    interface RunListener {
+        void answered(String marks, int score);
+
+        QuizDtos.Result finished(String marks, int score, int correct, int total);
     }
 
     private static final class Run {
@@ -55,6 +66,9 @@ public class QuizService {
         final int level;
         final List<Item> items;
         final Instant createdAt;
+        final RunListener listener;
+        final String key;
+        final StringBuilder marks = new StringBuilder();
         int index;
         int score;
         int correct;
@@ -62,12 +76,18 @@ public class QuizService {
         Instant servedAt;
 
         Run(Long userId, String theme, int level, List<Item> items, Instant now) {
+            this(userId, theme, level, items, now, null, null);
+        }
+
+        Run(Long userId, String theme, int level, List<Item> items, Instant now, RunListener listener, String key) {
             this.userId = userId;
             this.theme = theme;
             this.level = level;
             this.items = items;
             this.createdAt = now;
             this.servedAt = now;
+            this.listener = listener;
+            this.key = key;
         }
 
         String levelKey() {
@@ -138,19 +158,8 @@ public class QuizService {
                     .limit(PER_RUN)
                     .toList();
         } else {
-            QuizBank.Theme t = QuizBank.theme(theme == null ? "" : theme).orElseThrow(() -> new ContentValidationException("Thème inconnu"));
             level = request.level() == null ? 0 : request.level();
-            if (level < 1 || level > QuizBank.LEVELS) {
-                throw new ContentValidationException("Niveau inconnu");
-            }
-            Map<String, QuizProgress> mine = progress.findByUserId(me.getId()).stream()
-                    .collect(Collectors.toMap(QuizProgress::getLevelKey, p -> p));
-            if (!unlocked(mine, t.id(), level)) {
-                throw new ConflictException("Gagne au moins une étoile au niveau " + (level - 1) + " pour ouvrir celui-ci");
-            }
-            List<QuizBank.Question> pool = new ArrayList<>(bank.level(t.id(), level));
-            Collections.shuffle(pool, ThreadLocalRandom.current());
-            items = pool.stream().limit(PER_RUN).map(QuizService::shuffled).toList();
+            items = levelItems(me, theme, level);
         }
         if (items.isEmpty()) {
             throw new ConflictException("Pas de questions ici pour l'instant");
@@ -158,6 +167,56 @@ public class QuizService {
         Instant now = clock.instant();
         forget(now);
         Run run = new Run(me.getId(), theme, level, items, now);
+        runs.put(run.id, run);
+        return new QuizDtos.Run(run.id, theme, level, question(run));
+    }
+
+    /** Ten shuffled questions of one of my open levels. */
+    List<Item> levelItems(User me, String theme, int level) {
+        QuizBank.Theme t = QuizBank.theme(theme == null ? "" : theme).orElseThrow(() -> new ContentValidationException("Thème inconnu"));
+        if (level < 1 || level > QuizBank.LEVELS) {
+            throw new ContentValidationException("Niveau inconnu");
+        }
+        Map<String, QuizProgress> mine = progress.findByUserId(me.getId()).stream()
+                .collect(Collectors.toMap(QuizProgress::getLevelKey, p -> p));
+        if (!unlocked(mine, t.id(), level)) {
+            throw new ConflictException("Gagne au moins une étoile au niveau " + (level - 1) + " pour ouvrir celui-ci");
+        }
+        List<QuizBank.Question> pool = new ArrayList<>(bank.level(t.id(), level));
+        Collections.shuffle(pool, ThreadLocalRandom.current());
+        return pool.stream().limit(PER_RUN).map(QuizService::shuffled).toList();
+    }
+
+    /** Ten questions picked across every theme (levels 1 to {@code maxLevel}). */
+    List<Item> mixItems(int maxLevel) {
+        List<QuizBank.Question> pool = new ArrayList<>();
+        for (QuizBank.Theme t : QuizBank.THEMES) {
+            for (int l = 1; l <= maxLevel; l++) {
+                pool.addAll(bank.level(t.id(), l));
+            }
+        }
+        Collections.shuffle(pool, ThreadLocalRandom.current());
+        return pool.stream().limit(PER_RUN).map(QuizService::shuffled).toList();
+    }
+
+    /**
+     * Starts a run on given questions from question {@code from} on (a "défi"
+     * picked up again), told to {@code listener}. A run with the same {@code key}
+     * is dropped first, so one challenge never has two runs at once.
+     */
+    QuizDtos.Run startWith(User me, String theme, int level, List<Item> items, String marksSoFar, int scoreSoFar,
+                           RunListener listener, String key) {
+        if (marksSoFar.length() >= items.size()) {
+            throw new ConflictException("Partie déjà terminée");
+        }
+        Instant now = clock.instant();
+        forget(now);
+        runs.values().removeIf(r -> key.equals(r.key));
+        Run run = new Run(me.getId(), theme, level, items, now, listener, key);
+        run.index = marksSoFar.length();
+        run.marks.append(marksSoFar);
+        run.score = scoreSoFar;
+        run.correct = (int) marksSoFar.chars().filter(c -> c == '1').count();
         runs.put(run.id, run);
         return new QuizDtos.Run(run.id, theme, level, question(run));
     }
@@ -192,12 +251,19 @@ public class QuizService {
                 run.streak = 0;
             }
             run.index++;
+            run.marks.append(right ? '1' : '0');
             run.servedAt = clock.instant();
             if (run.index < run.items.size()) {
+                if (run.listener != null) {
+                    run.listener.answered(run.marks.toString(), run.score);
+                }
                 return new QuizDtos.Answered(right, item.correct(), gained, run.score, run.streak, question(run), null);
             }
             runs.remove(run.id);
-            return new QuizDtos.Answered(right, item.correct(), gained, run.score, run.streak, null, finish(me, run));
+            QuizDtos.Result result = run.listener != null
+                    ? run.listener.finished(run.marks.toString(), run.score, run.correct, run.items.size())
+                    : finish(me, run);
+            return new QuizDtos.Answered(right, item.correct(), gained, run.score, run.streak, null, result);
         }
     }
 
@@ -225,15 +291,19 @@ public class QuizService {
 
     private QuizDtos.Result finish(User me, Run run) {
         int total = run.items.size();
-        double ratio = (double) run.correct / total;
-        int stars = ratio >= 0.9 ? 3 : ratio >= 0.7 ? 2 : ratio >= 0.5 ? 1 : 0;
+        int stars = stars(run.correct, total);
         QuizProgress p = progress.findByUserIdAndLevelKey(me.getId(), run.levelKey())
                 .orElseGet(() -> new QuizProgress(me, run.levelKey()));
         boolean hadStar = p.getStars() > 0;
         boolean newBest = p.record(stars, run.score);
         progress.save(p);
         boolean unlockedNext = !run.theme.equals(TOI) && run.level < QuizBank.LEVELS && !hadStar && stars > 0;
-        return new QuizDtos.Result(run.score, run.correct, total, stars, p.getBestScore(), newBest, unlockedNext);
+        return new QuizDtos.Result(run.score, run.correct, total, stars, p.getBestScore(), newBest, unlockedNext, null, false);
+    }
+
+    static int stars(int correct, int total) {
+        double ratio = (double) correct / total;
+        return ratio >= 0.9 ? 3 : ratio >= 0.7 ? 2 : ratio >= 0.5 ? 1 : 0;
     }
 
     private static QuizDtos.Question question(Run run) {
@@ -264,11 +334,11 @@ public class QuizService {
         }
     }
 
-    private Optional<User> partner(User me) {
+    Optional<User> partner(User me) {
         return users.findAll().stream().filter(u -> !u.getId().equals(me.getId())).findFirst();
     }
 
-    private User user(String username) {
+    User user(String username) {
         return users.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }

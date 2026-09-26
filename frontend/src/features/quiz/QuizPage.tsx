@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { getQuiz, TOI, type QuizOverview, type QuizTheme } from "./api";
+import { Link, useSearchParams } from "react-router-dom";
+import { onCoupleActivity } from "../couple/activity";
+import { getChallenges, getQuiz, MIX, playChallenge, startChallenge, startRun, TOI, type QuizChallenges, type QuizOverview, type QuizTheme } from "./api";
+import { ChallengePicker, DuelsCard, DuelView } from "./QuizDuels";
 import { QuizPlay } from "./QuizPlay";
 import { QuizSelf } from "./QuizSelf";
 
@@ -8,11 +10,13 @@ const THEME_KEY = "memocat.quiz.theme";
 // The path winds: where each level sits across the map (percent from the left).
 const PATH_X = [50, 78, 50, 22, 50];
 
-type Playing = { theme: string; level: number | null };
+/** {@code challenge}: a new duel (no id) or one sent to me (its id). */
+type Playing = { theme: string; level: number | null; challenge?: { id?: number } };
 
 /**
- * 🧠 Quiz: a map per theme (5 levels, the next one opens with a star), and
- * "Toi & moi" (answer about yourself, guess about the other).
+ * 🧠 Quiz: a map per theme (5 levels, the next one opens with a star),
+ * "Toi & moi" (answer about yourself, guess about the other), and "défis"
+ * (the other one plays the very same questions; see QuizDuels).
  */
 export function QuizPage() {
   const [data, setData] = useState<QuizOverview | null>(null);
@@ -26,7 +30,15 @@ export function QuizPage() {
   });
   const [playing, setPlaying] = useState<Playing | null>(null);
   const [answering, setAnswering] = useState(false);
+  const [duels, setDuels] = useState<QuizChallenges | null>(null);
+  const [picking, setPicking] = useState(false);
+  const [params, setParams] = useSearchParams();
+  const duelParam = Number(params.get("duel"));
+  const [duel, setDuel] = useState<number | null>(Number.isInteger(duelParam) && duelParam > 0 ? duelParam : null);
 
+  const loadDuels = useCallback(() => {
+    getChallenges().then(setDuels).catch(() => undefined); // the rest of the quiz works without it
+  }, []);
   const load = useCallback(() => {
     getQuiz()
       .then((d) => {
@@ -34,8 +46,13 @@ export function QuizPage() {
         setFailed(false);
       })
       .catch(() => setFailed(true));
-  }, []);
+    loadDuels();
+  }, [loadDuels]);
   useEffect(load, [load]);
+  // A duel sent or played back (from the other phone): the list follows.
+  useEffect(() => onCoupleActivity((a) => {
+    if (a.kind === "quiz-challenge" || a.kind === "quiz-done") loadDuels();
+  }), [loadDuels]);
 
   const choose = (id: string) => {
     setThemeId(id);
@@ -50,24 +67,51 @@ export function QuizPage() {
   const back = () => {
     setPlaying(null);
     setAnswering(false);
+    setPicking(false);
+    setDuel(null);
+    if (params.has("duel")) setParams({}, { replace: true });
     load();
   };
 
   if (answering) return <Frame><QuizSelf onClose={back} /></Frame>;
+  if (duel != null) return <Frame><DuelView key={duel} id={duel} onBack={back} /></Frame>;
   if (playing) {
     const t = data?.themes.find((x) => x.id === playing.theme);
     const isToi = playing.theme === TOI;
+    const isMix = playing.theme === MIX;
     const level = playing.level ?? 0;
+    const ch = playing.challenge;
+    const begin = ch ? (ch.id != null ? () => playChallenge(ch.id!) : () => startChallenge(playing.theme, playing.level)) : () => startRun(playing.theme, playing.level);
+    const label = isMix ? "🎲 Mélange surprise" : `${t?.emoji} ${t?.label} · niveau ${level}`;
     return (
       <Frame>
         <QuizPlay
-          key={`${playing.theme}-${level}`}
-          theme={playing.theme}
-          level={playing.level}
-          color={isToi ? "#ff6fa8" : t?.color ?? "#7c6cf0"}
-          title={isToi ? `Toi & moi · ${data?.toi.partnerName ?? ""}` : `${t?.emoji} ${t?.label} · niveau ${level}`}
+          key={`${playing.theme}-${level}-${ch?.id ?? (ch ? "new" : "")}`}
+          begin={begin}
+          color={isToi ? "#ff6fa8" : isMix ? "#7c6cf0" : t?.color ?? "#7c6cf0"}
+          title={isToi ? `Toi & moi · ${data?.toi.partnerName ?? ""}` : ch ? `🎯 Défi · ${label}` : label}
+          partnerName={duels?.partnerName ?? data?.toi.partnerName}
           onExit={back}
-          onNext={!isToi && level < 5 ? () => setPlaying({ theme: playing.theme, level: level + 1 }) : undefined}
+          onNext={!isToi && !ch && level < 5 ? () => setPlaying({ theme: playing.theme, level: level + 1 }) : undefined}
+          onDuel={(id) => {
+            setPlaying(null);
+            setDuel(id);
+          }}
+        />
+      </Frame>
+    );
+  }
+  if (picking && data) {
+    return (
+      <Frame>
+        <ChallengePicker
+          themes={data.themes}
+          partnerName={duels?.partnerName ?? null}
+          onPick={(theme, level) => {
+            setPicking(false);
+            setPlaying({ theme, level, challenge: {} });
+          }}
+          onClose={() => setPicking(false)}
         />
       </Frame>
     );
@@ -88,6 +132,14 @@ export function QuizPage() {
 
       {data && theme && (
         <>
+          {duels && (
+            <DuelsCard
+              data={duels}
+              onNew={() => setPicking(true)}
+              onPlay={(c) => setPlaying({ theme: c.theme, level: c.level, challenge: { id: c.id } })}
+              onOpen={setDuel}
+            />
+          )}
           <ToiCard toi={data.toi} onAnswer={() => setAnswering(true)} onGuess={() => setPlaying({ theme: TOI, level: null })} />
 
           <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar" role="tablist" aria-label="Thèmes">
