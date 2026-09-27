@@ -50,7 +50,7 @@ export function MineTab({ themes, partnerName, onChange }: { themes: NousTheme[]
       <ul className="flex flex-col gap-3">
         <AnimatePresence initial={false}>
           {shown.slice(0, 30).map((q) => (
-            <MineItem key={q.id} q={q} color={themes.find((t) => t.id === q.theme)?.color ?? "#ff6fa8"} partnerName={partnerName} onSaved={saved} />
+            <MineItem key={q.id} q={q} color={themes.find((t) => t.id === q.theme)?.color ?? "var(--nous-accent)"} partnerName={partnerName} onSaved={saved} />
           ))}
         </AnimatePresence>
       </ul>

@@ -76,7 +76,7 @@ export function HouseShop({ house, scene, night, initialTab = "objects", onChang
   const buy = (item: HouseItem) => run(item.id, () => buyHouseItem(item.id));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 animate-fade-up lg:pl-64" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 animate-fade-up lg:pl-shell" onClick={onClose}>
       <div
         role="dialog"
         aria-label="Décorer la maison"

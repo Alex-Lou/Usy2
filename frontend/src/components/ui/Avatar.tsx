@@ -89,7 +89,7 @@ export function Avatar({
           <AssetImage assetId={assetId} framing={framing} className="h-full w-full rounded-full object-cover" />
         </span>
       ) : animal ? (
-        <span className="grid h-full w-full place-items-center rounded-full bg-surface-2" style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,.15)" }}>
+        <span className="grid h-full w-full place-items-center rounded-full bg-surface-2" style={{ boxShadow: "inset 0 0 0 1px var(--avatar-ring-soft)" }}>
           <Animal species={animal} size={Math.round(size * 0.86)} />
         </span>
       ) : (
@@ -98,7 +98,7 @@ export function Avatar({
           style={{
             fontSize: size * 0.4,
             backgroundImage: `linear-gradient(135deg, hsl(${hue1} 80% 60%), hsl(${hue2} 75% 50%))`,
-            boxShadow: "inset 0 0 0 1px rgba(255,255,255,.25)",
+            boxShadow: "inset 0 0 0 1px var(--avatar-ring)",
           }}
         >
           {initials(name)}

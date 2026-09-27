@@ -83,7 +83,7 @@ export function QuizPage() {
         <QuizPlay
           key={`${playing.theme}-${level}-${ch?.id ?? (ch ? "new" : "")}`}
           begin={begin}
-          color={isMix ? "#7c6cf0" : t?.color ?? "#7c6cf0"}
+          color={isMix ? "var(--quiz-accent)" : t?.color ?? "var(--quiz-accent)"}
           title={ch ? `🎯 Défi · ${label}` : label}
           partnerName={duels?.partnerName}
           onExit={back}
@@ -202,7 +202,7 @@ function LevelPath({ theme, onPlay }: { theme: QuizTheme; onPlay: (level: number
                 className={"grid h-16 w-16 place-items-center rounded-full border-4 font-display text-2xl font-bold shadow-lg " + (current ? "qz-pulse" : "")}
                 style={
                   l.unlocked
-                    ? { background: theme.color, borderColor: "color-mix(in srgb, #fff 70%, " + theme.color + ")", color: "#fff" }
+                    ? { background: theme.color, borderColor: "color-mix(in srgb, var(--color-on-accent) 70%, " + theme.color + ")", color: "var(--color-on-accent)" }
                     : { background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text-muted)" }
                 }
               >

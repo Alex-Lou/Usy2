@@ -6,7 +6,7 @@ import { AssetImage } from "../AssetImage";
 export function onColor(hex: string): string {
   const n = parseInt(hex.slice(1), 16);
   const lum = 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
-  return lum > 160 ? "#12071a" : "#ffffff";
+  return lum > 160 ? "var(--color-on-light)" : "var(--color-on-accent)";
 }
 
 /**
@@ -23,7 +23,7 @@ export function SharedLook() {
     const root = document.documentElement.style;
     root.setProperty("--color-primary", accent);
     root.setProperty("--color-primary-foreground", onColor(accent));
-    root.setProperty("--grad", `linear-gradient(135deg, ${accent} 0%, color-mix(in srgb, ${accent} 55%, #22d3ee) 100%)`);
+    root.setProperty("--grad", `linear-gradient(135deg, ${accent} 0%, color-mix(in srgb, ${accent} 55%, var(--grad-mix)) 100%)`);
     return () => ["--color-primary", "--color-primary-foreground", "--grad"].forEach((v) => root.removeProperty(v));
   }, [accent]);
 

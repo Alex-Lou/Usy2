@@ -171,7 +171,7 @@ export function QuizPlay({ begin, color, title, partnerName, onExit, onNext, onD
               }
               style={{ animationDelay: `${i * 60}ms` }}
             >
-              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm" style={{ background: color, color: "#fff" }} aria-hidden="true">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm" style={{ background: color, color: "var(--color-on-accent)" }} aria-hidden="true">
                 {isRight ? "✓" : isWrongPick ? "✕" : LETTERS[i]}
               </span>
               <span>{o}</span>

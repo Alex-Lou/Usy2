@@ -4,7 +4,6 @@ import { Confetti } from "../games/Confetti";
 import { ShareScore } from "../games/ShareScore";
 import { getDuel, MIX, type QuizChallenge, type QuizChallenges, type QuizDuel, type QuizTheme } from "./api";
 
-const MIX_COLOR = "#7c6cf0";
 const SHOWN_DONE = 5;
 
 /**
@@ -116,7 +115,7 @@ export function ChallengePicker({ themes, partnerName, onPick, onClose }: {
         type="button"
         onClick={() => onPick(MIX, null)}
         className="qz-pop press flex items-center gap-3 rounded-token p-4 text-left font-semibold text-white shadow-lg"
-        style={{ background: `linear-gradient(135deg, ${MIX_COLOR}, #ff6fa8)` }}
+        style={{ background: "var(--quiz-grad-mix)" }}
       >
         <span className="text-3xl" aria-hidden="true">🎲</span>
         <span>
@@ -152,7 +151,7 @@ export function ChallengePicker({ themes, partnerName, onPick, onClose }: {
               className="qz-node press grid h-12 w-12 place-items-center rounded-full border-4 font-display text-lg font-bold disabled:cursor-not-allowed"
               style={
                 l.unlocked
-                  ? { background: theme.color, borderColor: `color-mix(in srgb, #fff 70%, ${theme.color})`, color: "#fff" }
+                  ? { background: theme.color, borderColor: `color-mix(in srgb, var(--color-on-accent) 70%, ${theme.color})`, color: "var(--color-on-accent)" }
                   : { background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text-muted)" }
               }
             >
@@ -210,7 +209,7 @@ export function DuelView({ id, onBack }: { id: number; onBack: () => void }) {
         {duel.lines.map((l, i) => (
           <li key={i} className="qz-slide card p-3" style={{ animationDelay: `${i * 50}ms` }}>
             <p className="text-sm font-semibold">{i + 1}. {l.text}</p>
-            <p className="mt-1 text-sm" style={{ color: "#3fbf7f" }}>✓ {l.options[l.correct]}</p>
+            <p className="mt-1 text-sm" style={{ color: "var(--quiz-correct)" }}>✓ {l.options[l.correct]}</p>
             <div className="mt-1.5 flex gap-4 text-xs">
               <Mark name={duel.myName} right={l.mine} />
               <Mark name={duel.theirName} right={l.theirs} />

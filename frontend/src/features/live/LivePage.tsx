@@ -13,8 +13,8 @@ import {
   type LiveKind, type LiveRound, type LiveView,
 } from "./api";
 
-const QUIZ_COLOR = "#7c6cf0";
-const NOUS_COLOR = "#ff6fa8";
+const QUIZ_COLOR = "var(--live-quiz)";
+const NOUS_COLOR = "var(--live-nous)";
 
 /**
  * ⚡ En direct: a quiz duel or « Même longueur d'onde », the same question at
@@ -398,7 +398,7 @@ function RoundCard({ r, g, host, other, color, big }: { r: LiveRound; g: LiveVie
             <li
               key={o}
               className={"flex items-center gap-2 rounded-token border-2 px-3 py-1.5 text-sm " + (good ? "font-semibold" : "border-border")}
-              style={good ? { borderColor: quiz ? "var(--color-success, #22a06b)" : color, background: `color-mix(in srgb, ${quiz ? "#22a06b" : color} 14%, transparent)` } : undefined}
+              style={good ? { borderColor: quiz ? "var(--color-success)" : color, background: `color-mix(in srgb, ${quiz ? "var(--color-success)" : color} 14%, transparent)` } : undefined}
             >
               <span className="flex-1">{good && (quiz ? "✅ " : "💞 ")}{o}</span>
               {me && <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-bold">Toi</span>}

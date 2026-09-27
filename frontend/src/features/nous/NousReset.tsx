@@ -172,7 +172,7 @@ function ConfirmSheet({ open, title, confirm, danger, busy, error, onConfirm, on
   return (
     <AnimatePresence>
       {open && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center lg:pl-64" onClick={onCancel}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center lg:pl-shell" onClick={onCancel}>
           <motion.div
             role="alertdialog"
             aria-modal="true"
