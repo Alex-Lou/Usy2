@@ -10,6 +10,7 @@ import { Icon } from "../../components/ui/Icon";
 import { useFonts } from "../../lib/fonts";
 import { fillOf, pageVars, partFonts, partsOf, skin, widgetStyle } from "./partStyle";
 import { ProfileGrid } from "./ProfileGrid";
+import { WidgetRenderer } from "./widgets/WidgetRenderer";
 import { fontsApply, fontVars } from "./theme";
 import type { PartStyle, Profile, Theme, Widget } from "./types";
 
