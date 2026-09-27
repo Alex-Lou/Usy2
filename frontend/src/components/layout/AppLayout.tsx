@@ -28,10 +28,10 @@ export function AppLayout() {
       <GlassSync />
       <DailyMemory />
 
-      <main className="lg:pl-64">
+      <main className="lg:pl-shell">
         {/* Clears the top bar (burger + bell, below the status bar) and whatever covers the
             bottom: the tab bar, or the emoji sheet while it is open (--picker-h). */}
-        <div className="mx-auto w-full max-w-2xl px-4 pb-[calc(max(var(--tabbar-h),var(--picker-h,0px))+1rem)] pt-[calc(var(--topbar-h)+1rem)] lg:pb-[calc(max(2rem,var(--picker-h,0px))+1rem)] lg:pt-8">
+        <div className="mx-auto w-full max-w-content px-4 pb-[calc(max(var(--tabbar-h),var(--picker-h,0px))+1rem)] pt-[calc(var(--topbar-h)+1rem)] lg:pb-[calc(max(2rem,var(--picker-h,0px))+1rem)] lg:pt-8">
           <Suspense fallback={<Loader />}>
             <Outlet />
           </Suspense>

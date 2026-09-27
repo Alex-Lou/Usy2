@@ -408,8 +408,8 @@ export function PetHousePage() {
             style={{
               left: dot.x - 6,
               top: dot.y - 6,
-              background: "#ef4444",
-              boxShadow: "0 0 12px 4px rgba(239,68,68,0.7)",
+              background: "var(--laser-dot)",
+              boxShadow: "0 0 12px 4px var(--laser-glow)",
             }}
           />
         )}

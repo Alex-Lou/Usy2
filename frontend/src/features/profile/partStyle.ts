@@ -74,7 +74,7 @@ export function scopeVars(s: PartStyle): Record<string, string> {
   if (s.accent) {
     v["--color-primary"] = s.accent;
     v["--color-primary-foreground"] = onColor(s.accent);
-    v["--grad"] = `linear-gradient(135deg, ${s.accent} 0%, color-mix(in srgb, ${s.accent} 55%, #22d3ee) 100%)`;
+    v["--grad"] = `linear-gradient(135deg, ${s.accent} 0%, color-mix(in srgb, ${s.accent} 55%, var(--grad-mix)) 100%)`;
   }
   const font = fontStack(s.font);
   if (font) {
