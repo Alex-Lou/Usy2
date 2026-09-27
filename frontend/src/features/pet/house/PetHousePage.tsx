@@ -225,7 +225,7 @@ export function PetHousePage() {
     tool === "brush" ? `Frotte ${pet.name} avec ton doigt` : tool === "laser" ? "Promène le point rouge dans la pièce" : null;
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-3">
+    <div className="mx-auto flex max-w-2xl flex-col gap-3 lg:max-w-4xl">
       <header className="relative z-30 flex flex-wrap items-center gap-2 animate-fade-up">
         <Link to="/jeux" aria-label="Retour aux jeux" className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface press hover:border-primary/50">
           <Icon name="chevronLeft" size={18} />

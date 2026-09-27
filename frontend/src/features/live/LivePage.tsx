@@ -75,7 +75,7 @@ export function LivePage() {
   const showStart = !game || (starting && !isActive(game));
 
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-4" data-live="">
+    <div className="mx-auto flex max-w-xl flex-col gap-4 lg:max-w-3xl" data-live="">
       <header className="flex items-center gap-3 animate-fade-up">
         <Link to="/jeux" aria-label="Retour aux jeux" className="chip press text-sm">←</Link>
         <div>
