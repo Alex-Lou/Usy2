@@ -1,38 +1,31 @@
-import { MotionConfig, motion } from "motion/react";
+import { MotionConfig } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { onCoupleActivity } from "../couple/activity";
 import { getNous, type NousOverview } from "./api";
-import { CardsTab } from "./NousCards";
-import { CompareTab } from "./NousCompare";
-import { Gauge } from "./NousGauge";
-import { GuessTab, HistoryTab, JudgeTab } from "./NousGuess";
-import { MineTab } from "./NousMine";
+import { TalkMode } from "./NousCards";
+import { DailyView } from "./NousDaily";
+import { GuessMode } from "./NousGuess";
+import { NousHome, type Mode } from "./NousHome";
+import { MineMode } from "./NousMine";
 import { ResetBanner } from "./NousReset";
-import { ScoresTab } from "./NousScores";
+import { ResultsView } from "./NousScores";
 
-type Tab = "cards" | "mine" | "guess" | "judge" | "history" | "scores" | "compare";
-const TABS: { id: Tab; label: string }[] = [
-  { id: "cards", label: "💬 Cartes" },
-  { id: "mine", label: "✍️ Mes réponses" },
-  { id: "guess", label: "🔮 Deviner" },
-  { id: "judge", label: "⚖️ À juger" },
-  { id: "history", label: "📜 Verdicts" },
-  { id: "scores", label: "📊 Scores" },
-  { id: "compare", label: "🔍 Comparer" },
-];
+const MODES: Record<Mode, string> = { guess: "🔮 Deviner", mine: "✍️ Répondre sur moi", talk: "💬 Cartes pour parler" };
 
 /**
- * 💞 Nous deux: cards to talk about, my answers about me, guessing the other
- * one's in many formats (what is tapped is checked at once, words are judged
- * by the person it's about), scores by theme, our answers side by side, and
- * starting again.
+ * 💞 Nous deux, without tabs: the menu (two squares, the question of the
+ * day, the ways to play), then a way to play → a category → the questions
+ * one by one; a square opens the results. Where I am lives in the URL
+ * (?v=play&mode=guess&theme=…, ?v=results&side=me, ?v=daily), so « back »
+ * works as expected.
  */
 export function NousPage() {
   const [params, setParams] = useSearchParams();
-  const tabParam = params.get("tab") as Tab | null;
-  const tab: Tab = TABS.some((t) => t.id === tabParam) ? (tabParam as Tab) : "cards";
-  const compareTheme = params.get("theme") ?? "all";
+  const view = params.get("v");
+  const mode = (params.get("mode") as Mode | null) ?? "guess";
+  const theme = params.get("theme");
+  const side = params.get("side") === "them" ? "them" : "me";
   const [data, setData] = useState<NousOverview | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -45,24 +38,32 @@ export function NousPage() {
       .catch(() => setFailed(true));
   }, []);
   useEffect(load, [load]);
-  // A guess or a verdict from the other phone: counts and lists follow.
+  // Something from the other phone: counts and squares follow.
   useEffect(() => onCoupleActivity((a) => {
-    if (a.kind === "nous-guess" || a.kind === "nous-judged" || a.kind === "nous-reset-ask" || a.kind === "nous-reset") load();
+    if (a.kind === "nous-guess" || a.kind === "nous-reset-ask" || a.kind === "nous-reset") load();
   }), [load]);
 
-  const go = (t: Tab, theme?: string) => setParams(t === "cards" ? {} : theme && theme !== "all" ? { tab: t, theme } : { tab: t }, { replace: true });
+  const go = (next: Record<string, string>) => setParams(next);
+  const home = () => go({});
   const partner = data?.partnerName ?? "ton amour";
+  const title = view === "play" ? (theme ? `${MODES[mode]} · ${theme === "all" ? "toutes" : data?.themes.find((t) => t.id === theme)?.label ?? ""}` : MODES[mode])
+    : view === "results" ? "📖 Résultats" : view === "daily" ? "✨ Question du jour" : null;
+  // « Back »: from the questions to their categories, else to the menu.
+  const back = view === "play" && theme ? () => go({ v: "play", mode }) : home;
 
   return (
     <MotionConfig reducedMotion="user">
     <div className="mx-auto flex max-w-xl flex-col gap-4" data-nous="">
       <header className="flex items-center gap-3 animate-fade-up">
-        <Link to="/jeux" aria-label="Retour aux jeux" className="chip press text-sm">←</Link>
-        <div>
-          <h1 className="font-display text-2xl font-bold">💞 Nous deux</h1>
-          <p className="text-sm text-text-muted">Des questions pour se découvrir encore, et deviner l'autre.</p>
+        {view ? (
+          <button type="button" onClick={back} aria-label="Retour" className="chip press text-sm">←</button>
+        ) : (
+          <Link to="/jeux" aria-label="Retour aux jeux" className="chip press text-sm">←</Link>
+        )}
+        <div className="min-w-0">
+          <h1 className="truncate font-display text-2xl font-bold">{title ?? "💞 Nous deux"}</h1>
+          {!view && <p className="text-sm text-text-muted">Se découvrir encore, et deviner l'autre.</p>}
         </div>
-        <Link to="/jeux/direct" className="chip press ml-auto shrink-0 text-sm font-semibold">⚡ En direct</Link>
       </header>
 
       {failed && <p className="card p-4 text-sm">Nous deux ne répond pas. <button type="button" onClick={load} className="underline">Réessayer</button></p>}
@@ -71,44 +72,39 @@ export function NousPage() {
       {data && (
         <>
           {data.reset && <ResetBanner key={data.reset.createdAt} reset={data.reset} themes={data.themes} partnerName={partner} onDone={load} />}
-          <section className="grid grid-cols-2 gap-3" aria-label="Télépathie">
-            <Gauge title={`Toi → ${partner}`} score={data.me} />
-            <Gauge title={`${partner} → toi`} score={data.them} />
-          </section>
-
-          <nav className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar" role="tablist" aria-label="Nous deux">
-            {TABS.map((t) => {
-              const badge = t.id === "guess" ? data.toGuess : t.id === "judge" ? data.toJudge : t.id === "mine" ? null : 0;
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === t.id}
-                  onClick={() => go(t.id)}
-                  className={"chip press relative shrink-0 text-sm " + (tab === t.id ? "font-semibold text-white" : "text-text-muted")}
-                >
-                  {tab === t.id && <motion.span layoutId="nd-tab" className="nd-tab-pill absolute inset-0 rounded-full" transition={{ type: "spring", stiffness: 420, damping: 32 }} aria-hidden="true" />}
-                  <span className="relative">{t.label}</span>
-                  {t.id === "mine" && <span className="relative ml-1 text-xs opacity-80">{data.myAnswers}/{data.answerable}</span>}
-                  {badge != null && badge > 0 && (
-                    <span className="nd-badge relative ml-1.5 inline-grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] font-bold text-white" aria-label={`${badge} en attente`}>{badge}</span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-
-          {tab === "cards" && <CardsTab themes={data.themes} daily={data.daily} onAnswer={() => go("mine")} />}
-          {tab === "mine" && <MineTab themes={data.themes} partnerName={partner} onChange={load} />}
-          {tab === "guess" && <GuessTab themes={data.themes} partnerName={partner} onChange={load} />}
-          {tab === "judge" && <JudgeTab themes={data.themes} partnerName={partner} onChange={load} />}
-          {tab === "history" && <HistoryTab themes={data.themes} partnerName={partner} />}
-          {tab === "scores" && (
-            <ScoresTab key={data.reset?.createdAt ?? "none"} themes={data.themes} partnerName={partner} pending={data.reset} onCompare={(t) => go("compare", t)} onChange={load} />
+          {!view && (
+            <NousHome
+              data={data}
+              partnerName={partner}
+              onResults={(s, show) => go(show ? { v: "results", side: s, show } : { v: "results", side: s })}
+              onDaily={() => go({ v: "daily" })}
+              onMode={(m) => go({ v: "play", mode: m })}
+            />
           )}
-          {tab === "compare" && (
-            <CompareTab themes={data.themes} partnerName={partner} theme={compareTheme} onTheme={(t) => go("compare", t)} onGuess={() => go("guess")} onAnswer={() => go("mine")} />
+          {view === "play" && mode === "guess" && (
+            <GuessMode themes={data.themes} partnerName={partner} theme={theme} onTheme={(t) => go(t ? { v: "play", mode, theme: t } : { v: "play", mode })} onChange={load} />
+          )}
+          {view === "play" && mode === "mine" && (
+            <MineMode themes={data.themes} partnerName={partner} theme={theme} onTheme={(t) => go(t ? { v: "play", mode, theme: t } : { v: "play", mode })} onChange={load} />
+          )}
+          {view === "play" && mode === "talk" && (
+            <TalkMode themes={data.themes} theme={theme} onTheme={(t) => go(t ? { v: "play", mode, theme: t } : { v: "play", mode })} />
+          )}
+          {view === "results" && (
+            <ResultsView
+              key={side}
+              side={side}
+              themes={data.themes}
+              partnerName={partner}
+              toGuess={data.toGuess}
+              pending={data.reset}
+              initialShow={params.get("show") === "say" ? "say" : undefined}
+              onGuess={() => go({ v: "play", mode: "guess", theme: "all" })}
+              onChange={load}
+            />
+          )}
+          {view === "daily" && data.daily && (
+            <DailyView daily={data.daily} theirs={data.dailyTheirs} guessed={data.dailyGuessed} themes={data.themes} partnerName={partner} onChange={load} />
           )}
         </>
       )}

@@ -157,15 +157,12 @@
   --nous-accent: var(--pal-bubblegum-400);
   --nous-grad-hero: linear-gradient(135deg, var(--pal-bubblegum-400), var(--pal-orchid-500) 55%, var(--pal-cornflower-500));
   --nous-grad-daily: linear-gradient(135deg, var(--pal-bubblegum-400), var(--pal-orchid-500));
-  --nous-grad-gauge: linear-gradient(90deg, var(--pal-bubblegum-400), var(--pal-orchid-500));
-  --nous-badge: var(--pal-red-500);
-  --nous-swipe-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 
   /* Verdicts of a guess (Nous deux) */
   --verdict-right: var(--pal-green-500);
   --verdict-close: var(--pal-amber-500);
   --verdict-some: var(--pal-periwinkle-400);
-  --verdict-wrong: var(--pal-red-500);
+  --verdict-wrong: var(--pal-cornflower-500); /* "À découvrir": never a red */
 
   /* 🧠 Quiz */
   --quiz-accent: var(--pal-iris-500);

@@ -29,10 +29,8 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     public static final String QUIZ_CHALLENGE = "quiz-challenge";
     /** A quiz "défi" was played back: the duel is over. */
     public static final String QUIZ_DONE = "quiz-done";
-    /** 💞 Nous deux: a guess in words about the other one, waiting for their verdict (refId: the guess). */
+    /** 💞 Nous deux: a guess in words about the other one (refId: the guess). */
     public static final String NOUS_GUESS = "nous-guess";
-    /** 💞 Nous deux: a guess was judged (detail: right / close / wrong). */
-    public static final String NOUS_JUDGED = "nous-judged";
     /** 💞 Nous deux: one of us proposes to start again for both (detail: the theme, or null for everything). */
     public static final String NOUS_RESET_ASK = "nous-reset-ask";
     /** 💞 Nous deux: answers started again (detail: mine / accepted), or a proposal dropped (cancelled / refused). */
