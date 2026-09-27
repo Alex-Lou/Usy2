@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { SPECIES, type Species } from "../../app/companion";
@@ -42,6 +42,7 @@ export function ProfileBody({
 
   const companion: Species =
     profile.companion && (SPECIES as readonly string[]).includes(profile.companion) ? (profile.companion as Species) : "cat";
+  const [isAvatarZoomed, setIsAvatarZoomed] = useState(false);
   const headerBox = skin(parts.header ?? {}, { box: true, scope: true });
   const headerText = skin(parts.header ?? {}, { text: true });
 
@@ -57,7 +58,10 @@ export function ProfileBody({
             )}
           </div>
           <div className="px-6 pb-6">
-            <div className="-mt-12 mb-3 inline-block rounded-full ring-4 ring-bg">
+            <div
+              className="-mt-12 mb-3 inline-block rounded-full ring-4 ring-bg cursor-pointer"
+              onClick={() => profile.avatarAssetId !== null && setIsAvatarZoomed(true)}
+            >
               <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} species={profile.companion} />
             </div>
             <div className={headerText.className} style={headerText.style}>
@@ -91,9 +95,64 @@ export function ProfileBody({
           <ProfileGrid widgets={widgets} ownerId={profile.userId} gap={theme.widgetGap} styleOf={(i) => widgetStyle(parts, widgets[i])} />
         )}
       </section>
+      {isAvatarZoomed && profile.avatarAssetId !== null && (
+        <AvatarZoomModal
+          assetId={profile.avatarAssetId}
+          name={profile.displayName}
+          onClose={() => setIsAvatarZoomed(false)}
+        />
+      )}
     </div>
   );
 }
+
+  function AvatarZoomModal({
+    assetId,
+    name,
+    onClose,
+  }: {
+    assetId: number | null;
+    name: string;
+    onClose: () => void;
+  }) {
+    useEffect(() => {
+      const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+      document.addEventListener("keydown", onKey);
+      return () => document.removeEventListener("keydown", onKey);
+    }, [onClose]);
+
+    return createPortal(
+      <div
+        className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4 sm:p-6"
+        onClick={onClose}
+      >
+        <div className="relative pointer-events-all bg-white rounded-xl shadow-2xl overflow-hidden max-w-[90vw] max-h-[80vh]">
+          <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-center p-6">
+            {assetId ? (
+              <AssetImage
+                assetId={assetId}
+                className="max-h-full max-w-full object-contain"
+              />
+            ) : (
+              // Fallback if no assetId (shouldn't happen if called correctly)
+              <div className="w-48 h-48 flex items-center justify-center bg-gray-200 rounded-xl">
+                <span className="text-text-muted">No image</span>
+              </div>
+            )}
+          </div>
+          <button
+            type="button"
+            className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-100"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <Icon name="x" size={20} />
+          </button>
+        </div>
+      </div>,
+      document.body,
+    );
+  }
 
 /** The page's own background, over the app's shared one, for as long as the profile is shown. */
 export function PageBackdrop({ look }: { look: PartStyle }) {
