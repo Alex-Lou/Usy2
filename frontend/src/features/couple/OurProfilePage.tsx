@@ -119,7 +119,7 @@ export function OurProfilePage() {
       {tab === "allure" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="lg:order-2">
-            <div className="lg:sticky lg:top-8">
+            <div className="lg:sticky lg:top-[calc(var(--desk-topbar-h)+2rem)]">
               <p className="mb-2 text-sm text-text-muted">Aperçu en direct</p>
               <div className="pointer-events-none max-h-[46dvh] overflow-y-auto rounded-token border border-border lg:max-h-[78dvh]" aria-label="Aperçu de notre espace">
                 <div style={{ zoom: 0.62 }}>

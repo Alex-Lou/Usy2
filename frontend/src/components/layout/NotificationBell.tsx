@@ -12,7 +12,8 @@ function timeLabel(at: number): string {
   return new Date(at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 }
 
-export function NotificationBell() {
+/** The bell and its list: fixed at the top right on phones, or {@code inline} in the desktop top bar. */
+export function NotificationBell({ inline = false }: { inline?: boolean }) {
   const { items, unread, markAllRead, clear } = useNotifications();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ export function NotificationBell() {
   }
 
   return (
-    <div ref={rootRef} className="fixed right-4 top-[calc(var(--safe-top)+0.75rem)] z-40 lg:top-4">
+    <div ref={rootRef} className={inline ? "relative" : "fixed right-4 top-[calc(var(--safe-top)+0.75rem)] z-40 lg:hidden"}>
       <button
         onClick={toggle}
         aria-label={unread > 0 ? `Notifications (${unread} non lues)` : "Notifications"}
