@@ -53,7 +53,7 @@ export function NousPage() {
 
   return (
     <MotionConfig reducedMotion="user">
-    <div className="mx-auto flex max-w-xl flex-col gap-4" data-nous="">
+    <div className="mx-auto flex max-w-xl flex-col gap-4 lg:max-w-3xl" data-nous="">
       <header className="flex items-center gap-3 animate-fade-up">
         {view ? (
           <button type="button" onClick={back} aria-label="Retour" className="chip press text-sm">←</button>
