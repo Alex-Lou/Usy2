@@ -1,0 +1,212 @@
+[
+[
+"ma01",
+"u",
+"Le papier toilette : dessus ou dessous ?",
+"Dessus",
+"Dessous",
+"Je m'en fiche"
+],
+[
+"ma02",
+"u",
+"Tu fais ton lit le matin ?",
+"Toujours",
+"Jamais",
+"Quand quelqu'un vient"
+],
+[
+"ma03",
+"u",
+"Le dentifrice : au milieu ou en bas du tube ?",
+"Au milieu",
+"En bas"
+],
+[
+"ma04",
+"u",
+"Tu manges devant un écran ?",
+"Souvent",
+"Rarement",
+"Jamais"
+],
+[
+"ma05",
+"u",
+"Dans le lit, ton côté ?",
+"Gauche",
+"Droite",
+"En plein milieu"
+],
+[
+"ma06",
+"u",
+"Les messages vocaux, tu les écoutes…",
+"En accéléré",
+"En vitesse normale",
+"Pas du tout"
+],
+[
+"ma07",
+"u",
+"Douche le matin ou le soir ?",
+"Le matin",
+"Le soir",
+"Les deux"
+],
+[
+"ma08",
+"u",
+"Tu lis les notices ?",
+"Toujours",
+"Jamais"
+],
+[
+"ma09",
+"e",
+"Ton niveau de maniaquerie ?",
+"Chaos créatif",
+"Tout est aligné"
+],
+[
+"ma10",
+"e",
+"À quel point tu procrastines ?",
+"Je fais tout de suite",
+"Je le ferai… demain"
+],
+[
+"ma11",
+"e",
+"Ton attachement à ton téléphone ?",
+"Je l'oublie partout",
+"Il est greffé à ma main"
+],
+[
+"ma12",
+"e",
+"Ta frilosité ?",
+"T-shirt en hiver",
+"Pull en juillet"
+],
+[
+"ma13",
+"e",
+"Ton humeur au réveil ?",
+"Ne pas déranger",
+"Soleil levant"
+],
+[
+"ma14",
+"o",
+"Classe ces corvées, de la moins pénible à la pire :",
+"Vaisselle",
+"Linge",
+"Aspirateur",
+"Courses",
+"Poubelles"
+],
+[
+"ma15",
+"o",
+"Ta routine du matin, dans l'ordre :",
+"Café",
+"Douche",
+"Téléphone",
+"Petit-déjeuner"
+],
+[
+"ma16",
+"o",
+"Classe ce qui t'agace le plus :",
+"Les bruits de mastication",
+"Les retards",
+"Le désordre",
+"Les notifications"
+],
+[
+"ma17",
+"h",
+"La pièce de la maison où tu passes le plus de temps ?"
+],
+[
+"ma18",
+"h",
+"Ton tic de langage, en un mot ?"
+],
+[
+"ma19",
+"h",
+"L'appli que tu ouvres le plus ?"
+],
+[
+"ma20",
+"m",
+"Ton en-cas de minuit ?"
+],
+[
+"ma21",
+"m",
+"Le truc que tu perds tout le temps ?"
+],
+[
+"ma22",
+"m",
+"Ton rituel avant de dormir ?"
+],
+[
+"ma23",
+"f",
+"Je ne peux pas m'endormir sans ___"
+],
+[
+"ma24",
+"f",
+"Ce qui m'énerve le plus au quotidien, c'est ___"
+],
+[
+"ma25",
+"f",
+"Mon petit plaisir coupable, c'est ___"
+],
+[
+"ma26",
+"c",
+"Tes habitudes sous la couette ?",
+"Lire",
+"Téléphone",
+"Une série",
+"Un podcast",
+"De la musique",
+"Méditer",
+"Discuter",
+"Dormir direct"
+],
+[
+"ma27",
+"c",
+"En attendant quelqu'un, tu…",
+"Regardes ton téléphone",
+"Écoutes de la musique",
+"Observes les gens",
+"Lis",
+"Réfléchis",
+"Joues",
+"Ne fais rien"
+],
+[
+"ma28",
+"l",
+"Une habitude que tu aimerais prendre ?"
+],
+[
+"ma29",
+"l",
+"Une habitude que tu aimerais perdre ?"
+],
+[
+"ma30",
+"p",
+"Nos petites manies de couple : lesquelles on adore ?"
+]
+]
