@@ -131,7 +131,7 @@ function Backdrop({ look, fallback = null }: { look: PartStyle; fallback?: React
     return (
       <>
         <AssetImage assetId={look.photoAssetId} className="h-full w-full object-cover" />
-        <div className="absolute inset-0" style={{ background: look.bg ?? "#000000", opacity: (look.veil ?? 0) / 100 }} />
+        <div className="absolute inset-0" style={{ background: look.bg ?? "var(--profile-veil)", opacity: (look.veil ?? 0) / 100 }} />
       </>
     );
   }

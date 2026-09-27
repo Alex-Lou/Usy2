@@ -12,9 +12,9 @@
   border-color: var(--qz, var(--color-primary));
 }
 .qz-right {
-  border-color: #3fbf7f !important;
-  background: color-mix(in srgb, #3fbf7f 18%, var(--color-surface)) !important;
-  box-shadow: 0 0 0 4px color-mix(in srgb, #3fbf7f 25%, transparent);
+  border-color: var(--quiz-correct) !important;
+  background: color-mix(in srgb, var(--quiz-correct) 18%, var(--color-surface)) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--quiz-correct) 25%, transparent);
   animation: qz-bump 0.35s ease-out both;
 }
 .qz-wrong {
@@ -75,7 +75,7 @@
   100% { opacity: 1; transform: scale(1) rotate(0); }
 }
 @keyframes qz-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--qz, #7c6cf0) 55%, transparent); transform: scale(1); }
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--qz, var(--quiz-accent)) 55%, transparent); transform: scale(1); }
   50% { box-shadow: 0 0 0 14px transparent; transform: scale(1.06); }
 }
 @keyframes qz-ring {

@@ -92,7 +92,7 @@ export function CardsTab({ themes, daily, onAnswer }: { themes: NousTheme[]; dai
               <SwipeCard
                 key={card.id}
                 card={card}
-                color={theme(card.theme)?.color ?? "#ff6fa8"}
+                color={theme(card.theme)?.color ?? "var(--nous-accent)"}
                 themeLabel={`${theme(card.theme)?.emoji ?? ""} ${theme(card.theme)?.label ?? ""}`}
                 onSwipe={(dir) => {
                   if (dir === "right" && !card.fav) toggle(card, "fav");

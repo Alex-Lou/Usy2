@@ -13,7 +13,7 @@ import {
 
 type Props = { themes: NousTheme[]; partnerName: string };
 
-const colorOf = (themes: NousTheme[], id: string) => themes.find((t) => t.id === id)?.color ?? "#ff6fa8";
+const colorOf = (themes: NousTheme[], id: string) => themes.find((t) => t.id === id)?.color ?? "var(--nous-accent)";
 
 /**
  * 🔮 Guessing: one of the other one's answered questions at a time (all
@@ -108,7 +108,7 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
     );
   }
 
-  const color = current ? colorOf(themes, current.theme) : "#ff6fa8";
+  const color = current ? colorOf(themes, current.theme) : "var(--nous-accent)";
   const kind = current ? KINDS[current.kind] : null;
   return (
     <div className="flex flex-col gap-3">
