@@ -95,10 +95,9 @@ export function ProfileBody({
           <ProfileGrid widgets={widgets} ownerId={profile.userId} gap={theme.widgetGap} styleOf={(i) => widgetStyle(parts, widgets[i])} />
         )}
       </section>
-      {isAvatarZoomed && profile.avatarAssetId !== null && (
+      {isAvatarZoomed && profile.avatarAssetId != null && (
         <AvatarZoomModal
           assetId={profile.avatarAssetId}
-          name={profile.displayName}
           onClose={() => setIsAvatarZoomed(false)}
         />
       )}
@@ -108,11 +107,9 @@ export function ProfileBody({
 
   function AvatarZoomModal({
     assetId,
-    name,
     onClose,
   }: {
     assetId: number | null;
-    name: string;
     onClose: () => void;
   }) {
     useEffect(() => {
