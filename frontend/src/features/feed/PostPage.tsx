@@ -33,7 +33,7 @@ export function PostPage() {
   }, [id]);
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-4">
+    <div className="mx-auto flex max-w-2xl flex-col gap-4 lg:max-w-3xl">
       <Link to="/" className="flex items-center gap-1 self-start text-sm text-text-muted press hover:text-text">
         <Icon name="chevronLeft" size={16} /> Fil
       </Link>

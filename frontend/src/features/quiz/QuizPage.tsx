@@ -165,7 +165,7 @@ export function QuizPage() {
 }
 
 function Frame({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto flex max-w-xl flex-col gap-4">{children}</div>;
+  return <div className="mx-auto flex max-w-xl flex-col gap-4 lg:max-w-3xl">{children}</div>;
 }
 
 /** The winding path of a theme's levels: done ones show their stars, the next one pulses, locked ones wait. */
