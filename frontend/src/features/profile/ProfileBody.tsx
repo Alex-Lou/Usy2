@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { SPECIES, type Species } from "../../app/companion";
+import { SPECIES, type Species, getSpeciesSvg } from "../../app/companion";
 import { AssetImage } from "../../components/AssetImage";
 import { Animal } from "../../components/ui/animals";
 import { Avatar } from "../../components/ui/Avatar";
@@ -60,7 +60,7 @@ export function ProfileBody({
           <div className="px-6 pb-6">
             <div
               className="-mt-12 mb-3 inline-block rounded-full ring-4 ring-bg cursor-pointer"
-              onClick={() => profile.avatarAssetId !== null && setIsAvatarZoomed(true)}
+              onClick={() => profile.avatarAssetId != null && setIsAvatarZoomed(true)}
             >
               <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} species={profile.companion} />
             </div>
@@ -95,22 +95,25 @@ export function ProfileBody({
           <ProfileGrid widgets={widgets} ownerId={profile.userId} gap={theme.widgetGap} styleOf={(i) => widgetStyle(parts, widgets[i])} />
         )}
       </section>
+
       {isAvatarZoomed && profile.avatarAssetId != null && (
         <AvatarZoomModal
           assetId={profile.avatarAssetId}
-          companion={profile.companion}
+          companion={companion}
           onClose={() => setIsAvatarZoomed(false)}
         />
+      )}
     </div>
   );
 }
 
   function AvatarZoomModal({
     assetId,
+    companion,
     onClose,
   }: {
-    assetId: number | null;
-    companion?: string;
+    assetId: number | null | undefined;
+    companion?: Species;
     onClose: () => void;
   }) {
     useEffect(() => {
@@ -132,27 +135,23 @@ export function ProfileBody({
                   assetId={assetId}
                   className="max-h-full max-w-full object-contain"
                 />
-                {companion && (
-                  <Animal
-                    species={companion}
-                    size={32}
-                    className="absolute bottom-2 right-2"
-                  />
-                )}
+                {companion && getSpeciesSvg({ species: companion, className: "absolute bottom-2 right-2 w-8 h-8" })}
               </>
             ) : (
               // Fallback if no assetId (shouldn't happen if called correctly)
               <div className="w-48 h-48 flex items-center justify-center bg-gray-200 rounded-xl">
                 <span className="text-text-muted">No image</span>
               </div>
-            )
-            type="button"
-            className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-100"
-            onClick={onClose}
-            aria-label="Close"
-          >
-            <Icon name="x" size={20} />
-          </button>
+            )}
+            <button
+              type="button"
+              className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-100"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <Icon name="x" size={20} />
+            </button>
+          </div>
         </div>
       </div>,
       document.body,
