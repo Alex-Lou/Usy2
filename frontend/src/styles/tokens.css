@@ -72,8 +72,26 @@
   --safe-top: env(safe-area-inset-top, 0px);
   --topbar-h: calc(var(--safe-top) + 4.25rem);
   --tabbar-h: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+  --desk-topbar-h: 3.75rem;
   --shell-left-w: 16rem;
+  --shell-right-w: 20rem;
   --content-w: 42rem;
+}
+
+/* The desktop shell grows with the screen: from lg (Tailwind's 1024px) the
+   main column fills the space between the rails, up to a comfortable width;
+   from 2xl (1536px) the rails widen too. */
+@media (min-width: 1024px) {
+  :root {
+    --content-w: 56rem;
+  }
+}
+@media (min-width: 1536px) {
+  :root {
+    --shell-left-w: 18rem;
+    --shell-right-w: 22rem;
+    --content-w: 70rem;
+  }
 }
 
 /* ================================ 2. Roles ================================= */
