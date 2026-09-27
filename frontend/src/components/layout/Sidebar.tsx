@@ -1,77 +1,44 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
-import { CompanionPicker } from "../ui/CompanionPicker";
-import { Icon } from "../ui/Icon";
-import { HomeWidgets } from "../../features/feed/HomeWidgets";
-import { navItems } from "./nav";
-import { ThemeToggle } from "./ThemeToggle";
 
+/** Places one click away, below my profile (the main sections are in the top bar). */
+const SHORTCUTS: { to: string; label: string; emoji: string }[] = [
+  { to: "/profile/nous", label: "Notre profil", emoji: "💑" },
+  { to: "/jeux/nous", label: "Nous deux", emoji: "💞" },
+  { to: "/jeux/chat", label: "La maison de Moka", emoji: "🐱" },
+  { to: "/jeux/quiz", label: "Quiz", emoji: "🧠" },
+  { to: "/jeux/direct", label: "En direct", emoji: "⚡" },
+  { to: "/jeux/bataille", label: "Bataille navale", emoji: "🚢" },
+];
+
+const row = ({ isActive }: { isActive: boolean }) =>
+  "flex items-center gap-3 rounded-token px-2.5 py-2 text-sm font-semibold transition press "
+  + (isActive ? "bg-surface-2 text-text shadow-glow" : "text-text-muted hover:bg-surface-2/60 hover:text-text");
+
+/**
+ * 🖥️ The desktop left rail (lg and up), below the top bar: my profile, then
+ * our shortcuts.
+ */
 export function Sidebar() {
-  const { user, logout } = useAuth();
-  const items = navItems(user?.id);
+  const { user } = useAuth();
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-shell flex-col gap-2 overflow-y-auto overflow-x-hidden border-r border-border glass px-4 py-6 lg:flex">
-      <div className="mb-4 flex items-center gap-2 px-2">
-        <span className="grid h-10 w-10 place-items-center rounded-token btn-brand">
-          <Icon name="heart" size={20} />
-        </span>
-        <span className="font-display text-2xl font-bold text-grad">MemoCat</span>
-      </div>
+    <aside className="fixed bottom-0 left-0 top-desk-bar z-30 hidden w-shell flex-col gap-1 overflow-y-auto overflow-x-hidden border-r border-border glass px-3 py-4 lg:flex">
+      <NavLink to={user ? `/profile/${user.id}` : "/profile"} className={row}>
+        <Avatar name={user?.displayName ?? "?"} size={36} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
+        <span className="min-w-0 truncate">{user?.displayName}</span>
+      </NavLink>
 
-      <nav className="flex flex-col gap-1">
-        {items.map((it) => (
-          <NavLink
-            key={it.to}
-            to={it.to}
-            end={it.end}
-            className={({ isActive }) =>
-              "group flex items-center gap-3 rounded-token px-3 py-2.5 font-semibold transition press " +
-              (isActive
-                ? "bg-surface-2 text-text shadow-glow"
-                : "text-text-muted hover:bg-surface-2/60 hover:text-text")
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <span
-                  className={
-                    "grid h-9 w-9 place-items-center rounded-token-sm " +
-                    (isActive ? "btn-brand" : "bg-bg-2/60 text-text-muted group-hover:text-text")
-                  }
-                >
-                  <Icon name={it.icon} size={20} />
-                </span>
-                {it.label}
-              </>
-            )}
+      <p className="mt-4 px-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Raccourcis</p>
+      <nav className="flex flex-col gap-0.5" aria-label="Raccourcis">
+        {SHORTCUTS.map((s) => (
+          <NavLink key={s.to} to={s.to} className={row}>
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-token-sm bg-bg-2/60 text-lg" aria-hidden="true">{s.emoji}</span>
+            <span className="truncate">{s.label}</span>
           </NavLink>
         ))}
       </nav>
-
-      <div className="mt-4">
-        <HomeWidgets />
-      </div>
-
-      <div className="mt-auto flex flex-col gap-3">
-        <CompanionPicker compact />
-        <ThemeToggle />
-        <div className="flex items-center gap-3 rounded-token border border-border bg-bg-2/50 p-2">
-          <Avatar name={user?.displayName ?? "?"} size={38} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold">{user?.displayName}</p>
-            <p className="truncate text-xs text-text-muted">@{user?.username}</p>
-          </div>
-          <button
-            onClick={logout}
-            aria-label="Se déconnecter"
-            className="grid h-9 w-9 place-items-center rounded-token-sm text-text-muted transition hover:text-danger press"
-          >
-            <Icon name="logout" size={18} />
-          </button>
-        </div>
-      </div>
     </aside>
   );
 }
