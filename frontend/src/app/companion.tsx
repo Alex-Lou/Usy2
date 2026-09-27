@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useAuth } from "../features/auth/useAuth";
+import { Animal } from "../components/ui/animals.tsx";
 
 export const SPECIES = [
   "cat",
@@ -49,4 +50,8 @@ export function useCompanion(): { companion: Species; setCompanion: (s: Species)
   const companion = valid(user?.companion);
   const setCompanion = useCallback((s: Species) => updateCompanion(s), [updateCompanion]);
   return { companion, setCompanion };
+}
+
+export function getSpeciesSvg({ species, className = "" }: { species: Species; className?: string }) {
+  return <Animal species={species} className={className} />;
 }
