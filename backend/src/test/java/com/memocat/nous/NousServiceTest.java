@@ -192,21 +192,25 @@ class NousServiceTest {
     }
 
     @Test
-    void wordsWaitForTheVerdictOfThePersonItIsAbout() {
+    void wordsAreSaidCloseOrNotByTheOneWhoGuessedNeverJudgedByTheOther() {
         nous.answer("sam", new NousDtos.Answer("t05", null, "  Mon cœur  "));
         NousDtos.Reveal r = nous.guess("lou", new NousDtos.Answer("t05", null, "Chaton"));
 
         assertThat(r.verdict()).isNull();
         assertThat(r.answerText()).isEqualTo("Mon cœur");
         verify(events).publishEvent(any(CoupleActivity.class));
-        assertThat(nous.overview("sam").toJudge()).isEqualTo(1);
+        assertThat(nous.overview("lou").toSay()).isEqualTo(1);
+        assertThat(nous.overview("sam").toSay()).isZero();
 
-        assertThatThrownBy(() -> nous.judge("lou", r.guessId(), new NousDtos.Judge("right", null))).isInstanceOf(ResourceNotFoundException.class);
-        assertThatThrownBy(() -> nous.judge("sam", r.guessId(), new NousDtos.Judge("bof", null))).isInstanceOf(ContentValidationException.class);
-        NousDtos.Reveal judged = nous.judge("sam", r.guessId(), new NousDtos.Judge("close", "Presque, mais c'est « mon cœur » 😘"));
+        assertThatThrownBy(() -> nous.say("sam", r.guessId(), new NousDtos.Say("right"))).isInstanceOf(ResourceNotFoundException.class);
+        assertThatThrownBy(() -> nous.say("lou", r.guessId(), new NousDtos.Say("bof"))).isInstanceOf(ContentValidationException.class);
+        NousDtos.Reveal said = nous.say("lou", r.guessId(), new NousDtos.Say("close"));
 
-        assertThat(judged.verdict()).isEqualTo(NousGuess.CLOSE);
+        assertThat(said.verdict()).isEqualTo(NousGuess.CLOSE);
+        assertThat(said.answerText()).isEqualTo("Mon cœur");
         assertThat(nous.overview("lou").me().percent()).isEqualTo(50);
+        assertThat(nous.overview("lou").toSay()).isZero();
+        assertThat(nous.say("lou", r.guessId(), new NousDtos.Say("right")).verdict()).isEqualTo(NousGuess.RIGHT); // changed my mind
         assertThat(nous.history("sam").theirs()).singleElement().satisfies(x -> assertThat(x.guessText()).isEqualTo("Chaton"));
     }
 
@@ -298,7 +302,7 @@ class NousServiceTest {
         nous.letter("lou", new NousDtos.Letter("xh", "z")); // twice the same: one error
         assertThat(nous.toGuess("lou")).singleElement().satisfies(q -> assertThat(q.tried()).isEqualTo("EZ"));
         assertThat(nous.history("lou").mine()).isEmpty();
-        assertThat(nous.overview("sam").toJudge()).isZero();
+        assertThat(nous.overview("lou").toSay()).isZero();
 
         nous.letter("lou", new NousDtos.Letter("xh", "c"));
         nous.letter("lou", new NousDtos.Letter("xh", "r"));
@@ -328,7 +332,7 @@ class NousServiceTest {
     }
 
     @Test
-    void aShortAnswerIsRightAtOnceWhenItIsTheSameWordElseTheOtherOneJudges() {
+    void aShortAnswerIsRightAtOnceWhenItIsTheSameWordElseTheOneWhoGuessedSays() {
         nous.answer("sam", new NousDtos.Answer("xm", null, "Montréal"));
         nous.answer("sam", new NousDtos.Answer("xf", null, "les fossettes"));
 
@@ -336,7 +340,7 @@ class NousServiceTest {
         NousDtos.Reveal fill = nous.guess("lou", new NousDtos.Answer("xf", null, "les yeux"));
         assertThat(fill.verdict()).isNull();
         verify(events).publishEvent(any(CoupleActivity.class));
-        assertThat(nous.judge("sam", fill.guessId(), new NousDtos.Judge("wrong", null)).verdict()).isEqualTo(NousGuess.WRONG);
+        assertThat(nous.say("lou", fill.guessId(), new NousDtos.Say("wrong")).verdict()).isEqualTo(NousGuess.WRONG);
     }
 
     @Test
@@ -388,36 +392,14 @@ class NousServiceTest {
     }
 
     @Test
-    void scoresByThemeAndTheirAnswersStayLockedUntilGuessed() {
+    void scoresByThemeAndHowOftenWeAnsweredTheSame() {
         nous.answer("lou", new NousDtos.Answer("saison", List.of(1), null));
         nous.answer("sam", new NousDtos.Answer("saison", List.of(1), null));
         nous.answer("lou", new NousDtos.Answer("xu", List.of(0), null));
         nous.answer("sam", new NousDtos.Answer("xu", List.of(1), null));
         nous.answer("sam", new NousDtos.Answer("xf", null, "ton rire"));
-
-        List<NousDtos.Compare> before = nous.compare("lou", "general");
-        assertThat(before).extracting(NousDtos.Compare::id).containsExactly("saison", "xu");
-        assertThat(before).allSatisfy(c -> {
-            assertThat(c.locked()).isTrue();
-            assertThat(c.theirs()).isNull();
-            assertThat(c.same()).isNull();
-        });
-
         nous.guess("lou", new NousDtos.Answer("saison", List.of(1), null));
         nous.guess("lou", new NousDtos.Answer("xu", List.of(0), null));
-
-        List<NousDtos.Compare> after = nous.compare("lou", null);
-        assertThat(after).extracting(NousDtos.Compare::id).containsExactly("saison", "xu", "xf");
-        NousDtos.Compare saison = after.get(0);
-        assertThat(saison.locked()).isFalse();
-        assertThat(saison.theirs().choices()).containsExactly(1);
-        assertThat(saison.same()).isTrue();
-        assertThat(saison.myVerdict()).isEqualTo(NousGuess.RIGHT);
-        assertThat(after.get(1).same()).isFalse();
-        assertThat(after.get(2)).satisfies(c -> {
-            assertThat(c.mine()).isNull();
-            assertThat(c.locked()).isTrue();
-        });
 
         NousDtos.Scores scores = nous.scores("lou");
         assertThat(scores.me().percent()).isEqualTo(50);
@@ -430,5 +412,26 @@ class NousServiceTest {
         assertThat(tendre.me().percent()).isNull();
         assertThat(tendre.theirAnswers()).isEqualTo(1);
         assertThat(tendre.agreement().percent()).isNull();
+    }
+
+    @Test
+    void theQuestionOfTheDayIsMarkedAtOnceAndSaysWhetherTheyAnsweredAndIGuessed() {
+        NousDtos.Overview o = nous.overview("lou");
+        NousDtos.Card daily = o.daily();
+        assertThat(daily.kind()).isIn(NousBank.CHOICE, NousBank.ONE, NousBank.SCALE, NousBank.RANK);
+        assertThat(o.dailyTheirs()).isFalse();
+        assertThat(o.dailyGuessed()).isFalse();
+
+        List<Integer> pick = switch (daily.kind()) {
+            case NousBank.SCALE -> List.of(5);
+            case NousBank.RANK -> java.util.stream.IntStream.range(0, daily.options().size()).boxed().toList();
+            default -> List.of(0);
+        };
+        nous.answer("sam", new NousDtos.Answer(daily.id(), pick, null));
+        assertThat(nous.overview("lou").dailyTheirs()).isTrue();
+
+        assertThat(nous.guess("lou", new NousDtos.Answer(daily.id(), pick, null)).verdict()).isEqualTo(NousGuess.RIGHT);
+        assertThat(nous.overview("lou").dailyGuessed()).isTrue();
+        assertThat(nous.overview("sam").daily().id()).isEqualTo(daily.id()); // the same for both of us
     }
 }

@@ -23,11 +23,13 @@ public final class NousDtos {
 
     /**
      * {@code me}: how well I know the other one; {@code them}: how well they know me.
-     * {@code toGuess}: their answers I haven't guessed; {@code toJudge}: guesses about me waiting for my verdict;
+     * {@code toGuess}: their answers I haven't guessed; {@code toSay}: my guesses in words waiting for me to
+     * say how close they were; {@code daily}: today's question, with whether they answered it and I guessed it;
      * {@code reset}: a proposal to start again, waiting for an answer (or null).
      */
     public record Overview(String partnerName, List<Theme> themes, int answerable, int myAnswers, int theirAnswers,
-                           int toGuess, int toJudge, Score me, Score them, Card daily, ResetState reset) {
+                           int toGuess, int toSay, Score me, Score them, Card daily, boolean dailyTheirs, boolean dailyGuessed,
+                           ResetState reset) {
     }
 
     /** A reset proposed by one of us ({@code mine}: by me), for a theme or everything ({@code theme} null). */
@@ -64,7 +66,7 @@ public final class NousDtos {
 
     /**
      * A guess with the answer it was about: {@code verdict} right / close /
-     * some / wrong, or null while the author hasn't judged it; {@code points}
+     * some / wrong, or null until the one who guessed in words said how close it was; {@code points}
      * 0–100 (choices: ticks in common ÷ ticks in all, {@code common} and
      * {@code union}; ranking: well placed ÷ all, the same two; scale: 100 less
      * 20 a step apart; hangman: 100 less 10 an error, and its {@code letters}
@@ -91,15 +93,6 @@ public final class NousDtos {
     public record Said(List<Integer> choices, String text) {
     }
 
-    /**
-     * A question side by side: my answer and theirs. {@code locked} while I
-     * haven't guessed theirs (it stays hidden); {@code same} when both are
-     * known and alike; the verdicts of my guess about theirs and theirs about mine.
-     */
-    public record Compare(String id, String theme, String kind, String text, List<String> options, Said mine, Said theirs,
-                          boolean locked, Boolean same, String myVerdict, String theirVerdict) {
-    }
-
     /** {@code mine}: my guesses about the other; {@code theirs}: their guesses about me. */
     public record History(List<Reveal> mine, List<Reveal> theirs) {
     }
@@ -111,6 +104,7 @@ public final class NousDtos {
     public record Mark(String id, String kind, boolean on) {
     }
 
-    public record Judge(String verdict, String note) {
+    /** How close my guess in words was: right, close or wrong. */
+    public record Say(String verdict) {
     }
 }

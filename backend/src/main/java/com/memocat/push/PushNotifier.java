@@ -129,10 +129,8 @@ public class PushNotifier {
                     "/jeux/quiz", "quiz-" + a.refId());
             case CoupleActivity.QUIZ_DONE -> new PushPayload(TITLE, a.actorName() + " a relevé ton défi quiz 🏁 Qui a gagné ?",
                     "/jeux/quiz?duel=" + a.refId(), "quiz-" + a.refId());
-            case CoupleActivity.NOUS_GUESS -> new PushPayload(TITLE, a.actorName() + " a deviné une de tes réponses : à toi de juger ⚖️",
-                    "/jeux/nous?tab=judge", "nous-" + a.refId());
-            case CoupleActivity.NOUS_JUDGED -> new PushPayload(TITLE, a.actorName() + " a jugé ta devinette : " + verdict(a.detail()),
-                    "/jeux/nous?tab=history", "nous-" + a.refId());
+            case CoupleActivity.NOUS_GUESS -> new PushPayload(TITLE, a.actorName() + " a deviné une de tes réponses 💞",
+                    "/jeux/nous?v=results&side=them", "nous-" + a.refId());
             case CoupleActivity.NOUS_RESET_ASK -> new PushPayload(TITLE, a.actorName() + " propose de repartir de zéro dans 💞 Nous deux"
                     + (a.detail() == null ? "" : " (" + a.detail() + ")") + " : d'accord ?", "/jeux/nous", "nous-reset");
             case CoupleActivity.NOUS_RESET -> "accepted".equals(a.detail())
@@ -155,10 +153,6 @@ public class PushNotifier {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onLiveNotice(com.memocat.live.LiveEvents.Notice n) {
         users.findById(n.recipientId()).ifPresent(u -> notify(u, new PushPayload(TITLE, n.body(), n.url(), n.tag()), true));
-    }
-
-    private static String verdict(String v) {
-        return "right".equals(v) ? "juste ! 🎯" : "close".equals(v) ? "presque ! 😏" : "raté 🙈";
     }
 
     /** A shared date is tomorrow: both people hear about it, even with the app open. */
