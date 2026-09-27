@@ -16,7 +16,8 @@ import java.time.Instant;
  * 💞 Nous deux: one guess about the other person's answer. Ticked choices
  * (a bit set) are judged at once by their share of ticks in common (see
  * NousService.verdict); words wait for the verdict of the person it is about (right, close
- * or wrong, with a little note).
+ * or wrong, with a little note). A hangman is played letter by letter: while
+ * {@code letters} is set and there is no verdict yet, the game is still on.
  */
 @Entity
 @Table(name = "nous_guess")
@@ -48,6 +49,12 @@ public class NousGuess {
 
     @Column(name = "guess_text")
     private String text;
+
+    /** A ranking: the option indexes, first to last, comma-separated. */
+    private String ranking;
+
+    /** A hangman: the letters tried so far, in order. */
+    private String letters;
 
     private String verdict;
 
@@ -91,6 +98,19 @@ public class NousGuess {
         return choices;
     }
 
+    public String getRanking() {
+        return ranking;
+    }
+
+    public String getLetters() {
+        return letters;
+    }
+
+    /** A hangman still being played (no verdict yet). */
+    public boolean playing() {
+        return letters != null && verdict == null;
+    }
+
     public String getText() {
         return text;
     }
@@ -105,6 +125,22 @@ public class NousGuess {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public static NousGuess ranked(User guesser, User author, String questionId, String ranking, Instant now) {
+        NousGuess g = new NousGuess(guesser, author, questionId, null, null, now);
+        g.ranking = ranking;
+        return g;
+    }
+
+    public static NousGuess hangman(User guesser, User author, String questionId, Instant now) {
+        NousGuess g = new NousGuess(guesser, author, questionId, null, null, now);
+        g.letters = "";
+        return g;
+    }
+
+    public void tryLetter(char letter) {
+        letters = letters + letter;
     }
 
     public void judge(String verdict, String note, Instant now) {
