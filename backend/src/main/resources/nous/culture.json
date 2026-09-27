@@ -1,0 +1,210 @@
+[
+[
+"cu01",
+"u",
+"Film ou série ?",
+"Film",
+"Série"
+],
+[
+"cu02",
+"u",
+"Podcast ou radio ?",
+"Podcast",
+"Radio",
+"Ni l'un ni l'autre"
+],
+[
+"cu03",
+"u",
+"Salle de cinéma ou canapé ?",
+"Salle de cinéma",
+"Canapé"
+],
+[
+"cu04",
+"u",
+"VF ou VO ?",
+"VF",
+"VO sous-titrée"
+],
+[
+"cu05",
+"u",
+"Tu lis la fin d'un livre avant de le finir ?",
+"Oui, je vérifie",
+"Jamais de la vie"
+],
+[
+"cu06",
+"u",
+"Tu chantes sous la douche ?",
+"Toujours",
+"Parfois",
+"Jamais"
+],
+[
+"cu07",
+"u",
+"Musée ou parc d'attractions ?",
+"Musée",
+"Parc d'attractions"
+],
+[
+"cu08",
+"u",
+"Aux jeux de société, quand tu perds…",
+"Je boude",
+"Je rigole",
+"Je veux une revanche"
+],
+[
+"cu09",
+"e",
+"Ta peur des spoilers ?",
+"Raconte-moi tout",
+"Un mot et je te quitte"
+],
+[
+"cu10",
+"e",
+"À quel point tu aimes danser ?",
+"Pas un pas",
+"Toujours sur la piste"
+],
+[
+"cu11",
+"e",
+"Ton amour des films d'horreur ?",
+"Jamais de la vie",
+"Plus c'est gore, mieux c'est"
+],
+[
+"cu12",
+"e",
+"Ton envie de karaoké ?",
+"Plutôt me taire",
+"Le micro, s'il vous plaît"
+],
+[
+"cu13",
+"o",
+"Classe ces soirées télé :",
+"Film",
+"Série",
+"Documentaire",
+"Émission de cuisine",
+"Télé-réalité"
+],
+[
+"cu14",
+"o",
+"Classe ces sorties du week-end :",
+"Concert",
+"Expo",
+"Cinéma",
+"Randonnée"
+],
+[
+"cu15",
+"o",
+"Classe ces façons de te détendre :",
+"Lire",
+"Jeux vidéo",
+"Séries",
+"Sport",
+"Sieste"
+],
+[
+"cu16",
+"h",
+"Ton genre de musique préféré, en un mot ?"
+],
+[
+"cu17",
+"h",
+"Ton super-héros préféré ?"
+],
+[
+"cu18",
+"h",
+"L'instrument de musique dont tu rêves ?"
+],
+[
+"cu19",
+"h",
+"Ton jeu de société préféré ?"
+],
+[
+"cu20",
+"m",
+"Le dernier livre que tu as adoré ?"
+],
+[
+"cu21",
+"m",
+"La chanson qui te met de bonne humeur ?"
+],
+[
+"cu22",
+"m",
+"La série que tu recommandes à tout le monde ?"
+],
+[
+"cu23",
+"m",
+"L'artiste que tu rêves de voir en concert ?"
+],
+[
+"cu24",
+"f",
+"Le personnage de fiction qui me ressemble le plus, c'est ___"
+],
+[
+"cu25",
+"f",
+"Si ma vie était un film, ce serait un film ___"
+],
+[
+"cu26",
+"f",
+"Un livre qui compte pour moi : ___"
+],
+[
+"cu27",
+"c",
+"Tes loisirs du dimanche ?",
+"Lecture",
+"Jeux vidéo",
+"Séries",
+"Sport",
+"Cuisine",
+"Balade",
+"Musique",
+"Bricolage",
+"Jardinage",
+"Sieste"
+],
+[
+"cu28",
+"c",
+"Les jeux que tu préfères ?",
+"Jeux de cartes",
+"Jeux de plateau",
+"Jeux vidéo",
+"Escape games",
+"Quiz",
+"Jeux de rôle",
+"Puzzles"
+],
+[
+"cu29",
+"l",
+"Le spectacle ou concert le plus fou que tu aies vu ?"
+],
+[
+"cu30",
+"p",
+"Quelle œuvre voudrais-tu absolument faire découvrir à l'autre ?"
+]
+]

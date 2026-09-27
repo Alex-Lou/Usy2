@@ -271,5 +271,56 @@
 "f40",
 "p",
 "Quelle promesse aimerais-tu qu'on se fasse ?"
+],
+[
+"fx01",
+"u",
+"Plutôt tête ou cœur ?",
+"Tête",
+"Cœur"
+],
+[
+"fx02",
+"e",
+"À quel point tu crois au destin ?",
+"Tout est hasard",
+"Tout est écrit"
+],
+[
+"fx03",
+"e",
+"Ton optimisme ?",
+"Verre à moitié vide",
+"Verre à moitié plein"
+],
+[
+"fx04",
+"o",
+"Classe ce qui compte le plus dans la vie :",
+"L'amour",
+"La santé",
+"La liberté",
+"La famille",
+"Les amis"
+],
+[
+"fx05",
+"h",
+"La valeur qui te définit, en un mot ?"
+],
+[
+"fx06",
+"m",
+"Une personne qui t'inspire ?"
+],
+[
+"fx07",
+"f",
+"Je serai fier·e de ma vie si ___"
+],
+[
+"fx08",
+"f",
+"Ce qui me donne de l'énergie, c'est ___"
 ]
 ]

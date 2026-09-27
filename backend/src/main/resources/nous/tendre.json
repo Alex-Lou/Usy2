@@ -260,5 +260,56 @@
 "t40",
 "p",
 "Écris-moi un mot doux maintenant, à voix haute."
+],
+[
+"tx01",
+"u",
+"Câlin ou bisou ?",
+"Câlin",
+"Bisou"
+],
+[
+"tx02",
+"u",
+"Les mots doux : à l'oral ou par écrit ?",
+"À l'oral",
+"Par écrit",
+"Les deux"
+],
+[
+"tx03",
+"e",
+"Ton besoin de câlins ?",
+"Pas trop près",
+"Pieuvre affectueuse"
+],
+[
+"tx04",
+"o",
+"Classe ces moments tendres :",
+"Le réveil ensemble",
+"Le câlin du soir",
+"Les balades main dans la main",
+"Les petits mots"
+],
+[
+"tx05",
+"h",
+"Le petit surnom que tu donnes à l'autre ?"
+],
+[
+"tx06",
+"m",
+"Le geste de l'autre qui te fait fondre ?"
+],
+[
+"tx07",
+"f",
+"Je me sens aimé·e quand ___"
+],
+[
+"tx08",
+"f",
+"Mon moment préféré de la journée avec l'autre, c'est ___"
 ]
 ]
