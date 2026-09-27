@@ -135,7 +135,7 @@ export function ProfileBody({
                   assetId={assetId}
                   className="max-h-full max-w-full object-contain"
                 />
-                {companion && getSpeciesSvg({ species: companion, className: "absolute bottom-2 right-2 w-8 h-8" })}
+                {companion && getSpeciesSvg({ species: companion, className: "absolute bottom-4 right-4 w-16 h-16" })}
               </>
             ) : (
               // Fallback if no assetId (shouldn't happen if called correctly)
