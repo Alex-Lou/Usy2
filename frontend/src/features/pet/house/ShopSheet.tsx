@@ -28,7 +28,7 @@ export function ShopSheet({ pet, onChange, onClose }: { pet: Pet; onChange: (p: 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 animate-fade-up lg:pl-64" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 animate-fade-up lg:pl-shell" onClick={onClose}>
       <div
         role="dialog"
         aria-label="Boutique"

@@ -42,6 +42,14 @@ export default {
       backgroundImage: {
         brand: "var(--grad)",
       },
+      // The desktop shell (tokens.css, "Layout"): w-shell / lg:pl-shell for
+      // the side menu, max-w-content for the main column.
+      spacing: {
+        shell: "var(--shell-left-w)",
+      },
+      maxWidth: {
+        content: "var(--content-w)",
+      },
       keyframes: {
         shimmer: { "100%": { transform: "translateX(100%)" } },
       },

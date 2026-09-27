@@ -202,10 +202,10 @@ export function toggled(list: number[], i: number): number[] {
 }
 
 export const VERDICTS: Record<Verdict, { label: string; emoji: string; color: string }> = {
-  right: { label: "Juste !", emoji: "🎯", color: "#3fbf7f" },
-  close: { label: "Presque !", emoji: "😏", color: "#f0a020" },
-  some: { label: "Un peu", emoji: "🤏", color: "#8a7bd8" },
-  wrong: { label: "Raté", emoji: "🙈", color: "#e2534f" },
+  right: { label: "Juste !", emoji: "🎯", color: "var(--verdict-right)" },
+  close: { label: "Presque !", emoji: "😏", color: "var(--verdict-close)" },
+  some: { label: "Un peu", emoji: "🤏", color: "var(--verdict-some)" },
+  wrong: { label: "Raté", emoji: "🙈", color: "var(--verdict-wrong)" },
 };
 
 /** Why a guess got its points, in a few words. */

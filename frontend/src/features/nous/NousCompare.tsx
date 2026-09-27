@@ -74,7 +74,7 @@ export function CompareTab({ themes, partnerName, theme, onTheme, onGuess, onAns
         {shown.slice(0, 60).map((c, i) => {
           const t = themes.find((x) => x.id === c.theme);
           return (
-            <li key={c.id} className="card qz-slide flex flex-col gap-2 p-3" style={{ borderLeft: `4px solid ${t?.color ?? "#ff6fa8"}`, animationDelay: `${Math.min(i, 10) * 35}ms` }} data-nous-compare-item={c.id}>
+            <li key={c.id} className="card qz-slide flex flex-col gap-2 p-3" style={{ borderLeft: `4px solid ${t?.color ?? "var(--nous-accent)"}`, animationDelay: `${Math.min(i, 10) * 35}ms` }} data-nous-compare-item={c.id}>
               <div className="flex items-start gap-2">
                 <p className="text-sm font-semibold leading-snug">{c.kind === "f" ? c.text.replace("___", "…") : c.text}</p>
                 <span className="ml-auto shrink-0 text-xs" title={KINDS[c.kind].label} aria-label={KINDS[c.kind].label}>{KINDS[c.kind].emoji}</span>
@@ -94,7 +94,7 @@ export function CompareTab({ themes, partnerName, theme, onTheme, onGuess, onAns
                 </Side>
               </div>
               {c.same != null && (
-                <p className={"self-start rounded-full px-2 py-0.5 text-[11px] font-bold " + (c.same ? "text-white" : "bg-surface-2 text-text-muted")} style={c.same ? { background: "#3fbf7f" } : undefined}>
+                <p className={"self-start rounded-full px-2 py-0.5 text-[11px] font-bold " + (c.same ? "text-white" : "bg-surface-2 text-text-muted")} style={c.same ? { background: "var(--verdict-right)" } : undefined}>
                   {c.same ? "🤝 Pareil !" : "↔️ Différent"}
                 </p>
               )}

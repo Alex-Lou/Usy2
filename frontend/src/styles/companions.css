@@ -144,7 +144,7 @@
 svg.mc-badge-face {
   overflow: visible; /* flippers and ears may reach past the edge */
   /* No disc behind the little head any more: a soft shadow keeps it readable on any photo. */
-  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.55));
+  filter: drop-shadow(0 1px 1.5px var(--companion-badge-shadow));
 }
 svg.mc-badge-face .mc-head,
 svg.mc-badge-face .mc-face *,
