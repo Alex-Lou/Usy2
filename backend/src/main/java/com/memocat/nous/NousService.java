@@ -36,9 +36,10 @@ import java.util.stream.Collectors;
 /**
  * 💞 Nous deux: cards to talk about (favourites, "on en a parlé"), answers
  * about oneself, and guesses about the other one. Guessed choices, a single
- * choice, a scale, a ranking and a hangman are judged at once (see
- * {@link #marked}); words wait for the verdict of the person it is about (a
- * short answer only when it isn't the same word). An answer stays hidden from
+ * choice, a scale, a ranking and a hangman are marked at once (see
+ * {@link #marked}); for words, the one who guessed sees the answer and says
+ * how close they were (a short answer only when it isn't the same word):
+ * nobody judges the other. An answer stays hidden from
  * the other one until they have guessed it; changing it clears their guesses
  * about it (they guess again). Either of us can start their own answers again
  * (a theme or all); starting again for both waits for the other one's yes.
@@ -47,7 +48,6 @@ import java.util.stream.Collectors;
 public class NousService {
 
     static final int MAX_TEXT = 280;
-    static final int MAX_NOTE = 140;
     static final int MAX_SHORT = 40;
     private static final ZoneId HOME = ZoneId.of("Europe/Paris");
     private static final Set<String> VERDICTS = Set.of(NousGuess.RIGHT, NousGuess.CLOSE, NousGuess.WRONG);
@@ -93,13 +93,17 @@ public class NousService {
         List<NousGuess> aboutMe = done(guesses.findByAuthorIdOrderByCreatedAtDesc(me.getId()));
         Set<String> guessed = myGuesses.stream().map(NousGuess::getQuestionId).collect(Collectors.toSet());
         int toGuess = (int) theirs.stream().filter(id -> !guessed.contains(id)).count();
-        int toJudge = (int) aboutMe.stream().filter(g -> g.getVerdict() == null).count();
-        NousDtos.Card daily = daily(all).map(q -> card(q, me, mine, marksOf())).orElse(null);
+        int toSay = (int) myGuesses.stream().filter(g -> g.getVerdict() == null).count();
+        Optional<NousBank.Question> today = daily(all);
+        NousDtos.Card daily = today.map(q -> card(q, me, mine, marksOf())).orElse(null);
+        boolean dailyTheirs = today.map(q -> theirs.contains(q.id())).orElse(false);
+        boolean dailyGuessed = today.map(q -> guessed.contains(q.id())).orElse(false);
         NousDtos.ResetState reset = resets.findFirstByOrderByCreatedAtDesc().map(r -> new NousDtos.ResetState(
                 r.getRequestedBy().getId().equals(me.getId()), r.getRequestedBy().getDisplayName(), r.getTheme(), r.getCreatedAt())).orElse(null);
         return new NousDtos.Overview(partner.map(User::getDisplayName).orElse(null), themes,
-                (int) all.stream().filter(NousBank.Question::guessable).count(), mine.size(), theirs.size(), toGuess, toJudge,
-                score(myGuesses, partner.map(p -> byQuestion(p.getId())).orElse(Map.of())), score(aboutMe, byQuestion(me.getId())), daily, reset);
+                (int) all.stream().filter(NousBank.Question::guessable).count(), mine.size(), theirs.size(), toGuess, toSay,
+                score(myGuesses, partner.map(p -> byQuestion(p.getId())).orElse(Map.of())), score(aboutMe, byQuestion(me.getId())), daily,
+                dailyTheirs, dailyGuessed, reset);
     }
 
     /** How well we know each other, in all and theme by theme, and how often we answered the same. */
@@ -122,37 +126,6 @@ public class NousService {
         }).toList();
         Set<String> every = bank.all().stream().map(NousBank.Question::id).collect(Collectors.toSet());
         return new NousDtos.Scores(score(myGuesses, theirs), score(aboutMe, mine), agreement(every, mine, theirs, myGuesses), themes);
-    }
-
-    /**
-     * My answers and theirs, side by side (the questions either of us
-     * answered). Theirs stays locked until I have guessed it.
-     */
-    @Transactional(readOnly = true)
-    public List<NousDtos.Compare> compare(String username, String theme) {
-        User me = user(username);
-        Optional<User> partner = partner(me);
-        Map<String, NousAnswer> mine = byQuestion(me.getId());
-        Map<String, NousAnswer> theirs = partner.map(p -> byQuestion(p.getId())).orElse(Map.of());
-        Map<String, NousGuess> myGuesses = done(guesses.findByGuesserIdOrderByCreatedAtDesc(me.getId())).stream()
-                .collect(Collectors.toMap(NousGuess::getQuestionId, Function.identity(), (a, b) -> a));
-        Map<String, NousGuess> aboutMe = done(guesses.findByAuthorIdOrderByCreatedAtDesc(me.getId())).stream()
-                .collect(Collectors.toMap(NousGuess::getQuestionId, Function.identity(), (a, b) -> a));
-        return bank.all().stream().filter(NousBank.Question::guessable)
-                .filter(q -> theme == null || theme.isBlank() || q.theme().equals(theme))
-                .filter(q -> mine.containsKey(q.id()) || theirs.containsKey(q.id()))
-                .map(q -> {
-                    NousAnswer a = mine.get(q.id());
-                    NousAnswer b = theirs.get(q.id());
-                    NousGuess my = myGuesses.get(q.id());
-                    NousGuess their = aboutMe.get(q.id());
-                    boolean locked = b != null && my == null;
-                    NousDtos.Said shownTheirs = b == null || locked ? null : said(q, b);
-                    Boolean same = a != null && shownTheirs != null ? same(q, a, b) : null;
-                    return new NousDtos.Compare(q.id(), q.theme(), q.kind(), q.text(), q.options(), a == null ? null : said(q, a),
-                            shownTheirs, locked, same, my == null ? null : marked(my, q, b).verdict(),
-                            their == null ? null : marked(their, q, a).verdict());
-                }).toList();
     }
 
     /** The cards of a theme (all of them when {@code theme} is blank). */
@@ -382,11 +355,15 @@ public class NousService {
                 reveals(done(guesses.findByAuthorIdOrderByCreatedAtDesc(me.getId())), mine));
     }
 
-    /** My verdict on a guess about me (in words): right, close or wrong, with a little note. */
+    /**
+     * How close my guess in words was, said by me once I see the answer:
+     * right (« C'était ça »), close (« Pas loin ») or wrong (« À découvrir »).
+     * It can be changed.
+     */
     @Transactional
-    public NousDtos.Reveal judge(String username, long guessId, NousDtos.Judge request) {
+    public NousDtos.Reveal say(String username, long guessId, NousDtos.Say request) {
         User me = user(username);
-        NousGuess g = guesses.findById(guessId).filter(x -> x.getAuthor().getId().equals(me.getId()))
+        NousGuess g = guesses.findById(guessId).filter(x -> x.getGuesser().getId().equals(me.getId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Devinette introuvable"));
         NousBank.Question q = question(g.getQuestionId());
         if (!q.inWords() || NousBank.HANGMAN.equals(q.kind())) {
@@ -396,13 +373,8 @@ public class NousService {
         if (verdict == null || !VERDICTS.contains(verdict)) {
             throw new ContentValidationException("Verdict inconnu");
         }
-        String note = request.note() == null || request.note().isBlank() ? null : words(request.note(), MAX_NOTE);
-        boolean first = g.getVerdict() == null;
-        g.judge(verdict, note, clock.instant());
-        if (first) {
-            events.publishEvent(new CoupleActivity(CoupleActivity.NOUS_JUDGED, me.getId(), me.getDisplayName(), verdict, g.getId()));
-        }
-        return reveal(g, q, answers.findByUserIdAndQuestionId(me.getId(), q.id()).orElse(null));
+        g.judge(verdict, g.getNote(), clock.instant());
+        return reveal(g, q, answers.findByUserIdAndQuestionId(g.getAuthor().getId(), q.id()).orElse(null));
     }
 
     private List<NousDtos.Reveal> reveals(List<NousGuess> list, Map<String, NousAnswer> answersOf) {
@@ -479,9 +451,14 @@ public class NousService {
         return new NousDtos.Card(q.id(), q.theme(), q.kind(), q.text(), q.options(), fav, talked, mine.contains(q.id()));
     }
 
-    /** The same card for both of us each day (Paris time): one to talk about or to answer in words. */
+    /**
+     * The same question for both of us each day (Paris time), one marked at
+     * once (ticks, this or that, a scale, a ranking): each answers, guesses
+     * the other and sees straight away.
+     */
     private Optional<NousBank.Question> daily(List<NousBank.Question> all) {
-        List<NousBank.Question> pool = all.stream().filter(q -> !NousBank.CHOICE.equals(q.kind())).toList();
+        List<NousBank.Question> pool = all.stream()
+                .filter(q -> Set.of(NousBank.CHOICE, NousBank.ONE, NousBank.SCALE, NousBank.RANK).contains(q.kind())).toList();
         if (pool.isEmpty()) {
             return Optional.empty();
         }

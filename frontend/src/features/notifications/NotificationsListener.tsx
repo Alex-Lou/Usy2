@@ -84,9 +84,8 @@ export function NotificationsListener() {
         // On the quiz page the duel list updates by itself.
         if (a.kind === "quiz-challenge") notify(`${a.actorName} te lance un défi quiz 🎯 ${a.detail ?? ""}`, "/jeux/quiz");
         else notify(`${a.actorName} a relevé ton défi quiz 🏁 Qui a gagné ?`, `/jeux/quiz?duel=${a.refId}`);
-      } else if ((a.kind === "nous-guess" || a.kind === "nous-judged") && !window.location.pathname.startsWith("/jeux/nous")) {
-        if (a.kind === "nous-guess") notify(`${a.actorName} a deviné une de tes réponses : à toi de juger ⚖️`, "/jeux/nous?tab=judge");
-        else notify(`${a.actorName} a jugé ta devinette : ${a.detail === "right" ? "juste ! 🎯" : a.detail === "close" ? "presque ! 😏" : "raté 🙈"}`, "/jeux/nous?tab=history");
+      } else if (a.kind === "nous-guess" && !window.location.pathname.startsWith("/jeux/nous")) {
+        notify(`${a.actorName} a deviné une de tes réponses 💞`, "/jeux/nous?v=results&side=them");
       } else if (a.kind === "nous-reset-ask" && !window.location.pathname.startsWith("/jeux/nous")) {
         notify(`${a.actorName} propose de repartir de zéro dans 💞 Nous deux${a.detail ? ` (${a.detail})` : ""} : d'accord ?`, "/jeux/nous");
       } else if (a.kind === "nous-reset" && (a.detail === "accepted" || a.detail === "refused") && !window.location.pathname.startsWith("/jeux/nous")) {
