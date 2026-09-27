@@ -46,13 +46,17 @@ export function ProfileBody({
   const headerBox = skin(parts.header ?? {}, { box: true, scope: true });
   const headerText = skin(parts.header ?? {}, { text: true });
 
+  // Separate pinned widgets for featured display
+  const pinnedWidgets = widgets.filter(w => w.type === "pins");
+  const otherWidgets = widgets.filter(w => w.type !== "pins");
+
   return (
     <div style={{ ...fontVars(theme), ...pageVars(page) }} className={"relative flex flex-col gap-6 font-sans text-text " + (backdrop === "inline" ? "isolate overflow-hidden rounded-token p-4" : "")}>
       {backdrop === "page" ? <PageBackdrop look={page} /> : <InlineBackdrop look={page} />}
 
       <div className={headerBox.className} style={headerBox.style}>
         <div className="card overflow-hidden bg-bg animate-fade-up">
-          <div className="relative h-28 overflow-hidden sm:h-36" style={{ backgroundImage: "var(--grad)" }}>
+          <div className="relative h-56 overflow-hidden sm:h-72" style={{ backgroundImage: "var(--grad)" }}>
             {profile.coverAssetId && (
               <AssetImage assetId={profile.coverAssetId} framing={profile.coverFraming} className="absolute inset-0 h-full w-full object-cover" />
             )}
@@ -75,11 +79,27 @@ export function ProfileBody({
         </div>
       </div>
 
+      {/* Featured pinned widgets */}
+      {pinnedWidgets.length > 0 && (
+        <section className="mb-6">
+          <h2 className="mb-4 text-xl font-bold text-primary">Épinglés</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {pinnedWidgets.map((widget, index) => (
+              <WidgetRenderer
+                key={`pinned-${index}`}
+                widget={widget}
+                ownerId={profile.userId}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="flex flex-col gap-3 animate-fade-up">
         <h2 className="px-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
           {own ? "Mon petit monde" : `Le monde de ${profile.displayName}`}
         </h2>
-        {widgets.length === 0 ? (
+        {otherWidgets.length === 0 ? (
           <div className="card flex flex-col items-center gap-3 p-8 text-center">
             <Animal species={companion} size={64} />
             <p className="text-text-muted">{own ? "Ton espace est encore vide." : "Rien ici pour l'instant."}</p>
@@ -92,7 +112,12 @@ export function ProfileBody({
             )}
           </div>
         ) : (
-          <ProfileGrid widgets={widgets} ownerId={profile.userId} gap={theme.widgetGap} styleOf={(i) => widgetStyle(parts, widgets[i])} />
+          <ProfileGrid
+            widgets={otherWidgets}
+            ownerId={profile.userId}
+            gap={theme.widgetGap}
+            styleOf={(i) => widgetStyle(parts, otherWidgets[i])}
+          />
         )}
       </section>
 
