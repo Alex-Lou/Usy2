@@ -208,7 +208,7 @@ export function ChatPage() {
   }, []);
 
   return (
-    <div className="flex h-[calc(100dvh-var(--topbar-h)-max(var(--tabbar-h),var(--picker-h,0px))-2rem)] flex-col gap-3 lg:h-[calc(100dvh-2rem-max(2rem,var(--picker-h,0px))-1rem)]">
+    <div className="flex h-[calc(100dvh-var(--topbar-h)-max(var(--tabbar-h),var(--picker-h,0px))-2rem)] flex-col gap-3 lg:h-[calc(100dvh-var(--desk-topbar-h)-2rem-max(2rem,var(--picker-h,0px))-1rem)]">
       <header className="relative z-20 flex items-center gap-3 animate-fade-up">
         {partner && (
           <ProfileLink userId={partner.userId} className="shrink-0 rounded-full">

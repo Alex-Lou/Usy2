@@ -275,7 +275,7 @@ export function SharedWidgetsPage() {
         </div>
       </div>
 
-      <div className="lg:sticky lg:top-8 lg:self-start">
+      <div className="lg:sticky lg:top-[calc(var(--desk-topbar-h)+2rem)] lg:self-start">
         <p className="mb-2 text-sm text-text-muted">Ma barre</p>
         <div className="card grid grid-cols-2 gap-2 p-3">
           {off ? (

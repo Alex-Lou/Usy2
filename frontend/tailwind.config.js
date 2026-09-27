@@ -42,10 +42,13 @@ export default {
       backgroundImage: {
         brand: "var(--grad)",
       },
-      // The desktop shell (tokens.css, "Layout"): w-shell / lg:pl-shell for
-      // the side menu, max-w-content for the main column.
+      // The desktop shell (tokens.css, "Layout"): h-desk-bar for the top bar,
+      // w-shell / lg:pl-shell for the left rail, w-shell-right for the right
+      // one, max-w-content for the main column.
       spacing: {
         shell: "var(--shell-left-w)",
+        "shell-right": "var(--shell-right-w)",
+        "desk-bar": "var(--desk-topbar-h)",
       },
       maxWidth: {
         content: "var(--content-w)",
