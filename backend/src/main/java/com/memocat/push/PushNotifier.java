@@ -133,6 +133,13 @@ public class PushNotifier {
                     "/jeux/nous?tab=judge", "nous-" + a.refId());
             case CoupleActivity.NOUS_JUDGED -> new PushPayload(TITLE, a.actorName() + " a jugé ta devinette : " + verdict(a.detail()),
                     "/jeux/nous?tab=history", "nous-" + a.refId());
+            case CoupleActivity.NOUS_RESET_ASK -> new PushPayload(TITLE, a.actorName() + " propose de repartir de zéro dans 💞 Nous deux"
+                    + (a.detail() == null ? "" : " (" + a.detail() + ")") + " : d'accord ?", "/jeux/nous", "nous-reset");
+            case CoupleActivity.NOUS_RESET -> "accepted".equals(a.detail())
+                    ? new PushPayload(TITLE, a.actorName() + " a dit oui : on repart de zéro dans 💞 Nous deux ✨", "/jeux/nous", "nous-reset")
+                    : "refused".equals(a.detail())
+                    ? new PushPayload(TITLE, a.actorName() + " préfère garder vos réponses de 💞 Nous deux", "/jeux/nous", "nous-reset")
+                    : null;
             default -> null; // sync-only changes
         };
         if (payload == null) {

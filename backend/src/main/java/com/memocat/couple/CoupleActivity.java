@@ -33,6 +33,10 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     public static final String NOUS_GUESS = "nous-guess";
     /** 💞 Nous deux: a guess was judged (detail: right / close / wrong). */
     public static final String NOUS_JUDGED = "nous-judged";
+    /** 💞 Nous deux: one of us proposes to start again for both (detail: the theme, or null for everything). */
+    public static final String NOUS_RESET_ASK = "nous-reset-ask";
+    /** 💞 Nous deux: answers started again (detail: mine / accepted), or a proposal dropped (cancelled / refused). */
+    public static final String NOUS_RESET = "nous-reset";
 
     public static CoupleActivity of(String kind, User actor, String detail, Long refId) {
         return new CoupleActivity(kind, actor.getId(), actor.getDisplayName(), detail, refId);

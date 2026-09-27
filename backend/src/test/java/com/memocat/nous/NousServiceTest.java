@@ -4,11 +4,13 @@ import com.memocat.couple.CoupleActivity;
 import com.memocat.domain.NousAnswer;
 import com.memocat.domain.NousGuess;
 import com.memocat.domain.NousMark;
+import com.memocat.domain.NousReset;
 import com.memocat.domain.User;
 import com.memocat.nous.dto.NousDtos;
 import com.memocat.repository.NousAnswerRepository;
 import com.memocat.repository.NousGuessRepository;
 import com.memocat.repository.NousMarkRepository;
+import com.memocat.repository.NousResetRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ConflictException;
 import com.memocat.web.ContentValidationException;
@@ -22,8 +24,10 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,27 +35,47 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/** 💞 Nous deux, with in-memory repositories: answers stay hidden until guessed, verdicts, marks. */
+/** 💞 Nous deux, with in-memory repositories: answers stay hidden until guessed, verdicts, marks, formats, resets. */
 class NousServiceTest {
 
-    private final NousBank bank = new NousBank();
+    /** One question of each new kind, next to the real ones. */
+    private static final List<NousBank.Question> EXTRA = List.of(
+            new NousBank.Question("xu", "general", NousBank.ONE, "Pizza ou sushi ?", List.of("Pizza", "Sushi")),
+            new NousBank.Question("xe", "general", NousBank.SCALE, "Jaloux·se ?", List.of("Pas du tout", "Très")),
+            new NousBank.Question("xo", "general", NousBank.RANK, "Tes priorités ?", List.of("Famille", "Travail", "Amis", "Loisirs")),
+            new NousBank.Question("xh", "general", NousBank.HANGMAN, "Ton dessert, en un mot ?", List.of()),
+            new NousBank.Question("xm", "general", NousBank.SHORT, "Ta ville de cœur ?", List.of()),
+            new NousBank.Question("xf", "tendre", NousBank.FILL, "Je craque toujours pour ___", List.of()));
+    private final NousBank bank = withExtra(new NousBank());
+    private final NousResetRepository resets = mock(NousResetRepository.class);
     private final UserRepository users = mock(UserRepository.class);
     private final NousAnswerRepository answers = mock(NousAnswerRepository.class);
     private final NousGuessRepository guesses = mock(NousGuessRepository.class);
     private final NousMarkRepository marks = mock(NousMarkRepository.class);
     private final ApplicationEventPublisher events = mock(ApplicationEventPublisher.class);
-    private final NousService nous = new NousService(bank, users, answers, guesses, marks, events,
+    private final NousService nous = new NousService(bank, users, answers, guesses, marks, resets, events,
             Clock.fixed(Instant.parse("2026-09-26T10:00:00Z"), ZoneOffset.UTC));
     private final User lou = new User("lou", "h", "Lou");
     private final User sam = new User("sam", "h", "Sam");
     private final List<NousAnswer> savedAnswers = new ArrayList<>();
     private final List<NousGuess> savedGuesses = new ArrayList<>();
     private final List<NousMark> savedMarks = new ArrayList<>();
+    private final List<NousReset> savedResets = new ArrayList<>();
+
+    private static NousBank withExtra(NousBank real) {
+        NousBank b = spy(real);
+        List<NousBank.Question> all = Stream.concat(real.all().stream(), EXTRA.stream()).toList();
+        doReturn(all).when(b).all();
+        doAnswer(i -> all.stream().filter(q -> q.id().equals(i.getArgument(0))).findFirst()).when(b).question(any());
+        return b;
+    }
 
     @BeforeEach
     void setUp() {
@@ -96,6 +120,21 @@ class NousServiceTest {
             return i.getArgument(0);
         });
         doAnswer(i -> savedMarks.remove((NousMark) i.getArgument(0))).when(marks).delete(any(NousMark.class));
+        doAnswer(i -> savedAnswers.removeIf(a -> a.getUser().getId().equals(i.getArgument(0))
+                && ((Collection<?>) i.getArgument(1)).contains(a.getQuestionId()))).when(answers).deleteByUserIdAndQuestionIdIn(anyLong(), any());
+        doAnswer(i -> savedAnswers.removeIf(a -> a.getUser().getId().equals(i.getArgument(0)))).when(answers).deleteByUserId(anyLong());
+        doAnswer(i -> savedGuesses.removeIf(g -> g.getAuthor().getId().equals(i.getArgument(0))
+                && ((Collection<?>) i.getArgument(1)).contains(g.getQuestionId()))).when(guesses).deleteByAuthorIdAndQuestionIdIn(anyLong(), any());
+        doAnswer(i -> savedGuesses.removeIf(g -> g.getGuesser().getId().equals(i.getArgument(0))
+                && ((Collection<?>) i.getArgument(1)).contains(g.getQuestionId()))).when(guesses).deleteByGuesserIdAndQuestionIdIn(anyLong(), any());
+        doAnswer(i -> savedGuesses.removeIf(g -> g.getAuthor().getId().equals(i.getArgument(0)))).when(guesses).deleteByAuthorId(anyLong());
+        doAnswer(i -> savedGuesses.removeIf(g -> g.getGuesser().getId().equals(i.getArgument(0)))).when(guesses).deleteByGuesserId(anyLong());
+        when(resets.findFirstByOrderByCreatedAtDesc()).thenAnswer(i -> savedResets.stream().findFirst());
+        when(resets.save(any())).thenAnswer(i -> {
+            savedResets.add(i.getArgument(0));
+            return i.getArgument(0);
+        });
+        doAnswer(i -> savedResets.remove((NousReset) i.getArgument(0))).when(resets).delete(any(NousReset.class));
     }
 
     @Test
@@ -207,5 +246,189 @@ class NousServiceTest {
 
         nous.mark("sam", new NousDtos.Mark("t23", NousMark.TALKED, false));
         assertThat(nous.cards("lou", "tendre").stream().filter(c -> c.id().equals("t23")).findFirst().orElseThrow().talked()).isFalse();
+    }
+
+    @Test
+    void oneChoiceAScaleAndARankingAreJudgedAtOnce() {
+        nous.answer("sam", new NousDtos.Answer("xu", List.of(1), null));
+        nous.answer("sam", new NousDtos.Answer("xe", List.of(7), null));
+        nous.answer("sam", new NousDtos.Answer("xo", List.of(2, 0, 3, 1), null));
+        assertThat(nous.mine("sam", "general").stream().filter(m -> m.id().equals("xo")).findFirst().orElseThrow().choices())
+                .containsExactly(2, 0, 3, 1);
+
+        assertThat(nous.guess("lou", new NousDtos.Answer("xu", List.of(0), null)).verdict()).isEqualTo(NousGuess.WRONG);
+        NousDtos.Reveal scale = nous.guess("lou", new NousDtos.Answer("xe", List.of(5), null)); // 2 steps apart
+        assertThat(scale.verdict()).isEqualTo(NousGuess.CLOSE);
+        assertThat(scale.points()).isEqualTo(60);
+        assertThat(scale.answerChoices()).containsExactly(7);
+        NousDtos.Reveal rank = nous.guess("lou", new NousDtos.Answer("xo", List.of(2, 0, 1, 3), null)); // 2 of 4 well placed
+        assertThat(rank.verdict()).isEqualTo(NousGuess.CLOSE);
+        assertThat(rank.points()).isEqualTo(50);
+        assertThat(rank.guessChoices()).containsExactly(2, 0, 1, 3);
+        assertThat(rank.answerChoices()).containsExactly(2, 0, 3, 1);
+        assertThat(nous.overview("lou").me().percent()).isEqualTo(37); // (0 + 60 + 50) / 3
+        verify(events, never()).publishEvent(any(Object.class));
+    }
+
+    @Test
+    void oneChoiceAScaleAndARankingRefuseWhatDoesntFit() {
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("xu", List.of(0, 1), null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("xu", List.of(2), null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("xe", List.of(11), null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("xo", List.of(0, 1, 2), null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("xo", List.of(0, 1, 1, 2), null))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("xh", null, "3 glaces"))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> nous.answer("lou", new NousDtos.Answer("xm", null, "x".repeat(41)))).isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
+    void aHangmanIsPlayedLetterByLetterWithoutEverSendingTheWord() {
+        nous.answer("sam", new NousDtos.Answer("xh", null, "Crêpe"));
+        assertThat(nous.toGuess("lou")).singleElement().satisfies(q -> {
+            assertThat(q.pattern()).isEqualTo("_____");
+            assertThat(q.tried()).isEmpty();
+        });
+        assertThatThrownBy(() -> nous.guess("lou", new NousDtos.Answer("xh", null, "crepe"))).isInstanceOf(ConflictException.class);
+        assertThatThrownBy(() -> nous.letter("lou", new NousDtos.Letter("xh", "7"))).isInstanceOf(ContentValidationException.class);
+
+        NousDtos.HangmanState s = nous.letter("lou", new NousDtos.Letter("xh", "é"));
+        assertThat(s.pattern()).isEqualTo("__E_E");
+        assertThat(s.reveal()).isNull();
+        nous.letter("lou", new NousDtos.Letter("xh", "z"));
+        nous.letter("lou", new NousDtos.Letter("xh", "z")); // twice the same: one error
+        assertThat(nous.toGuess("lou")).singleElement().satisfies(q -> assertThat(q.tried()).isEqualTo("EZ"));
+        assertThat(nous.history("lou").mine()).isEmpty();
+        assertThat(nous.overview("sam").toJudge()).isZero();
+
+        nous.letter("lou", new NousDtos.Letter("xh", "c"));
+        nous.letter("lou", new NousDtos.Letter("xh", "r"));
+        NousDtos.HangmanState end = nous.letter("lou", new NousDtos.Letter("xh", "P"));
+
+        assertThat(end.pattern()).isEqualTo("CREPE");
+        assertThat(end.errors()).isEqualTo(1);
+        assertThat(end.reveal().verdict()).isEqualTo(NousGuess.RIGHT);
+        assertThat(end.reveal().points()).isEqualTo(90);
+        assertThat(end.reveal().answerText()).isEqualTo("Crêpe");
+        assertThat(nous.toGuess("lou")).isEmpty();
+        assertThatThrownBy(() -> nous.letter("lou", new NousDtos.Letter("xh", "a"))).isInstanceOf(ConflictException.class);
+        verify(events, never()).publishEvent(any(Object.class));
+    }
+
+    @Test
+    void sevenWrongLettersAndTheHangmanIsLost() {
+        nous.answer("sam", new NousDtos.Answer("xh", null, "Tarte"));
+        NousDtos.HangmanState s = null;
+        for (String l : List.of("b", "c", "d", "f", "g", "h", "i")) {
+            s = nous.letter("lou", new NousDtos.Letter("xh", l));
+        }
+        assertThat(s.errors()).isEqualTo(Hangman.MAX_ERRORS);
+        assertThat(s.reveal().verdict()).isEqualTo(NousGuess.WRONG);
+        assertThat(s.reveal().points()).isZero();
+        assertThat(nous.overview("lou").me().percent()).isZero();
+    }
+
+    @Test
+    void aShortAnswerIsRightAtOnceWhenItIsTheSameWordElseTheOtherOneJudges() {
+        nous.answer("sam", new NousDtos.Answer("xm", null, "Montréal"));
+        nous.answer("sam", new NousDtos.Answer("xf", null, "les fossettes"));
+
+        assertThat(nous.guess("lou", new NousDtos.Answer("xm", null, " montreal ")).verdict()).isEqualTo(NousGuess.RIGHT);
+        NousDtos.Reveal fill = nous.guess("lou", new NousDtos.Answer("xf", null, "les yeux"));
+        assertThat(fill.verdict()).isNull();
+        verify(events).publishEvent(any(CoupleActivity.class));
+        assertThat(nous.judge("sam", fill.guessId(), new NousDtos.Judge("wrong", null)).verdict()).isEqualTo(NousGuess.WRONG);
+    }
+
+    @Test
+    void startingMyAnswersAgainTakesTheGuessesBothWaysInThatThemeOnly() {
+        nous.answer("lou", new NousDtos.Answer("saison", List.of(1), null)); // general
+        nous.answer("lou", new NousDtos.Answer("xf", null, "ton rire"));      // tendre
+        nous.answer("sam", new NousDtos.Answer("xu", List.of(0), null));      // general
+        nous.guess("sam", new NousDtos.Answer("saison", List.of(1), null));
+        nous.guess("lou", new NousDtos.Answer("xu", List.of(0), null));
+        assertThatThrownBy(() -> nous.resetMine("lou", "nope")).isInstanceOf(ContentValidationException.class);
+
+        nous.resetMine("lou", "general");
+
+        assertThat(savedAnswers).extracting(NousAnswer::getQuestionId).containsExactlyInAnyOrder("xf", "xu");
+        assertThat(savedGuesses).isEmpty();
+        assertThat(nous.toGuess("lou")).extracting(NousDtos.ToGuess::id).containsExactly("xu");
+
+        nous.resetMine("lou", null);
+        assertThat(savedAnswers).extracting(NousAnswer::getQuestionId).containsExactly("xu");
+    }
+
+    @Test
+    void startingAgainForBothWaitsForTheOtherOnesYes() {
+        nous.answer("lou", new NousDtos.Answer("saison", List.of(1), null));
+        nous.answer("sam", new NousDtos.Answer("saison", List.of(2), null));
+        nous.answer("sam", new NousDtos.Answer("xf", null, "ton rire"));
+
+        NousDtos.ResetState asked = nous.proposeReset("lou", new NousDtos.ResetRequest("general"));
+        assertThat(asked.mine()).isTrue();
+        assertThat(nous.overview("sam").reset()).satisfies(r -> {
+            assertThat(r.mine()).isFalse();
+            assertThat(r.byName()).isEqualTo("Lou");
+            assertThat(r.theme()).isEqualTo("general");
+        });
+        assertThat(savedAnswers).hasSize(3); // nothing erased yet
+        assertThatThrownBy(() -> nous.acceptReset("lou")).isInstanceOf(ConflictException.class);
+        assertThatThrownBy(() -> nous.proposeReset("sam", new NousDtos.ResetRequest(null))).isInstanceOf(ConflictException.class);
+
+        nous.acceptReset("sam");
+
+        assertThat(savedAnswers).extracting(NousAnswer::getQuestionId).containsExactly("xf");
+        assertThat(nous.overview("lou").reset()).isNull();
+        assertThatThrownBy(() -> nous.acceptReset("sam")).isInstanceOf(ResourceNotFoundException.class);
+
+        nous.proposeReset("sam", new NousDtos.ResetRequest(""));
+        nous.dropReset("lou"); // no, thanks
+        assertThat(savedResets).isEmpty();
+        assertThat(savedAnswers).hasSize(1);
+    }
+
+    @Test
+    void scoresByThemeAndTheirAnswersStayLockedUntilGuessed() {
+        nous.answer("lou", new NousDtos.Answer("saison", List.of(1), null));
+        nous.answer("sam", new NousDtos.Answer("saison", List.of(1), null));
+        nous.answer("lou", new NousDtos.Answer("xu", List.of(0), null));
+        nous.answer("sam", new NousDtos.Answer("xu", List.of(1), null));
+        nous.answer("sam", new NousDtos.Answer("xf", null, "ton rire"));
+
+        List<NousDtos.Compare> before = nous.compare("lou", "general");
+        assertThat(before).extracting(NousDtos.Compare::id).containsExactly("saison", "xu");
+        assertThat(before).allSatisfy(c -> {
+            assertThat(c.locked()).isTrue();
+            assertThat(c.theirs()).isNull();
+            assertThat(c.same()).isNull();
+        });
+
+        nous.guess("lou", new NousDtos.Answer("saison", List.of(1), null));
+        nous.guess("lou", new NousDtos.Answer("xu", List.of(0), null));
+
+        List<NousDtos.Compare> after = nous.compare("lou", null);
+        assertThat(after).extracting(NousDtos.Compare::id).containsExactly("saison", "xu", "xf");
+        NousDtos.Compare saison = after.get(0);
+        assertThat(saison.locked()).isFalse();
+        assertThat(saison.theirs().choices()).containsExactly(1);
+        assertThat(saison.same()).isTrue();
+        assertThat(saison.myVerdict()).isEqualTo(NousGuess.RIGHT);
+        assertThat(after.get(1).same()).isFalse();
+        assertThat(after.get(2)).satisfies(c -> {
+            assertThat(c.mine()).isNull();
+            assertThat(c.locked()).isTrue();
+        });
+
+        NousDtos.Scores scores = nous.scores("lou");
+        assertThat(scores.me().percent()).isEqualTo(50);
+        assertThat(scores.agreement()).isEqualTo(new NousDtos.Agreement(1, 2, 50));
+        NousDtos.ThemeScore general = scores.themes().stream().filter(t -> t.id().equals("general")).findFirst().orElseThrow();
+        assertThat(general.me().percent()).isEqualTo(50);
+        assertThat(general.myAnswers()).isEqualTo(2);
+        assertThat(general.theirAnswers()).isEqualTo(2);
+        NousDtos.ThemeScore tendre = scores.themes().stream().filter(t -> t.id().equals("tendre")).findFirst().orElseThrow();
+        assertThat(tendre.me().percent()).isNull();
+        assertThat(tendre.theirAnswers()).isEqualTo(1);
+        assertThat(tendre.agreement().percent()).isNull();
     }
 }
