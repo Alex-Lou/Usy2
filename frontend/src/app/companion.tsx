@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { useAuth } from "../features/auth/useAuth";
-import { Animal } from "../../components/ui/animals";
-import type { Species } from "./companion";
+import { Animal } from "../components/ui/animals.tsx";
 
 export const SPECIES = [
   "cat",

@@ -60,7 +60,7 @@ export function ProfileBody({
           <div className="px-6 pb-6">
             <div
               className="-mt-12 mb-3 inline-block rounded-full ring-4 ring-bg cursor-pointer"
-              onClick={() => profile.avatarAssetId !== null && setIsAvatarZoomed(true)}
+              onClick={() => profile.avatarAssetId != null && setIsAvatarZoomed(true)}
             >
               <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} species={profile.companion} />
             </div>
@@ -95,10 +95,11 @@ export function ProfileBody({
           <ProfileGrid widgets={widgets} ownerId={profile.userId} gap={theme.widgetGap} styleOf={(i) => widgetStyle(parts, widgets[i])} />
         )}
       </section>
+
       {isAvatarZoomed && profile.avatarAssetId != null && (
         <AvatarZoomModal
           assetId={profile.avatarAssetId}
-          companion={profile.companion}
+          companion={companion}
           onClose={() => setIsAvatarZoomed(false)}
         />
       )}
@@ -111,8 +112,8 @@ export function ProfileBody({
     companion,
     onClose,
   }: {
-    assetId: number | null;
-    companion?: string;
+    assetId: number | null | undefined;
+    companion?: Species;
     onClose: () => void;
   }) {
     useEffect(() => {
@@ -134,14 +135,14 @@ export function ProfileBody({
                   assetId={assetId}
                   className="max-h-full max-w-full object-contain"
                 />
-                {companion && <getSpeciesSvg species={companion} className="absolute bottom-2 right-2 w-8 h-8" />}
+                {companion && getSpeciesSvg({ species: companion, className: "absolute bottom-2 right-2 w-8 h-8" })}
               </>
             ) : (
               // Fallback if no assetId (shouldn't happen if called correctly)
               <div className="w-48 h-48 flex items-center justify-center bg-gray-200 rounded-xl">
                 <span className="text-text-muted">No image</span>
               </div>
-            )
+            )}
             <button
               type="button"
               className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-100"
@@ -150,6 +151,7 @@ export function ProfileBody({
             >
               <Icon name="x" size={20} />
             </button>
+          </div>
         </div>
       </div>,
       document.body,
