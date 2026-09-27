@@ -2,29 +2,37 @@ import { MotionConfig, motion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { onCoupleActivity } from "../couple/activity";
-import { getNous, telepathy, type NousOverview, type NousScore } from "./api";
+import { getNous, type NousOverview } from "./api";
 import { CardsTab } from "./NousCards";
+import { CompareTab } from "./NousCompare";
+import { Gauge } from "./NousGauge";
 import { GuessTab, HistoryTab, JudgeTab } from "./NousGuess";
 import { MineTab } from "./NousMine";
+import { ResetBanner } from "./NousReset";
+import { ScoresTab } from "./NousScores";
 
-type Tab = "cards" | "mine" | "guess" | "judge" | "history";
+type Tab = "cards" | "mine" | "guess" | "judge" | "history" | "scores" | "compare";
 const TABS: { id: Tab; label: string }[] = [
   { id: "cards", label: "💬 Cartes" },
   { id: "mine", label: "✍️ Mes réponses" },
   { id: "guess", label: "🔮 Deviner" },
   { id: "judge", label: "⚖️ À juger" },
   { id: "history", label: "📜 Verdicts" },
+  { id: "scores", label: "📊 Scores" },
+  { id: "compare", label: "🔍 Comparer" },
 ];
 
 /**
  * 💞 Nous deux: cards to talk about, my answers about me, guessing the other
- * one's (a choice is checked at once, words are judged by the person it's
- * about), and how well we know each other.
+ * one's in many formats (what is tapped is checked at once, words are judged
+ * by the person it's about), scores by theme, our answers side by side, and
+ * starting again.
  */
 export function NousPage() {
   const [params, setParams] = useSearchParams();
   const tabParam = params.get("tab") as Tab | null;
   const tab: Tab = TABS.some((t) => t.id === tabParam) ? (tabParam as Tab) : "cards";
+  const compareTheme = params.get("theme") ?? "all";
   const [data, setData] = useState<NousOverview | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -39,10 +47,10 @@ export function NousPage() {
   useEffect(load, [load]);
   // A guess or a verdict from the other phone: counts and lists follow.
   useEffect(() => onCoupleActivity((a) => {
-    if (a.kind === "nous-guess" || a.kind === "nous-judged") load();
+    if (a.kind === "nous-guess" || a.kind === "nous-judged" || a.kind === "nous-reset-ask" || a.kind === "nous-reset") load();
   }), [load]);
 
-  const go = (t: Tab) => setParams(t === "cards" ? {} : { tab: t }, { replace: true });
+  const go = (t: Tab, theme?: string) => setParams(t === "cards" ? {} : theme && theme !== "all" ? { tab: t, theme } : { tab: t }, { replace: true });
   const partner = data?.partnerName ?? "ton amour";
 
   return (
@@ -62,6 +70,7 @@ export function NousPage() {
 
       {data && (
         <>
+          {data.reset && <ResetBanner key={data.reset.createdAt} reset={data.reset} themes={data.themes} partnerName={partner} onDone={load} />}
           <section className="grid grid-cols-2 gap-3" aria-label="Télépathie">
             <Gauge title={`Toi → ${partner}`} score={data.me} />
             <Gauge title={`${partner} → toi`} score={data.them} />
@@ -95,29 +104,15 @@ export function NousPage() {
           {tab === "guess" && <GuessTab themes={data.themes} partnerName={partner} onChange={load} />}
           {tab === "judge" && <JudgeTab themes={data.themes} partnerName={partner} onChange={load} />}
           {tab === "history" && <HistoryTab themes={data.themes} partnerName={partner} />}
+          {tab === "scores" && (
+            <ScoresTab key={data.reset?.createdAt ?? "none"} themes={data.themes} partnerName={partner} pending={data.reset} onCompare={(t) => go("compare", t)} onChange={load} />
+          )}
+          {tab === "compare" && (
+            <CompareTab themes={data.themes} partnerName={partner} theme={compareTheme} onTheme={(t) => go("compare", t)} onGuess={() => go("guess")} onAnswer={() => go("mine")} />
+          )}
         </>
       )}
     </div>
     </MotionConfig>
-  );
-}
-
-/** A telepathy gauge: how many guesses were right (close counts half). */
-function Gauge({ title, score }: { title: string; score: NousScore }) {
-  const p = score.percent ?? 0;
-  const judged = score.right + score.close + score.some + score.wrong;
-  return (
-    <div className="card flex flex-col gap-1.5 p-3" aria-label={`${title} : ${score.percent == null ? "pas encore de verdict" : `${p} %`}`}>
-      <p className="truncate text-xs font-semibold text-text-muted">{title}</p>
-      <p className="font-display text-2xl font-bold tabular-nums">{score.percent == null ? "—" : `${p} %`}</p>
-      <div className="h-2 overflow-hidden rounded-full bg-surface-2">
-        <div className="nd-gauge h-full rounded-full" style={{ width: `${p}%` }} />
-      </div>
-      <p className="text-[11px] leading-tight text-text-muted">
-        {telepathy(score.percent)}
-        {judged > 0 && ` · ${score.right}🎯 ${score.close}😏${score.some ? ` ${score.some}🤏` : ""} ${score.wrong}🙈`}
-        {score.pending > 0 && ` · ${score.pending}⏳`}
-      </p>
-    </div>
   );
 }

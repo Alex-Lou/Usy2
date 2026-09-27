@@ -1,13 +1,13 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { ApiError } from "../../lib/api/client";
-import { forgetMine, getMine, MAX_TEXT, saveMine, toggled, type NousMine, type NousTheme } from "./api";
+import { forgetMine, getMine, KINDS, saveMine, type NousMine, type NousTheme } from "./api";
+import { AnswerForm } from "./formats";
 import { FilterChip } from "./NousCards";
-import { Ticks } from "./Ticks";
 
 /**
- * ✍️ My answers about me: tick one or several choices then « Valider », or a few words. Only
- * the other one's guesses ever reveal them; changing one lets them guess again.
+ * ✍️ My answers about me, in every format (see AnswerForm). Only the other
+ * one's guesses ever reveal them; changing one lets them guess again.
  */
 export function MineTab({ themes, partnerName, onChange }: { themes: NousTheme[]; partnerName: string; onChange: () => void }) {
   const [items, setItems] = useState<NousMine[] | null>(null);
@@ -60,13 +60,12 @@ export function MineTab({ themes, partnerName, onChange }: { themes: NousTheme[]
 }
 
 function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: string; partnerName: string; onSaved: (q: NousMine) => void }) {
-  const [text, setText] = useState(q.answer ?? "");
-  const [ticks, setTicks] = useState<number[]>(q.choices ?? []);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [flash, setFlash] = useState(false);
+  const [version, setVersion] = useState(0); // a new form once erased
   const answered = q.choices != null || q.answer != null;
-  const ticksChanged = ticks.join() !== (q.choices ?? []).join();
+  const kind = KINDS[q.kind];
 
   const save = async (choices: number[] | null, words: string | null) => {
     setBusy(true);
@@ -86,9 +85,8 @@ function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: stri
     setBusy(true);
     try {
       await forgetMine(q.id);
-      setText("");
-      setTicks([]);
       onSaved({ ...q, choices: null, answer: null });
+      setVersion((v) => v + 1);
     } catch {
       setError("Pas effacé, réessaie.");
     } finally {
@@ -98,44 +96,12 @@ function MineItem({ q, color, partnerName, onSaved }: { q: NousMine; color: stri
 
   return (
     <motion.li layout exit={{ opacity: 0, scale: 0.9, height: 0, marginTop: -12, transition: { duration: 0.3 } }} className="card qz-slide flex flex-col gap-2 overflow-hidden p-4" style={{ borderLeft: `4px solid ${color}` }}>
-      <p className="font-semibold leading-snug">{q.text}</p>
-      {q.kind === "c" ? (
-        <div className="flex flex-col gap-2">
-          <p className="text-xs text-text-muted">Plusieurs réponses possibles, puis valide.</p>
-          <Ticks options={q.options} ticked={ticks} color={color} disabled={busy} label="Ta réponse" onToggle={(i) => setTicks((t) => toggled(t, i))} />
-          <button
-            type="button"
-            disabled={busy || ticks.length === 0 || !ticksChanged}
-            onClick={() => void save(ticks, null)}
-            className="btn-brand press self-start rounded-token px-4 py-1.5 text-sm font-semibold disabled:opacity-40"
-          >
-            {answered ? "Valider les changements" : `Valider${ticks.length > 1 ? ` (${ticks.length})` : ""}`}
-          </button>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-1.5">
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value.slice(0, MAX_TEXT))}
-            rows={2}
-            maxLength={MAX_TEXT}
-            placeholder="Ta réponse, avec tes mots…"
-            aria-label="Ta réponse"
-            className="w-full resize-y rounded-token border border-border bg-surface-2 px-3 py-2 text-sm"
-          />
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={busy || !text.trim() || text.trim() === (q.answer ?? "")}
-              onClick={() => void save(null, text.trim())}
-              className="btn-brand press rounded-token px-3 py-1.5 text-sm font-semibold disabled:opacity-40"
-            >
-              {answered ? "Modifier" : "Enregistrer"}
-            </button>
-            <span className="ml-auto text-xs tabular-nums text-text-muted">{text.length}/{MAX_TEXT}</span>
-          </div>
-        </div>
-      )}
+      <div className="flex items-start gap-2">
+        <p className="font-semibold leading-snug">{q.kind === "f" ? q.text.replace("___", "…") : q.text}</p>
+        <span className="ml-auto shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-semibold text-text-muted" title={kind.label}>{kind.emoji} {kind.label}</span>
+      </div>
+      <p className="text-xs text-text-muted">{kind.answer}</p>
+      <AnswerForm key={version} q={q} mode="mine" initial={{ choices: q.choices, text: q.answer }} color={color} busy={busy} onSubmit={(c, t) => void save(c, t)} />
       <div className="flex items-center gap-3 text-xs text-text-muted">
         {flash && <span className="qz-pop font-semibold" style={{ color }}>✓ Enregistré</span>}
         {answered && !flash && <span>Changer ta réponse laisse {partnerName} deviner à nouveau.</span>}

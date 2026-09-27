@@ -1,10 +1,13 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ApiError } from "../../lib/api/client";
 import { Confetti } from "../games/Confetti";
-import { Ticks } from "./Ticks";
+import { AnswerForm } from "./formats";
+import { HangmanBoard } from "./HangmanBoard";
+import { FilterChip } from "./NousCards";
+import { phraseFor } from "./phrases";
 import {
-  getHistory, getToGuess, judgeGuess, MAX_NOTE, MAX_TEXT, pointsDetail, sendGuess, toggled, VERDICTS,
+  getHistory, getToGuess, judgeGuess, KINDS, MAX_NOTE, pointsDetail, saidText, sendGuess, VERDICTS,
   type NousReveal, type NousTheme, type NousToGuess, type Verdict,
 } from "./api";
 
@@ -13,18 +16,19 @@ type Props = { themes: NousTheme[]; partnerName: string };
 const colorOf = (themes: NousTheme[], id: string) => themes.find((t) => t.id === id)?.color ?? "#ff6fa8";
 
 /**
- * 🔮 Guessing: one of the other one's answered questions at a time, then the
- * reveal. Ticked choices get their stamp at once (the same: right, some in
- * common: close); words wait for their verdict.
+ * 🔮 Guessing: one of the other one's answered questions at a time (all
+ * themes mixed, or one), in any format, then the reveal with a little word.
+ * What is answered with a tap gets its stamp at once; words wait for their
+ * verdict.
  */
 export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: () => void }) {
   const [queue, setQueue] = useState<NousToGuess[] | null>(null);
   const [failed, setFailed] = useState(false);
-  const [text, setText] = useState("");
-  const [ticks, setTicks] = useState<number[]>([]);
+  const [theme, setTheme] = useState<string>("all");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reveal, setReveal] = useState<NousReveal | null>(null);
+  const [phrase, setPhrase] = useState("");
 
   useEffect(() => {
     getToGuess()
@@ -39,14 +43,25 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
       .catch(() => setFailed(true));
   }, []);
 
-  const current = queue?.[0];
+  const counts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const q of queue ?? []) m.set(q.theme, (m.get(q.theme) ?? 0) + 1);
+    return m;
+  }, [queue]);
+  const shown = useMemo(() => (queue ?? []).filter((q) => theme === "all" || q.theme === theme), [queue, theme]);
+  const current = shown[0];
+
+  const revealed = (r: NousReveal) => {
+    setPhrase(phraseFor(r.verdict, partnerName));
+    setReveal(r);
+    onChange();
+  };
   const send = async (choices: number[] | null, words: string | null) => {
     if (!current || busy) return;
     setBusy(true);
     setError(null);
     try {
-      setReveal(await sendGuess(current.id, choices, words));
-      onChange();
+      revealed(await sendGuess(current.id, choices, words));
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Devinette non envoyée, réessaie.");
     } finally {
@@ -54,10 +69,10 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
     }
   };
   const next = () => {
+    const done = reveal?.id;
     setReveal(null);
-    setText("");
-    setTicks([]);
-    setQueue((q) => q?.slice(1) ?? null);
+    setError(null);
+    setQueue((q) => q?.filter((x) => x.id !== done) ?? null);
   };
 
   if (failed) return <p className="card p-4 text-sm">Impossible de charger les devinettes.</p>;
@@ -71,63 +86,65 @@ export function GuessTab({ themes, partnerName, onChange }: Props & { onChange: 
         <p className="font-semibold leading-snug">{reveal.text}</p>
         <div className="grid gap-2 sm:grid-cols-2">
           <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ type: "spring", stiffness: 300, damping: 24 }}>
-            <Bubble who="Ta devinette" body={said(reveal, "guess")} muted />
+            <Bubble who={reveal.kind === "h" ? "Ta partie" : "Ta devinette"} body={said(reveal, "guess")} muted />
           </motion.div>
           <motion.div initial={{ opacity: 0, rotateY: 90 }} animate={{ opacity: 1, rotateY: 0 }} transition={{ delay: 0.15, type: "spring", stiffness: 260, damping: 20 }}>
             <Bubble who={`La réponse de ${partnerName}`} body={said(reveal, "answer")} color={color} />
           </motion.div>
         </div>
         <Stamp verdict={reveal.verdict} partnerName={partnerName} />
+        <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="text-center font-display text-base font-bold" data-nous-phrase="">
+          {phrase}
+        </motion.p>
         {pointsDetail(reveal) && (
           <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="text-center text-sm font-semibold tabular-nums text-text-muted" data-nous-points="">
             {pointsDetail(reveal)}
           </motion.p>
         )}
         <button type="button" onClick={next} className="btn-brand press self-center rounded-token px-5 py-2 font-semibold">
-          {queue.length > 1 ? "Suivante →" : "Terminé ✓"}
+          {shown.length > 1 ? "Suivante →" : "Terminé ✓"}
         </button>
       </section>
     );
   }
 
-  if (!current) {
-    return (
-      <p className="card p-6 text-center text-sm text-text-muted" data-nous-empty="">
-        Rien à deviner pour l'instant 🕵️ Quand {partnerName} aura répondu à de nouvelles questions, elles arriveront ici.
-      </p>
-    );
-  }
-
-  const color = colorOf(themes, current.theme);
+  const color = current ? colorOf(themes, current.theme) : "#ff6fa8";
+  const kind = current ? KINDS[current.kind] : null;
   return (
-    <section key={current.id} className="nd-card card flex flex-col gap-4 p-5" style={{ ["--nd" as string]: color }} data-nous-guess={current.id}>
-      <div className="flex items-center justify-between text-xs font-semibold text-text-muted">
-        <span>🔮 Qu'a répondu {partnerName} ?</span>
-        <span className="tabular-nums">encore {queue.length}</span>
-      </div>
-      <h2 className="font-display text-xl font-bold leading-snug">{current.text}</h2>
-      {current.kind === "c" ? (
-        <div className="flex flex-col gap-2">
-          <p className="text-xs text-text-muted">Coche tout ce que {partnerName} a coché. Points = cases en commun ÷ cases cochées en tout (oublis et cases en trop comptent pareil).</p>
-          <Ticks options={current.options} ticked={ticks} color={color} disabled={busy} label="Ta devinette" onToggle={(i) => setTicks((t) => toggled(t, i))} />
-          <button type="button" disabled={busy || ticks.length === 0} onClick={() => void send(ticks, null)}
-            className="btn-brand press self-end rounded-token px-4 py-2 font-semibold disabled:opacity-40">
-            Deviner 🔮
-          </button>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-2">
-          <textarea value={text} onChange={(e) => setText(e.target.value.slice(0, MAX_TEXT))} rows={2} maxLength={MAX_TEXT}
-            placeholder={`Selon toi, ${partnerName} a répondu…`} aria-label="Ta devinette"
-            className="w-full resize-y rounded-token border border-border bg-surface-2 px-3 py-2 text-sm" />
-          <button type="button" disabled={busy || !text.trim()} onClick={() => void send(null, text.trim())}
-            className="btn-brand press self-end rounded-token px-4 py-2 font-semibold disabled:opacity-40">
-            Deviner 🔮
-          </button>
+    <div className="flex flex-col gap-3">
+      {queue.length > 0 && (
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar" role="tablist" aria-label="Catégories à deviner">
+          <FilterChip on={theme === "all"} onClick={() => setTheme("all")}>🎲 Au hasard <span className="ml-1 opacity-80">{queue.length}</span></FilterChip>
+          {themes.filter((t) => counts.has(t.id)).map((t) => (
+            <FilterChip key={t.id} on={theme === t.id} color={t.color} onClick={() => setTheme(t.id)}>
+              {t.emoji} {t.label} <span className="ml-1 opacity-80">{counts.get(t.id)}</span>
+            </FilterChip>
+          ))}
         </div>
       )}
-      {error && <p className="text-sm text-danger" role="alert">{error}</p>}
-    </section>
+      {!current ? (
+        <p className="card p-6 text-center text-sm text-text-muted" data-nous-empty="">
+          {queue.length > 0
+            ? "Plus rien à deviner dans cette catégorie 🎉 Choisis-en une autre au-dessus."
+            : `Rien à deviner pour l'instant 🕵️ Quand ${partnerName} aura répondu à de nouvelles questions, elles arriveront ici.`}
+        </p>
+      ) : (
+        <section key={current.id} className="nd-card card flex flex-col gap-4 p-5" style={{ ["--nd" as string]: color }} data-nous-guess={current.id}>
+          <div className="flex items-center justify-between gap-2 text-xs font-semibold text-text-muted">
+            <span className="nd-pill rounded-full px-2 py-0.5 text-white">{kind?.emoji} {kind?.label}</span>
+            <span className="tabular-nums">encore {shown.length}</span>
+          </div>
+          <h2 className="font-display text-xl font-bold leading-snug">{current.kind === "f" ? current.text.replace("___", "…") : current.text}</h2>
+          <p className="-mt-2 text-xs text-text-muted">{kind?.guess(partnerName)}</p>
+          {current.kind === "h" ? (
+            <HangmanBoard key={current.id} q={current} color={color} onReveal={revealed} />
+          ) : (
+            <AnswerForm key={current.id} q={current} mode="guess" color={color} busy={busy} onSubmit={(c, t) => void send(c, t)} />
+          )}
+          {error && <p className="text-sm text-danger" role="alert">{error}</p>}
+        </section>
+      )}
+    </div>
   );
 }
 
@@ -248,10 +265,11 @@ export function HistoryTab({ themes, partnerName }: Props) {
 }
 
 function said(r: NousReveal, which: "guess" | "answer"): string {
-  const choices = which === "guess" ? r.guessChoices : r.answerChoices;
-  const text = which === "guess" ? r.guessText : r.answerText;
-  if (choices != null) return choices.map((i) => r.options[i]).filter(Boolean).join(" · ") || "—";
-  return text ?? "—";
+  if (which === "guess" && r.kind === "h") {
+    const e = r.errors ?? 0;
+    return r.verdict === "wrong" ? `🪢 Pendu (lettres : ${r.letters ?? ""})` : `Trouvé, ${e} erreur${e > 1 ? "s" : ""} (lettres : ${r.letters ?? ""})`;
+  }
+  return which === "guess" ? saidText(r.kind, r.options, r.guessChoices, r.guessText) : saidText(r.kind, r.options, r.answerChoices, r.answerText);
 }
 
 function Bubble({ who, body, color, muted }: { who: string; body: string; color?: string; muted?: boolean }) {
