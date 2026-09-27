@@ -1,23 +1,211 @@
 /*
- * Design tokens — the single source of truth for MemoCat styling.
- * Components never hard-code colors/fonts; they use Tailwind semantic names
- * that map to these variables. Profile theming (Tranche 2) will override
- * these same variables at runtime.
+ * Design tokens — the single source of truth for every value, in three levels:
+ *
+ *   1. Primitives   the raw palette and sizes. Read only by this file.
+ *   2. Roles        what a colour is for (background, text, accent…), one set
+ *                   per app theme toggled by data-theme on <html>: "neo" (dark
+ *                   néo-rétro, default) and "scrapbook" (warm). Tailwind maps
+ *                   them to classes (bg-surface, text-muted…).
+ *   3. Zones        a feature's own tokens (Nous deux, verdicts, quiz…), built
+ *                   from the two levels above.
+ *
+ * Components use levels 2 and 3 only, never a raw value:
+ * `npm run check:tokens` rejects a colour written anywhere else (the
+ * illustrations and the palettes offered to choose from aside, listed in
+ * scripts/check-tokens.mjs). Per-profile theming still overrides the role
+ * tokens within the profile view container.
  */
+
+/* ============================== 1. Primitives ============================== */
 :root {
-  /* Colors — retro, MySpace-ish base palette */
-  --color-bg: #f4f1ea;
-  --color-surface: #ffffff;
-  --color-border: #e2ddd0;
-  --color-text: #2b2a28;
-  --color-text-muted: #7a756b;
-  --color-primary: #b5476b;
-  --color-primary-foreground: #ffffff;
-  --color-danger: #c0392b;
+  /* Neutral */
+  --pal-white: #ffffff;
+  --pal-black: #000000;
 
-  /* Typography */
-  --font-sans: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  /* Neo palette */
+  --pal-night-950: #0d0b1a;
+  --pal-night-900: #14102b;
+  --pal-night-850: #171334;
+  --pal-night-800: #201a4d;
+  --pal-lilac-50: #ecebff;
+  --pal-lilac-400: #9a94c8;
+  --pal-ink-950: #12071a;
+  --pal-pink-500: #ff3d9a;
+  --pal-cyan-400: #22d3ee;
+  --pal-purple-500: #a855f7;
+  --pal-coral-500: #ff5d73;
 
-  /* Shape */
-  --radius: 10px;
+  /* Scrapbook palette */
+  --pal-sand-200: #f2e9da;
+  --pal-sand-250: #efe3d1;
+  --pal-sand-300: #e4d6bf;
+  --pal-paper-0: #fffdf9;
+  --pal-paper-50: #fffaf1;
+  --pal-paper-100: #fbf2e4;
+  --pal-brown-800: #3c332a;
+  --pal-brown-500: #8a7c68;
+  --pal-rose-500: #c65b7c;
+  --pal-sage-500: #6f9a76;
+  --pal-copper-500: #d98b53;
+  --pal-red-700: #c0392b;
+
+  /* Games & feedback */
+  --pal-bubblegum-400: #ff6fa8;
+  --pal-orchid-500: #b36ae2;
+  --pal-cornflower-500: #5b8def;
+  --pal-iris-500: #7c6cf0;
+  --pal-periwinkle-400: #8a7bd8;
+  --pal-green-500: #3fbf7f;
+  --pal-green-600: #22a06b;
+  --pal-amber-500: #f0a020;
+  --pal-red-500: #e2534f;
+  --pal-red-400: #ef4444;
+
+  /* Shapes & type */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Layout: the app's frame. Mobile chrome (the installed app draws under the
+     iPhone status bar, so the top bar starts below the safe area), then the
+     desktop shell. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --topbar-h: calc(var(--safe-top) + 4.25rem);
+  --tabbar-h: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+  --desk-topbar-h: 3.75rem;
+  --shell-left-w: 16rem;
+  --shell-right-w: 20rem;
+  --content-w: 42rem;
+}
+
+/* The desktop shell grows with the screen: from lg (Tailwind's 1024px) the
+   main column fills the space between the rails, up to a comfortable width;
+   from 2xl (1536px) the rails widen too. */
+@media (min-width: 1024px) {
+  :root {
+    --content-w: 56rem;
+  }
+}
+@media (min-width: 1536px) {
+  :root {
+    --shell-left-w: 18rem;
+    --shell-right-w: 22rem;
+    --content-w: 70rem;
+  }
+}
+
+/* ================================ 2. Roles ================================= */
+
+/* ---------- NEO (default) : dark néo-rétro Y2K ---------- */
+:root,
+:root[data-theme="neo"] {
+  --color-bg: var(--pal-night-950);
+  --color-bg-2: var(--pal-night-900);
+  --color-surface: var(--pal-night-850);
+  --color-surface-2: var(--pal-night-800);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-text: var(--pal-lilac-50);
+  --color-text-muted: var(--pal-lilac-400);
+  --color-primary: var(--pal-pink-500);
+  --color-primary-foreground: var(--pal-ink-950);
+  --color-accent: var(--pal-cyan-400);
+  --color-accent-2: var(--pal-purple-500);
+  --color-danger: var(--pal-coral-500);
+
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-script: "Caveat", cursive;
+
+  --grad: linear-gradient(135deg, var(--pal-pink-500) 0%, var(--pal-purple-500) 52%, var(--pal-cyan-400) 100%);
+  --glow: 0 0 26px rgba(255, 61, 154, 0.35);
+  --shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+
+  --app-bg:
+    radial-gradient(62vw 62vw at 8% -12%, rgba(168, 85, 247, 0.28), transparent 60%),
+    radial-gradient(52vw 52vw at 112% 8%, rgba(34, 211, 238, 0.18), transparent 60%),
+    radial-gradient(46vw 46vw at 50% 122%, rgba(255, 61, 154, 0.2), transparent 60%),
+    var(--pal-night-950);
+
+  color-scheme: dark;
+}
+
+/* ---------- SCRAPBOOK : chaleureux, papier ---------- */
+:root[data-theme="scrapbook"] {
+  --color-bg: var(--pal-sand-200);
+  --color-bg-2: var(--pal-sand-250);
+  --color-surface: var(--pal-paper-50);
+  --color-surface-2: var(--pal-paper-100);
+  --color-border: var(--pal-sand-300);
+  --color-text: var(--pal-brown-800);
+  --color-text-muted: var(--pal-brown-500);
+  --color-primary: var(--pal-rose-500);
+  --color-primary-foreground: var(--pal-paper-0);
+  --color-accent: var(--pal-sage-500);
+  --color-accent-2: var(--pal-copper-500);
+  --color-danger: var(--pal-red-700);
+
+  --font-display: "Caveat", "Inter", cursive;
+  --font-script: "Caveat", cursive;
+
+  --grad: linear-gradient(135deg, var(--pal-copper-500) 0%, var(--pal-rose-500) 100%);
+  --glow: 0 8px 22px -10px rgba(198, 91, 124, 0.45);
+  --shadow: 0 16px 30px -18px rgba(120, 90, 60, 0.55);
+
+  --app-bg:
+    radial-gradient(50vw 50vw at 0% 0%, rgba(217, 139, 83, 0.14), transparent 60%),
+    radial-gradient(50vw 50vw at 100% 18%, rgba(198, 91, 124, 0.1), transparent 60%),
+    var(--pal-sand-200);
+
+  color-scheme: light;
+}
+
+/* Roles shared by both themes. */
+:root {
+  /* Text on a coloured chip or badge, and the two contrasts picked for a
+     custom accent (see onColor in SharedLook). */
+  --color-on-accent: var(--pal-white);
+  --color-on-light: var(--pal-ink-950);
+  --color-success: var(--pal-green-600);
+  /* What a custom accent's gradient fades into. */
+  --grad-mix: var(--pal-cyan-400);
+}
+
+/* ================================ 3. Zones ================================= */
+:root {
+  /* 💞 Nous deux */
+  --nous-accent: var(--pal-bubblegum-400);
+  --nous-grad-hero: linear-gradient(135deg, var(--pal-bubblegum-400), var(--pal-orchid-500) 55%, var(--pal-cornflower-500));
+  --nous-grad-daily: linear-gradient(135deg, var(--pal-bubblegum-400), var(--pal-orchid-500));
+
+  /* Verdicts of a guess (Nous deux) */
+  --verdict-right: var(--pal-green-500);
+  --verdict-close: var(--pal-amber-500);
+  --verdict-some: var(--pal-periwinkle-400);
+  --verdict-wrong: var(--pal-cornflower-500); /* "À découvrir": never a red */
+
+  /* 🧠 Quiz */
+  --quiz-accent: var(--pal-iris-500);
+  --quiz-correct: var(--pal-green-500);
+  --quiz-grad-mix: linear-gradient(135deg, var(--pal-iris-500), var(--pal-bubblegum-400));
+
+  /* ⚡ En direct */
+  --live-quiz: var(--quiz-accent);
+  --live-nous: var(--nous-accent);
+
+  /* 🐱 Moka's house: the laser dot */
+  --laser-dot: var(--pal-red-400);
+  --laser-glow: rgba(239, 68, 68, 0.7);
+
+  /* Profile: the veil over a page photo when no colour is chosen */
+  --profile-veil: var(--pal-black);
+
+  /* Companion badge on a profile photo: its soft shadow */
+  --companion-badge-shadow: rgba(0, 0, 0, 0.55);
+
+  /* Avatars: the thin light ring */
+  --avatar-ring-soft: rgba(255, 255, 255, 0.15);
+  --avatar-ring: rgba(255, 255, 255, 0.25);
+
+  /* Photo studio: the shine on a slider */
+  --photo-shine: var(--pal-white);
+  --photo-shine-from: rgba(255, 255, 255, 0);
 }

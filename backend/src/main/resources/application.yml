@@ -2,7 +2,9 @@ spring:
   application:
     name: memocat-backend
   datasource:
-    url: ${MEMOCAT_DB_URL:jdbc:postgresql://localhost:5432/memocat}
+    # MEMOCAT_DB_URL wins if set; otherwise the URL is composed from host/port/name
+    # (so a managed Postgres that exposes those parts separately works out of the box).
+    url: ${MEMOCAT_DB_URL:jdbc:postgresql://${MEMOCAT_DB_HOST:localhost}:${MEMOCAT_DB_PORT:5432}/${MEMOCAT_DB_NAME:memocat}}
     username: ${MEMOCAT_DB_USER:memocat}
     password: ${MEMOCAT_DB_PASSWORD:memocat}
   jpa:
@@ -15,18 +17,39 @@ spring:
           time_zone: UTC
   flyway:
     enabled: true
+  servlet:
+    multipart:
+      # Documents up to 10 MB (images are capped at 5 MB by their own validator).
+      max-file-size: 10MB
+      max-request-size: 11MB
 
 server:
-  port: ${MEMOCAT_SERVER_PORT:8080}
+  # PORT is injected by most PaaS (e.g. Render); falls back to MEMOCAT_SERVER_PORT then 8080.
+  port: ${PORT:${MEMOCAT_SERVER_PORT:8080}}
+  # Text answers (app code, JSON) travel gzipped: about 3x smaller on the phone.
+  compression:
+    enabled: true
+    mime-types: text/html,text/css,text/plain,text/javascript,application/javascript,application/json,image/svg+xml
+    min-response-size: 1KB
 
 memocat:
   jwt:
     # Must be at least 32 characters (256 bits) for HS256. Provide via env in all real environments.
     secret: ${MEMOCAT_JWT_SECRET:}
     expiration-minutes: ${MEMOCAT_JWT_EXPIRATION_MINUTES:1440}
+  keep-alive:
+    # Self-ping of the public URL so the free Render instance never idles.
+    # Render sets RENDER_EXTERNAL_URL automatically; empty elsewhere = disabled.
+    url: ${MEMOCAT_KEEP_ALIVE_URL:${RENDER_EXTERNAL_URL:}}
   storage:
-    # Local filesystem root for uploaded assets (used from Tranche 3 onward).
-    path: ${MEMOCAT_STORAGE_PATH:./data/uploads}
+    # Files live in Postgres (1 GB on Render's free plan): uploads stop at this total.
+    quota-mb: ${MEMOCAT_STORAGE_QUOTA_MB:800}
+  # The couple's time zone: "today" for memories and dates (not the server's UTC).
+  timezone: ${MEMOCAT_TIMEZONE:Atlantic/Canary}
+  push:
+    # VAPID "subject": how browser push services can contact the operator
+    # (https URL or mailto:). Render's public URL by default.
+    subject: ${MEMOCAT_PUSH_SUBJECT:${RENDER_EXTERNAL_URL:mailto:memocat@localhost}}
   cors:
     # Dev origins for the Tauri/Vite frontend.
     allowed-origins: ${MEMOCAT_CORS_ORIGINS:http://localhost:1420,http://localhost:5173,tauri://localhost}
