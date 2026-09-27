@@ -1,0 +1,276 @@
+[
+[
+"s01",
+"c",
+"Le plus séduisant chez moi ?",
+"Mon regard",
+"Mon sourire",
+"Ma voix",
+"Mon humour",
+"Mes mains",
+"Mon parfum",
+"Mon rire",
+"Mes câlins"
+],
+[
+"s02",
+"c",
+"Ton bisou préféré ?",
+"Dans le cou",
+"Sur le front",
+"Un vrai baiser de cinéma",
+"Un bisou volé",
+"Sur la joue",
+"Un bisou esquimau",
+"Sur la main",
+"Un bisou papillon"
+],
+[
+"s03",
+"c",
+"Le moment le plus romantique ?",
+"Un dîner aux chandelles",
+"Un slow dans la cuisine",
+"Un bain à deux",
+"Une nuit à la belle étoile",
+"Un coucher de soleil",
+"Un pique-nique",
+"Une danse sous la pluie",
+"Un petit-déj au lit"
+],
+[
+"s04",
+"c",
+"Ta tenue préférée sur moi ?",
+"Mon pull trop grand",
+"Chic pour sortir",
+"En pyjama",
+"Au saut du lit"
+],
+[
+"s05",
+"c",
+"Pour une soirée à deux réussie ?",
+"Massage",
+"Film + plaid",
+"Jeu à deux",
+"Danse improvisée",
+"Cuisiner ensemble",
+"Bain moussant",
+"Karaoké à deux",
+"Regarder les étoiles"
+],
+[
+"s06",
+"c",
+"Ce qui te fait craquer ?",
+"Un regard appuyé",
+"Un mot doux à l'oreille",
+"Une main dans le dos",
+"Un parfum",
+"Un sourire en coin",
+"Un rire",
+"Une surprise",
+"Une attention inattendue"
+],
+[
+"s07",
+"c",
+"Le lieu le plus romantique pour un baiser ?",
+"Sous la pluie",
+"En haut d'une colline",
+"Sur un quai de gare",
+"Dans l'ascenseur",
+"Sous la neige",
+"Au bord de la mer",
+"Sous les étoiles",
+"Dans la cuisine"
+],
+[
+"s08",
+"c",
+"Ton flirt idéal ?",
+"Des messages taquins",
+"Des regards en public",
+"Des petits mots cachés",
+"Des chatouilles",
+"Des compliments",
+"Des clins d'œil",
+"Des sous-entendus drôles"
+],
+[
+"s09",
+"c",
+"Plutôt…",
+"Câlins longs",
+"Bisous nombreux",
+"Mains entrelacées",
+"Tout à la fois"
+],
+[
+"s10",
+"c",
+"Pour me séduire à nouveau, tu…",
+"M'invites à dîner",
+"M'écris une lettre",
+"Me prépares un bain",
+"Me fais rire",
+"M'emmènes en week-end",
+"Me fais un massage",
+"Me regardes comme au premier jour"
+],
+[
+"s11",
+"l",
+"Le moment où tu m'as trouvé·e le plus irrésistible ?"
+],
+[
+"s12",
+"l",
+"Le compliment qui te fait rougir à coup sûr ?"
+],
+[
+"s13",
+"l",
+"L'endroit où tu rêves qu'on s'évade tous les deux, juste pour une nuit ?"
+],
+[
+"s14",
+"l",
+"La chanson parfaite pour un slow à deux ?"
+],
+[
+"s15",
+"l",
+"Le détail de moi que tu trouves le plus craquant ?"
+],
+[
+"s16",
+"l",
+"Notre baiser le plus mémorable, c'était où ?"
+],
+[
+"s17",
+"l",
+"Le rendez-vous surprise dont tu rêves ?"
+],
+[
+"s18",
+"l",
+"Un petit geste tendre que tu adores recevoir ?"
+],
+[
+"s19",
+"p",
+"Qu'est-ce qui t'a fait craquer la toute première fois ?"
+],
+[
+"s20",
+"p",
+"Décris ton rendez-vous romantique parfait, dans les moindres détails."
+],
+[
+"s21",
+"p",
+"Quelle petite attention te donne des papillons dans le ventre ?"
+],
+[
+"s22",
+"p",
+"Quel souvenir de nous te fait encore sourire en coin ?"
+],
+[
+"s23",
+"p",
+"Quel compliment aimerais-tu entendre plus souvent ?"
+],
+[
+"s24",
+"p",
+"Quel vêtement de moi aimerais-tu me « voler » ?"
+],
+[
+"s25",
+"p",
+"Plutôt réveil en douceur avec bisous ou petit-déj au lit ?"
+],
+[
+"s26",
+"p",
+"Qu'est-ce qui rend une soirée à deux inoubliable pour toi ?"
+],
+[
+"s27",
+"p",
+"Choisis une chanson, et invite-moi à danser. Maintenant."
+],
+[
+"s28",
+"p",
+"Fais-moi trois compliments… sans rire."
+],
+[
+"s29",
+"p",
+"Quel serait notre week-end en amoureux idéal, sans limite de budget ?"
+],
+[
+"s30",
+"p",
+"Regarde-moi dans les yeux 30 secondes sans parler. Qui craque en premier ?"
+],
+[
+"sx01",
+"u",
+"Lumière allumée ou éteinte ?",
+"Allumée",
+"Éteinte",
+"Des bougies"
+],
+[
+"sx02",
+"u",
+"Slow ou danse endiablée ?",
+"Slow",
+"Danse endiablée"
+],
+[
+"sx03",
+"e",
+"Ton audace, sur 10 ?",
+"Timide",
+"Aucune limite"
+],
+[
+"sx04",
+"o",
+"Classe ces ambiances :",
+"Bougies",
+"Musique douce",
+"Draps en satin",
+"Massage"
+],
+[
+"sx05",
+"h",
+"La partie du corps de l'autre que tu préfères, en un mot ?"
+],
+[
+"sx06",
+"m",
+"Ta tenue préférée sur l'autre ?"
+],
+[
+"sx07",
+"f",
+"Le rendez-vous parfait se termine par ___"
+],
+[
+"sx08",
+"u",
+"Un massage : donner ou recevoir ?",
+"Donner",
+"Recevoir",
+"Les deux"
+]
+]

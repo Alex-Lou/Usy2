@@ -1,6 +1,5 @@
 import type { InputHTMLAttributes } from "react";
 
-// Reusable text input. Styling is token-driven only.
 export function Input({
   className = "",
   ...props
@@ -8,8 +7,9 @@ export function Input({
   return (
     <input
       className={
-        "w-full rounded-token border border-border bg-surface px-3 py-2 text-text " +
-        "outline-none focus:border-primary " +
+        "w-full rounded-token border border-border bg-bg-2/60 px-3.5 py-2.5 text-text " +
+        "placeholder:text-text-muted outline-none transition focus:border-primary/70 " +
+        "focus:ring-2 focus:ring-primary/25 " +
         className
       }
       {...props}

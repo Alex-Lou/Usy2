@@ -1,0 +1,448 @@
+/* The cat and wolf faces, alive (see components/ui/animals.tsx): a blink now
+   and then, an ear that twitches, the cat's whiskers that quiver. Each part
+   turns around its own base (transform-box). */
+.mc-face .mc-face-eyes,
+.mc-face .mc-face-look,
+.mc-face .mc-face-ear,
+.mc-face .mc-face-whiskers,
+.mc-face .mc-face-nose {
+  transform-box: fill-box;
+}
+.mc-face .mc-face-eyes {
+  transform-origin: 50% 50%;
+  animation: mc-face-blink 4.6s infinite;
+}
+/* The gaze wanders a little: left, back, right, back. */
+.mc-face .mc-face-look {
+  animation: mc-face-look 7.5s ease-in-out infinite;
+}
+
+/* The wolf is the liveliest: double blinks, busy ears, a sniffing nose. */
+.mc-face--wolf .mc-face-eyes {
+  animation: mc-face-blink2 4.2s infinite;
+}
+.mc-face--wolf .mc-face-look {
+  animation-duration: 6s;
+}
+.mc-face--wolf .mc-face-ear--l {
+  animation: mc-wolf-ear-l 3.4s ease-in-out infinite;
+}
+.mc-face--wolf .mc-face-ear--r {
+  animation: mc-wolf-ear-r 4.3s ease-in-out infinite;
+}
+.mc-face--wolf .mc-face-whiskers--l {
+  transform-origin: 100% 50%;
+  animation: mc-face-whisk-l 2.6s ease-in-out infinite;
+}
+.mc-face--wolf .mc-face-whiskers--r {
+  transform-origin: 0% 50%;
+  animation: mc-face-whisk-r 2.6s ease-in-out 0.2s infinite;
+}
+.mc-face--wolf .mc-face-nose {
+  transform-origin: 50% 50%;
+  animation: mc-face-sniff 3.8s ease-in-out infinite;
+}
+.mc-face .mc-face-ear--l {
+  transform-origin: 80% 100%;
+  animation: mc-face-ear-l 7s ease-in-out infinite;
+}
+.mc-face .mc-face-ear--r {
+  transform-origin: 20% 100%;
+  animation: mc-face-ear-r 9s ease-in-out infinite;
+}
+.mc-face--cat .mc-face-whiskers--l {
+  transform-origin: 100% 50%;
+  animation: mc-face-whisk-l 3.4s ease-in-out infinite;
+}
+.mc-face--cat .mc-face-whiskers--r {
+  transform-origin: 0% 50%;
+  animation: mc-face-whisk-r 3.4s ease-in-out infinite;
+}
+@keyframes mc-face-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+@keyframes mc-face-blink2 {
+  0%, 84%, 100% { transform: scaleY(1); }
+  87% { transform: scaleY(0.1); }
+  90% { transform: scaleY(1); }
+  93% { transform: scaleY(0.1); }
+  96% { transform: scaleY(1); }
+}
+@keyframes mc-face-look {
+  0%, 18%, 50%, 68%, 100% { transform: translateX(0); }
+  25%, 42% { transform: translateX(-1.6px); }
+  75%, 92% { transform: translateX(1.6px); }
+}
+@keyframes mc-wolf-ear-l {
+  0%, 100% { transform: rotate(0); }
+  12% { transform: rotate(-16deg); }
+  18% { transform: rotate(-4deg); }
+  22% { transform: rotate(-12deg); }
+  30%, 60% { transform: rotate(0); }
+  70% { transform: rotate(8deg); } /* listening sideways */
+  85% { transform: rotate(0); }
+}
+@keyframes mc-wolf-ear-r {
+  0%, 35%, 100% { transform: rotate(0); }
+  45% { transform: rotate(16deg); }
+  50% { transform: rotate(5deg); }
+  55% { transform: rotate(13deg); }
+  65% { transform: rotate(0); }
+  80% { transform: rotate(-8deg); }
+  92% { transform: rotate(0); }
+}
+@keyframes mc-face-sniff {
+  0%, 60%, 100% { transform: scale(1) translateY(0); }
+  65% { transform: scale(1.12, 0.92) translateY(-0.4px); }
+  70% { transform: scale(1); }
+  75% { transform: scale(1.12, 0.92) translateY(-0.4px); }
+  80% { transform: scale(1); }
+}
+@keyframes mc-face-ear-l {
+  0%, 80%, 100% { transform: rotate(0); }
+  84% { transform: rotate(-14deg); }
+  88% { transform: rotate(4deg); }
+  92% { transform: rotate(0); }
+}
+@keyframes mc-face-ear-r {
+  0%, 60%, 100% { transform: rotate(0); }
+  64% { transform: rotate(14deg); }
+  68% { transform: rotate(-4deg); }
+  72% { transform: rotate(0); }
+}
+@keyframes mc-face-whisk-l {
+  0%, 70%, 100% { transform: rotate(0); }
+  78% { transform: rotate(-7deg); }
+  86% { transform: rotate(3deg); }
+}
+@keyframes mc-face-whisk-r {
+  0%, 70%, 100% { transform: rotate(0); }
+  78% { transform: rotate(7deg); }
+  86% { transform: rotate(-3deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-face .mc-face-eyes,
+  .mc-face .mc-face-look,
+  .mc-face .mc-face-ear,
+  .mc-face .mc-face-whiskers,
+  .mc-face .mc-face-nose {
+    animation: none;
+  }
+}
+
+/* Small faces keep still (see Animal in animals.tsx): only the big ones move. */
+.mc-still .mc-face *,
+.mc-still .mc-penguin,
+.mc-still .mc-penguin * {
+  animation: none !important;
+}
+
+/* The companion badge on a profile photo (Avatar.tsx). Still between beats;
+   on each shared "hello" beat (html.mc-hello, every 15 s) the drawing itself
+   plays one short scene: the badge and its disc never move. */
+svg.mc-badge-face {
+  overflow: visible; /* flippers and ears may reach past the edge */
+  /* No disc behind the little head any more: a soft shadow keeps it readable on any photo. */
+  filter: drop-shadow(0 1px 1.5px var(--companion-badge-shadow));
+}
+svg.mc-badge-face .mc-head,
+svg.mc-badge-face .mc-face *,
+svg.mc-badge-face .mc-penguin,
+svg.mc-badge-face .mc-penguin * {
+  animation: none;
+}
+svg.mc-badge-face .mc-face-eyes,
+svg.mc-badge-face .mc-face-look {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+svg.mc-badge-face .mc-head {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.mc-hello svg.mc-badge-face .mc-head {
+  animation: mc-hello-head 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-eyes,
+.mc-hello svg.mc-badge-face .mc-penguin-eyes {
+  animation: mc-hello-blink 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-look {
+  animation: mc-hello-look 1.8s ease-in-out;
+}
+/* Penguin: flippers flap, it waddles, the beak chirps. */
+.mc-hello svg.mc-badge-face .mc-penguin {
+  animation: mc-hello-waddle 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-penguin-flap--l {
+  animation: mc-hello-flap-l 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-penguin-flap--r {
+  animation: mc-hello-flap-r 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-penguin-beak {
+  animation: mc-hello-chirp 1.8s ease-in-out;
+}
+/* Wolf and cat: ears prick up, whiskers quiver, the wolf sniffs. */
+.mc-hello svg.mc-badge-face .mc-face-ear--l {
+  animation: mc-hello-ear-l 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-ear--r {
+  animation: mc-hello-ear-r 1.8s ease-in-out 0.12s;
+}
+.mc-hello svg.mc-badge-face .mc-face-whiskers--l {
+  animation: mc-hello-whisk-l 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-whiskers--r {
+  animation: mc-hello-whisk-r 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-face-nose {
+  animation: mc-hello-sniff 1.8s ease-in-out;
+}
+@keyframes mc-hello-head {
+  0%, 100% { transform: none; }
+  18% { transform: translateY(-4px) rotate(-9deg); }
+  40% { transform: translateY(-2px) rotate(8deg); }
+  62% { transform: rotate(-5deg); }
+  80% { transform: rotate(2deg); }
+}
+@keyframes mc-hello-blink {
+  0%, 30%, 42%, 58%, 70%, 100% { transform: scaleY(1); }
+  36%, 64% { transform: scaleY(0.1); }
+}
+@keyframes mc-hello-look {
+  0%, 100% { transform: translateX(0); }
+  15%, 35% { transform: translateX(-2.4px); }
+  55%, 80% { transform: translateX(2.4px); }
+}
+@keyframes mc-hello-waddle {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-8deg); }
+  45% { transform: rotate(8deg); }
+  70% { transform: rotate(-5deg); }
+}
+@keyframes mc-hello-flap-l {
+  0%, 100% { transform: rotate(0); }
+  12%, 40%, 68% { transform: rotate(42deg); }
+  26%, 54%, 82% { transform: rotate(-8deg); }
+}
+@keyframes mc-hello-flap-r {
+  0%, 100% { transform: rotate(0); }
+  12%, 40%, 68% { transform: rotate(-42deg); }
+  26%, 54%, 82% { transform: rotate(8deg); }
+}
+@keyframes mc-hello-chirp {
+  0%, 30%, 60%, 100% { transform: scaleY(1); }
+  40% { transform: scaleY(1.5); }
+  50% { transform: scaleY(0.85); }
+  70% { transform: scaleY(1.4); }
+}
+@keyframes mc-hello-ear-l {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(-24deg); }
+  30% { transform: rotate(-4deg); }
+  48% { transform: rotate(-20deg); }
+  66% { transform: rotate(0); }
+}
+@keyframes mc-hello-ear-r {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(24deg); }
+  30% { transform: rotate(4deg); }
+  48% { transform: rotate(20deg); }
+  66% { transform: rotate(0); }
+}
+@keyframes mc-hello-whisk-l {
+  0%, 100% { transform: rotate(0); }
+  20%, 60% { transform: rotate(-14deg); }
+  40%, 80% { transform: rotate(8deg); }
+}
+@keyframes mc-hello-whisk-r {
+  0%, 100% { transform: rotate(0); }
+  20%, 60% { transform: rotate(14deg); }
+  40%, 80% { transform: rotate(-8deg); }
+}
+@keyframes mc-hello-sniff {
+  0%, 100% { transform: scale(1); }
+  25%, 45%, 65% { transform: scale(1.3); }
+  35%, 55% { transform: scale(0.95); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-hello svg.mc-badge-face * {
+    animation: none !important;
+  }
+}
+
+/* The otter (animals.tsx): its fish flaps now and then, it blinks (eyelids
+   drawn over the eyes). The fish turns around the point where it is held. */
+.mc-face--otter .mc-otter-fish {
+  transform-box: fill-box;
+  transform-origin: 51.24% 70.48%;
+  animation: mc-otter-flop 7s ease-in-out infinite;
+}
+.mc-face--otter .mc-otter-lids,
+.mc-otter-body .mc-otter-lids {
+  opacity: 0;
+  animation: mc-pingu-blink 4.6s infinite;
+}
+.mc-hello svg.mc-badge-face .mc-otter-fish {
+  animation: mc-otter-hello 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-otter-lids {
+  animation: mc-otter-hello-blink 1.8s ease-in-out;
+}
+/* The Siamese cat (animals.tsx): the left ear flicks or folds now and then,
+   the right one folds down (her drawing of it, swapped in for under a second),
+   the whiskers twitch, it blinks. Each piece turns around the point its group is
+   moved to (transform-origin 0 0). The ear tips are always shown (the drawing
+   below them is cut away, so they can fold); the whiskers only while they
+   move (at rest the drawing below is the whiskers). */
+.mc-face--siamese .mc-siamese-ear,
+.mc-face--siamese .mc-siamese-whisk {
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+.mc-face--siamese .mc-siamese-ear--l {
+  animation: mc-siamese-ear-l 7.4s ease-in-out infinite;
+}
+.mc-face--siamese .mc-siamese-ear-down {
+  opacity: 0;
+  animation: mc-siamese-fold 8.3s linear infinite;
+}
+.mc-face--siamese .mc-siamese-ear-up {
+  animation: mc-siamese-unfold 8.3s linear infinite;
+}
+.mc-face--siamese .mc-siamese-whisk {
+  opacity: 0;
+  animation: mc-siamese-whisk-l 4.6s ease-in-out infinite;
+}
+.mc-face--siamese .mc-siamese-whisk--r {
+  animation-name: mc-siamese-whisk-r;
+  animation-delay: -1.9s;
+}
+.mc-face--siamese .mc-siamese-lids {
+  opacity: 0;
+  animation: mc-pingu-blink 5.1s infinite;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-ear--l {
+  animation: mc-siamese-hello-l 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-ear-down {
+  animation: mc-siamese-fold-hello 1.8s linear;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-ear-up {
+  animation: mc-siamese-unfold-hello 1.8s linear;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-whisk {
+  animation: mc-siamese-whisk-hello 1.8s ease-in-out;
+}
+.mc-hello svg.mc-badge-face .mc-siamese-lids {
+  animation: mc-otter-hello-blink 1.8s ease-in-out;
+}
+/* Fold (tip tucked in and down), then later a quick flick. */
+@keyframes mc-siamese-ear-l {
+  0%, 36%, 54%, 84%, 100% { transform: none; }
+  40%, 49% { transform: rotate(5deg) scaleY(0.66); }
+  87% { transform: rotate(-4deg); }
+  90% { transform: rotate(2deg); }
+  93% { transform: rotate(-2deg); }
+  96% { transform: none; }
+}
+/* The folded ear fades in over the upright one (which only then goes), stays
+   under a second, and the upright one is back before it fades out: no gap. */
+@keyframes mc-siamese-fold {
+  0%, 60%, 70.2%, 100% { opacity: 0; }
+  61%, 69.2% { opacity: 1; }
+}
+@keyframes mc-siamese-unfold {
+  0%, 61%, 69.2%, 100% { opacity: 1; }
+  61.1%, 69.1% { opacity: 0; }
+}
+@keyframes mc-siamese-whisk-l {
+  0%, 71.9%, 94.1%, 100% { transform: none; opacity: 0; }
+  72%, 94% { transform: none; opacity: 1; }
+  76% { transform: rotate(-3.5deg); }
+  80% { transform: rotate(2.5deg); }
+  84% { transform: rotate(-3deg); }
+  88% { transform: rotate(2deg); }
+}
+@keyframes mc-siamese-whisk-r {
+  0%, 71.9%, 94.1%, 100% { transform: none; opacity: 0; }
+  72%, 94% { transform: none; opacity: 1; }
+  76% { transform: rotate(3.5deg); }
+  80% { transform: rotate(-2.5deg); }
+  84% { transform: rotate(3deg); }
+  88% { transform: rotate(-2deg); }
+}
+@keyframes mc-siamese-hello-l {
+  0%, 100% { transform: none; }
+  15%, 45% { transform: rotate(5deg) scaleY(0.7); }
+  62% { transform: rotate(-4deg); }
+  78% { transform: rotate(2deg); }
+}
+@keyframes mc-siamese-fold-hello {
+  0%, 12%, 62%, 100% { opacity: 0; }
+  16%, 58% { opacity: 1; }
+}
+@keyframes mc-siamese-unfold-hello {
+  0%, 16%, 58%, 100% { opacity: 1; }
+  16.5%, 57.5% { opacity: 0; }
+}
+@keyframes mc-siamese-whisk-hello {
+  0%, 100% { transform: none; opacity: 0; }
+  1%, 99% { opacity: 1; }
+  20%, 60% { transform: rotate(-3.5deg); }
+  40%, 80% { transform: rotate(3deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-face--siamese .mc-siamese-ear,
+  .mc-face--siamese .mc-siamese-ear-down,
+  .mc-face--siamese .mc-siamese-ear-up,
+  .mc-face--siamese .mc-siamese-whisk,
+  .mc-face--siamese .mc-siamese-lids {
+    animation: none;
+  }
+}
+
+/* The living otter's whole body (bodies.tsx) breathes, like the penguin's. */
+.mc-otter-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: mc-pingu-breathe 3.4s ease-in-out infinite;
+}
+/* The living Siamese's whole body (bodies.tsx) breathes and blinks too. */
+.mc-siamese-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: mc-pingu-breathe 3.6s ease-in-out infinite;
+}
+.mc-siamese-body .mc-siamese-body-lids {
+  opacity: 0;
+  animation: mc-pingu-blink 5.1s infinite;
+}
+@keyframes mc-otter-flop {
+  0%, 80%, 100% { transform: rotate(0); }
+  84% { transform: rotate(-10deg); }
+  88% { transform: rotate(8deg); }
+  92% { transform: rotate(-6deg); }
+  96% { transform: rotate(3deg); }
+}
+@keyframes mc-otter-hello {
+  0%, 100% { transform: rotate(0); }
+  15%, 45%, 75% { transform: rotate(-12deg); }
+  30%, 60%, 88% { transform: rotate(9deg); }
+}
+@keyframes mc-otter-hello-blink {
+  0%, 30%, 42%, 58%, 70%, 100% { opacity: 0; }
+  34%, 38%, 62%, 66% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-face--otter .mc-otter-fish,
+  .mc-face--otter .mc-otter-lids,
+  .mc-otter-body,
+  .mc-otter-body .mc-otter-lids,
+  .mc-siamese-body,
+  .mc-siamese-body .mc-siamese-body-lids {
+    animation: none;
+  }
+}

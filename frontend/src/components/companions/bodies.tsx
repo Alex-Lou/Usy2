@@ -1,0 +1,197 @@
+import { useId } from "react";
+import { AnimalFace } from "../ui/animals";
+import siameseBodyUrl from "./chatBody.svg";
+import otterBodyUrl from "./loutreBodyBis.svg";
+import penguinUrl from "./PnguinoBody.svg";
+import type { CompanionBrain, Kind } from "./brain";
+
+// Whole-body companions, side on, feet at y = 0, facing right (the caller flips
+// them). The heads are the companion faces themselves, so they blink too.
+const OUTLINE = "#4a3b33";
+
+export function CompanionBody({ kind, b }: { kind: Kind; b: CompanionBrain }) {
+  if (kind === "penguin") return <PenguinBody b={b} />;
+  if (kind === "otter") return <OtterBody b={b} />;
+  if (kind === "siamese") return <SiameseBody b={b} />;
+  return <FourLegs kind={kind} b={b} />;
+}
+
+// Lou's partner's whole-body penguin, used as is (the file is never edited): the
+// whole drawing sways, hops, breathes and belly-slides; eyelids drawn on top of
+// its eyes blink. Its own coordinates: 2100 box, feet at y 1654, centre x 1049.5.
+const PENGUIN_SCALE = 66 / 1411; // the drawing's height (1411) → 66 units, like the others
+const EYES = [891.5, 1209] as const; // eye centres (x), at y 658
+const LID = "#EAF3FE"; // the face white around the eyes
+
+function PenguinLids({ closed }: { closed: boolean }) {
+  return (
+    <g className={closed ? undefined : "mc-pingu-lids"}>
+      {EYES.map((x) => (
+        <g key={x}>
+          <ellipse cx={x} cy="658" rx="50" ry="60" fill={LID} />
+          <path d={`M${x - 44} 664 q44 34 88 0`} stroke="#121629" strokeWidth="14" strokeLinecap="round" fill="none" />
+        </g>
+      ))}
+    </g>
+  );
+}
+
+function PenguinBody({ b }: { b: CompanionBrain }) {
+  const lie = b.lying * 80;
+  // Squash and stretch: taller in the air, a wiggle when the flippers would flap.
+  const stretch = 1 - b.lift / 50;
+  const wiggle = 1 + Math.abs(b.wag) / 400;
+  return (
+    <g transform={`translate(0 ${b.lying * 10}) rotate(${b.tilt + lie} 0 -22) scale(${wiggle / stretch} ${stretch})`}>
+      <g transform={`scale(${PENGUIN_SCALE}) translate(-1049.5 -1654)`}>
+        <g className="mc-pingu-breathe">
+          <image href={penguinUrl} x="0" y="0" width="2100" height="2100" />
+          <PenguinLids closed={b.eyesClosed} />
+        </g>
+      </g>
+    </g>
+  );
+}
+
+// Lou's partner's whole-body otter (loutreBodyBis.svg, used as is): drawn facing
+// left, so it is mirrored. It trots, hops, breathes, flattens for a nap or a
+// belly slide; eyelids drawn on top of its eyes blink. Its own coordinates:
+// 2100 box, feet at y 1667, centre x 1039.
+const OTTER_SCALE = 44 / 1030; // the drawing's height (1030) → 44 units: long and low
+const OTTER_EYES = [492, 823] as const; // eye centres (x), at y 1033
+
+function OtterBody({ b }: { b: CompanionBrain }) {
+  const stretch = 1 - b.lift / 50;
+  const wiggle = 1 + Math.abs(b.wag) / 400;
+  const trot = b.stride !== 0 ? 1 + Math.sin(b.stride * 4) * 0.025 : 1;
+  const flat = 1 - b.lying * 0.15;
+  return (
+    <g transform={`rotate(${b.tilt} 0 -12) scale(${(wiggle / stretch) * (1 + b.lying * 0.06)} ${stretch * flat * trot * b.squash})`}>
+      <g transform={`scale(${-OTTER_SCALE} ${OTTER_SCALE}) translate(-1039 -1667)`}>
+        <g className="mc-otter-body">
+          <image href={otterBodyUrl} x="0" y="0" width="2100" height="2100" />
+          <g className={b.eyesClosed ? undefined : "mc-otter-lids"}>
+            {OTTER_EYES.map((x) => (
+              <g key={x}>
+                <ellipse cx={x} cy="1033" rx="84" ry="64" fill="#9f8275" />
+                <path d={`M${x - 64} 1045 q64 36 128 0`} stroke="#2f241f" strokeWidth="16" strokeLinecap="round" fill="none" />
+              </g>
+            ))}
+          </g>
+        </g>
+      </g>
+    </g>
+  );
+}
+
+// Lou's partner's whole-body Siamese (chatBody.svg, used as is): drawn three
+// quarters facing left, so it is mirrored. It trots, hops, breathes, crouches
+// before a pounce, flattens for a nap; its tail (cut out of the same drawing)
+// swings around its root; eyelids drawn over its eyes blink. Its own
+// coordinates: 2100 box, feet at y 2001, centre x 1060.
+const SIAMESE_SCALE = 62 / 1700; // the drawing's height (1700) → 62 units
+const SIAMESE_EYES = [
+  [634, 738],
+  [950, 735],
+] as const;
+// The tail, above the back; the piece reaches a little lower than the cut so it
+// still covers the join while it swings. It turns around its root.
+const SIAMESE_TAIL = { cut: "1430,500 1790,500 1790,960 1430,960", points: "1430,500 1790,500 1790,985 1430,985", pivot: [1590, 975] } as const;
+
+function SiameseBody({ b }: { b: CompanionBrain }) {
+  const id = useId().replace(/:/g, "");
+  const stretch = 1 - b.lift / 50;
+  const trot = b.stride !== 0 ? 1 + Math.sin(b.stride * 4) * 0.025 : 1;
+  const flat = 1 - b.lying * 0.22;
+  const [px, py] = SIAMESE_TAIL.pivot;
+  const cut = `M${SIAMESE_TAIL.cut.replace(/ /g, " L")} Z`;
+  return (
+    <g transform={`translate(0 ${b.lying * 4}) rotate(${b.tilt} 0 -14) scale(${(1 / stretch) * (1 + b.lying * 0.08)} ${stretch * flat * trot * b.squash})`}>
+      <g transform={`scale(${-SIAMESE_SCALE} ${SIAMESE_SCALE}) translate(-1060 -2001)`}>
+        <g className="mc-siamese-body">
+          <clipPath id={`${id}-body`}>
+            <path clipRule="evenodd" d={`M0 0 H2100 V2100 H0 Z ${cut}`} />
+          </clipPath>
+          <clipPath id={`${id}-tail`}>
+            <polygon points={SIAMESE_TAIL.points} />
+          </clipPath>
+          <g transform={`rotate(${b.wag * 0.5} ${px} ${py})`}>
+            <image href={siameseBodyUrl} x="0" y="0" width="2100" height="2100" clipPath={`url(#${id}-tail)`} />
+          </g>
+          <image href={siameseBodyUrl} x="0" y="0" width="2100" height="2100" clipPath={`url(#${id}-body)`} />
+          <g className={b.eyesClosed ? undefined : "mc-siamese-body-lids"}>
+            {SIAMESE_EYES.map(([x, y]) => (
+              <g key={x}>
+                <ellipse cx={x} cy={y} rx="80" ry="74" fill="#f4cda1" />
+                <path d={`M${x - 68} ${y + 8} q68 40 136 0`} stroke="#5d4c36" strokeWidth="18" strokeLinecap="round" fill="none" />
+              </g>
+            ))}
+          </g>
+        </g>
+      </g>
+    </g>
+  );
+}
+
+const COLORS = {
+  wolf: { body: "#aab2be", far: "#8f97a3", light: "#eef1f5" },
+  cat: { body: "#fff4e6", far: "#efdcc6", light: "#f2c9a0" },
+} as const;
+
+/** One leg: swings around its top while walking, tucks in when lying down. */
+function Leg({ x, color, swing, tuck, long = false }: { x: number; color: string; swing: number; tuck: number; long?: boolean }) {
+  const h = long ? 17.5 : 13.5;
+  const top = -h + 0.5;
+  return (
+    <g transform={`rotate(${swing} ${x + 3} ${top + 1}) translate(0 ${top + 1}) scale(1 ${tuck}) translate(0 ${-(top + 1)})`}>
+      <rect x={x} y={top} width={long ? 7 : 6.5} height={h} rx="3.2" fill={color} stroke={OUTLINE} strokeWidth="1.6" />
+    </g>
+  );
+}
+
+function FourLegs({ kind, b }: { kind: "wolf" | "cat"; b: CompanionBrain }) {
+  const c = COLORS[kind];
+  const walking = b.stride !== 0;
+  const swing = (phase: number) => (walking ? Math.sin(b.stride * 2 + phase) * 24 : 0);
+  const tuck = Math.max(0.08, 1 - b.lying * 1.3);
+  const wolf = kind === "wolf";
+  const up = wolf ? 4 : 0; // the wolf stands taller, on longer legs
+  return (
+    <g transform={`translate(0 ${b.lying * (8 + up)}) rotate(${b.tilt} 0 -10) scale(1 ${b.squash})`}>
+      {/* Far legs first, a shade darker. */}
+      <Leg x={-14} color={c.far} swing={swing(Math.PI)} tuck={tuck} long={wolf} />
+      <Leg x={9} color={c.far} swing={swing(0)} tuck={tuck} long={wolf} />
+      <g transform={`rotate(${b.wag} -20 ${-21 - up})`}>
+        {wolf ? (
+          // A big bushy tail with a pale tip.
+          <>
+            <path d="M-20 -25 q-12 -12 -27 -7 q-7 4 -4 11 q8 -3 13 1 q9 1 18 -5 z" fill="#8f97a3" stroke={OUTLINE} strokeWidth="1.8" strokeLinejoin="round" />
+            <path d="M-47 -32 q-7 4 -4 11 q5 -3 8 -2 q-3 -5 -4 -9 z" fill={c.light} />
+          </>
+        ) : (
+          <>
+            <path d="M-19 -20 q-13 -2 -15 -16 q-1 -6 4 -7" stroke={OUTLINE} strokeWidth="7" fill="none" strokeLinecap="round" />
+            <path d="M-19 -20 q-13 -2 -15 -16 q-1 -6 4 -7" stroke={c.body} strokeWidth="4.2" fill="none" strokeLinecap="round" />
+          </>
+        )}
+      </g>
+      <ellipse cx="-1" cy={-17 - up} rx={wolf ? 24 : 21} ry="12" fill={c.body} stroke={OUTLINE} strokeWidth="2" />
+      {wolf ? (
+        <>
+          {/* Darker saddle on the back, a fluffy ruff at the chest. */}
+          <path d="M-20 -26 q20 -13 38 -2 q-18 -5 -38 2 z" fill="#7f8794" />
+          <path d="M8 -28 q9 2 12 9 l-3 1 l3 3 l-4 1 l2 4 l-6 -1 q-6 -6 -4 -17 z" fill={c.light} stroke={OUTLINE} strokeWidth="1.4" strokeLinejoin="round" />
+        </>
+      ) : (
+        <path d="M-10 -28 q2 5 0 9 M-3 -29 q2 5 0 9 M4 -28.5 q2 5 0 9" stroke={c.light} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      )}
+      <Leg x={-10} color={c.body} swing={swing(0)} tuck={tuck} long={wolf} />
+      <Leg x={13} color={c.body} swing={swing(Math.PI)} tuck={tuck} long={wolf} />
+      <g transform={`rotate(${-b.raise * 30} 14 ${-26 - up})`}>
+        <g transform={`translate(${wolf ? -2 : -4.2} ${-56.4 - up}) scale(0.6)`}>
+          <AnimalFace species={kind} eyesClosed={b.eyesClosed} />
+        </g>
+      </g>
+    </g>
+  );
+}

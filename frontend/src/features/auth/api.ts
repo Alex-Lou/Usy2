@@ -1,9 +1,13 @@
 import { apiRequest } from "../../lib/api/client";
+import type { Framing } from "../../lib/framing";
 
 export interface User {
   id: number;
   username: string;
   displayName: string;
+  avatarAssetId?: number | null;
+  avatarFraming?: Framing | null;
+  companion?: string;
 }
 
 export interface LoginResponse {

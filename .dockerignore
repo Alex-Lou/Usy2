@@ -1,0 +1,10 @@
+**/node_modules
+**/target
+**/dist
+frontend/src-tauri/target
+frontend/src-tauri/gen
+backend/data
+data/uploads
+.git
+*.local
+.env
