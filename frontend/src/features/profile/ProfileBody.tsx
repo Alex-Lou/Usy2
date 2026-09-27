@@ -60,13 +60,13 @@ export function ProfileBody({
           <div className="px-6 pb-6">
             <div
               className="-mt-12 mb-3 inline-block rounded-full ring-4 ring-bg cursor-pointer"
-              onClick={() => profile.avatarAssetId !== null && setIsAvatarZoomed(true)}
+              onClick={() => profile.avatarAssetId != null && setIsAvatarZoomed(true)}
+            <div className={headerText.className} style={headerText.style}>
+              onClick={() => profile.avatarAssetId != null && setIsAvatarZoomed(true)}
             >
               <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} species={profile.companion} />
             </div>
             <div className={headerText.className} style={headerText.style}>
-              <div>
-                <h1 className="font-display text-3xl font-bold text-primary">{profile.displayName}</h1>
                 <p className="text-text-muted">{handle}</p>
                 {profile.bio && <p className="mt-2 max-w-prose text-text">{profile.bio}</p>}
               </div>
@@ -95,10 +95,9 @@ export function ProfileBody({
           <ProfileGrid widgets={widgets} ownerId={profile.userId} gap={theme.widgetGap} styleOf={(i) => widgetStyle(parts, widgets[i])} />
         )}
       </section>
-      {isAvatarZoomed && profile.avatarAssetId !== null && (
+      {isAvatarZoomed && profile.avatarAssetId != null && (
         <AvatarZoomModal
           assetId={profile.avatarAssetId}
-          name={profile.displayName}
           onClose={() => setIsAvatarZoomed(false)}
         />
       )}
@@ -108,12 +107,9 @@ export function ProfileBody({
 
   function AvatarZoomModal({
     assetId,
-    name,
     onClose,
   }: {
     assetId: number | null;
-    name: string;
-    onClose: () => void;
   }) {
     useEffect(() => {
       const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
