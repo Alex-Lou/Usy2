@@ -98,9 +98,9 @@ export function ProfileBody({
       {isAvatarZoomed && profile.avatarAssetId != null && (
         <AvatarZoomModal
           assetId={profile.avatarAssetId}
+          companion={profile.companion}
           onClose={() => setIsAvatarZoomed(false)}
         />
-      )}
     </div>
   );
 }
@@ -110,6 +110,7 @@ export function ProfileBody({
     onClose,
   }: {
     assetId: number | null;
+    companion?: string;
     onClose: () => void;
   }) {
     useEffect(() => {
@@ -126,18 +127,25 @@ export function ProfileBody({
         <div className="relative pointer-events-all bg-white rounded-xl shadow-2xl overflow-hidden max-w-[90vw] max-h-[80vh]">
           <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-center p-6">
             {assetId ? (
-              <AssetImage
-                assetId={assetId}
-                className="max-h-full max-w-full object-contain"
-              />
+              <>
+                <AssetImage
+                  assetId={assetId}
+                  className="max-h-full max-w-full object-contain"
+                />
+                {companion && (
+                  <Animal
+                    species={companion}
+                    size={32}
+                    className="absolute bottom-2 right-2"
+                  />
+                )}
+              </>
             ) : (
               // Fallback if no assetId (shouldn't happen if called correctly)
               <div className="w-48 h-48 flex items-center justify-center bg-gray-200 rounded-xl">
                 <span className="text-text-muted">No image</span>
               </div>
-            )}
-          </div>
-          <button
+            )
             type="button"
             className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-100"
             onClick={onClose}
