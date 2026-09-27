@@ -325,5 +325,58 @@
 "d42",
 "p",
 "Quel serait le slogan de notre couple ?"
+],
+[
+"dx01",
+"u",
+"Des mains en spaghetti ou des pieds en saucisse ?",
+"Mains en spaghetti",
+"Pieds en saucisse"
+],
+[
+"dx02",
+"u",
+"Tu ris à tes propres blagues ?",
+"Toujours",
+"Jamais",
+"Avant même la chute"
+],
+[
+"dx03",
+"e",
+"Ton niveau de ridicule assumé ?",
+"Toujours digne",
+"Aucune limite"
+],
+[
+"dx04",
+"o",
+"Classe ces bêtes, de la plus à la moins effrayante :",
+"Araignée",
+"Serpent",
+"Guêpe",
+"Pigeon"
+],
+[
+"dx05",
+"h",
+"Le mot que tu trouves le plus drôle ?"
+],
+[
+"dx06",
+"m",
+"Ta pire blague ?"
+],
+[
+"dx07",
+"f",
+"La chose la plus bizarre que j'aie mangée, c'est ___"
+],
+[
+"dx08",
+"e",
+"Quand tu perds à un jeu ?",
+"Rancune éternelle",
+"Sourire en toutes circonstances"
 ]
 ]

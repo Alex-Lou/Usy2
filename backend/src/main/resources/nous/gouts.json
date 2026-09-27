@@ -1,0 +1,217 @@
+[
+[
+"gf01",
+"u",
+"Sucré ou salé ?",
+"Sucré",
+"Salé"
+],
+[
+"gf02",
+"u",
+"Pizza ou burger ?",
+"Pizza",
+"Burger"
+],
+[
+"gf03",
+"u",
+"Café ou thé ?",
+"Café",
+"Thé",
+"Ni l'un ni l'autre"
+],
+[
+"gf04",
+"u",
+"Frites ou purée ?",
+"Frites",
+"Purée"
+],
+[
+"gf05",
+"u",
+"Chocolat noir, au lait ou blanc ?",
+"Noir",
+"Au lait",
+"Blanc"
+],
+[
+"gf06",
+"u",
+"Tu manges la croûte du pain ?",
+"Oui, c'est le meilleur",
+"Non, jamais"
+],
+[
+"gf07",
+"u",
+"De l'ananas sur la pizza ?",
+"Oui, sans honte",
+"Plutôt mourir"
+],
+[
+"gf08",
+"u",
+"Ta cuisson de la viande ?",
+"Bleue",
+"Saignante",
+"À point",
+"Bien cuite"
+],
+[
+"gf09",
+"u",
+"La coriandre, pour toi ?",
+"J'adore",
+"Un goût de savon"
+],
+[
+"gf10",
+"e",
+"Ta tolérance au piment ?",
+"Même le poivre me brûle",
+"Rien ne m'arrête"
+],
+[
+"gf11",
+"e",
+"À quel point tu aimes cuisiner ?",
+"Je fais brûler l'eau",
+"Chef étoilé dans l'âme"
+],
+[
+"gf12",
+"e",
+"Ta gourmandise, sur 10 ?",
+"Je mange pour vivre",
+"Je vis pour manger"
+],
+[
+"gf13",
+"e",
+"À quel point tu es difficile à table ?",
+"Je mange de tout",
+"Liste noire interminable"
+],
+[
+"gf14",
+"o",
+"Classe ces repas, du meilleur au moins bon :",
+"Petit-déjeuner",
+"Déjeuner",
+"Goûter",
+"Dîner"
+],
+[
+"gf15",
+"o",
+"Classe ces cuisines, de ta préférée à la moins aimée :",
+"Italienne",
+"Japonaise",
+"Mexicaine",
+"Indienne",
+"Française"
+],
+[
+"gf16",
+"o",
+"Classe ces desserts, du plus au moins tentant :",
+"Tiramisu",
+"Crème brûlée",
+"Fondant au chocolat",
+"Tarte aux fraises"
+],
+[
+"gf17",
+"h",
+"Ton fruit préféré, en un mot ?"
+],
+[
+"gf18",
+"h",
+"Le légume que tu détestes, en un mot ?"
+],
+[
+"gf19",
+"h",
+"Ton fromage préféré ?"
+],
+[
+"gf20",
+"h",
+"Ta boisson préférée, en un mot ?"
+],
+[
+"gf21",
+"m",
+"Ta commande habituelle à la boulangerie ?"
+],
+[
+"gf22",
+"m",
+"Ton parfum de glace préféré ?"
+],
+[
+"gf23",
+"m",
+"Ta garniture de pizza préférée ?"
+],
+[
+"gf24",
+"m",
+"Ton péché mignon au supermarché ?"
+],
+[
+"gf25",
+"f",
+"Le plat que je réussis le mieux, c'est ___"
+],
+[
+"gf26",
+"f",
+"Je ne pourrai jamais manger ___"
+],
+[
+"gf27",
+"f",
+"Quand j'ai un coup de mou, je mange ___"
+],
+[
+"gf28",
+"c",
+"Ce qu'il te faut au petit-déjeuner ?",
+"Café",
+"Thé",
+"Tartines",
+"Céréales",
+"Viennoiseries",
+"Œufs",
+"Fruits",
+"Yaourt",
+"Rien du tout"
+],
+[
+"gf29",
+"c",
+"Tes sauces et épices incontournables ?",
+"Ketchup",
+"Mayonnaise",
+"Moutarde",
+"Sauce soja",
+"Piment",
+"Harissa",
+"Curry",
+"Herbes de Provence"
+],
+[
+"gf30",
+"l",
+"Le meilleur repas de ta vie, c'était quoi et où ?"
+],
+[
+"gf31",
+"p",
+"Quel plat aimerais-tu qu'on apprenne à cuisiner ensemble ?"
+]
+]

@@ -218,5 +218,59 @@
 "s30",
 "p",
 "Regarde-moi dans les yeux 30 secondes sans parler. Qui craque en premier ?"
+],
+[
+"sx01",
+"u",
+"Lumière allumée ou éteinte ?",
+"Allumée",
+"Éteinte",
+"Des bougies"
+],
+[
+"sx02",
+"u",
+"Slow ou danse endiablée ?",
+"Slow",
+"Danse endiablée"
+],
+[
+"sx03",
+"e",
+"Ton audace, sur 10 ?",
+"Timide",
+"Aucune limite"
+],
+[
+"sx04",
+"o",
+"Classe ces ambiances :",
+"Bougies",
+"Musique douce",
+"Draps en satin",
+"Massage"
+],
+[
+"sx05",
+"h",
+"La partie du corps de l'autre que tu préfères, en un mot ?"
+],
+[
+"sx06",
+"m",
+"Ta tenue préférée sur l'autre ?"
+],
+[
+"sx07",
+"f",
+"Le rendez-vous parfait se termine par ___"
+],
+[
+"sx08",
+"u",
+"Un massage : donner ou recevoir ?",
+"Donner",
+"Recevoir",
+"Les deux"
 ]
 ]

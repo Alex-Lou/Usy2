@@ -73,7 +73,15 @@ public class NousBank {
             new Theme("tendre", "Tendres & souvenirs", "💗", "#ff6fa8"),
             new Theme("drole", "Drôles & absurdes", "🤪", "#f0a020"),
             new Theme("profond", "Profondes & futur", "🌌", "#7c6cf0"),
-            new Theme("piment", "Pimentées soft", "🌶️", "#e2534f"));
+            new Theme("piment", "Pimentées soft", "🌶️", "#e2534f"),
+            new Theme("gouts", "Goûts & food", "🍕", "#f07c32"),
+            new Theme("culture", "Culture & loisirs", "🎬", "#2fb3c4"),
+            new Theme("enfance", "Enfance & famille", "🧸", "#c48a4a"),
+            new Theme("voyages", "Voyages & rêves", "✈️", "#3a9be8"),
+            new Theme("manies", "Manies & habitudes", "🙃", "#9b6ef0"),
+            new Theme("travail", "Travail & ambitions", "💼", "#4f7fb5"),
+            new Theme("etsi", "Et si…", "🤔", "#1fae86"),
+            new Theme("histoire", "Notre histoire", "💑", "#e0567a"));
 
     private final Map<String, Question> byId = new LinkedHashMap<>();
 

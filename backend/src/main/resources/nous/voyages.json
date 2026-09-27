@@ -1,0 +1,207 @@
+[
+[
+"vo01",
+"u",
+"Lever ou coucher de soleil ?",
+"Lever de soleil",
+"Coucher de soleil"
+],
+[
+"vo02",
+"u",
+"Pour dormir en voyage ?",
+"Hôtel",
+"Camping",
+"Chambre d'hôtes",
+"Van aménagé"
+],
+[
+"vo03",
+"u",
+"Ta valise, tu la fais…",
+"La veille au soir",
+"Une semaine avant",
+"Le matin même"
+],
+[
+"vo04",
+"u",
+"En vacances : programme ou improvisation ?",
+"Tout planifié",
+"Au jour le jour"
+],
+[
+"vo05",
+"u",
+"Dans l'avion : hublot ou couloir ?",
+"Hublot",
+"Couloir"
+],
+[
+"vo06",
+"u",
+"Mer chaude ou lac de montagne ?",
+"Mer chaude",
+"Lac de montagne"
+],
+[
+"vo07",
+"u",
+"Voyager léger ou tout emporter ?",
+"Un sac à dos",
+"Trois valises"
+],
+[
+"vo08",
+"e",
+"Ton goût de l'aventure ?",
+"Mon canapé me suffit",
+"Emmène-moi au bout du monde"
+],
+[
+"vo09",
+"e",
+"Ta peur de l'avion ?",
+"Je dors avant le décollage",
+"Je serre les accoudoirs"
+],
+[
+"vo10",
+"e",
+"En voyage, tu parles aux inconnus ?",
+"Pas un mot",
+"Je repars avec des amis"
+],
+[
+"vo11",
+"e",
+"Ton envie de vivre à l'étranger ?",
+"Jamais",
+"Demain si possible"
+],
+[
+"vo12",
+"o",
+"Classe ces façons de voyager :",
+"Avion",
+"Train de nuit",
+"Road trip",
+"Croisière",
+"Vélo"
+],
+[
+"vo13",
+"o",
+"Classe ce qui compte le plus en voyage :",
+"La nourriture",
+"Les paysages",
+"La culture",
+"Le repos"
+],
+[
+"vo14",
+"o",
+"Classe ces nuits insolites :",
+"Hôtel de luxe",
+"Cabane dans les arbres",
+"Tente sous les étoiles",
+"Igloo"
+],
+[
+"vo15",
+"h",
+"Le dernier pays que tu as visité ?"
+],
+[
+"vo16",
+"h",
+"Ta ville préférée au monde ?"
+],
+[
+"vo17",
+"h",
+"Ton continent préféré ?"
+],
+[
+"vo18",
+"h",
+"L'objet que tu emportes toujours en voyage ?"
+],
+[
+"vo19",
+"m",
+"Ton plus beau souvenir de voyage, en quelques mots ?"
+],
+[
+"vo20",
+"m",
+"Le pays où tu pourrais vivre ?"
+],
+[
+"vo21",
+"m",
+"Le plat découvert en voyage que tu adores ?"
+],
+[
+"vo22",
+"m",
+"La langue que tu rêverais de parler ?"
+],
+[
+"vo23",
+"f",
+"Mon pire souvenir de voyage, c'est ___"
+],
+[
+"vo24",
+"f",
+"Un jour, j'aimerais voir de mes yeux ___"
+],
+[
+"vo25",
+"f",
+"En voyage, je ne peux pas me passer de ___"
+],
+[
+"vo26",
+"c",
+"Ce que tu aimes faire en voyage ?",
+"Musées",
+"Randonnée",
+"Plage",
+"Shopping",
+"Marchés locaux",
+"Sorties le soir",
+"Photos",
+"Rencontres",
+"Gastronomie",
+"Ne rien faire"
+],
+[
+"vo27",
+"c",
+"Tes rêves pour plus tard ?",
+"Faire le tour du monde",
+"Vivre au bord de la mer",
+"Une maison à la campagne",
+"Apprendre une langue",
+"Écrire un livre",
+"Ouvrir un commerce",
+"Adopter des animaux"
+],
+[
+"vo28",
+"l",
+"Si tu avais une année sabbatique, tu ferais quoi ?"
+],
+[
+"vo29",
+"p",
+"À quoi ressemblerait notre voyage de rêve à deux ?"
+],
+[
+"vo30",
+"p",
+"Quelle ville pourrait-on explorer un week-end prochain ?"
+]
+]

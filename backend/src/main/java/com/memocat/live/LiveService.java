@@ -39,7 +39,8 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * <p>Quiz duel: 10 questions (a level or the mix), one option, points for the
  * right one plus a speed bonus. "Même longueur d'onde" (Nous deux): 8 choice
- * questions each answers for themself, both get the share of ticks in common.
+ * questions (ticked choices or this-or-that) each answers for themself, both
+ * get the share of ticks in common.
  */
 @Service
 public class LiveService {
@@ -137,7 +138,8 @@ public class LiveService {
                     throw new ContentValidationException("Thème inconnu");
                 }
                 List<NousBank.Question> pool = new ArrayList<>(nous.all().stream()
-                        .filter(q -> NousBank.CHOICE.equals(q.kind()) && (theme == null || q.theme().equals(theme))).toList());
+                        .filter(q -> (NousBank.CHOICE.equals(q.kind()) || NousBank.ONE.equals(q.kind()))
+                                && (theme == null || q.theme().equals(theme))).toList());
                 Collections.shuffle(pool, ThreadLocalRandom.current());
                 items = pool.stream().limit(NOUS_ROUNDS).map(q -> new Item(q.text(), q.options(), -1)).toList();
                 label = theme == null ? "💞 Même longueur d'onde" : NousBank.theme(theme).map(t -> "💞 " + t.emoji() + " " + t.label()).orElse("");

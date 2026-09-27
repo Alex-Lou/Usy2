@@ -178,6 +178,15 @@ class LiveServiceTest {
     }
 
     @Test
+    void sameWavelengthHasItsEightRoundsInEveryThemeThanksToThisOrThat() {
+        for (NousBank.Theme t : NousBank.THEMES) {
+            long id = live.create("sam", new LiveDtos.Create(LiveService.NOUS, t.id(), null)).id();
+            assertThat(live.accept("lou", id).total()).as(t.id()).isEqualTo(LiveService.NOUS_ROUNDS);
+            live.quit("sam", id);
+        }
+    }
+
+    @Test
     void sameWavelengthScoresTheShareOfTicksInCommonForBoth() {
         long id = live.create("sam", new LiveDtos.Create(LiveService.NOUS, "general", null)).id();
         LiveDtos.View q = live.accept("lou", id);
