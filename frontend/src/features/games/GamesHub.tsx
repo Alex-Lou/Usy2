@@ -74,7 +74,7 @@ export function GamesHub() {
   const { companion } = useCompanion();
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl lg:max-w-content">
       <header className="mb-5 flex items-center gap-3 animate-fade-up">
         <Animal species={companion} size={52} />
         <div>
