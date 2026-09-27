@@ -147,7 +147,8 @@ export function FeedPage() {
               <Icon name="sparkles" size={16} /> Nouveau post de {freshFrom} — Afficher
             </button>
           )}
-          <CoupleStrip />
+          {/* From xl it lives in the right rail (RightRail). */}
+          <div className="xl:hidden"><CoupleStrip /></div>
           <MomentsBar onPick={pickMoment} />
           <Composer onCreated={() => load(0)} seed={seed} />
           {shared && (
