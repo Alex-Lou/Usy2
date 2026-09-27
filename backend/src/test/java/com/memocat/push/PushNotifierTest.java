@@ -221,6 +221,23 @@ class PushNotifierTest {
     }
 
     @Test
+    void aResetForBothAsksTheOtherOneAndTellsTheAnswer() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.NOUS_RESET_ASK, 1L, "Lou", "💗 Tendres & souvenirs", null));
+        assertThat(sentPayload(phone).get("body").asText())
+                .isEqualTo("Lou propose de repartir de zéro dans 💞 Nous deux (💗 Tendres & souvenirs) : d'accord ?");
+    }
+
+    @Test
+    void startingOnesOwnAnswersAgainOrTakingBackAProposalIsSyncOnly() {
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.NOUS_RESET, 1L, "Lou", "mine", null));
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.NOUS_RESET, 1L, "Lou", "cancelled", null));
+
+        verify(sender, never()).send(any(), any(), anyBoolean());
+    }
+
+    @Test
     void dateReminderReachesBothEvenWithTheAppOpen() throws Exception {
         PushSubscription louPhone = new PushSubscription(lou, "https://fcm.googleapis.com/c", "k", "s");
         when(subscriptions.findByUserIdOrderByCreatedAtAsc(1L)).thenReturn(List.of(louPhone));

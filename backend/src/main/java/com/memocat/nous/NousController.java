@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 
-/** 💞 Nous deux: the cards, my answers, guessing the other one, and judging their guesses. */
+/** 💞 Nous deux: the cards, my answers, guessing the other one (hangman included), judging their guesses, scores, comparing, starting again. */
 @RestController
 @RequestMapping("/api/nous")
 public class NousController {
@@ -58,6 +58,46 @@ public class NousController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void forget(Principal principal, @PathVariable String id) {
         nous.forget(principal.getName(), id);
+    }
+
+    /** Starts my own answers again ({@code theme}, or all of them). */
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resetMine(Principal principal, @RequestParam(required = false) String theme) {
+        nous.resetMine(principal.getName(), theme);
+    }
+
+    @PostMapping("/reset")
+    public NousDtos.ResetState proposeReset(Principal principal, @RequestBody NousDtos.ResetRequest request) {
+        return nous.proposeReset(principal.getName(), request);
+    }
+
+    @PostMapping("/reset/accept")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void acceptReset(Principal principal) {
+        nous.acceptReset(principal.getName());
+    }
+
+    /** Takes back my proposal, or says no to the other one's. */
+    @DeleteMapping("/reset")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void dropReset(Principal principal) {
+        nous.dropReset(principal.getName());
+    }
+
+    @GetMapping("/scores")
+    public NousDtos.Scores scores(Principal principal) {
+        return nous.scores(principal.getName());
+    }
+
+    @GetMapping("/compare")
+    public List<NousDtos.Compare> compare(Principal principal, @RequestParam(required = false) String theme) {
+        return nous.compare(principal.getName(), theme);
+    }
+
+    @PostMapping("/hangman")
+    public NousDtos.HangmanState letter(Principal principal, @RequestBody NousDtos.Letter request) {
+        return nous.letter(principal.getName(), request);
     }
 
     @GetMapping("/guess")
