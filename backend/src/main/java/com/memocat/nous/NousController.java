@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 
-/** 💞 Nous deux: the cards, my answers, guessing the other one (hangman included), judging their guesses, scores, comparing, starting again. */
+/** 💞 Nous deux: the cards, my answers, guessing the other one (hangman included, saying how close my words were), scores, starting again. */
 @RestController
 @RequestMapping("/api/nous")
 public class NousController {
@@ -90,11 +90,6 @@ public class NousController {
         return nous.scores(principal.getName());
     }
 
-    @GetMapping("/compare")
-    public List<NousDtos.Compare> compare(Principal principal, @RequestParam(required = false) String theme) {
-        return nous.compare(principal.getName(), theme);
-    }
-
     @PostMapping("/hangman")
     public NousDtos.HangmanState letter(Principal principal, @RequestBody NousDtos.Letter request) {
         return nous.letter(principal.getName(), request);
@@ -115,8 +110,9 @@ public class NousController {
         return nous.history(principal.getName());
     }
 
-    @PostMapping("/judge/{id}")
-    public NousDtos.Reveal judge(Principal principal, @PathVariable long id, @RequestBody NousDtos.Judge request) {
-        return nous.judge(principal.getName(), id, request);
+    /** How close my guess in words was, said by me. */
+    @PostMapping("/guess/{id}/verdict")
+    public NousDtos.Reveal say(Principal principal, @PathVariable long id, @RequestBody NousDtos.Say request) {
+        return nous.say(principal.getName(), id, request);
     }
 }

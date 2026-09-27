@@ -46,11 +46,15 @@ export interface NousOverview {
   myAnswers: number;
   theirAnswers: number;
   toGuess: number;
-  toJudge: number;
+  /** My guesses in words waiting for me to say how close they were. */
+  toSay: number;
   /** How well I know the other one / how well they know me ({@code percent}: average points). */
   me: NousScore;
   them: NousScore;
   daily: NousCard | null;
+  /** Today's question: they answered it / I guessed it. */
+  dailyTheirs: boolean;
+  dailyGuessed: boolean;
   /** A proposal to start again for both, waiting for an answer. */
   reset: NousResetState | null;
 }
@@ -145,33 +149,12 @@ export interface NousScores {
   themes: NousThemeScore[];
 }
 
-export interface NousSaid {
-  choices: number[] | null;
-  text: string | null;
-}
-
-/** My answer and theirs, side by side ({@code locked}: theirs stays hidden until I guess it). */
-export interface NousCompare {
-  id: string;
-  theme: string;
-  kind: Kind;
-  text: string;
-  options: string[];
-  mine: NousSaid | null;
-  theirs: NousSaid | null;
-  locked: boolean;
-  same: boolean | null;
-  myVerdict: Verdict | null;
-  theirVerdict: Verdict | null;
-}
-
 export interface NousHistory {
   mine: NousReveal[];
   theirs: NousReveal[];
 }
 
 export const MAX_TEXT = 280;
-export const MAX_NOTE = 140;
 export const MAX_SHORT = 40;
 /** A scale goes from 0 to this. */
 export const SCALE_MAX = 10;
@@ -185,10 +168,10 @@ export const forgetMine = (id: string) => apiRequest<void>(`/api/nous/me/${encod
 export const getToGuess = () => apiRequest<NousToGuess[]>("/api/nous/guess");
 export const sendGuess = (id: string, choices: number[] | null, text: string | null) => apiRequest<NousReveal>("/api/nous/guess", { method: "POST", body: { id, choices, text } });
 export const getHistory = () => apiRequest<NousHistory>("/api/nous/history");
-export const judgeGuess = (guessId: number, verdict: Verdict, note: string | null) => apiRequest<NousReveal>(`/api/nous/judge/${guessId}`, { method: "POST", body: { verdict, note } });
+/** How close my guess in words was, said by me once I see the answer. */
+export const sayGuess = (guessId: number, verdict: Verdict) => apiRequest<NousReveal>(`/api/nous/guess/${guessId}/verdict`, { method: "POST", body: { verdict } });
 export const playLetter = (id: string, letter: string) => apiRequest<NousHangman>("/api/nous/hangman", { method: "POST", body: { id, letter } });
 export const getScores = () => apiRequest<NousScores>("/api/nous/scores");
-export const getCompare = () => apiRequest<NousCompare[]>("/api/nous/compare");
 /** Starts my own answers again: a theme, or all of them (null). */
 export const resetMine = (theme: string | null) => apiRequest<void>(`/api/nous/me${theme ? `?theme=${encodeURIComponent(theme)}` : ""}`, { method: "DELETE" });
 export const proposeReset = (theme: string | null) => apiRequest<NousResetState>("/api/nous/reset", { method: "POST", body: { theme } });
@@ -201,36 +184,32 @@ export function toggled(list: number[], i: number): number[] {
   return list.includes(i) ? list.filter((x) => x !== i) : [...list, i].sort((a, b) => a - b);
 }
 
+/** How a guess went, in kind words: nobody is ever "wrong" about the other one. */
 export const VERDICTS: Record<Verdict, { label: string; emoji: string; color: string }> = {
-  right: { label: "Juste !", emoji: "🎯", color: "var(--verdict-right)" },
-  close: { label: "Presque !", emoji: "😏", color: "var(--verdict-close)" },
-  some: { label: "Un peu", emoji: "🤏", color: "var(--verdict-some)" },
-  wrong: { label: "Raté", emoji: "🙈", color: "var(--verdict-wrong)" },
+  right: { label: "C'était ça", emoji: "💞", color: "var(--verdict-right)" },
+  close: { label: "Pas loin", emoji: "🌗", color: "var(--verdict-close)" },
+  some: { label: "Un peu", emoji: "🌿", color: "var(--verdict-some)" },
+  wrong: { label: "À découvrir", emoji: "🌱", color: "var(--verdict-wrong)" },
 };
 
-/** Why a guess got its points, in a few words. */
+/** What was alike, in a few words (the tapped kinds and the hangman; nothing for words). */
 export function pointsDetail(r: NousReveal): string | null {
   if (r.points == null) return null;
   const s = (n: number) => (n > 1 ? "s" : "");
   switch (r.kind) {
     case "o":
-      return `${r.common} bien placé${s(r.common ?? 0)} sur ${r.union} · ${r.points} %`;
+      return `${r.common} bien placé${s(r.common ?? 0)} sur ${r.union}`;
     case "e": {
       const apart = Math.abs((r.guessChoices?.[0] ?? 0) - (r.answerChoices?.[0] ?? 0));
-      return apart === 0 ? `Pile le même cran · ${r.points} %` : `${apart} cran${s(apart)} d'écart · ${r.points} %`;
+      return apart === 0 ? "Pile le même cran" : `${apart} cran${s(apart)} d'écart`;
     }
-    case "u":
-      return `${r.points ? "Le même choix" : "Pas le même choix"} · ${r.points} %`;
     case "h":
-      return r.verdict === "wrong" ? `Pendu 🪢 · ${r.points} %` : `Trouvé avec ${r.errors ?? 0} erreur${s(r.errors ?? 0)} · ${r.points} %`;
+      return r.verdict === "wrong" ? "Le mot est resté caché" : `Trouvé avec ${r.errors ?? 0} erreur${s(r.errors ?? 0)}`;
     case "c":
-      if (r.common != null && r.union != null) {
-        return `${r.common} case${s(r.common)} en commun sur ${r.union} cochée${s(r.union)} en tout · ${r.points} %`;
-      }
+      return r.common != null && r.union != null ? `${r.common} case${s(r.common)} en commun sur ${r.union}` : null;
+    default:
+      return null;
   }
-  if (r.kind === "m" && r.verdict === "right" && r.note == null && r.guessText && r.answerText
-    && fold(r.guessText) === fold(r.answerText)) return `Le même mot · ${r.points} %`;
-  return `Réponse en mots jugée ${r.verdict ? VERDICTS[r.verdict].label.toLowerCase().replace(" !", "") : ""} · ${r.points} %`;
 }
 
 /** Upper case without accents, as the server compares words (Hangman.fold). */
@@ -252,27 +231,34 @@ export function saidText(kind: Kind, options: string[], choices: number[] | null
 /** Each kind of question: its name, and how it is played (for me answering, for the other guessing). */
 export const KINDS: Record<Kind, { emoji: string; label: string; answer: string; guess: (name: string) => string }> = {
   c: { emoji: "☑️", label: "Cases", answer: "Plusieurs réponses possibles, puis valide.",
-    guess: (n) => `Coche tout ce que ${n} a coché. Points = cases en commun ÷ cases cochées en tout.` },
+    guess: (n) => `Coche tout ce que ${n} a coché.` },
   u: { emoji: "✌️", label: "Ceci ou cela", answer: "Un seul choix : touche ta réponse.", guess: (n) => `Un seul choix : touche celui de ${n}.` },
   e: { emoji: "🎚️", label: "Échelle", answer: "Place le curseur de 0 à 10, puis valide.",
-    guess: (n) => `Où ${n} a placé le curseur ? Pile dessus 100 %, chaque cran d'écart en retire 20.` },
+    guess: (n) => `Où ${n} a placé le curseur ?` },
   o: { emoji: "🥇", label: "Classement", answer: "Touche les propositions dans ton ordre, de la première à la dernière.",
-    guess: (n) => `Retrouve l'ordre de ${n} : touche de la première à la dernière. Points = bien placées ÷ toutes.` },
+    guess: (n) => `Retrouve l'ordre de ${n} : touche de la première à la dernière.` },
   h: { emoji: "🪢", label: "Pendu", answer: "Un mot (ou deux), sans chiffres : l'autre le cherchera lettre par lettre.",
-    guess: (n) => `Trouve le mot de ${n}, lettre par lettre. 7 erreurs et c'est le pendu.` },
+    guess: (n) => `Trouve le mot de ${n}, lettre par lettre (7 essais ratés au plus).` },
   m: { emoji: "💬", label: "En un mot", answer: "Quelques mots au plus.",
-    guess: (n) => `Le même mot que ${n} ? C'est juste d'office. Sinon, ${n} jugera.` },
-  f: { emoji: "✏️", label: "Phrase à compléter", answer: "Complète la phrase avec tes mots.", guess: (n) => `Complète comme ${n} l'a fait : ${n} jugera.` },
-  l: { emoji: "📝", label: "Tes mots", answer: "Réponds avec tes mots.", guess: (n) => `Selon toi, qu'a répondu ${n} ? ${n} jugera.` },
+    guess: (n) => `Le même mot que ${n} ? C'est bon d'office. Sinon, tu diras si c'était proche.` },
+  f: { emoji: "✏️", label: "Phrase à compléter", answer: "Complète la phrase avec tes mots.",
+    guess: (n) => `Complète comme ${n} l'a fait. Tu verras sa réponse et tu diras si c'était proche.` },
+  l: { emoji: "📝", label: "Tes mots", answer: "Réponds avec tes mots.",
+    guess: (n) => `Selon toi, qu'a répondu ${n} ? Tu verras sa réponse et tu diras si c'était proche.` },
   p: { emoji: "💭", label: "Pour en parler", answer: "", guess: () => "" },
 };
 
-/** A little word for a telepathy score, from "strangers" to "soulmates". */
+const LEVELS: { from: number; words: string[] }[] = [
+  { from: 90, words: ["Âmes sœurs télépathes 🔮", "Un seul cerveau pour deux 🧠💞", "Vous vous lisez comme un livre ouvert 📖"] },
+  { from: 75, words: ["Connexion Wi-Fi du cœur 📶", "Le radar à amour tourne à plein 📡", "Presque dans sa tête, c'est beau 💫"] },
+  { from: 55, words: ["Sur la même longueur d'onde 📻", "Ça se devine de mieux en mieux 🌈", "Une jolie complicité en marche 🚲"] },
+  { from: 35, words: ["Ça se précise, partie après partie 🧩", "Chaque réponse vous rapproche 🤝", "La carte au trésor se dessine 🗺️"] },
+  { from: 0, words: ["Plein de jolies choses à découvrir 🌱", "Le mystère a du charme ✨", "L'aventure ne fait que commencer 🚀"] },
+];
+
+/** A kind little word for how well one knows the other (always the same for a given score). */
 export function telepathy(percent: number | null): string {
-  if (percent == null) return "À découvrir";
-  if (percent >= 90) return "Âmes sœurs télépathes 🔮";
-  if (percent >= 75) return "Connexion Wi-Fi du cœur 📶";
-  if (percent >= 55) return "Sur la même longueur d'onde 📻";
-  if (percent >= 35) return "Ça capte… par moments 📡";
-  return "Mystère total, et c'est charmant 🕵️";
+  if (percent == null) return "Tout reste à deviner ✨";
+  const level = LEVELS.find((l) => percent >= l.from) ?? LEVELS[LEVELS.length - 1];
+  return level.words[percent % level.words.length];
 }
