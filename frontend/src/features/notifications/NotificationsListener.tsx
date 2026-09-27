@@ -87,6 +87,10 @@ export function NotificationsListener() {
       } else if ((a.kind === "nous-guess" || a.kind === "nous-judged") && !window.location.pathname.startsWith("/jeux/nous")) {
         if (a.kind === "nous-guess") notify(`${a.actorName} a deviné une de tes réponses : à toi de juger ⚖️`, "/jeux/nous?tab=judge");
         else notify(`${a.actorName} a jugé ta devinette : ${a.detail === "right" ? "juste ! 🎯" : a.detail === "close" ? "presque ! 😏" : "raté 🙈"}`, "/jeux/nous?tab=history");
+      } else if (a.kind === "nous-reset-ask" && !window.location.pathname.startsWith("/jeux/nous")) {
+        notify(`${a.actorName} propose de repartir de zéro dans 💞 Nous deux${a.detail ? ` (${a.detail})` : ""} : d'accord ?`, "/jeux/nous");
+      } else if (a.kind === "nous-reset" && (a.detail === "accepted" || a.detail === "refused") && !window.location.pathname.startsWith("/jeux/nous")) {
+        notify(a.detail === "accepted" ? `${a.actorName} a dit oui : on repart de zéro dans 💞 Nous deux ✨` : `${a.actorName} préfère garder vos réponses de 💞 Nous deux`, "/jeux/nous");
       } else if (a.kind === "list" && a.refId != null) {
         const last = lastListNotifRef.current.get(a.refId) ?? 0;
         lastListNotifRef.current.set(a.refId, Date.now());
