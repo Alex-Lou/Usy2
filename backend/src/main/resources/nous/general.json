@@ -769,5 +769,59 @@
 "g30",
 "p",
 "Raconte-moi ta journée idéale, du réveil au coucher."
+],
+[
+"gx01",
+"u",
+"Chien ou chat ?",
+"Chien",
+"Chat",
+"Les deux",
+"Aucun"
+],
+[
+"gx02",
+"u",
+"Plage ou piscine ?",
+"Plage",
+"Piscine"
+],
+[
+"gx03",
+"e",
+"Ta patience, sur 10 ?",
+"Zéro",
+"Infinie"
+],
+[
+"gx04",
+"e",
+"Ton sens de l'orientation ?",
+"Je me perds partout",
+"Un GPS humain"
+],
+[
+"gx05",
+"o",
+"Classe les saisons, de ta préférée à la moins aimée :",
+"Printemps",
+"Été",
+"Automne",
+"Hiver"
+],
+[
+"gx06",
+"h",
+"Ta fleur préférée ?"
+],
+[
+"gx07",
+"m",
+"Ton emoji le plus utilisé ?"
+],
+[
+"gx08",
+"f",
+"Ce qui me met de bonne humeur à coup sûr, c'est ___"
 ]
 ]

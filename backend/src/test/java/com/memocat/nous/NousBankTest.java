@@ -13,7 +13,7 @@ class NousBankTest {
 
     @Test
     void everyQuestionIsReadAndNoneIsSkipped() {
-        assertThat(bank.all()).hasSize(222);
+        assertThat(bank.all()).hasSize(504);
         for (NousBank.Theme t : NousBank.THEMES) {
             assertThat(bank.all()).as(t.id()).anySatisfy(q -> assertThat(q.theme()).isEqualTo(t.id()));
         }
@@ -30,14 +30,27 @@ class NousBankTest {
     }
 
     @Test
-    void choicesHaveTwoToTwelveOptionsAndNoQuestionIsAskedTwice() {
+    void everyThemeHasEveryNewFormat() {
+        for (NousBank.Theme t : NousBank.THEMES) {
+            Set<String> kinds = new HashSet<>();
+            bank.all().stream().filter(q -> q.theme().equals(t.id())).forEach(q -> kinds.add(q.kind()));
+            assertThat(kinds).as(t.id()).contains(NousBank.ONE, NousBank.SCALE, NousBank.RANK, NousBank.HANGMAN, NousBank.SHORT, NousBank.FILL);
+        }
+        assertThat(bank.all()).filteredOn(q -> NousBank.FILL.equals(q.kind())).allSatisfy(q -> assertThat(q.text()).contains(NousBank.BLANK));
+        assertThat(bank.all()).filteredOn(q -> NousBank.SCALE.equals(q.kind())).allSatisfy(q -> assertThat(q.options()).hasSize(2));
+    }
+
+    @Test
+    void eachKindHasItsOptionsAndNoQuestionIsAskedTwice() {
         Set<String> seen = new HashSet<>();
         bank.all().forEach(q -> {
             assertThat(seen.add(q.text().toLowerCase())).as(q.text()).isTrue();
-            if (NousBank.CHOICE.equals(q.kind())) {
-                assertThat(q.options()).as(q.id()).hasSizeBetween(2, NousBank.MAX_OPTIONS);
-            } else {
-                assertThat(q.options()).isEmpty();
+            switch (q.kind()) {
+                case NousBank.CHOICE -> assertThat(q.options()).as(q.id()).hasSizeBetween(2, NousBank.MAX_OPTIONS);
+                case NousBank.ONE -> assertThat(q.options()).as(q.id()).hasSizeBetween(2, 4);
+                case NousBank.SCALE -> assertThat(q.options()).as(q.id()).hasSize(2);
+                case NousBank.RANK -> assertThat(q.options()).as(q.id()).hasSizeBetween(3, 5);
+                default -> assertThat(q.options()).as(q.id()).isEmpty();
             }
         });
     }
