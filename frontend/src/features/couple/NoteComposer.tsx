@@ -15,12 +15,13 @@ export function NoteComposer({ onSent, autoFocus }: { onSent: (note: Note) => vo
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
-    const value = text.trim();
-    if (!value || sending) return;
+    if (sending) return;
+    if (!text) return;
     setSending(true);
     setError(null);
     try {
-      onSent(await addNote(value));
+      const note = await addNote(text);
+      onSent(note);
       setText("");
     } catch {
       setError("Le mot n'a pas pu être envoyé.");
