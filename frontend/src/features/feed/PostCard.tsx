@@ -7,6 +7,7 @@ import { firstUrl } from "../../components/rich/links";
 import { Icon } from "../../components/ui/Icon";
 import { ProfileLink } from "../../components/ui/ProfileLink";
 import { ImageViewer } from "../../components/photo/ImageViewer";
+import { ReactionBar } from "../chat/MessageReactions";
 import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
 import { usePeople, withMentions } from "./mentions";
@@ -51,9 +52,39 @@ export function PostCard({
   const [burst, setBurst] = useState(0); // a heart blooms on the photo (double tap)
   const tapTimer = useRef<number | null>(null);
 
-  async function toggleReaction(emoji: string) {
-    const summary = post.reactions.find((r) => r.emoji === emoji);
-    onChanged(summary?.reactedByMe ? await unreact(post.id, emoji) : await react(post.id, emoji));
+  // One reaction per person, like Facebook: picking another emoji replaces mine, the same one removes it.
+  const mine = post.reactions.filter((r) => r.reactedByMe).map((r) => r.emoji);
+  const total = post.reactions.reduce((n, r) => n + r.count, 0);
+  const top = [...post.reactions].filter((r) => r.count > 0).sort((a, b) => b.count - a.count).slice(0, 3);
+  const [picker, setPicker] = useState<DOMRect | null>(null);
+  const likeRef = useRef<HTMLButtonElement>(null);
+  const holdTimer = useRef<number | null>(null);
+  const held = useRef(false); // the long press opened the picker: the click that follows does nothing
+
+  async function pick(emoji: string) {
+    let updated = post;
+    for (const e of mine) if (e !== emoji) updated = await unreact(post.id, e);
+    updated = mine.includes(emoji) ? await unreact(post.id, emoji) : await react(post.id, emoji);
+    onChanged(updated);
+  }
+
+  function openPicker() {
+    if (likeRef.current) setPicker(likeRef.current.getBoundingClientRect());
+  }
+
+  function startHold(delay: number) {
+    stopHold();
+    held.current = false;
+    holdTimer.current = window.setTimeout(() => {
+      held.current = true;
+      navigator.vibrate?.(10);
+      openPicker();
+    }, delay);
+  }
+
+  function stopHold() {
+    if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
+    holdTimer.current = null;
   }
 
   // One tap opens the photo; a quick second tap likes it instead (❤️, never un-likes).
@@ -62,7 +93,7 @@ export function PostCard({
       window.clearTimeout(tapTimer.current);
       tapTimer.current = null;
       setBurst(Date.now());
-      if (!post.reactions.find((r) => r.emoji === "❤️")?.reactedByMe) void toggleReaction("❤️");
+      if (!mine.includes("❤️")) void pick("❤️");
       return;
     }
     tapTimer.current = window.setTimeout(() => {
@@ -145,11 +176,12 @@ export function PostCard({
         <button
           type="button"
           onClick={tapPhoto}
-          className="relative mt-3 block w-full touch-manipulation press"
+          className="relative -mx-4 mt-3 block w-[calc(100%+2rem)] touch-manipulation"
           aria-label="Agrandir la photo (deux fois : ❤️)"
         >
-          <EffectLayer effect={post.imageEffect} className="rounded-token">
-            <AssetImage assetId={post.imageAssetId} ratio={4 / 3} className="max-h-[28rem] w-full rounded-token border border-border object-cover" />
+          {/* Edge to edge in the card, like a photo post should be. */}
+          <EffectLayer effect={post.imageEffect}>
+            <AssetImage assetId={post.imageAssetId} ratio={4 / 3} className="max-h-[32rem] w-full object-cover" />
           </EffectLayer>
           {burst > 0 && (
             <span key={burst} data-heart-burst="" className="mc-heart-burst pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">
@@ -165,37 +197,81 @@ export function PostCard({
         />
       )}
 
-      <div className="mt-4 flex flex-wrap gap-1.5">
-        {emojis.map((emoji) => {
-          const summary = post.reactions.find((r) => r.emoji === emoji);
-          const active = summary?.reactedByMe ?? false;
-          return (
-            <button
-              key={emoji}
-              onClick={() => toggleReaction(emoji)}
-              className={
-                "flex items-center gap-1 rounded-full border px-2.5 py-1 text-sm transition press " +
-                (active
-                  ? "border-primary/60 bg-primary/15 text-text shadow-glow"
-                  : "border-border bg-bg-2/40 hover:border-primary/40")
-              }
-            >
-              <span>{emoji}</span>
-              {summary && summary.count > 0 && (
-                <span className="text-xs font-semibold text-text-muted">{summary.count}</span>
-              )}
+      {(total > 0 || commentCount > 0) && (
+        <div className="mt-3 flex items-center justify-between gap-2 text-sm text-text-muted">
+          {total > 0 ? (
+            <button type="button" onClick={openPicker} className="flex items-center gap-1.5 press hover:text-text" aria-label={`${total} réaction${total > 1 ? "s" : ""}`}>
+              <span className="flex -space-x-1">
+                {top.map((r) => (
+                  <span key={r.emoji} className="grid h-5 w-5 place-items-center rounded-full bg-surface-2 text-xs ring-2 ring-surface">
+                    {r.emoji}
+                  </span>
+                ))}
+              </span>
+              {total}
             </button>
-          );
-        })}
+          ) : (
+            <span />
+          )}
+          {commentCount > 0 && (
+            <button type="button" onClick={() => setShowComments((s) => !s)} className="press hover:text-text hover:underline">
+              {commentCount} commentaire{commentCount > 1 ? "s" : ""}
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="mt-2 grid grid-cols-2 gap-1 border-t border-border pt-1">
+        <button
+          ref={likeRef}
+          type="button"
+          onPointerDown={(e) => e.pointerType !== "mouse" && startHold(450)}
+          onPointerEnter={(e) => e.pointerType === "mouse" && startHold(600)}
+          onPointerUp={stopHold}
+          onPointerLeave={stopHold}
+          onPointerCancel={stopHold}
+          onContextMenu={(e) => e.preventDefault()}
+          onClick={() => {
+            if (held.current) {
+              held.current = false;
+              return;
+            }
+            stopHold();
+            void pick(mine[0] ?? "❤️");
+          }}
+          aria-label={mine.length ? "Retirer ma réaction (appui long : changer)" : "J'aime (appui long : autres réactions)"}
+          className={
+            "flex select-none items-center justify-center gap-2 rounded-token py-2 text-sm font-semibold transition press hover:bg-surface-2 " +
+            (mine.length ? "text-primary" : "text-text-muted")
+          }
+        >
+          {mine.length ? <span className="text-base leading-none">{mine[0]}</span> : <Icon name="heart" size={18} />}
+          {mine.length && mine[0] !== "❤️" ? "Réagi" : "J'aime"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowComments((s) => !s)}
+          aria-expanded={showComments}
+          className="flex items-center justify-center gap-2 rounded-token py-2 text-sm font-semibold text-text-muted transition press hover:bg-surface-2"
+        >
+          <Icon name="chat" size={18} /> Commenter
+        </button>
       </div>
 
-      <button
-        onClick={() => setShowComments((s) => !s)}
-        className="mt-3 flex items-center gap-1.5 text-sm text-text-muted transition hover:text-text press"
-      >
-        <Icon name="chat" size={16} />
-        {commentCount} commentaire{commentCount > 1 ? "s" : ""}
-      </button>
+      {picker && (
+        <ReactionBar
+          anchor={picker}
+          mine={false}
+          emojis={emojis}
+          current={mine[0] ?? null}
+          copyText={null}
+          onPick={(emoji) => {
+            setPicker(null);
+            void pick(emoji);
+          }}
+          onClose={() => setPicker(null)}
+        />
+      )}
 
       {showComments && <Comments postId={post.id} emojis={emojis} highlightId={highlightCommentId} onCountChange={(d) => setCommentCount((c) => c + d)} />}
     </article>
