@@ -1,8 +1,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { SPECIES, type Species, getSpeciesSvg } from "../../app/companion";
+import { SPECIES, type Species } from "../../app/companion";
 import { AssetImage } from "../../components/AssetImage";
+import { ImageViewer } from "../../components/photo/ImageViewer";
+import { ZoomableImage } from "../../components/photo/ZoomableImage";
 import { Animal } from "../../components/ui/animals";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
@@ -59,7 +61,12 @@ export function ProfileBody({
         <div className="card overflow-hidden bg-bg animate-fade-up">
           <div className="relative h-56 overflow-hidden sm:h-72" style={{ backgroundImage: "var(--grad)" }}>
             {profile.coverAssetId && (
-              <AssetImage assetId={profile.coverAssetId} framing={profile.coverFraming} className="absolute inset-0 h-full w-full object-cover" />
+              <ZoomableImage
+                assetId={profile.coverAssetId}
+                framing={profile.coverFraming}
+                className="absolute inset-0 overflow-hidden"
+                imgClassName="h-full w-full object-cover"
+              />
             )}
           </div>
           <div className="px-6 pb-6">
@@ -124,66 +131,15 @@ export function ProfileBody({
       </section>
 
       {isAvatarZoomed && profile.avatarAssetId != null && (
-        <AvatarZoomModal
-          assetId={profile.avatarAssetId}
-          companion={companion}
+        <ImageViewer
+          asset={{ id: profile.avatarAssetId, originalFilename: `memocat-${profile.avatarAssetId}.jpg` }}
+          badge={<Animal species={companion} size={64} />}
           onClose={() => setIsAvatarZoomed(false)}
         />
       )}
     </div>
   );
 }
-
-  function AvatarZoomModal({
-    assetId,
-    companion,
-    onClose,
-  }: {
-    assetId: number | null | undefined;
-    companion?: Species;
-    onClose: () => void;
-  }) {
-    useEffect(() => {
-      const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-      document.addEventListener("keydown", onKey);
-      return () => document.removeEventListener("keydown", onKey);
-    }, [onClose]);
-
-    return createPortal(
-      <div
-        className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4 sm:p-6"
-        onClick={onClose}
-      >
-        <div className="relative pointer-events-all bg-white rounded-xl shadow-2xl overflow-hidden max-w-[90vw] max-h-[80vh]">
-          <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-center p-6">
-            {assetId ? (
-              <>
-                <AssetImage
-                  assetId={assetId}
-                  className="max-h-full max-w-full object-contain"
-                />
-                {companion && getSpeciesSvg({ species: companion, className: "absolute bottom-4 right-4 w-16 h-16" })}
-              </>
-            ) : (
-              // Fallback if no assetId (shouldn't happen if called correctly)
-              <div className="w-48 h-48 flex items-center justify-center bg-gray-200 rounded-xl">
-                <span className="text-text-muted">No image</span>
-              </div>
-            )}
-            <button
-              type="button"
-              className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-100"
-              onClick={onClose}
-              aria-label="Close"
-            >
-              <Icon name="x" size={20} />
-            </button>
-          </div>
-        </div>
-      </div>,
-      document.body,
-    );
-  }
 
 /** The page's own background, over the app's shared one, for as long as the profile is shown. */
 export function PageBackdrop({ look }: { look: PartStyle }) {

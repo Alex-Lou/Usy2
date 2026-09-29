@@ -6,7 +6,7 @@ import { LinkPreview } from "../../components/rich/LinkPreview";
 import { firstUrl } from "../../components/rich/links";
 import { Icon } from "../../components/ui/Icon";
 import { ProfileLink } from "../../components/ui/ProfileLink";
-import { ImageViewer } from "../chat/ImageViewer";
+import { ImageViewer } from "../../components/photo/ImageViewer";
 import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
 import { usePeople, withMentions } from "./mentions";
