@@ -13,7 +13,7 @@ import { clearDraft, NO_EDIT, saveDraft, type StudioEdit } from "./draft";
 import { BRUSHES, DRAW_COLORS, strokePath, touchesStroke, type Stroke } from "./draw";
 import { LookOverlay } from "./LookOverlay";
 import { findLook, LOOKS, NO_FINISH, tintsOf, type Finish, type Look } from "./looks";
-import { clampPan, decodeSource, drawPhoto, exportPhoto, rotatedSize, type Frame, type Layer, type Source } from "./render";
+import { clampPan, cropFrame, decodeSource, drawPhoto, exportPhoto, rotatedSize, type CropRect, type Frame, type Layer, type Source } from "./render";
 import { ENHANCE_AMOUNT, MAX_AMOUNT } from "./sharpen";
 import { SharpenFilter } from "./SharpenFilter";
 import { STUDIO_FONTS, TEXT_LOOKS, textCss, type TextLook } from "./textStyle";
@@ -38,6 +38,7 @@ const FINISH_SLIDERS: { key: keyof Finish; label: string; min: number }[] = [
 const finishOf = (look: Look): Finish => ({ ...NO_FINISH, ...look.finish });
 const RATIOS: { id: string; label: string; value: number | null }[] = [
   { id: "orig", label: "Original", value: null },
+  { id: "free", label: "Libre", value: null }, // the shape left by the crop handles
   { id: "1:1", label: "Carré", value: 1 },
   { id: "4:5", label: "4:5", value: 4 / 5 },
   { id: "16:9", label: "16:9", value: 16 / 9 },
@@ -47,6 +48,10 @@ const SVG_STICKERS = STICKERS.filter((s) => s.kind === "sticker");
 const QUICK_EMOJIS = ["😍", "🥰", "😂", "😎", "🥳", "😘", "🤍", "❤️", "💕", "✨", "🔥", "🌸", "🌈", "⭐", "🎉", "👑", "🐱", "☕", "🌙", "☀️"];
 
 type Gesture = { target: "image" | number; points: Map<number, { x: number; y: number }>; start?: { dist: number; angle: number } };
+type Corner = "tl" | "tr" | "bl" | "br";
+const CORNERS: Corner[] = ["tl", "tr", "bl", "br"];
+const FULL: CropRect = { x0: 0, y0: 0, x1: 1, y1: 1 };
+const MIN_CROP = 0.1; // the crop keeps at least a tenth of the frame each way
 type HandleDrag = { id: number; cx: number; cy: number; dist: number; angle: number; scale: number; rotation: number };
 const PANEL_H = 144; // tools panel height at rest (px)
 const PANEL_MIN = 112;
@@ -86,7 +91,10 @@ export function PhotoStudio({
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("frame");
   const [ratioId, setRatioId] = useState(initial.ratioId);
+  const [freeAspect, setFreeAspect] = useState(initial.freeAspect ?? 1); // drafts from before free crop have none
   const [frame, setFrame] = useState<Frame>(initial.frame);
+  const [crop, setCrop] = useState<CropRect | null>(null); // the crop being drawn (Recadrer tab)
+  const cropDrag = useRef<{ corner: Corner; left: number; top: number; rect: CropRect } | null>(null);
   const [lookId, setLookId] = useState(initial.lookId);
   const [finish, setFinish] = useState<Finish>(initial.finish);
   const [border, setBorder] = useState<BorderId>(initial.border);
@@ -123,7 +131,7 @@ export function PhotoStudio({
   const nextId = useRef(Math.max(0, ...initial.layers.map((l) => l.id), ...initial.strokes.map((s) => s.id)) + 1);
 
   // — Undo / redo: a change becomes one step once things settle (a drag or a slider is one step). —
-  const edit: StudioEdit = { ratioId, frame, lookId, finish, border, sliders, sharpness, layers, strokes, effect };
+  const edit: StudioEdit = { ratioId, freeAspect, frame, lookId, finish, border, sliders, sharpness, layers, strokes, effect };
   const history = useRef({ past: [] as StudioEdit[], current: initial, future: [] as StudioEdit[], fileSaved: false });
   const [, setSteps] = useState(0); // re-render when the undo/redo buttons change
 
@@ -144,11 +152,12 @@ export function PhotoStudio({
     const t = window.setTimeout(() => commit(edit), SETTLE_MS);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ratioId, frame, lookId, finish, border, sliders, sharpness, layers, strokes, effect]);
+  }, [ratioId, freeAspect, frame, lookId, finish, border, sliders, sharpness, layers, strokes, effect]);
 
   function apply(e: StudioEdit) {
     history.current.current = e;
     setRatioId(e.ratioId);
+    setFreeAspect(e.freeAspect ?? 1);
     setFrame(e.frame);
     setLookId(e.lookId);
     setFinish(e.finish);
@@ -202,7 +211,7 @@ export function PhotoStudio({
   }, [file]);
 
   const rot = src ? rotatedSize(src, frame.rotation) : { w: 1, h: 1 };
-  const aspect = RATIOS.find((r) => r.id === ratioId)?.value ?? rot.w / rot.h;
+  const aspect = ratioId === "free" ? freeAspect : (RATIOS.find((r) => r.id === ratioId)?.value ?? rot.w / rot.h);
   const look = findLook(lookId);
   const adjust = combine(look.adjust, sliders);
   const tints = tintsOf(look, finish);
@@ -447,6 +456,54 @@ export function PhotoStudio({
     handle.current = null;
   }
 
+  // — Free crop (Recadrer tab): drag a corner, the photo is cut to that rectangle on release. —
+  function chooseRatio(id: string) {
+    if (id === "free") setFreeAspect(aspect); // keeps the current shape until a corner is dragged
+    setRatioId(id);
+  }
+
+  function cropDown(e: RPointerEvent<HTMLSpanElement>, corner: Corner) {
+    e.stopPropagation();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const r = e.currentTarget.parentElement!.getBoundingClientRect(); // the frame's area
+    cropDrag.current = { corner, left: r.left, top: r.top, rect: FULL };
+    setCrop(FULL);
+  }
+
+  function cropMove(e: RPointerEvent<HTMLSpanElement>) {
+    e.stopPropagation();
+    const d = cropDrag.current;
+    if (!d) return;
+    const x = Math.min(1, Math.max(0, (e.clientX - d.left) / box.w));
+    const y = Math.min(1, Math.max(0, (e.clientY - d.top) / box.h));
+    const r = { ...d.rect };
+    if (d.corner[1] === "l") r.x0 = Math.min(x, r.x1 - MIN_CROP);
+    else r.x1 = Math.max(x, r.x0 + MIN_CROP);
+    if (d.corner[0] === "t") r.y0 = Math.min(y, r.y1 - MIN_CROP);
+    else r.y1 = Math.max(y, r.y0 + MIN_CROP);
+    d.rect = r; // read on release (the state may not have re-rendered yet)
+    setCrop(r);
+  }
+
+  function cropUp(e: RPointerEvent<HTMLSpanElement>) {
+    e.stopPropagation();
+    const r = cropDrag.current?.rect;
+    cropDrag.current = null;
+    setCrop(null);
+    if (!src || !r || (r.x1 - r.x0 > 0.99 && r.y1 - r.y0 > 0.99)) return;
+    const cut = cropFrame(src, frame, aspect, r);
+    // Stickers, text and drawings stay where they were on the photo.
+    const sx = 1 / (r.x1 - r.x0);
+    const sy = 1 / (r.y1 - r.y0);
+    setLayers((ls) => ls.map((l) => ({ ...l, x: (l.x - r.x0) * sx, y: (l.y - r.y0) * sy, scale: l.scale * sx })));
+    setStrokes((ss) =>
+      ss.map((s) => ({ ...s, width: s.width * sx, points: s.points.map(([x, y]) => [(x - r.x0) * sx, (y - r.y0) * sy] as [number, number]) })),
+    );
+    setFreeAspect(cut.aspect);
+    setRatioId("free");
+    setFrame(cut.frame);
+  }
+
   // — Tools panel: drag its grip to make it taller or shorter, tap to switch. —
   const panelMax = () => Math.round(window.innerHeight * 0.6);
   const clampPanel = (h: number) => Math.min(panelMax(), Math.max(PANEL_MIN, h));
@@ -600,6 +657,45 @@ export function PhotoStudio({
             </div>
           </EffectLayer>
         )}
+        {src && box.w > 0 && tab === "frame" && (
+          // The crop corners, over the photo (not inside it) so their edge never cuts them.
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ width: box.w, height: box.h }}>
+            {crop && (
+              <div className="absolute inset-0 overflow-hidden rounded-token">
+                <div
+                  className="absolute outline outline-[9999px] outline-black/55 ring-2 ring-white"
+                  style={{ left: crop.x0 * box.w, top: crop.y0 * box.h, width: (crop.x1 - crop.x0) * box.w, height: (crop.y1 - crop.y0) * box.h }}
+                />
+              </div>
+            )}
+            {CORNERS.map((c) => {
+              const r = crop ?? FULL;
+              return (
+                <span
+                  key={c}
+                  aria-hidden="true"
+                  title="Tirer pour rogner"
+                  onPointerDown={(e) => cropDown(e, c)}
+                  onPointerMove={cropMove}
+                  onPointerUp={cropUp}
+                  onPointerCancel={cropUp}
+                  className={
+                    "pointer-events-auto absolute grid h-10 w-10 touch-none place-items-center " +
+                    (c === "tl" || c === "br" ? "cursor-nwse-resize" : "cursor-nesw-resize")
+                  }
+                  style={{ left: (c[1] === "l" ? r.x0 : r.x1) * box.w - 20, top: (c[0] === "t" ? r.y0 : r.y1) * box.h - 20 }}
+                >
+                  <span
+                    className={
+                      "h-5 w-5 border-white " +
+                      { tl: "border-l-4 border-t-4", tr: "border-r-4 border-t-4", bl: "border-b-4 border-l-4", br: "border-b-4 border-r-4" }[c]
+                    }
+                  />
+                </span>
+              );
+            })}
+          </div>
+        )}
         {src && box.w > 0 && sel && (
           // The selected layer's corner handle, over the photo (not inside it) so its edge never cuts it.
           <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ width: box.w, height: box.h }}>
@@ -685,7 +781,7 @@ export function PhotoStudio({
             <div className="flex flex-col gap-3">
               <div className="flex flex-wrap gap-2">
                 {RATIOS.map((r) => (
-                  <button key={r.id} type="button" onClick={() => setRatioId(r.id)} className={"chip press " + (ratioId === r.id ? "border-primary text-primary" : "")}>
+                  <button key={r.id} type="button" onClick={() => chooseRatio(r.id)} className={"chip press " + (ratioId === r.id ? "border-primary text-primary" : "")}>
                     {r.label}
                   </button>
                 ))}
@@ -701,7 +797,7 @@ export function PhotoStudio({
                 Zoom
                 <input type="range" min={1} max={4} step={0.01} value={frame.zoom} onChange={(e) => updateFrame({ ...frame, zoom: Number(e.target.value) })} className="flex-1 accent-[var(--color-primary)]" />
               </label>
-              <p className="text-[11px] text-text-muted">Glisse la photo pour la cadrer, pince pour zoomer.</p>
+              <p className="text-[11px] text-text-muted">Tire un coin pour rogner · glisse la photo pour la cadrer, pince pour zoomer.</p>
             </div>
           )}
           {tab === "filters" && (

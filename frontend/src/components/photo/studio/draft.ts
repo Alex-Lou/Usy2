@@ -6,6 +6,7 @@ import type { Frame, Layer } from "./render";
 /** Everything the studio lets one change on a photo: what undo/redo and a draft keep. */
 export interface StudioEdit {
   ratioId: string;
+  freeAspect: number; // the shape left by a free crop (ratioId "free")
   frame: Frame;
   lookId: string;
   finish: Finish;
@@ -19,6 +20,7 @@ export interface StudioEdit {
 
 export const NO_EDIT: StudioEdit = {
   ratioId: "orig",
+  freeAspect: 1,
   frame: { rotation: 0, zoom: 1, panX: 0, panY: 0 },
   lookId: "none",
   finish: NO_FINISH,
