@@ -23,6 +23,7 @@ import { withFontChoice } from "./theme";
 import type { PartKey, PartStyle, Profile, Theme, Widget } from "./types";
 import { WIDGET_LABELS } from "./widgets/registry";
 import { cleanWidget, missingImage, WidgetListEditor } from "./widgets/WidgetEditor";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 // The profile banner on a phone (ProfileBody: full width × h-56), so the framing shows what the profile will.
 const COVER_ASPECT = 1.6;
@@ -174,10 +175,7 @@ export function MyProfilePage() {
   return (
     <div className="flex flex-col gap-4">
       <SpaceSwitcher />
-      <div>
-        <h1 className="font-display text-2xl font-bold">Mon profil</h1>
-        <p className="text-sm text-text-muted">Ce que tu montres, et comment. Rien n'est visible avant « Enregistrer ».</p>
-      </div>
+      <PageHeader title="Mon profil" subtitle="Ce que tu montres, et comment. Rien n'est visible avant « Enregistrer »." />
 
       <div role="tablist" aria-label="Rubriques" className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 no-scrollbar">
         {TABS.map((t) => (
@@ -504,7 +502,7 @@ function PageFonts({ theme, onChange }: { theme: Theme; onChange: (patch: Partia
               type="button"
               onClick={() => onChange({ fontScope: s })}
               aria-pressed={scope === s}
-              className={"flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition press " + (scope === s ? "btn-brand" : "text-text-muted hover:text-text")}
+              className={"flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition press " + (scope === s ? "seg-on" : "text-text-muted hover:text-text")}
             >
               {s === "profile" ? "Mon profil" : "Toute l'app (pour moi)"}
             </button>

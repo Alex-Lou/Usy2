@@ -341,7 +341,7 @@ export function PetHousePage() {
               setDot(null);
               setScene(s);
             }}
-            className={`rounded-full px-4 py-1.5 font-semibold press ${scene === s ? "btn-brand" : "text-text-muted"}`}
+            className={`rounded-full px-4 py-1.5 font-semibold press ${scene === s ? "seg-on" : "text-text-muted"}`}
           >
             {s === "inside" ? "🏠 Dedans" : "🌳 Dehors"}
           </button>

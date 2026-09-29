@@ -2,29 +2,38 @@
 // Tailwind consumes the design tokens from src/styles/tokens.css.
 // Two app themes (neo / scrapbook) swap the CSS variables; components only
 // reference semantic names, never hard-coded colors.
+// A theme colour that also takes an opacity (bg-primary/15, border-primary/50…):
+// the tokens are CSS variables, so Tailwind cannot split them into channels; the
+// opacity is applied with color-mix instead (without this, those classes emit nothing).
+// Plain uses (bg-primary) stay a plain variable: only an explicit /NN goes through color-mix.
+const token = (name) => ({ opacityValue }) =>
+  opacityValue === undefined || opacityValue === "1" || String(opacityValue).startsWith("var(")
+    ? `var(${name})`
+    : `color-mix(in srgb, var(${name}) calc(${opacityValue} * 100%), transparent)`;
+
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        bg: "var(--color-bg)",
-        "bg-2": "var(--color-bg-2)",
-        surface: "var(--color-surface)",
-        "surface-2": "var(--color-surface-2)",
-        border: "var(--color-border)",
+        bg: token("--color-bg"),
+        "bg-2": token("--color-bg-2"),
+        surface: token("--color-surface"),
+        "surface-2": token("--color-surface-2"),
+        border: token("--color-border"),
         text: {
-          DEFAULT: "var(--color-text)",
-          muted: "var(--color-text-muted)",
+          DEFAULT: token("--color-text"),
+          muted: token("--color-text-muted"),
         },
         primary: {
-          DEFAULT: "var(--color-primary)",
-          foreground: "var(--color-primary-foreground)",
+          DEFAULT: token("--color-primary"),
+          foreground: token("--color-primary-foreground"),
         },
         accent: {
-          DEFAULT: "var(--color-accent)",
-          2: "var(--color-accent-2)",
+          DEFAULT: token("--color-accent"),
+          2: token("--color-accent-2"),
         },
-        danger: "var(--color-danger)",
+        danger: token("--color-danger"),
       },
       fontFamily: {
         sans: "var(--font-body)",

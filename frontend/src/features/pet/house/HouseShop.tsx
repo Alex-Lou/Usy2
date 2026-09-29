@@ -93,7 +93,7 @@ export function HouseShop({ house, scene, night, initialTab = "objects", onChang
                 role="tab"
                 aria-selected={tab === t}
                 onClick={() => setTab(t)}
-                className={`rounded-full px-3 py-1 press ${tab === t ? "btn-brand" : "text-text-muted"}`}
+                className={`rounded-full px-3 py-1 press ${tab === t ? "seg-on" : "text-text-muted"}`}
               >
                 {t === "objects" ? "Objets" : scene === "inside" ? "Pièce" : "Dehors"}
               </button>

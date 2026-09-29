@@ -11,7 +11,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
       <button
         type="button"
         onClick={() => setTheme("neo")}
-        className={base + (theme === "neo" ? " btn-brand" : " text-text-muted hover:text-text")}
+        className={base + (theme === "neo" ? " seg-on" : " text-text-muted hover:text-text")}
         aria-pressed={theme === "neo"}
       >
         <Icon name="moon" size={16} />
@@ -20,7 +20,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
       <button
         type="button"
         onClick={() => setTheme("scrapbook")}
-        className={base + (theme === "scrapbook" ? " btn-brand" : " text-text-muted hover:text-text")}
+        className={base + (theme === "scrapbook" ? " seg-on" : " text-text-muted hover:text-text")}
         aria-pressed={theme === "scrapbook"}
       >
         <Icon name="sun" size={16} />
