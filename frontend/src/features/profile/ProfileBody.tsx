@@ -10,6 +10,7 @@ import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { useFonts } from "../../lib/fonts";
+import { filled } from "../../lib/framing";
 import { fillOf, pageVars, partFonts, partsOf, skin, widgetStyle } from "./partStyle";
 import { ProfileGrid } from "./ProfileGrid";
 import { WidgetRenderer } from "./widgets/WidgetRenderer";
@@ -63,7 +64,7 @@ export function ProfileBody({
             {profile.coverAssetId && (
               <ZoomableImage
                 assetId={profile.coverAssetId}
-                framing={profile.coverFraming}
+                framing={filled(profile.coverFraming)}
                 className="absolute inset-0 overflow-hidden"
                 imgClassName="h-full w-full object-cover"
               />
