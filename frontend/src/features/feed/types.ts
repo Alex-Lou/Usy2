@@ -11,6 +11,8 @@ export interface Post {
   author: User;
   text: string;
   imageAssetId: number | null;
+  imageWidth?: number | null; // the photo's size, so its frame has the right shape before it loads
+  imageHeight?: number | null;
   imageEffect?: string | null; // animated effect from the photo studio
   createdAt: string;
   updatedAt: string;

@@ -7,7 +7,7 @@ import { BACKDROP_STYLE, framingStyle, needsBackdrop, type Framing } from "../li
 // comes near the screen, through the shared cache (see blobCache.ts).
 // `framing`: which part shows in the frame (the parent must clip: overflow-hidden).
 // `ratio`: width / height kept by the placeholder while loading, where nothing else sizes it
-// (the photo's own shape is not known before it loads).
+// (the photo's size when the server knows it, else a default shape).
 export function AssetImage({
   assetId,
   className,
