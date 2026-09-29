@@ -3,6 +3,11 @@
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
 
+/** Full address of an API path, for a plain browser link (e.g. a download). */
+export function apiUrl(path: string): string {
+  return `${API_URL}${path}`;
+}
+
 const TOKEN_KEY = "memocat.token";
 
 export function getToken(): string | null {
