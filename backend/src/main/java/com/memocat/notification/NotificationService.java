@@ -17,14 +17,15 @@ import java.util.List;
 /**
  * Everyone's bell, kept on the server so it is the same on every device and
  * also holds what arrived while the app was closed. Written by PushNotifier,
- * which decides what is worth telling; each new entry also goes out live on
- * /topic/notifications. The same news still unread (same tag, e.g. several
+ * which decides what is worth telling; each new entry also goes out live, to
+ * that person only (/user/queue/notifications). The same news still unread (same tag, e.g. several
  * messages in a row) replaces the previous entry instead of piling up.
  */
 @Service
 public class NotificationService {
 
-    static final String TOPIC = "/topic/notifications";
+    /** Subscribed as /user/queue/notifications: Spring delivers it to that user's own connections only. */
+    static final String QUEUE = "/queue/notifications";
     /** Entries kept per person (older ones are dropped). */
     static final int KEEP = 100;
     /** Entries sent to the app at once. */
@@ -52,9 +53,9 @@ public class NotificationService {
         return NotificationDto.from(saved);
     }
 
-    /** Sends a recorded entry live (call once its transaction has committed). */
-    public void publish(NotificationDto dto) {
-        messaging.convertAndSend(TOPIC, dto);
+    /** Sends a recorded entry live to its recipient (call once its transaction has committed). */
+    public void publish(String username, NotificationDto dto) {
+        messaging.convertAndSendToUser(username, QUEUE, dto);
     }
 
     @Transactional(readOnly = true)

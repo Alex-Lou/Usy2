@@ -77,6 +77,15 @@ class NotificationServiceTest {
     }
 
     @Test
+    void aNewEntryGoesLiveToItsRecipientOnly() {
+        var dto = service.record(2L, "Lou pense à toi 💭", null, "/chat", "thinking");
+
+        service.publish("sam", dto);
+
+        verify(messaging).convertAndSendToUser("sam", "/queue/notifications", dto);
+    }
+
+    @Test
     void aVeryLongTextIsCut() {
         var dto = service.record(2L, "a".repeat(400), null, "/", "t");
         assertThat(dto.text()).hasSize(300).endsWith("…");

@@ -17,8 +17,8 @@ interface Handlers {
 }
 
 /**
- * One app-wide STOMP connection: the new bell entries (/topic/notifications,
- * written by the server) and the shared activity the open pages follow live
+ * One app-wide STOMP connection: my new bell entries (/user/queue/notifications,
+ * written by the server, sent to me only) and the shared activity the open pages follow live
  * (/topic/feed, /topic/couple, /topic/comment-reactions, /topic/live,
  * /topic/naval). Auto-reconnects like the other clients.
  */
@@ -31,7 +31,7 @@ export function createNotifClient(h: Handlers): Client {
     onConnect: () => {
       const on = <T,>(topic: string, handle: (body: T) => void) =>
         client.subscribe(topic, (f: IMessage) => handle(JSON.parse(f.body) as T));
-      on("/topic/notifications", h.onNotification);
+      on("/user/queue/notifications", h.onNotification);
       on("/topic/feed", h.onFeed);
       on("/topic/couple", h.onCouple);
       on("/topic/comment-reactions", h.onCommentReactions);
