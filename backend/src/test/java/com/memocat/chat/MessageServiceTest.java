@@ -47,7 +47,7 @@ class MessageServiceTest {
         assertThat(dto.content()).isEqualTo("Coucou 💕");
         assertThat(dto.sender().username()).isEqualTo("lou");
         verify(messageRepository).save(any(Message.class));
-        verify(events).publishEvent(new ChatMessageSent(null, "Lou"));
+        verify(events).publishEvent(new ChatMessageSent(null, "Lou", null));
     }
 
     @Test
