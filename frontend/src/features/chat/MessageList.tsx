@@ -36,6 +36,31 @@ function time(iso: string): string {
   return new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 }
 
+/** ✓ sent, ✓✓ received (reached their app or phone), ✓✓ in colour read. */
+function Ticks({ message }: { message: Message }) {
+  const state = message.readAt ? "Lu" : message.deliveredAt ? "Reçu" : "Envoyé";
+  const double = state !== "Envoyé";
+  return (
+    <svg
+      viewBox={double ? "0 0 22 12" : "0 0 16 12"}
+      width={double ? 17 : 12}
+      height={10}
+      role="img"
+      aria-label={state}
+      className={state === "Lu" ? "text-primary" : "text-text-muted"}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <title>{state}</title>
+      <path d="M1.5 6.5 5 10l8.5-8.5" />
+      {double && <path d="M9.5 9 10.5 10 19 1.5" />}
+    </svg>
+  );
+}
+
 /** Same sender, same day, a few minutes apart: shown as one block. */
 function sameRun(a: Message | undefined, b: Message | undefined): boolean {
   return (
@@ -144,7 +169,12 @@ export function MessageList({
                   }}
                 />
                 {hasText && !m.attachment && firstUrl(m.content) && <LinkPreview url={firstUrl(m.content)!} className="w-72 max-w-full" />}
-                {lastOfRun && <span className="px-1 text-[10px] text-text-muted">{time(m.createdAt)}</span>}
+                {lastOfRun && (
+                  <span className="flex items-center gap-1 px-1 text-[10px] text-text-muted">
+                    {time(m.createdAt)}
+                    {mine && <Ticks message={m} />}
+                  </span>
+                )}
               </div>
             </div>
           </Fragment>

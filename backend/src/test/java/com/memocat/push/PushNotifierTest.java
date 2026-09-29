@@ -44,6 +44,7 @@ class PushNotifierTest {
     @Mock private WebPushSender sender;
     @Mock private Previews previews; // no excerpt unless a test says so
     @Mock private com.memocat.notification.NotificationService notifications;
+    @Mock private com.memocat.chat.ChatReceipts receipts;
 
     private final PresenceRegistry presence = new PresenceRegistry();
     private final ObjectMapper json = new ObjectMapper();
@@ -62,7 +63,7 @@ class PushNotifierTest {
 
     @BeforeEach
     void setUp() {
-        notifier = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, json);
+        notifier = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, receipts, json);
         lenient().when(users.findAll()).thenReturn(List.of(lou, sam));
         lenient().when(subscriptions.findByUserIdOrderByCreatedAtAsc(2L)).thenReturn(List.of(phone, oldLaptop));
     }
@@ -257,7 +258,7 @@ class PushNotifierTest {
     @Test
     void listBurstNotifiesOnceThenAgainAfterAQuietWhile() {
         MutableClock clock = new MutableClock(Instant.parse("2026-09-23T10:00:00Z"));
-        PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, json, clock);
+        PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, receipts, json, clock);
         when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
         CoupleActivity added = new CoupleActivity(CoupleActivity.LIST, 1L, "Lou", "Courses", 3L);
 
@@ -309,6 +310,33 @@ class PushNotifierTest {
         assertThat(payload.get("body").asText()).isEqualTo("Demain : 🍝 Resto à 20h30");
         assertThat(payload.get("url").asText()).isEqualTo("/dates?event=4");
         assertThat(payload.get("tag").asText()).isEqualTo("event-4");
+    }
+
+    @Test
+    void aMessageAcceptedByTheirPhoneCountsAsReceived() {
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
+
+        verify(receipts).delivered(2L, 40L);
+    }
+
+    @Test
+    void aMessageToAnOpenAppCountsAsReceivedWithoutPush() {
+        presence.report("session", "sam", true); // looking at the app: no push, but it arrives live
+
+        notifier.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
+
+        verify(receipts).delivered(2L, 40L);
+    }
+
+    @Test
+    void nowhereToArriveStaysSent() {
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.FAILED);
+
+        notifier.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
+
+        verify(receipts, never()).delivered(any(), any());
     }
 
     private static final class MutableClock extends Clock {

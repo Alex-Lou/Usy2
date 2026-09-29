@@ -15,8 +15,9 @@ import java.time.Instant;
 
 /**
  * A chat message in the single conversation between the two users. The recipient
- * is implicit (the other user). {@code readAt} is reserved for a future read
- * receipt feature and is unused in V1.
+ * is implicit (the other user). {@code deliveredAt}: when it reached the other
+ * one's app or phone (✓✓); {@code readAt}: when they saw it on screen (✓✓ in
+ * colour); both null until then.
  */
 @Entity
 @Table(name = "message")
@@ -38,6 +39,9 @@ public class Message {
 
     @Column(name = "read_at")
     private Instant readAt;
+
+    @Column(name = "delivered_at")
+    private Instant deliveredAt;
 
     /** Optional photo, GIF or document sent with the message. */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -115,6 +119,10 @@ public class Message {
 
     public Instant getReadAt() {
         return readAt;
+    }
+
+    public Instant getDeliveredAt() {
+        return deliveredAt;
     }
 
     public Asset getAttachment() {

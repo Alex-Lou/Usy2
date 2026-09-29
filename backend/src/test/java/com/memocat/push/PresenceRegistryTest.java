@@ -31,4 +31,13 @@ class PresenceRegistryTest {
                 "s1", CloseStatus.NORMAL));
         assertThat(registry.isLookingAtApp("lou")).isFalse();
     }
+
+    @Test
+    void theFirstReportOfAConnectionSaysTheAppJustOpened() {
+        PresenceRegistry fresh = new PresenceRegistry();
+        org.assertj.core.api.Assertions.assertThat(fresh.report("s9", "sam", false)).isTrue();
+        org.assertj.core.api.Assertions.assertThat(fresh.report("s9", "sam", true)).isFalse();
+        org.assertj.core.api.Assertions.assertThat(fresh.isConnected("sam")).isTrue();
+        org.assertj.core.api.Assertions.assertThat(fresh.isConnected("lou")).isFalse();
+    }
 }

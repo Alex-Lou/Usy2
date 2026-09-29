@@ -3,6 +3,7 @@ package com.memocat.push;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.chat.ChatMessageSent;
+import com.memocat.chat.ChatReceipts;
 import com.memocat.couple.CoupleActivity;
 import com.memocat.couple.EventAdded;
 import com.memocat.couple.EventReminder;
@@ -50,25 +51,28 @@ public class PushNotifier {
     private final WebPushSender sender;
     private final Previews previews;
     private final NotificationService notifications;
+    private final ChatReceipts receipts;
     private final ObjectMapper json;
     private final Clock clock;
     private final Map<Long, Instant> lastListPush = new ConcurrentHashMap<>();
 
     @Autowired
     public PushNotifier(PushSubscriptionRepository subscriptions, UserRepository users, PresenceRegistry presence,
-                        WebPushSender sender, Previews previews, NotificationService notifications, ObjectMapper json) {
-        this(subscriptions, users, presence, sender, previews, notifications, json, Clock.systemUTC());
+                        WebPushSender sender, Previews previews, NotificationService notifications,
+                        ChatReceipts receipts, ObjectMapper json) {
+        this(subscriptions, users, presence, sender, previews, notifications, receipts, json, Clock.systemUTC());
     }
 
     PushNotifier(PushSubscriptionRepository subscriptions, UserRepository users, PresenceRegistry presence,
-                 WebPushSender sender, Previews previews, NotificationService notifications, ObjectMapper json,
-                 Clock clock) {
+                 WebPushSender sender, Previews previews, NotificationService notifications, ChatReceipts receipts,
+                 ObjectMapper json, Clock clock) {
         this.subscriptions = subscriptions;
         this.users = users;
         this.presence = presence;
         this.sender = sender;
         this.previews = previews;
         this.notifications = notifications;
+        this.receipts = receipts;
         this.json = json;
         this.clock = clock;
     }
@@ -115,7 +119,11 @@ public class PushNotifier {
         Alert payload = new Alert(event.senderName() + " t'a envoyé un message 💬", excerpt,
                 excerpt == null ? "/chat" : "/chat?m=" + event.messageId(), "chat", event.senderName() + " 💬");
         for (User recipient : othersThan(event.senderId())) {
-            notify(recipient, payload, true);
+            boolean pushed = notify(recipient, payload, true);
+            // ✓✓: it reached their app (connected) or their phone (push accepted).
+            if (event.messageId() != null && (pushed || presence.isConnected(recipient.getUsername()))) {
+                receipts.delivered(recipient.getId(), event.messageId());
+            }
         }
     }
 
@@ -243,12 +251,13 @@ public class PushNotifier {
         return users.findAll().stream().filter(u -> !u.getId().equals(actorId)).toList();
     }
 
-    /** Into the bell (every device), and a push unless they are looking at the app right now. */
-    private void notify(User recipient, Alert alert, boolean urgent) {
+    /**
+     * Into the bell (every device), and a push unless they are looking at the app right now.
+     * @return true when a device's push service accepted it
+     */
+    private boolean notify(User recipient, Alert alert, boolean urgent) {
         record(recipient, alert);
-        if (!presence.isLookingAtApp(recipient.getUsername())) {
-            push(recipient, alert, urgent);
-        }
+        return !presence.isLookingAtApp(recipient.getUsername()) && push(recipient, alert, urgent);
     }
 
     /** Into the bell, and a push even with the app open. */
@@ -261,17 +270,22 @@ public class PushNotifier {
         notifications.publish(recipient.getUsername(), notifications.record(recipient.getId(), alert.text(), alert.excerpt(), alert.url(), alert.tag()));
     }
 
-    private void push(User recipient, Alert alert, boolean urgent) {
+    /** @return true when at least one device's push service accepted it. */
+    private boolean push(User recipient, Alert alert, boolean urgent) {
         byte[] bytes;
         try {
             bytes = json.writeValueAsBytes(alert.push());
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Cannot serialize push payload", e);
         }
+        boolean accepted = false;
         for (PushSubscription device : subscriptions.findByUserIdOrderByCreatedAtAsc(recipient.getId())) {
-            if (sender.send(device, bytes, urgent) == WebPushSender.Outcome.GONE) {
+            WebPushSender.Outcome outcome = sender.send(device, bytes, urgent);
+            if (outcome == WebPushSender.Outcome.GONE) {
                 subscriptions.delete(device);
             }
+            accepted |= outcome == WebPushSender.Outcome.DELIVERED;
         }
+        return accepted;
     }
 }

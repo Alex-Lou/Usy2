@@ -16,7 +16,7 @@ import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
 import { getHistory, reactToMessage } from "./api";
 import { ChatComposer } from "./ChatComposer";
-import { createChatClient, sendMessage } from "./chatClient";
+import { createChatClient, sendMessage, sendRead, sendTyping } from "./chatClient";
 import { effectSeen, markEffectSeen, SCREEN_EFFECTS, type MessageLook, type ScreenEffectId } from "./looks";
 import { ScreenEffect } from "./ScreenEffect";
 import { ImageViewer } from "../../components/photo/ImageViewer";
@@ -26,6 +26,7 @@ import { useSharedAppearance } from "../couple/appearance";
 import { readingStyle, useReading } from "./reading";
 import { ReadingMenu } from "./ReadingMenu";
 import type { Message, MessageReaction } from "./types";
+import { feel } from "../../lib/feel";
 
 /** Adds messages not seen yet, keeping chronological (id) order. */
 function mergeById(prev: Message[], fresh: Message[]): Message[] {
@@ -45,6 +46,10 @@ export function ChatPage() {
   const [emojis, setEmojis] = useState<string[]>([]);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [playing, setPlaying] = useState<{ effect: ScreenEffectId; key: number } | null>(null);
+  const [typing, setTyping] = useState<string | null>(null); // "Lou écrit…"
+  const typingTimer = useRef<number | null>(null);
+  const myIdRef = useRef(user?.id);
+  myIdRef.current = user?.id;
   const play = useCallback((effect: string | null | undefined) => {
     if (effect && SCREEN_EFFECTS.some((f) => f.id === effect)) setPlaying({ effect: effect as ScreenEffectId, key: Date.now() });
   }, []);
@@ -76,6 +81,7 @@ export function ChatPage() {
       if (me == null) return;
       const before = messages.find((m) => m.id === messageId)?.reactions ?? [];
       const others = before.filter((r) => r.userId !== me);
+      if (emoji) feel.tap();
       setReactions(messageId, emoji ? [...others, { userId: me, emoji }] : others);
       reactToMessage(messageId, emoji)
         .then((r) => setReactions(r.messageId, r.reactions))
@@ -116,8 +122,17 @@ export function ChatPage() {
   onActivityRef.current = onActivity;
 
   useEffect(() => {
+    const stopTyping = () => {
+      if (typingTimer.current !== null) window.clearTimeout(typingTimer.current);
+      typingTimer.current = null;
+      setTyping(null);
+    };
     const client = createChatClient(
       (m) => {
+        if (m.sender.id !== myIdRef.current) {
+          stopTyping(); // their message is here
+          if (document.visibilityState === "visible") feel.message();
+        }
         setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
         onMessageRef.current(m);
         if (m.effect && !effectSeen(m.id)) {
@@ -128,11 +143,61 @@ export function ChatPage() {
       setConnected,
       (a) => onActivityRef.current(a),
       (r) => setReactions(r.messageId, r.reactions),
+      (r) => {
+        if (r.readerId === myIdRef.current) return; // my own reading
+        // They saw my messages up to there (so received them too): the ticks turn to colour.
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.sender.id !== r.readerId && m.id <= r.upToId && !m.readAt ? { ...m, readAt: r.readAt, deliveredAt: m.deliveredAt ?? r.readAt } : m,
+          ),
+        );
+      },
+      (t) => {
+        if (t.userId === myIdRef.current) return;
+        setTyping(t.name);
+        if (typingTimer.current !== null) window.clearTimeout(typingTimer.current);
+        typingTimer.current = window.setTimeout(stopTyping, 5000); // no news for 5 s: stopped typing
+      },
+      (d) => {
+        if (d.receiverId === myIdRef.current) return; // messages that reached me
+        // My messages up to there reached them: ✓ becomes ✓✓.
+        setMessages((prev) =>
+          prev.map((m) => (m.sender.id !== d.receiverId && m.id <= d.upToId && !m.deliveredAt ? { ...m, deliveredAt: d.deliveredAt } : m)),
+        );
+      },
     );
     clientRef.current = client;
     return () => {
+      stopTyping();
       void client.deactivate();
     };
+  }, []);
+
+  // On screen, the other one's newest message counts as seen: tell them (their ticks turn to colour).
+  const lastReadSent = useRef(0);
+  useEffect(() => {
+    const tell = () => {
+      const client = clientRef.current;
+      if (!client || !connected || document.visibilityState !== "visible") return;
+      const theirs = messages.filter((m) => m.sender.id !== user?.id);
+      const newest = theirs[theirs.length - 1];
+      if (newest && newest.id > lastReadSent.current && !newest.readAt) {
+        lastReadSent.current = newest.id;
+        sendRead(client, newest.id);
+      }
+    };
+    tell();
+    document.addEventListener("visibilitychange", tell);
+    return () => document.removeEventListener("visibilitychange", tell);
+  }, [messages, connected, user?.id]);
+
+  // While I type: tell the other one, every few seconds at most.
+  const lastTypingSent = useRef(0);
+  const onTyping = useCallback(() => {
+    const client = clientRef.current;
+    if (!client || Date.now() - lastTypingSent.current < 2500) return;
+    lastTypingSent.current = Date.now();
+    sendTyping(client);
   }, []);
 
   // After a reconnect (e.g. the app was in the background), catch up on what was missed.
@@ -203,6 +268,7 @@ export function ChatPage() {
     const client = clientRef.current;
     if (!client) return;
     stickToBottom.current = true;
+    feel.tap();
     sendMessage(client, text, attachment?.id ?? null, replyRef.current?.id ?? null, look);
     setReplyTo(null);
   }, []);
@@ -273,11 +339,17 @@ export function ChatPage() {
           ) : (
             <MessageList messages={messages} myId={user?.id} emojis={emojis} onOpenImage={setViewing} onReact={react} onReply={setReplyTo} onReplay={play} />
           )}
+          {typing && (
+            <p className="mt-3 flex items-center gap-1.5 px-1 text-xs text-text-muted" aria-live="polite">
+              <span className="mc-typing" aria-hidden="true"><i /><i /><i /></span>
+              {typing} écrit…
+            </p>
+          )}
           <div className="h-2 shrink-0" />
         </div>
       </div>
 
-      <ChatComposer connected={connected} onSend={send} replyTo={replyTo} myId={user?.id} onCancelReply={() => setReplyTo(null)} />
+      <ChatComposer connected={connected} onSend={send} replyTo={replyTo} myId={user?.id} onCancelReply={() => setReplyTo(null)} onTyping={onTyping} />
 
       {viewing && <ImageViewer asset={viewing} onClose={() => setViewing(null)} />}
       {playing && <ScreenEffect key={playing.key} effect={playing.effect} onDone={() => setPlaying(null)} />}

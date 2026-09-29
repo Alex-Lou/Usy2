@@ -5,6 +5,8 @@ import { NotificationsListener } from "../../features/notifications/Notification
 import { AppFonts } from "../../features/profile/AppFonts";
 import { BottomTabBar } from "./BottomTabBar";
 import { GlassSync } from "./GlassSync";
+import { LiveToast } from "./LiveToast";
+import { LoveBurst } from "./LoveBurst";
 import { MobileMenu } from "./MobileMenu";
 import { NotificationBell } from "./NotificationBell";
 import { ColorModeSync } from "./ColorModeSync";
@@ -13,6 +15,7 @@ import { RightRail } from "./RightRail";
 import { SharedLook } from "./SharedLook";
 import { Sidebar } from "./Sidebar";
 import { Loader } from "../ui/states";
+import { primeSound } from "../../lib/feel";
 
 export function AppLayout() {
   // Between lg and xl the right rail is a drawer; a new page closes it.
@@ -20,6 +23,7 @@ export function AppLayout() {
   const { pathname } = useLocation();
   useEffect(() => setRailOpen(false), [pathname]);
   const closeRail = useCallback(() => setRailOpen(false), []);
+  useEffect(() => primeSound(), []); // sounds can play once the page was touched
 
   return (
     <div className="relative min-h-dvh">
@@ -34,6 +38,8 @@ export function AppLayout() {
       <MobileMenu />
       <NotificationBell />
       <NotificationsListener />
+      <LoveBurst />
+      <LiveToast />
       <AppFonts />
       <GlassSync />
       <DailyMemory />

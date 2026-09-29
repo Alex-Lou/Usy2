@@ -12,6 +12,7 @@ import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
 import { usePeople, withMentions } from "./mentions";
 import type { Post } from "./types";
+import { feel } from "../../lib/feel";
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -62,6 +63,7 @@ export function PostCard({
   const held = useRef(false); // the long press opened the picker: the click that follows does nothing
 
   async function pick(emoji: string) {
+    if (!mine.includes(emoji)) feel.tap(); // a reaction given (not taken back)
     let updated = post;
     for (const e of mine) if (e !== emoji) updated = await unreact(post.id, e);
     updated = mine.includes(emoji) ? await unreact(post.id, emoji) : await react(post.id, emoji);
@@ -77,7 +79,7 @@ export function PostCard({
     held.current = false;
     holdTimer.current = window.setTimeout(() => {
       held.current = true;
-      navigator.vibrate?.(10);
+      feel.tap();
       openPicker();
     }, delay);
   }
