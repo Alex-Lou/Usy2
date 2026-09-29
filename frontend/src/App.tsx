@@ -25,6 +25,7 @@ const ProfilePage = lazy(() => import("./features/profile/ProfilePage").then((m)
 const MyProfilePage = lazy(() => import("./features/profile/MyProfilePage").then((m) => ({ default: m.MyProfilePage })));
 const SharedWidgetsPage = lazy(() => import("./features/couple/SharedWidgetsPage").then((m) => ({ default: m.SharedWidgetsPage })));
 const OurProfilePage = lazy(() => import("./features/couple/OurProfilePage").then((m) => ({ default: m.OurProfilePage })));
+const JournalPage = lazy(() => import("./features/journal/JournalPage").then((m) => ({ default: m.JournalPage })));
 const DatesPage = lazy(() => import("./features/couple/DatesPage").then((m) => ({ default: m.DatesPage })));
 
 export function App() {
@@ -61,6 +62,7 @@ export function App() {
         <Route path="/profile/edit" element={<Navigate to="/profile/moi" replace />} />
         <Route path="/widgets" element={<Navigate to="/profile/barre" replace />} />
         <Route path="/dates" element={<DatesPage />} />
+        <Route path="/carnet" element={<JournalPage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
