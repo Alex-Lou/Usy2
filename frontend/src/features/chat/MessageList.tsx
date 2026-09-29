@@ -91,7 +91,7 @@ export function MessageList({
                 </span>
               </div>
             )}
-            <div id={`msg-${m.id}`} className={`flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-3" : "mt-0.5"}`}>
+            <div id={`msg-${m.id}`} className={`flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-4" : "mt-1"}`}>
               {!mine && (
                 <span className="w-[30px] shrink-0">
                   {lastOfRun && (
@@ -113,7 +113,7 @@ export function MessageList({
                         ? ""
                         : "break-words rounded-token px-3.5 py-2 " +
                           (mine
-                            ? `btn-brand ${lastOfRun ? "rounded-br-sm" : ""}`
+                            ? `bg-primary text-primary-foreground ${lastOfRun ? "rounded-br-sm" : ""}`
                             : `border border-border bg-surface-2 ${lastOfRun ? "rounded-bl-sm" : ""}`)
                     }
                   >
