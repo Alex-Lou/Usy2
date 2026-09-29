@@ -74,6 +74,7 @@ export function AccountMenu() {
           <div className="px-2 py-1">
             <p className="mb-1.5 text-xs font-semibold text-text-muted">Sons et vibrations</p>
             <FeelToggle />
+            <p className="mt-1 text-[11px] text-text-muted">Dans l'appli seulement : les notifications du téléphone gardent leur son.</p>
           </div>
           <hr className="my-1 border-border" />
           <button type="button" role="menuitem" onClick={logout} className="flex items-center gap-3 rounded-token-sm px-2 py-2 text-left text-sm font-semibold text-text-muted hover:bg-surface-2 hover:text-danger">

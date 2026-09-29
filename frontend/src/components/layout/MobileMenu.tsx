@@ -100,6 +100,7 @@ export function MobileMenu() {
               <div>
                 <p className="mb-1.5 text-xs font-semibold text-text-muted">Sons et vibrations</p>
                 <FeelToggle />
+                <p className="mt-1 text-[11px] text-text-muted">Dans l'appli seulement : les notifications du téléphone gardent leur son.</p>
               </div>
               <button
                 onClick={logout}

@@ -6,7 +6,9 @@ import { emitCoupleActivity } from "../couple/activity";
 import { emitCommentReactions, emitFeedActivity } from "../feed/activity";
 import { emitLive } from "../live/api";
 import { emitNaval } from "../naval/api";
+import { feel } from "../../lib/feel";
 import type { NotificationEntry } from "./api";
+import { emitToast } from "./liveToast";
 import { createNotifClient, markActive, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
 import { showSystemNotification } from "./systemNotify";
@@ -52,6 +54,12 @@ export function NotificationsListener() {
         return;
       }
       void reload();
+      if (document.visibilityState === "visible") {
+        if (n.tag === "thinking") return; // LoveBurst already shows it, with its own sound
+        emitToast(n); // banner at the top, live
+        feel.notify();
+        return;
+      }
       // OS banner on a device without Web Push, while the app sits in the background.
       void showSystemNotification(n.excerpt ? `${n.text}\n${n.excerpt}` : n.text, n.url);
     };

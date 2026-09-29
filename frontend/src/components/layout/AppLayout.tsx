@@ -5,6 +5,7 @@ import { NotificationsListener } from "../../features/notifications/Notification
 import { AppFonts } from "../../features/profile/AppFonts";
 import { BottomTabBar } from "./BottomTabBar";
 import { GlassSync } from "./GlassSync";
+import { LiveToast } from "./LiveToast";
 import { LoveBurst } from "./LoveBurst";
 import { MobileMenu } from "./MobileMenu";
 import { NotificationBell } from "./NotificationBell";
@@ -38,6 +39,7 @@ export function AppLayout() {
       <NotificationBell />
       <NotificationsListener />
       <LoveBurst />
+      <LiveToast />
       <AppFonts />
       <GlassSync />
       <DailyMemory />

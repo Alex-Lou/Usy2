@@ -1,8 +1,9 @@
 /**
  * The app's touch and sound: a light buzz when reacting or sending, a soft
- * chime when a message or a "je pense à toi" comes in. Two switches per
- * device (Menu → Sons et vibrations): vibrations on by default, sounds off
- * (a sound out of nowhere in public is annoying). Sounds are synthesized with
+ * chime when a message, a notification or a "je pense à toi" comes in, app
+ * open. Two switches per device (Menu → Sons et vibrations): vibrations on by
+ * default, sounds off (a sound out of nowhere in public is annoying). They
+ * only concern the app itself: the phone's notifications keep their own sound. Sounds are synthesized with
  * Web Audio, no files; volumes stay low. Where vibration is not supported
  * (iPhone), it simply does nothing.
  */
@@ -84,9 +85,10 @@ function notes(list: [number, number][], peak = 0.06): void {
   }
 }
 
-function chime(kind: "message" | "love"): void {
+function chime(kind: "message" | "notify" | "love"): void {
   if (!soundsOn()) return;
   if (kind === "message") notes([[880, 0], [1175, 0.09]]);
+  else if (kind === "notify") notes([[1047, 0]], 0.05);
   else notes([[660, 0], [880, 0.12], [1320, 0.24]], 0.07);
 }
 
@@ -98,6 +100,11 @@ export const feel = {
   message: () => {
     buzz([15, 60, 15]);
     chime("message");
+  },
+  /** Any other notification while the app is open (the banner at the top). */
+  notify: () => {
+    buzz(20);
+    chime("notify");
   },
   /** "Je pense à toi" arrives. */
   love: () => {
