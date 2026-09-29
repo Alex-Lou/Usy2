@@ -5,17 +5,22 @@ import { needsHomeScreenInstall } from "../../features/notifications/push";
 import { enableSystemNotifications, systemPermission } from "../../features/notifications/systemNotify";
 import { Icon } from "../ui/Icon";
 
-function timeLabel(at: number): string {
+function timeLabel(iso: string): string {
+  const at = Date.parse(iso);
   const diff = Date.now() - at;
   if (diff < 60_000) return "à l'instant";
   if (diff < 3_600_000) return `il y a ${Math.floor(diff / 60_000)} min`;
-  return new Date(at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  const d = new Date(at);
+  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  if (new Date().toDateString() === d.toDateString()) return time;
+  return `${d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} · ${time}`;
 }
 
 /** The bell and its list: fixed at the top right on phones, or {@code inline} in the desktop top bar. */
 export function NotificationBell({ inline = false }: { inline?: boolean }) {
   const { items, unread, markAllRead, clear } = useNotifications();
   const [open, setOpen] = useState(false);
+  const [fresh, setFresh] = useState<Set<number>>(new Set()); // unread when the list was opened: stays highlighted
   const navigate = useNavigate();
   const [permission, setPermission] = useState(systemPermission);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -41,10 +46,11 @@ export function NotificationBell({ inline = false }: { inline?: boolean }) {
   }, [open]);
 
   function toggle() {
-    setOpen((o) => {
-      if (!o && unread > 0) markAllRead();
-      return !o;
-    });
+    if (!open) {
+      setFresh(new Set(items.filter((n) => !n.read).map((n) => n.id)));
+      if (unread > 0) markAllRead();
+    }
+    setOpen(!open);
   }
 
   return (
@@ -93,24 +99,18 @@ export function NotificationBell({ inline = false }: { inline?: boolean }) {
             <ul className="max-h-80 overflow-y-auto">
               {items.map((n) => (
                 <li key={n.id} className="border-b border-border/60 last:border-0">
-                  {n.url && /^\/(?!\/)/.test(n.url) ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setOpen(false);
-                        navigate(n.url!);
-                      }}
-                      className="flex w-full flex-col gap-0.5 px-3 py-2.5 text-left press hover:bg-surface-2"
-                    >
-                      <span className="text-sm">{n.text}</span>
-                      <span className="text-[11px] text-text-muted">{timeLabel(n.at)}</span>
-                    </button>
-                  ) : (
-                    <div className="flex flex-col gap-0.5 px-3 py-2.5">
-                      <span className="text-sm">{n.text}</span>
-                      <span className="text-[11px] text-text-muted">{timeLabel(n.at)}</span>
-                    </div>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      if (/^\/(?!\/)/.test(n.url)) navigate(n.url); // in-app pages only
+                    }}
+                    className={"flex w-full flex-col gap-0.5 px-3 py-2.5 text-left press hover:bg-surface-2 " + (fresh.has(n.id) ? "bg-primary/10" : "")}
+                  >
+                    <span className="text-sm">{n.text}</span>
+                    {n.excerpt && <span className="line-clamp-2 break-words text-xs text-text-muted">{n.excerpt}</span>}
+                    <span className="text-[11px] text-text-muted">{timeLabel(n.createdAt)}</span>
+                  </button>
                 </li>
               ))}
             </ul>
