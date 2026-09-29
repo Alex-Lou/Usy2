@@ -146,10 +146,28 @@ export function AlbumPage() {
           <span className="text-4xl">🖼️</span>
           <p className="text-text-muted">Aucune photo. Ajoutez-en depuis votre téléphone.</p>
         </div>
+      ) : !editing ? (
+        // A photo grid, like a profile on Instagram: captions, order and delete live in edit mode.
+        <div className="-mx-4 grid grid-cols-3 gap-0.5 sm:mx-0 sm:gap-1 sm:overflow-hidden sm:rounded-token">
+          {photos.map((photo, i) => (
+            <button
+              key={photo.id}
+              type="button"
+              onClick={() => {
+                setProfileMessage(null);
+                setLightbox(i);
+              }}
+              aria-label={photo.caption ? `Agrandir : ${photo.caption}` : "Agrandir la photo"}
+              className="relative block aspect-square w-full overflow-hidden bg-surface-2"
+            >
+              <AssetImage assetId={photo.assetId} className="h-full w-full object-cover transition hover:opacity-90" />
+            </button>
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {photos.map((photo, i) => (
-            <div key={photo.id} className="card animate-fade-up overflow-hidden p-0">
+            <div key={photo.id} className="card overflow-hidden p-0">
               <button
                 onClick={() => {
                   setProfileMessage(null);

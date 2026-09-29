@@ -41,12 +41,13 @@ function countdownsFrom(profiles: Profile[]): Countdown[] {
 }
 
 // Folded or not is a per-device comfort choice; storage may be unavailable.
+// Folded by default, so the feed shows first.
 const FOLD_KEY = "memocat.coupleStrip.folded";
 function readFolded(): boolean {
   try {
-    return localStorage.getItem(FOLD_KEY) === "1";
+    return localStorage.getItem(FOLD_KEY) !== "0";
   } catch {
-    return false;
+    return true;
   }
 }
 function saveFolded(folded: boolean) {
@@ -100,6 +101,16 @@ export function CoupleStrip() {
           <span className="font-display text-lg font-bold text-text">Nous</span>
         )}
         <div className="flex shrink-0 items-center gap-1">
+          {folded &&
+            couple.moods.map((m) => {
+              const name = people.find((p) => p.userId === m.userId)?.displayName ?? "";
+              const text = `${name} : ${m.emoji}${m.label ? ` ${m.label}` : ""}`;
+              return (
+                <span key={m.userId} className="mc-emoji text-lg leading-none" title={text} aria-label={text}>
+                  {m.emoji}
+                </span>
+              );
+            })}
           {folded && theirNote && (
             <span className="mc-emoji" title={`Un mot de ${theirNote.author.displayName}`} aria-label={`Un mot de ${theirNote.author.displayName}`}>
               💌
