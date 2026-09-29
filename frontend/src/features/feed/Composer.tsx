@@ -11,6 +11,7 @@ import type { StudioEdit } from "../../components/photo/studio/draft";
 import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
 import { createPost } from "./api";
 import { MentionSuggest, usePeople } from "./mentions";
+import { MomentsGrid, type Moment } from "./MomentsBar";
 
 export interface ComposerSeed {
   text: string;
@@ -38,6 +39,7 @@ export function Composer({
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [focused, setFocused] = useState(false);
+  const [ideas, setIdeas] = useState(false); // the "✨ idée" prompts are shown
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -98,7 +100,27 @@ export function Composer({
   }
 
   // One line until used, like "Quoi de neuf ?" on Facebook: the tools show once writing.
-  const expanded = focused || text.length > 0 || file !== null || busy;
+  const expanded = focused || ideas || text.length > 0 || file !== null || busy;
+
+  function pickIdea(m: Moment) {
+    setIdeas(false);
+    setText(m.text);
+    textareaRef.current?.focus();
+    if (m.wantImage) fileRef.current?.click();
+  }
+
+  const ideaButton = (
+    <button
+      type="button"
+      onClick={() => setIdeas((v) => !v)}
+      aria-expanded={ideas}
+      aria-label="Une idée de post"
+      title="Une idée de post"
+      className={"grid h-10 w-10 shrink-0 place-items-center rounded-full transition press " + (ideas ? "seg-on" : "text-text-muted hover:text-primary")}
+    >
+      <Icon name="sparkles" size={19} />
+    </button>
+  );
 
   return (
     <form onSubmit={submit} className={"card " + (expanded ? "p-4" : "px-4 py-3")}>
@@ -123,7 +145,7 @@ export function Composer({
             onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? 0)}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
-            placeholder={expanded ? "Quoi de neuf, mon cœur ? (@ pour taguer)" : "Quoi de neuf, mon cœur ?"}
+            placeholder={expanded ? "Quoi de neuf ? (@ pour taguer)" : "Quoi de neuf ?"}
             maxLength={2000}
             rows={expanded ? 2 : 1}
             className="block w-full resize-none bg-transparent text-text placeholder:text-text-muted outline-none"
@@ -170,6 +192,7 @@ export function Composer({
             </div>
           )}
         </div>
+        {!expanded && ideaButton}
         {!expanded && (
           <label className="grid h-10 w-10 shrink-0 cursor-pointer place-items-center rounded-full text-text-muted transition hover:text-primary press" aria-label="Ajouter une photo">
             <Icon name="images" size={20} />
@@ -178,6 +201,7 @@ export function Composer({
         )}
       </div>
 
+      {ideas && <MomentsGrid onPick={pickIdea} />}
       {error && <p role="alert" className="mt-2 text-sm text-danger">{error}</p>}
       {studio && file && (
         <PhotoStudio
@@ -203,9 +227,11 @@ export function Composer({
         className={"mt-3 items-center justify-between border-t border-border pt-3 " + (expanded ? "flex" : "hidden")}
       >
         <div className="flex items-center gap-1">
-          <label className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
+          {ideaButton}
+          {/* Labels from sm: on a phone the icons leave room for "Publier". */}
+          <label aria-label="Galerie" className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
             <Icon name="images" size={18} />
-            Galerie
+            <span className="hidden sm:inline">Galerie</span>
             <input
               ref={fileRef}
               type="file"
@@ -214,9 +240,9 @@ export function Composer({
               onChange={(e) => pick(e.target)}
             />
           </label>
-          <label className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
+          <label aria-label="Caméra" className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
             <Icon name="camera" size={18} />
-            Caméra
+            <span className="hidden sm:inline">Caméra</span>
             <input
               type="file"
               accept="image/*"
