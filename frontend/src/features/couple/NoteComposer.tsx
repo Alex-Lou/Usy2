@@ -15,12 +15,12 @@ export function NoteComposer({ onSent, autoFocus }: { onSent: (note: Note) => vo
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
-    if (sending) return;
-    if (!text) return;
+    const value = text.trim();
+    if (!value || sending) return;
     setSending(true);
     setError(null);
     try {
-      const note = await addNote(text);
+      const note = await addNote(value);
       onSent(note);
       setText("");
     } catch {
