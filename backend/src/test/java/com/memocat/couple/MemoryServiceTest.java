@@ -55,4 +55,39 @@ class MemoryServiceTest {
         assertThat(memories.get(0).assetId()).isEqualTo(40L);
         assertThat(memories.get(1).text()).isEqualTo("Premier resto");
     }
+
+    @Test
+    void yearMixesAlbumsAndPostsOldestFirst() {
+        CoupleClock clock = new CoupleClock(ZoneId.of("Asia/Tokyo"),
+                Clock.fixed(Instant.parse("2026-09-23T23:30:00Z"), ZoneOffset.UTC));
+        User lou = new User("lou", "hash", "Lou");
+        Asset a1 = new Asset("k1", "a.jpg", "image/jpeg", 10, lou);
+        ReflectionTestUtils.setField(a1, "id", 40L);
+        Asset a2 = new Asset("k2", "b.jpg", "image/jpeg", 10, lou);
+        ReflectionTestUtils.setField(a2, "id", 41L);
+        Post march = new Post(lou, "Printemps", a1);
+        ReflectionTestUtils.setField(march, "id", 5L);
+        ReflectionTestUtils.setField(march, "createdAt", Instant.parse("2025-03-01T10:00:00Z"));
+        Album album = new Album(lou, "Été", null);
+        ReflectionTestUtils.setField(album, "id", 2L);
+        Photo january = new Photo(album, a2, lou, "Neige", 0);
+        ReflectionTestUtils.setField(january, "id", 11L);
+        ReflectionTestUtils.setField(january, "createdAt", Instant.parse("2025-01-10T10:00:00Z"));
+        when(posts.findWithImageInYear("Asia/Tokyo", 2025, MemoryService.YEAR_MAX)).thenReturn(List.of(march));
+        when(photos.findInYear("Asia/Tokyo", 2025, MemoryService.YEAR_MAX)).thenReturn(List.of(january));
+
+        var year = new MemoryService(posts, photos, clock).year(2025);
+
+        assertThat(year).extracting(m -> m.assetId()).containsExactly(41L, 40L);
+        assertThat(year.get(0).text()).isEqualTo("Neige");
+    }
+
+    @Test
+    void yearsMergesBothSourcesNewestFirst() {
+        CoupleClock clock = new CoupleClock(ZoneId.of("UTC"), Clock.systemUTC());
+        when(photos.findYears("UTC")).thenReturn(List.of(2026, 2024));
+        when(posts.findYearsWithImage("UTC")).thenReturn(List.of(2025, 2024));
+
+        assertThat(new MemoryService(posts, photos, clock).years()).containsExactly(2026, 2025, 2024);
+    }
 }

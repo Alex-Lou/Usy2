@@ -33,4 +33,20 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
             """, nativeQuery = true)
     List<Photo> findOnThisDay(@Param("zone") String zone, @Param("month") int month,
                               @Param("day") int day, @Param("year") int year);
+
+    /** Album photos added during this year (couple's time zone), oldest first: « Notre année ». */
+    @Query(value = """
+            select * from photo
+            where extract(year from created_at at time zone :zone) = :year
+            order by created_at, id
+            limit :max
+            """, nativeQuery = true)
+    List<Photo> findInYear(@Param("zone") String zone, @Param("year") int year, @Param("max") int max);
+
+    /** The years that have album photos, most recent first. */
+    @Query(value = """
+            select distinct cast(extract(year from created_at at time zone :zone) as int) as y from photo
+            order by y desc
+            """, nativeQuery = true)
+    List<Integer> findYears(@Param("zone") String zone);
 }
