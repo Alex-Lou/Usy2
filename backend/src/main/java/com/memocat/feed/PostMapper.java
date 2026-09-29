@@ -38,6 +38,8 @@ public class PostMapper {
                 post.getText(),
                 imageAssetId,
                 post.getImageAsset() != null ? post.getImageAsset().getEffect() : null,
+                post.getImageAsset() != null ? post.getImageAsset().getWidth() : null,
+                post.getImageAsset() != null ? post.getImageAsset().getHeight() : null,
                 post.getCreatedAt(),
                 post.getUpdatedAt(),
                 post.isEdited(),

@@ -84,6 +84,33 @@ class AssetServiceTest {
     }
 
     @Test
+    void anImageRemembersItsSize() throws Exception {
+        when(assets.totalSizeBytes()).thenReturn(0L);
+        when(assets.save(any(Asset.class))).thenAnswer(inv -> inv.getArgument(0));
+        var out = new java.io.ByteArrayOutputStream();
+        javax.imageio.ImageIO.write(new java.awt.image.BufferedImage(30, 20, java.awt.image.BufferedImage.TYPE_INT_RGB), "png", out);
+
+        var dto = service.upload("lou", new MockMultipartFile("file", "a.png", "image/png", out.toByteArray()), null);
+
+        assertThat(dto.width()).isEqualTo(30);
+        assertThat(dto.height()).isEqualTo(20);
+    }
+
+    @Test
+    void anOldImageGetsItsSizeFilledIn() throws Exception {
+        Asset old = new Asset("k.png", "a.png", "image/png", 10, lou);
+        var out = new java.io.ByteArrayOutputStream();
+        javax.imageio.ImageIO.write(new java.awt.image.BufferedImage(8, 12, java.awt.image.BufferedImage.TYPE_INT_RGB), "png", out);
+        when(assets.findById(5L)).thenReturn(Optional.of(old));
+        when(contents.findById(5L)).thenReturn(Optional.of(new AssetContent(5L, out.toByteArray())));
+
+        service.fillDimensions(5L);
+
+        assertThat(old.getWidth()).isEqualTo(8);
+        assertThat(old.getHeight()).isEqualTo(12);
+    }
+
+    @Test
     void usageReportsUsedAndQuota() {
         when(assets.totalSizeBytes()).thenReturn(1234L);
         var usage = service.usage();

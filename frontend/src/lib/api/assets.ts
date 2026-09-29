@@ -7,6 +7,8 @@ export interface Asset {
   sizeBytes: number;
   originalFilename: string;
   effect?: string | null; // animated effect of a studio photo
+  width?: number | null; // an image's size (null: unknown, e.g. not an image)
+  height?: number | null;
 }
 
 /**
