@@ -30,6 +30,24 @@ export function updateMyProfile(
   });
 }
 
+/**
+ * Makes one photo my avatar or my profile cover, keeping the rest of the
+ * profile as it is. The new photo starts centred (framing reset).
+ */
+export async function setProfilePhoto(kind: "avatar" | "cover", assetId: number): Promise<Profile> {
+  const p = await getMyProfile();
+  const avatar = kind === "avatar";
+  return updateMyProfile(
+    p.theme,
+    p.widgets,
+    avatar ? assetId : (p.avatarAssetId ?? null),
+    p.bio ?? null,
+    avatar ? (p.coverAssetId ?? null) : assetId,
+    avatar ? null : (p.avatarFraming ?? null),
+    avatar ? (p.coverFraming ?? null) : null,
+  );
+}
+
 /** My glass choice (null: back to the default). */
 export function updateGlass(glass: Glass | null): Promise<Profile> {
   return apiRequest<Profile>("/api/profiles/me/glass", { method: "PUT", body: { glass } });
