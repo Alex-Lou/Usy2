@@ -49,6 +49,29 @@ export function clampPan(src: Source, f: Frame, aspect: number): Frame {
   return { ...f, panX: Math.min(maxX, Math.max(-maxX, f.panX)), panY: Math.min(maxY, Math.max(-maxY, f.panY)) };
 }
 
+/** A part of the frame, in fractions of its width (x) and height (y). */
+export interface CropRect {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
+/**
+ * Cuts the frame down to `r`: the new frame has r's shape and shows exactly
+ * what r showed (the photo is not redrawn, only zoom and pan change).
+ */
+export function cropFrame(src: Source, f: Frame, aspect: number, r: CropRect): { frame: Frame; aspect: number } {
+  const next = (aspect * (r.x1 - r.x0)) / (r.y1 - r.y0);
+  const k = 1 / (r.y1 - r.y0); // old frame units -> new ones (frames are 1 high)
+  const scale = coverScale(src, f, aspect, 1) * k;
+  const zoom = Math.max(1, scale / coverScale(src, { ...f, zoom: 1 }, next, 1));
+  const cx = (aspect / 2 + f.panX * aspect - r.x0 * aspect) * k; // photo centre in the new frame
+  const cy = (1 / 2 + f.panY - r.y0) * k;
+  const frame = { ...f, zoom, panX: (cx - next / 2) / next, panY: cy - 1 / 2 };
+  return { frame: clampPan(src, frame, next), aspect: next };
+}
+
 /** Draws the framed photo (no colour adjustments) into a W×H context. */
 export function drawPhoto(ctx: CanvasRenderingContext2D, src: Source, f: Frame, W: number, H: number): void {
   const s = coverScale(src, f, W, H);
