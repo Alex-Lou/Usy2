@@ -12,7 +12,6 @@ import { onFeedActivity } from "./activity";
 import { getReactionEmojis, listPosts } from "./api";
 import { Composer, type ComposerSeed } from "./Composer";
 import { CoupleStrip } from "./CoupleStrip";
-import { MomentsBar, type Moment } from "./MomentsBar";
 import { PostCard } from "./PostCard";
 import { ShareChoice } from "./ShareChoice";
 import { handToChat, takeSharedContent, type SharedContent } from "./sharedContent";
@@ -107,12 +106,6 @@ export function FeedPage() {
     if (!loading && hasMore) load(page + 1);
   }, !loading && hasMore);
 
-  function pickMoment(m: Moment) {
-    nonce.current += 1;
-    setSeed({ text: m.text, wantImage: m.wantImage, nonce: nonce.current });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   return (
     <div className="flex flex-col gap-4">
       <header className="flex items-center gap-2 animate-fade-up">
@@ -149,7 +142,6 @@ export function FeedPage() {
           )}
           {/* From xl it lives in the right rail (RightRail). */}
           <div className="xl:hidden"><CoupleStrip /></div>
-          <MomentsBar onPick={pickMoment} />
           <Composer onCreated={() => load(0)} seed={seed} />
           {shared && (
             <ShareChoice shared={shared} partnerName={partnerName} onPost={shareAsPost} onMessage={shareAsMessage} onCancel={() => setShared(null)} />
