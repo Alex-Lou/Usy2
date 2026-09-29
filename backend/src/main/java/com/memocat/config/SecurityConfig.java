@@ -74,6 +74,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         // WebSocket handshake; auth is enforced at the STOMP CONNECT frame.
                         .requestMatchers("/ws/**").permitAll()
+                        // The export ZIP: a plain browser download, the single-use token is the key.
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/export/download").permitAll()
                         // All other API endpoints require a valid JWT.
                         .requestMatchers("/api/**").authenticated()
                         // Everything else is the static SPA shell (HTML/JS/CSS) — public,
