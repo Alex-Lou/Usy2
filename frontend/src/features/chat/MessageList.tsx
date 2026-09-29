@@ -91,7 +91,7 @@ export function MessageList({
                 </span>
               </div>
             )}
-            <div id={`msg-${m.id}`} className={`mc-offscreen-skip flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-3" : "mt-0.5"}`}>
+            <div id={`msg-${m.id}`} className={`flex items-end gap-2 ${mine ? "flex-row-reverse" : ""} ${firstOfRun ? "mt-3" : "mt-0.5"}`}>
               {!mine && (
                 <span className="w-[30px] shrink-0">
                   {lastOfRun && (

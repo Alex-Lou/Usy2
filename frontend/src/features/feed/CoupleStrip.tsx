@@ -66,7 +66,7 @@ function saveFolded(folded: boolean) {
 export function CoupleStrip() {
   const { user } = useAuth();
   const myId = user?.id;
-  const { couple, setCouple } = useCouple();
+  const { couple, loading, setCouple } = useCouple();
   const [people, setPeople] = useState<Profile[]>([]);
   const [writing, setWriting] = useState(false);
   const [folded, setFolded] = useState(readFolded);
@@ -76,7 +76,10 @@ export function CoupleStrip() {
     getAllProfiles().then(setPeople).catch(() => {});
   }, []);
 
-  if (!couple) return null;
+  if (!couple) {
+    // Keeps the banner's room while it loads, so the feed below does not jump.
+    return loading ? <div className={"card shrink-0 animate-pulse " + (folded ? "h-14" : "h-72")} aria-hidden="true" /> : null;
+  }
 
   const theirNote = couple.latestNotes.find((n) => n.author.id !== myId);
   const notes = [...couple.latestNotes].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
