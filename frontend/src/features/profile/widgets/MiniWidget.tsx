@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SPECIES, type Species } from "../../../app/companion";
-import { AssetImage } from "../../../components/AssetImage";
+import { ZoomableImage } from "../../../components/photo/ZoomableImage";
 import { livingKindOf, LivingCompanion } from "../../../components/companions/LivingCompanion";
 import { Animal } from "../../../components/ui/animals";
 import { HeartMark, SparkleMarks } from "../../../components/ui/decor";
@@ -39,7 +39,7 @@ export function MiniWidget({ widget, ownerId }: { widget: Widget; ownerId?: numb
     case "countdown":
       return <MiniCountdown date={widget.date} label={widget.label} />;
     case "image":
-      return <AssetImage assetId={widget.assetId} className="aspect-square w-full rounded-2xl object-cover" />;
+      return <ZoomableImage assetId={widget.assetId} className="w-full" imgClassName="aspect-square w-full rounded-2xl object-cover" />;
     case "svg":
       return <MiniScene variant={widget.variant} />;
     case "pins": {
