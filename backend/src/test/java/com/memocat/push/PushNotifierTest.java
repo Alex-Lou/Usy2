@@ -108,7 +108,7 @@ class PushNotifierTest {
     @Test
     void aCommentShowsItsTextUnderTheSentence() throws Exception {
         when(previews.comment(51L)).thenReturn("Trop beau 😍");
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onFeedActivity(new FeedActivity(FeedActivity.COMMENT, 1L, "Lou", 8L, 2L, null, List.of(), 51L, null));
 
@@ -133,7 +133,7 @@ class PushNotifierTest {
         notifier.onFeedActivity(new FeedActivity(FeedActivity.REACTION, 1L, "Lou", 7L, 1L, "😍")); // Lou's own post
         verify(sender, never()).send(any(), any(), anyBoolean());
 
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
         notifier.onFeedActivity(new FeedActivity(FeedActivity.REACTION, 1L, "Lou", 8L, 2L, "😍")); // Sam's post
 
         JsonNode payload = sentPayload(phone);
@@ -144,7 +144,7 @@ class PushNotifierTest {
 
     @Test
     void commentSaysWhosePostItIs() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onFeedActivity(new FeedActivity(FeedActivity.COMMENT, 1L, "Lou", 8L, 2L, null));
 
@@ -154,7 +154,7 @@ class PushNotifierTest {
 
     @Test
     void aReplyOrATagSaysSoAndOpensTheVeryComment() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onFeedActivity(new FeedActivity(FeedActivity.COMMENT, 1L, "Lou", 8L, 1L, null, java.util.List.of(2L), 51L, 2L));
         assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou a répondu à ton commentaire 💬");
@@ -163,7 +163,7 @@ class PushNotifierTest {
 
     @Test
     void aTagInAPostSaysSo() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onFeedActivity(new FeedActivity(FeedActivity.POST, 1L, "Lou", 8L, 1L, null, java.util.List.of(2L), null, null));
         assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou t'a identifié·e dans un post 🏷️");
@@ -171,7 +171,7 @@ class PushNotifierTest {
 
     @Test
     void reactionsOpenTheVeryMessageOrComment() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onReactionAdded(new ReactionAdded(ReactionAdded.MESSAGE, 1L, "Lou", 2L, "😂", 40L, null));
         JsonNode payload = sentPayload(phone);
@@ -181,7 +181,7 @@ class PushNotifierTest {
 
     @Test
     void commentReactionLinksToTheCommentInItsPost() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onReactionAdded(new ReactionAdded(ReactionAdded.COMMENT, 1L, "Lou", 2L, "❤️", 9L, 8L));
         JsonNode payload = sentPayload(phone);
@@ -191,7 +191,7 @@ class PushNotifierTest {
 
     @Test
     void listNotificationOpensThatList() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.LIST, 1L, "Lou", "Courses", 3L));
         assertThat(sentPayload(phone).get("url").asText()).isEqualTo("/profile/nous?list=3");
@@ -199,7 +199,7 @@ class PushNotifierTest {
 
     @Test
     void coupleChangesUseShortNeutralTexts() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.MOOD, 1L, "Lou", "😴", null));
         assertThat(sentPayload(phone).get("body").asText()).isEqualTo("Lou a changé d'humeur : 😴");
@@ -208,7 +208,7 @@ class PushNotifierTest {
     @Test
     void aNoteShowsItsTextAndOpensTheNousSpace() throws Exception {
         when(previews.note(5L)).thenReturn("Bonne journée mon chat");
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.NOTE, 1L, "Lou", null, 5L));
 
@@ -222,7 +222,7 @@ class PushNotifierTest {
     @Test
     void aMoodCarriesItsFewWords() throws Exception {
         when(previews.moodLabel(1L)).thenReturn("crevée");
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.MOOD, 1L, "Lou", "😴", null));
 
@@ -233,7 +233,7 @@ class PushNotifierTest {
 
     @Test
     void aNewDateTellsWhatAndWhenAndOpensIt() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onEventAdded(new com.memocat.couple.EventAdded(4L, 1L, "Lou", "Resto", "🍝",
                 java.time.LocalDate.of(2026, 10, 10), LocalTime.of(20, 30)));
@@ -246,7 +246,7 @@ class PushNotifierTest {
 
     @Test
     void thinkingOfYouReachesTheOtherPerson() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.THINKING, 1L, "Lou", null, null));
 
@@ -259,17 +259,17 @@ class PushNotifierTest {
     void listBurstNotifiesOnceThenAgainAfterAQuietWhile() {
         MutableClock clock = new MutableClock(Instant.parse("2026-09-23T10:00:00Z"));
         PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, receipts, json, clock);
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
         CoupleActivity added = new CoupleActivity(CoupleActivity.LIST, 1L, "Lou", "Courses", 3L);
 
         throttled.onCoupleActivity(added);
         clock.now = clock.now.plusSeconds(60);
         throttled.onCoupleActivity(added); // same burst: silent
-        verify(sender, times(1)).send(eq(phone), any(), eq(false));
+        verify(sender, times(1)).send(eq(phone), any(), eq(true));
 
         clock.now = clock.now.plus(PushNotifier.LIST_QUIET);
         throttled.onCoupleActivity(added);
-        verify(sender, times(2)).send(eq(phone), any(), eq(false));
+        verify(sender, times(2)).send(eq(phone), any(), eq(true));
     }
 
     @Test
@@ -282,7 +282,7 @@ class PushNotifierTest {
 
     @Test
     void aResetForBothAsksTheOtherOneAndTellsTheAnswer() throws Exception {
-        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.NOUS_RESET_ASK, 1L, "Lou", "💗 Tendres & souvenirs", null));
         assertThat(sentPayload(phone).get("body").asText())
@@ -337,6 +337,15 @@ class PushNotifierTest {
         notifier.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
 
         verify(receipts, never()).delivered(any(), any());
+    }
+
+    @Test
+    void whatTheOtherOneDoesWakesTheSleepingPhone() {
+        notifier.onFeedActivity(new FeedActivity(FeedActivity.COMMENT, 1L, "Lou", 8L, 2L, null));
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.NOTE, 1L, "Lou", null, 5L));
+
+        verify(sender, times(2)).send(eq(phone), any(), eq(true)); // "Urgency: high", never held back by Doze
+        verify(sender, never()).send(any(), any(), eq(false));
     }
 
     private static final class MutableClock extends Clock {

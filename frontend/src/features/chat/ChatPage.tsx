@@ -14,7 +14,7 @@ import { PetStage } from "../pet/PetStage";
 import { usePet } from "../pet/usePet";
 import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
-import { getHistory, reactToMessage } from "./api";
+import { editMessage, getHistory, reactToMessage } from "./api";
 import { ChatComposer } from "./ChatComposer";
 import { createChatClient, sendMessage, sendRead, sendTyping } from "./chatClient";
 import { effectSeen, markEffectSeen, SCREEN_EFFECTS, type MessageLook, type ScreenEffectId } from "./looks";
@@ -46,6 +46,7 @@ export function ChatPage() {
   const [viewing, setViewing] = useState<Asset | null>(null);
   const [emojis, setEmojis] = useState<string[]>([]);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const [editing, setEditing] = useState<Message | null>(null); // my message being rewritten
   const [playing, setPlaying] = useState<{ effect: ScreenEffectId; key: number } | null>(null);
   const [typing, setTyping] = useState<string | null>(null); // "Lou écrit…"
   const typingTimer = useRef<number | null>(null);
@@ -70,6 +71,30 @@ export function ChatPage() {
   useEffect(() => {
     getReactionEmojis().then(setEmojis).catch(() => {});
   }, []);
+
+  // A rewritten message keeps what this screen knows better (ticks that moved since).
+  const replaceMessage = useCallback((edited: Message) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === edited.id
+          ? { ...m, content: edited.content, editedAt: edited.editedAt, reactions: edited.reactions }
+          : m,
+      ),
+    );
+  }, []);
+
+  const saveEdit = useCallback(
+    (text: string) => {
+      const target = editing;
+      setEditing(null);
+      if (!target) return;
+      replaceMessage({ ...target, content: text, editedAt: new Date().toISOString() }); // at once, like sending
+      editMessage(target.id, text)
+        .then(replaceMessage)
+        .catch(() => replaceMessage(target)); // refused: back as it was
+    },
+    [editing, replaceMessage],
+  );
 
   const setReactions = useCallback((messageId: number, reactions: MessageReaction[]) => {
     setMessages((prev) => prev.map((m) => (m.id === messageId ? { ...m, reactions } : m)));
@@ -169,6 +194,7 @@ export function ChatPage() {
           prev.map((m) => (m.sender.id !== d.receiverId && m.id <= d.upToId && !m.deliveredAt ? { ...m, deliveredAt: d.deliveredAt } : m)),
         );
       },
+      (edited) => replaceMessage(edited), // rewritten (by the other one, or me on another device)
     );
     clientRef.current = client;
     return () => {
@@ -341,7 +367,22 @@ export function ChatPage() {
               <p className="text-text-muted">Aucun message. Dis coucou !</p>
             </div>
           ) : (
-            <MessageList messages={messages} myId={user?.id} emojis={emojis} onOpenImage={setViewing} onReact={react} onReply={setReplyTo} onReplay={play} />
+            <MessageList
+              messages={messages}
+              myId={user?.id}
+              emojis={emojis}
+              onOpenImage={setViewing}
+              onReact={react}
+              onReply={(m) => {
+                setEditing(null);
+                setReplyTo(m);
+              }}
+              onEdit={(m) => {
+                setReplyTo(null);
+                setEditing(m);
+              }}
+              onReplay={play}
+            />
           )}
           {typing && (
             <p className="mt-3 flex items-center gap-1.5 px-1 text-xs text-text-muted" aria-live="polite">
@@ -353,7 +394,11 @@ export function ChatPage() {
         </div>
       </div>
 
-      <ChatComposer connected={connected} onSend={send} replyTo={replyTo} myId={user?.id} onCancelReply={() => setReplyTo(null)} onTyping={onTyping} />
+      <ChatComposer connected={connected} onSend={send} replyTo={replyTo} myId={user?.id} onCancelReply={() => setReplyTo(null)} onTyping={onTyping}
+        editing={editing}
+        onSaveEdit={saveEdit}
+        onCancelEdit={() => setEditing(null)}
+      />
 
       {viewing && <ImageViewer asset={viewing} onClose={() => setViewing(null)} />}
       {playing && <ScreenEffect key={playing.key} effect={playing.effect} onDone={() => setPlaying(null)} />}

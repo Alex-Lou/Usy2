@@ -35,6 +35,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * the same on all their devices) and a push on their devices, skipped while
  * they are looking at the app. With something to show (the message, the
  * comment…), the push has the sentence as its title and the excerpt as its body.
+ * Everything the other one does is sent "high": a phone asleep (Android Doze)
+ * shows it at once instead of when it next wakes; only the date reminder of
+ * the evening before can wait.
  */
 @Component
 public class PushNotifier {
@@ -106,7 +109,7 @@ public class PushNotifier {
                 // A new comment or reaction must not replace an unread one about the same post.
                 String tag = comment ? "comment-" + a.commentId()
                         : FeedActivity.REACTION.equals(a.kind()) ? "post-" + a.postId() + "-reactions" : "post-" + a.postId();
-                notify(recipient, alert(body, excerpt, url, tag), false);
+                notify(recipient, alert(body, excerpt, url, tag), true);
             }
         }
     }
@@ -138,7 +141,7 @@ public class PushNotifier {
         Alert payload = alert(body, excerpt, url, r.target() + "-reaction-" + r.refId());
         for (User recipient : othersThan(r.actorId())) {
             if (recipient.getId().equals(r.ownerId())) {
-                notify(recipient, payload, false);
+                notify(recipient, payload, true);
             }
         }
     }
@@ -151,7 +154,7 @@ public class PushNotifier {
                 for (User recipient : othersThan(a.actorId())) {
                     // Opens that list in the "Nous" space.
                     notify(recipient, alert(a.actorName() + " a mis à jour la liste « " + a.detail() + " »",
-                            "/profile/nous?list=" + a.refId(), "list-" + a.refId()), false);
+                            "/profile/nous?list=" + a.refId(), "list-" + a.refId()), true);
                 }
             }
             return;
@@ -181,7 +184,7 @@ public class PushNotifier {
             return;
         }
         for (User recipient : othersThan(a.actorId())) {
-            notify(recipient, payload, false);
+            notify(recipient, payload, true);
         }
     }
 
@@ -214,7 +217,7 @@ public class PushNotifier {
         Alert payload = alert(e.actorName() + " a ajouté une date 📅", what,
                 "/dates?event=" + e.eventId(), "event-" + e.eventId());
         for (User recipient : othersThan(e.actorId())) {
-            notify(recipient, payload, false);
+            notify(recipient, payload, true);
         }
     }
 
