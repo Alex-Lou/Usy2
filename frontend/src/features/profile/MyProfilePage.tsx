@@ -7,7 +7,7 @@ import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { uploadImage } from "../../lib/api/assets";
 import { ApiError } from "../../lib/api/client";
-import type { Framing } from "../../lib/framing";
+import { filled, type Framing } from "../../lib/framing";
 import { useAuth } from "../auth/useAuth";
 import { getMyProfile, updateMyProfile } from "./api";
 import { emitMyThemeSaved } from "./AppFonts";
@@ -23,6 +23,9 @@ import { withFontChoice } from "./theme";
 import type { PartKey, PartStyle, Profile, Theme, Widget } from "./types";
 import { WIDGET_LABELS } from "./widgets/registry";
 import { cleanWidget, missingImage, WidgetListEditor } from "./widgets/WidgetEditor";
+
+// The profile banner on a phone (ProfileBody: full width × h-56), so the framing shows what the profile will.
+const COVER_ASPECT = 1.6;
 
 type Tab = "identite" | "widgets" | "disposition" | "apparence" | "moi";
 const TABS: { id: Tab; label: string; icon: string }[] = [
@@ -229,8 +232,8 @@ export function MyProfilePage() {
               </div>
               <div className="mt-4">
                 <span className="mb-1 block text-sm text-text-muted">Photo de couverture</span>
-                <div className="relative h-24 overflow-hidden rounded-token border border-border" style={{ backgroundImage: "var(--grad)" }}>
-                  {draft.coverAssetId && <AssetImage key={draft.coverAssetId} assetId={draft.coverAssetId} framing={draft.coverFraming} className="h-full w-full object-cover" />}
+                <div className="relative overflow-hidden rounded-token border border-border" style={{ backgroundImage: "var(--grad)", aspectRatio: String(COVER_ASPECT) }}>
+                  {draft.coverAssetId && <AssetImage key={draft.coverAssetId} assetId={draft.coverAssetId} framing={filled(draft.coverFraming)} className="h-full w-full object-cover" />}
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
                   <label className="chip cursor-pointer press hover:border-primary/50">
@@ -266,7 +269,8 @@ export function MyProfilePage() {
               {framing === "cover" && draft.coverAssetId && (
                 <FramingEditor
                   assetId={draft.coverAssetId}
-                  aspect={3.2} // the banner on a phone (it gets wider on a computer)
+                  aspect={COVER_ASPECT}
+                  minZoom={1} // the banner is always filled: no blurred edges
                   initial={draft.coverFraming}
                   title="Cadrer ta couverture"
                   onCancel={() => setFraming(null)}

@@ -16,6 +16,7 @@ export function FramingEditor({
   assetId,
   aspect,
   round = false,
+  minZoom = MIN_ZOOM,
   initial,
   title,
   onCancel,
@@ -25,6 +26,8 @@ export function FramingEditor({
   /** Frame width / height, like the place where the photo is shown. */
   aspect: number;
   round?: boolean;
+  /** 1: no zooming out (the photo always fills the frame). */
+  minZoom?: number;
   initial: Framing | null | undefined;
   title: string;
   onCancel: () => void;
@@ -32,7 +35,10 @@ export function FramingEditor({
 }) {
   const [src, setSrc] = useState<string | null>(null);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
-  const [f, setF] = useState<Framing>(initial ?? CENTRED);
+  const [f, setF] = useState<Framing>(() => {
+    const start = initial ?? CENTRED;
+    return { ...start, zoom: Math.max(minZoom, start.zoom) };
+  });
   const frameRef = useRef<HTMLDivElement>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ dist: number; zoom: number } | null>(null);
@@ -88,7 +94,7 @@ export function FramingEditor({
     } else if (pointers.current.size === 2 && pinch.current) {
       const [a, b] = [...pointers.current.values()];
       const start = pinch.current;
-      setF((cur) => ({ ...cur, zoom: clamp((start.zoom * Math.hypot(a.x - b.x, a.y - b.y)) / start.dist, MIN_ZOOM, MAX_ZOOM) }));
+      setF((cur) => ({ ...cur, zoom: clamp((start.zoom * Math.hypot(a.x - b.x, a.y - b.y)) / start.dist, minZoom, MAX_ZOOM) }));
     }
   }
 
@@ -108,7 +114,7 @@ export function FramingEditor({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        onWheel={(e) => setF((cur) => ({ ...cur, zoom: clamp(cur.zoom * (1 - e.deltaY * 0.001), MIN_ZOOM, MAX_ZOOM) }))}
+        onWheel={(e) => setF((cur) => ({ ...cur, zoom: clamp(cur.zoom * (1 - e.deltaY * 0.001), minZoom, MAX_ZOOM) }))}
         aria-label="Glisse pour déplacer la photo"
       >
         {src && needsBackdrop(f) && (
@@ -127,12 +133,14 @@ export function FramingEditor({
           <div className="h-full w-full animate-pulse bg-white/10" />
         )}
       </div>
-      <p className="text-center text-xs text-white/70">Glisse pour déplacer · pince ou utilise le curseur pour zoomer ou dézoomer</p>
+      <p className="text-center text-xs text-white/70">
+        Glisse pour déplacer · pince ou utilise le curseur pour {minZoom < 1 ? "zoomer ou dézoomer" : "zoomer"}
+      </p>
       <label className="flex w-full max-w-md items-center gap-3 text-white">
         <span className="text-sm">Zoom</span>
         <input
           type="range"
-          min={MIN_ZOOM}
+          min={minZoom}
           max={MAX_ZOOM}
           step={0.01}
           value={f.zoom}
