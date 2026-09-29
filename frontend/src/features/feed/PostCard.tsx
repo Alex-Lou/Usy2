@@ -149,7 +149,7 @@ export function PostCard({
           aria-label="Agrandir la photo (deux fois : ❤️)"
         >
           <EffectLayer effect={post.imageEffect} className="rounded-token">
-            <AssetImage assetId={post.imageAssetId} className="max-h-[28rem] w-full rounded-token border border-border object-cover" />
+            <AssetImage assetId={post.imageAssetId} ratio={4 / 3} className="max-h-[28rem] w-full rounded-token border border-border object-cover" />
           </EffectLayer>
           {burst > 0 && (
             <span key={burst} data-heart-burst="" className="mc-heart-burst pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">

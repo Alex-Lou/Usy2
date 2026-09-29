@@ -6,7 +6,19 @@ import { BACKDROP_STYLE, framingStyle, needsBackdrop, type Framing } from "../li
 // Loads a protected image (authenticated fetch -> object URL) only once it
 // comes near the screen, through the shared cache (see blobCache.ts).
 // `framing`: which part shows in the frame (the parent must clip: overflow-hidden).
-export function AssetImage({ assetId, className, framing }: { assetId: number; className?: string; framing?: Framing | null }) {
+// `ratio`: width / height kept by the placeholder while loading, where nothing else sizes it
+// (the photo's own shape is not known before it loads).
+export function AssetImage({
+  assetId,
+  className,
+  framing,
+  ratio,
+}: {
+  assetId: number;
+  className?: string;
+  framing?: Framing | null;
+  ratio?: number;
+}) {
   const [ref, inView] = useInView<HTMLDivElement>();
   const [src, setSrc] = useState<string | null>(null);
 
@@ -23,7 +35,7 @@ export function AssetImage({ assetId, className, framing }: { assetId: number; c
     };
   }, [assetId, inView, src]);
 
-  if (!src) return <div ref={ref} className={`animate-pulse bg-border ${className ?? ""}`} />;
+  if (!src) return <div ref={ref} className={`animate-pulse bg-border ${className ?? ""}`} style={ratio ? { aspectRatio: String(ratio) } : undefined} />;
   if (needsBackdrop(framing)) {
     // Zoomed out: the box takes the image's place, a blurred copy fills the edges.
     return (
