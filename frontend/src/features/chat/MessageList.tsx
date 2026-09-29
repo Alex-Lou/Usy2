@@ -69,6 +69,7 @@ export function MessageList({
 }) {
   const [menu, setMenu] = useState<{ message: Message; anchor: DOMRect } | null>(null);
   const myReaction = (m: Message) => m.reactions.find((r) => r.userId === myId)?.emoji ?? null;
+  const lastMineId = [...messages].reverse().find((m) => m.sender.id === myId)?.id; // where "Vu" can show
 
   return (
     <div className="flex flex-col">
@@ -144,7 +145,12 @@ export function MessageList({
                   }}
                 />
                 {hasText && !m.attachment && firstUrl(m.content) && <LinkPreview url={firstUrl(m.content)!} className="w-72 max-w-full" />}
-                {lastOfRun && <span className="px-1 text-[10px] text-text-muted">{time(m.createdAt)}</span>}
+                {(lastOfRun || (m.id === lastMineId && m.readAt)) && (
+                  <span className="px-1 text-[10px] text-text-muted">
+                    {lastOfRun && time(m.createdAt)}
+                    {m.id === lastMineId && m.readAt && <>{lastOfRun && " · "}Vu</>}
+                  </span>
+                )}
               </div>
             </div>
           </Fragment>

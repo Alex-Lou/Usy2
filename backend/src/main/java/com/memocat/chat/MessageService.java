@@ -1,5 +1,6 @@
 package com.memocat.chat;
 
+import com.memocat.chat.dto.ChatReadDto;
 import com.memocat.chat.dto.MessageDto;
 import com.memocat.chat.dto.MessageReactionDto;
 import com.memocat.domain.Asset;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -74,6 +76,23 @@ public class MessageService {
                 new Message(sender, validateContent(content, attachment != null), attachment, replyTo, bubble, screen));
         events.publishEvent(new ChatMessageSent(sender.getId(), sender.getDisplayName(), message.getId()));
         return MessageDto.from(message);
+    }
+
+    /**
+     * {@code username} has the conversation on screen up to {@code upToId}: the
+     * other one's messages until then are seen. Null when nothing new was seen
+     * (nothing to tell), else what to broadcast.
+     */
+    @Transactional
+    public ChatReadDto markRead(String username, Long upToId) {
+        if (upToId == null) {
+            return null;
+        }
+        User reader = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Instant now = Instant.now();
+        return messageRepository.markReadUpTo(reader.getId(), upToId, now) > 0
+                ? new ChatReadDto(reader.getId(), upToId, now) : null;
     }
 
     @Transactional(readOnly = true)

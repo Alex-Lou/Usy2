@@ -191,4 +191,29 @@ class MessageServiceTest {
                 .isInstanceOf(ContentValidationException.class);
         verify(messageRepository, never()).save(any());
     }
+
+    @Test
+    void seeingTheConversationMarksTheOtherOnesMessagesRead() {
+        User sam = new User("sam", "h", "Sam");
+        org.springframework.test.util.ReflectionTestUtils.setField(sam, "id", 2L);
+        when(userRepository.findByUsername("sam")).thenReturn(Optional.of(sam));
+        when(messageRepository.markReadUpTo(org.mockito.ArgumentMatchers.eq(2L), org.mockito.ArgumentMatchers.eq(40L), any()))
+                .thenReturn(3);
+
+        var read = messageService.markRead("sam", 40L);
+
+        assertThat(read.readerId()).isEqualTo(2L);
+        assertThat(read.upToId()).isEqualTo(40L);
+        assertThat(read.readAt()).isNotNull();
+    }
+
+    @Test
+    void nothingNewSeenTellsNothing() {
+        User sam = new User("sam", "h", "Sam");
+        when(userRepository.findByUsername("sam")).thenReturn(Optional.of(sam));
+        when(messageRepository.markReadUpTo(any(), any(), any())).thenReturn(0);
+
+        assertThat(messageService.markRead("sam", 40L)).isNull();
+        assertThat(messageService.markRead("sam", null)).isNull();
+    }
 }

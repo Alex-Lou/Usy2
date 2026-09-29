@@ -15,8 +15,8 @@ import java.time.Instant;
 
 /**
  * A chat message in the single conversation between the two users. The recipient
- * is implicit (the other user). {@code readAt} is reserved for a future read
- * receipt feature and is unused in V1.
+ * is implicit (the other user). {@code readAt}: when the other one saw it on
+ * screen (the "Vu" under the last message), null until then.
  */
 @Entity
 @Table(name = "message")

@@ -11,6 +11,20 @@ export interface Message {
   replyTo: ReplyPreview | null; // the earlier message this one answers
   style?: string | null; // bubble style: "shout" | "whisper" | "shake" (see looks.ts)
   effect?: string | null; // full-screen effect played for both (see looks.ts)
+  readAt?: string | null; // when the other one saw it (the "Vu"), null until then
+}
+
+/** Broadcast on /topic/chat-read: readerId has seen the other one's messages up to upToId. */
+export interface ChatRead {
+  readerId: number;
+  upToId: number;
+  readAt: string;
+}
+
+/** Broadcast on /topic/chat-typing while someone types (never stored). */
+export interface Typing {
+  userId: number;
+  name: string;
 }
 
 /** The quoted message shown above a reply. */

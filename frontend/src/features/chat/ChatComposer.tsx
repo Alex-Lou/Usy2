@@ -35,6 +35,7 @@ export function ChatComposer({
   replyTo = null,
   myId,
   onCancelReply,
+  onTyping,
 }: {
   connected: boolean;
   onSend: (text: string, attachment: Asset | null, look?: MessageLook) => void;
@@ -42,6 +43,8 @@ export function ChatComposer({
   replyTo?: Message | null;
   myId?: number;
   onCancelReply?: () => void;
+  /** Called while typing (the page decides how often to tell the other one). */
+  onTyping?: () => void;
 }) {
   const { text, setText, ref, insert, rememberCaret } = useRichInput<HTMLTextAreaElement>();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -279,7 +282,10 @@ export function ChatComposer({
           ref={ref}
           rows={1}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value);
+            if (e.target.value.trim()) onTyping?.();
+          }}
           onKeyDown={onKeyDown}
           onBlur={rememberCaret}
           onPaste={(e) => {
