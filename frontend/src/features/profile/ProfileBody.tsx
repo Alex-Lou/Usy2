@@ -85,13 +85,14 @@ export function ProfileBody({
         <section className="mb-6">
           <h2 className="mb-4 text-xl font-bold text-primary">Épinglés</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {pinnedWidgets.map((widget, index) => (
-              <WidgetRenderer
-                key={`pinned-${index}`}
-                widget={widget}
-                ownerId={profile.userId}
-              />
-            ))}
+            {pinnedWidgets.map((widget, index) => {
+              const dressed = skin(widgetStyle(parts, widget));
+              return (
+                <div key={`pinned-${index}`} className={dressed.className} style={dressed.style}>
+                  <WidgetRenderer widget={widget} ownerId={profile.userId} />
+                </div>
+              );
+            })}
           </div>
         </section>
       )}
