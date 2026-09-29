@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Icon, type IconName } from "../../components/ui/Icon";
 
 export interface Moment {
@@ -18,47 +17,21 @@ export const MOMENTS: Moment[] = [
   { key: "gratitude", label: "Gratitude", icon: "gift", text: "Aujourd'hui je suis reconnaissant·e pour " },
 ];
 
-/**
- * A collapsed "idée ?" button that expands into a grid of pre-made prompts.
- * Replaces the old always-visible carousel: cleaner, out of the way until
- * wanted. Picking a moment collapses the panel again.
- */
-export function MomentsBar({ onPick }: { onPick: (m: Moment) => void }) {
-  const [open, setOpen] = useState(false);
-
+/** The pre-made prompts, shown inside the composer ("✨"). */
+export function MomentsGrid({ onPick }: { onPick: (m: Moment) => void }) {
   return (
-    <div className="animate-fade-up">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        className="flex w-full items-center gap-2 rounded-token border border-border bg-surface px-4 py-2.5 font-semibold shadow-card transition press hover:border-primary/50"
-      >
-        <span className="grid h-8 w-8 place-items-center rounded-full btn-brand">
-          <Icon name="sparkles" size={16} />
-        </span>
-        Une idée pour un post ?
-        <Icon name="chevronDown" size={18} className={"ml-auto transition-transform " + (open ? "rotate-180" : "")} />
-      </button>
-
-      {open && (
-        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 animate-pop">
-          {MOMENTS.map((m) => (
-            <button
-              key={m.key}
-              onClick={() => {
-                onPick(m);
-                setOpen(false);
-              }}
-              className="group flex items-center gap-2 rounded-token border border-border bg-surface p-3 text-left text-sm font-semibold transition press hover:border-primary/50"
-            >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full btn-brand transition group-hover:scale-105">
-                <Icon name={m.icon} size={18} />
-              </span>
-              <span className="leading-tight">{m.label}</span>
-            </button>
-          ))}
-        </div>
-      )}
+    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 animate-pop">
+      {MOMENTS.map((m) => (
+        <button
+          key={m.key}
+          type="button"
+          onClick={() => onPick(m)}
+          className="flex items-center gap-2 rounded-token border border-border bg-bg-2/40 p-2.5 text-left text-sm font-semibold transition press hover:border-primary/50"
+        >
+          <Icon name={m.icon} size={16} className="shrink-0 text-primary" />
+          <span className="leading-tight">{m.label}</span>
+        </button>
+      ))}
     </div>
   );
 }

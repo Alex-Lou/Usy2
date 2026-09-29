@@ -80,7 +80,7 @@ export function ReadingMenu({
                   style={{ fontFamily: FONTS[key].stack ?? undefined }}
                 >
                   {key === "app" && commonFont ? `Par défaut (commun : ${FONTS[commonFont].label})` : FONTS[key].label}{" "}
-                  <span className="text-text-muted">· Coucou mon cœur</span>
+                  <span className="text-text-muted">· Coucou, ça va ?</span>
                 </button>
               ))}
             </div>

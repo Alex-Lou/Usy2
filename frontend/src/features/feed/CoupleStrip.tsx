@@ -10,7 +10,7 @@ import { MoodChips } from "../couple/MoodChips";
 import { NoteComposer } from "../couple/NoteComposer";
 import { ThinkingButton } from "../couple/ThinkingButton";
 import { TogetherSince } from "../couple/TogetherSince";
-import { ago } from "../couple/time";
+import { ago, daysSince } from "../couple/time";
 import { useCouple } from "../couple/useCouple";
 import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
@@ -41,8 +41,9 @@ function countdownsFrom(profiles: Profile[]): Countdown[] {
 }
 
 // Folded or not is a per-device comfort choice; storage may be unavailable.
-// Folded by default, so the feed shows first.
-const FOLD_KEY = "memocat.coupleStrip.folded";
+// Folded by default, so the feed shows first ("v2": the choice kept from before the
+// default changed would otherwise keep it open).
+const FOLD_KEY = "memocat.coupleStrip.folded.v2";
 function readFolded(): boolean {
   try {
     return localStorage.getItem(FOLD_KEY) !== "0";
@@ -95,7 +96,10 @@ export function CoupleStrip() {
   return (
     <section className={"card flex flex-col gap-3 animate-fade-up " + (folded ? "px-4 py-2.5" : "p-4")}>
       <div className="flex items-center justify-between gap-2">
-        {couple.togetherSince ? (
+        {couple.togetherSince && folded ? (
+          // Folded: one short line.
+          <span className="min-w-0 truncate font-display font-bold text-text">💞 {daysSince(couple.togetherSince).toLocaleString("fr-FR")} jours</span>
+        ) : couple.togetherSince ? (
           <TogetherSince value={couple.togetherSince} />
         ) : (
           <span className="font-display text-lg font-bold text-text">Nous</span>
