@@ -145,14 +145,25 @@ export function ChatPage() {
       (r) => setReactions(r.messageId, r.reactions),
       (r) => {
         if (r.readerId === myIdRef.current) return; // my own reading
-        // They saw my messages up to there: the "Vu" moves.
-        setMessages((prev) => prev.map((m) => (m.sender.id !== r.readerId && m.id <= r.upToId && !m.readAt ? { ...m, readAt: r.readAt } : m)));
+        // They saw my messages up to there (so received them too): the ticks turn to colour.
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.sender.id !== r.readerId && m.id <= r.upToId && !m.readAt ? { ...m, readAt: r.readAt, deliveredAt: m.deliveredAt ?? r.readAt } : m,
+          ),
+        );
       },
       (t) => {
         if (t.userId === myIdRef.current) return;
         setTyping(t.name);
         if (typingTimer.current !== null) window.clearTimeout(typingTimer.current);
         typingTimer.current = window.setTimeout(stopTyping, 5000); // no news for 5 s: stopped typing
+      },
+      (d) => {
+        if (d.receiverId === myIdRef.current) return; // messages that reached me
+        // My messages up to there reached them: ✓ becomes ✓✓.
+        setMessages((prev) =>
+          prev.map((m) => (m.sender.id !== d.receiverId && m.id <= d.upToId && !m.deliveredAt ? { ...m, deliveredAt: d.deliveredAt } : m)),
+        );
       },
     );
     clientRef.current = client;
@@ -162,7 +173,7 @@ export function ChatPage() {
     };
   }, []);
 
-  // On screen, the other one's newest message counts as seen: tell them ("Vu").
+  // On screen, the other one's newest message counts as seen: tell them (their ticks turn to colour).
   const lastReadSent = useRef(0);
   useEffect(() => {
     const tell = () => {

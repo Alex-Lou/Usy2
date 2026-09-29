@@ -12,11 +12,11 @@ import java.util.List;
  * {@code reactions} lists each person's emoji on it (oldest first),
  * {@code replyTo} quotes the message it answers (null when it answers none),
  * {@code style} / {@code effect}: how it was sent (null: plainly),
- * {@code readAt}: when the other one saw it (null: not yet).
+ * {@code deliveredAt} / {@code readAt}: when it reached / was seen by the other one (null: not yet).
  */
 public record MessageDto(Long id, UserDto sender, String content, AssetDto attachment, Instant createdAt,
                          List<MessageReactionDto> reactions, ReplyPreviewDto replyTo, String style, String effect,
-                         Instant readAt) {
+                         Instant deliveredAt, Instant readAt) {
 
     public static MessageDto from(Message message) {
         return from(message, List.of());
@@ -33,6 +33,7 @@ public record MessageDto(Long id, UserDto sender, String content, AssetDto attac
                 message.getReplyTo() == null ? null : ReplyPreviewDto.from(message.getReplyTo()),
                 message.getStyle(),
                 message.getEffect(),
+                message.getDeliveredAt(),
                 message.getReadAt());
     }
 }

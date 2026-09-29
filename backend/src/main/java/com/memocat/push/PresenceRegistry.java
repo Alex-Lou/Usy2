@@ -21,8 +21,14 @@ public class PresenceRegistry {
 
     private final Map<String, Session> sessions = new ConcurrentHashMap<>();
 
-    public void report(String sessionId, String username, boolean visible) {
-        sessions.put(sessionId, new Session(username, visible));
+    /** @return true on the first report of that connection (the app just connected). */
+    public boolean report(String sessionId, String username, boolean visible) {
+        return sessions.put(sessionId, new Session(username, visible)) == null;
+    }
+
+    /** The app is open somewhere (connected), looked at or not. */
+    public boolean isConnected(String username) {
+        return sessions.values().stream().anyMatch(s -> s.username().equals(username));
     }
 
     public boolean isLookingAtApp(String username) {
