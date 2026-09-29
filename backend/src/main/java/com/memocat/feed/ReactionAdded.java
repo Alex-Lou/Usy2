@@ -2,8 +2,7 @@ package com.memocat.feed;
 
 /**
  * Someone put (or changed) an emoji on the other person's chat message or
- * comment. Tells the owner: live on /topic/reactions (the in-app bell, see
- * ReactionAddedBroadcaster) and as a push notification (PushNotifier).
+ * comment. Tells the owner, in their bell and as a push notification (PushNotifier).
  * Removing a reaction or reacting to one's own content publishes nothing.
  * {@code refId} is the message or comment id; {@code postId} is set for a comment.
  */

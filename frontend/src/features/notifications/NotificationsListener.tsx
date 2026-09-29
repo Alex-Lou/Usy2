@@ -11,9 +11,14 @@ import { createNotifClient, markActive, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
 import { showSystemNotification } from "./systemNotify";
 
-/** The page it points to is the one on screen (e.g. a message while reading the chat). */
-function alreadyThere(url: string): boolean {
-  return document.visibilityState === "visible" && new URL(url, window.location.origin).pathname === window.location.pathname;
+/**
+ * Already seen: the page it points to is the one on screen (a message while
+ * reading the chat), or it is a new post while on the feed (shown there live).
+ */
+function alreadyThere(n: NotificationEntry): boolean {
+  if (document.visibilityState !== "visible") return false;
+  const here = window.location.pathname;
+  return new URL(n.url, window.location.origin).pathname === here || (here === "/" && /^post-\d+$/.test(n.tag));
 }
 
 /**
@@ -43,7 +48,7 @@ export function NotificationsListener() {
   useEffect(() => {
     const onNotification = (n: NotificationEntry) => {
       if (n.recipientId !== myId) return; // the other person's bell
-      if (alreadyThere(n.url)) {
+      if (alreadyThere(n)) {
         void markRead(n.id); // seen on the page itself
         return;
       }
