@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCompanion } from "../../app/companion";
 import { Animal } from "../../components/ui/animals";
-import { Icon } from "../../components/ui/Icon";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 interface GameCard {
   to: string;
@@ -75,13 +75,9 @@ export function GamesHub() {
 
   return (
     <div className="mx-auto max-w-2xl lg:max-w-content">
-      <header className="mb-5 flex items-center gap-3 animate-fade-up">
-        <Animal species={companion} size={52} />
-        <div>
-          <h1 className="font-display text-2xl font-bold">Jeux</h1>
-          <p className="text-sm text-text-muted">On joue ensemble ? 💕</p>
-        </div>
-      </header>
+      <div className="mb-4">
+        <PageHeader title="Jeux" subtitle="On joue ensemble ? 💕" leading={<Animal species={companion} size={44} />} />
+      </div>
 
       <Link
         to="/jeux/nous"
@@ -96,25 +92,14 @@ export function GamesHub() {
         <span className="rounded-full bg-white/25 px-3 py-1.5 text-sm font-semibold">Jouer →</span>
       </Link>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {GAMES.map((g, i) => (
-          <Link
-            key={g.to}
-            to={g.to}
-            className="card group flex flex-col gap-2 p-5 press animate-fade-up transition hover:border-primary/60"
-            style={{ animationDelay: `${i * 60}ms` }}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-4xl transition group-hover:scale-110">{g.emoji}</span>
-              <span className="rounded-full border border-border bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
-                {g.mode}
-              </span>
-            </div>
-            <h2 className="font-display text-lg font-bold">{g.title}</h2>
-            <p className="text-sm text-text-muted">{g.tagline}</p>
-            <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
-              <Icon name="gamepad" size={16} /> Jouer
-            </span>
+      {/* Tiles, two per row even on a phone: the whole tile opens the game. */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        {GAMES.map((g) => (
+          <Link key={g.to} to={g.to} className="card group flex flex-col gap-1.5 p-4 press transition hover:border-primary/60">
+            <span className="text-3xl transition group-hover:scale-110" aria-hidden="true">{g.emoji}</span>
+            <h2 className="font-display text-base font-bold leading-tight">{g.title}</h2>
+            <p className="line-clamp-2 text-xs text-text-muted">{g.tagline}</p>
+            <span className="mt-auto pt-1 text-[11px] font-medium text-text-muted">{g.mode}</span>
           </Link>
         ))}
       </div>

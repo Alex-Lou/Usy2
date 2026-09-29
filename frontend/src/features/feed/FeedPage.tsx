@@ -126,7 +126,7 @@ export function FeedPage() {
                 role="tab"
                 aria-selected={tab === t}
                 onClick={() => setTab(t)}
-                className={"rounded-full px-3 py-1 text-sm font-semibold transition press " + (tab === t ? "btn-brand" : "text-text-muted hover:text-text")}
+                className={"rounded-full px-3 py-1 text-sm font-semibold transition press " + (tab === t ? "seg-on" : "text-text-muted hover:text-text")}
               >
                 {t === "nous" ? "💞 Nous" : "📰 Actus"}
               </button>

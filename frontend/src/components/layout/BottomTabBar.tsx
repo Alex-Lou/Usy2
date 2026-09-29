@@ -28,7 +28,7 @@ export function BottomTabBar() {
                 <span
                   className={
                     "grid h-9 w-9 place-items-center rounded-token-sm transition " +
-                    (isActive ? "btn-brand" : "")
+                    (isActive ? "seg-on" : "")
                   }
                 >
                   <Icon name={it.icon} size={21} />

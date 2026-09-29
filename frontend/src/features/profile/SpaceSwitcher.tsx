@@ -23,7 +23,7 @@ export function SpaceSwitcher() {
             end
             className={({ isActive }) =>
               "flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition press " +
-              (isActive ? "btn-brand" : "text-text-muted hover:text-text")
+              (isActive ? "seg-on" : "text-text-muted hover:text-text")
             }
           >
             <span className="mc-emoji" aria-hidden="true">{s.icon}</span>
