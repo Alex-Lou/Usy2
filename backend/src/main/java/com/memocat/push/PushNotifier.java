@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.chat.ChatMessageSent;
 import com.memocat.couple.CoupleActivity;
+import com.memocat.couple.EventAdded;
 import com.memocat.couple.EventReminder;
 import com.memocat.domain.PushSubscription;
 import com.memocat.domain.User;
@@ -21,6 +22,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Turns the other person's activity into push notifications on their devices,
  * once the change is committed, off the request thread. Skips anyone currently
  * looking at the app (the in-app bell already shows it). Texts match the
- * in-app bell (NotificationsListener).
+ * in-app bell (NotificationsListener). With something to show (the message,
+ * the comment…), the sentence becomes the title and the excerpt the body.
  */
 @Component
 public class PushNotifier {
@@ -36,27 +40,31 @@ public class PushNotifier {
     static final String TITLE = "MemoCat";
     /** Adding several items in a row notifies once, not once per item. */
     static final Duration LIST_QUIET = Duration.ofMinutes(10);
+    /** "sam. 12 oct." */
+    private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("EEE d MMM", Locale.FRENCH);
 
     private final PushSubscriptionRepository subscriptions;
     private final UserRepository users;
     private final PresenceRegistry presence;
     private final WebPushSender sender;
+    private final Previews previews;
     private final ObjectMapper json;
     private final Clock clock;
     private final Map<Long, Instant> lastListPush = new ConcurrentHashMap<>();
 
     @Autowired
     public PushNotifier(PushSubscriptionRepository subscriptions, UserRepository users, PresenceRegistry presence,
-                        WebPushSender sender, ObjectMapper json) {
-        this(subscriptions, users, presence, sender, json, Clock.systemUTC());
+                        WebPushSender sender, Previews previews, ObjectMapper json) {
+        this(subscriptions, users, presence, sender, previews, json, Clock.systemUTC());
     }
 
     PushNotifier(PushSubscriptionRepository subscriptions, UserRepository users, PresenceRegistry presence,
-                 WebPushSender sender, ObjectMapper json, Clock clock) {
+                 WebPushSender sender, Previews previews, ObjectMapper json, Clock clock) {
         this.subscriptions = subscriptions;
         this.users = users;
         this.presence = presence;
         this.sender = sender;
+        this.previews = previews;
         this.json = json;
         this.clock = clock;
     }
@@ -64,6 +72,8 @@ public class PushNotifier {
     @Async(PushConfig.EXECUTOR)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onFeedActivity(FeedActivity a) {
+        String excerpt = null;
+        boolean read = false; // read once, only if someone gets notified
         for (User recipient : othersThan(a.actorId())) {
             boolean theirPost = recipient.getId().equals(a.postAuthorId());
             boolean tagged = a.mentionedIds() != null && a.mentionedIds().contains(recipient.getId());
@@ -77,10 +87,15 @@ public class PushNotifier {
                 default -> null;
             };
             if (body != null) {
+                boolean comment = FeedActivity.COMMENT.equals(a.kind());
+                if (!read) {
+                    excerpt = comment ? previews.comment(a.commentId()) : previews.post(a.postId());
+                    read = true;
+                }
                 // Opens that very post (with its comments, on that very comment, for a comment).
-                String url = "/posts/" + a.postId() + (FeedActivity.COMMENT.equals(a.kind())
+                String url = "/posts/" + a.postId() + (comment
                         ? "?comments=1" + (a.commentId() == null ? "" : "&comment=" + a.commentId()) : "");
-                notify(recipient, new PushPayload(TITLE, body, url, "post-" + a.postId()), false);
+                notify(recipient, payload(body, excerpt, url, "post-" + a.postId()), false);
             }
         }
     }
@@ -88,8 +103,13 @@ public class PushNotifier {
     @Async(PushConfig.EXECUTOR)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onChatMessage(ChatMessageSent event) {
+        // Like any messaging app: who, then what they wrote.
+        String excerpt = previews.message(event.messageId());
+        PushPayload payload = excerpt == null
+                ? new PushPayload(TITLE, event.senderName() + " t'a envoyé un message 💬", "/chat", "chat")
+                : new PushPayload(event.senderName() + " 💬", excerpt, "/chat?m=" + event.messageId(), "chat");
         for (User recipient : othersThan(event.senderId())) {
-            notify(recipient, new PushPayload(TITLE, event.senderName() + " t'a envoyé un message 💬", "/chat", "chat"), true);
+            notify(recipient, payload, true);
         }
     }
 
@@ -100,7 +120,8 @@ public class PushNotifier {
         boolean message = ReactionAdded.MESSAGE.equals(r.target());
         String body = r.actorName() + " a réagi " + r.emoji() + (message ? " à ton message" : " à ton commentaire");
         String url = message ? "/chat?m=" + r.refId() : "/posts/" + r.postId() + "?comments=1&comment=" + r.refId();
-        PushPayload payload = new PushPayload(TITLE, body, url, r.target() + "-reaction-" + r.refId());
+        String excerpt = message ? previews.message(r.refId()) : previews.comment(r.refId());
+        PushPayload payload = payload(body, excerpt, url, r.target() + "-reaction-" + r.refId());
         for (User recipient : othersThan(r.actorId())) {
             if (recipient.getId().equals(r.ownerId())) {
                 notify(recipient, payload, false);
@@ -114,17 +135,19 @@ public class PushNotifier {
         if (CoupleActivity.LIST.equals(a.kind())) {
             if (firstInAWhile(a.refId())) {
                 for (User recipient : othersThan(a.actorId())) {
-                    // Opens that list, in the "Nous" tab of the recipient's own profile.
+                    // Opens that list in the "Nous" space.
                     notify(recipient, new PushPayload(TITLE, a.actorName() + " a mis à jour la liste « " + a.detail() + " »",
-                            "/profile/" + recipient.getId() + "?tab=nous&list=" + a.refId(), "list-" + a.refId()), false);
+                            "/profile/nous?list=" + a.refId(), "list-" + a.refId()), false);
                 }
             }
             return;
         }
         PushPayload payload = switch (a.kind()) {
-            case CoupleActivity.MOOD -> new PushPayload(TITLE, a.actorName() + " a changé d'humeur : " + a.detail(), "/", "mood");
-            case CoupleActivity.NOTE -> new PushPayload(TITLE, a.actorName() + " t'a laissé un mot", "/", "note");
-            case CoupleActivity.THINKING -> new PushPayload(TITLE, a.actorName() + " pense à toi 💭", "/", "thinking");
+            // The "Nous" space shows both moods and the notes; "je pense à toi" opens the chat, to answer.
+            case CoupleActivity.MOOD -> payload(a.actorName() + " a changé d'humeur : " + a.detail(),
+                    previews.moodLabel(a.actorId()), "/profile/nous", "mood");
+            case CoupleActivity.NOTE -> payload(a.actorName() + " t'a laissé un mot 💌", previews.note(a.refId()), "/profile/nous", "note");
+            case CoupleActivity.THINKING -> new PushPayload(TITLE, a.actorName() + " pense à toi 💭", "/chat", "thinking");
             case CoupleActivity.QUIZ_CHALLENGE -> new PushPayload(TITLE, a.actorName() + " te lance un défi quiz 🎯 " + a.detail(),
                     "/jeux/quiz", "quiz-" + a.refId());
             case CoupleActivity.QUIZ_DONE -> new PushPayload(TITLE, a.actorName() + " a relevé ton défi quiz 🏁 Qui a gagné ?",
@@ -161,10 +184,31 @@ public class PushNotifier {
     public void onEventReminder(EventReminder r) {
         String body = "Demain : " + (r.emoji() == null ? "" : r.emoji() + " ") + r.title()
                 + (r.time() == null ? "" : " à " + String.format("%02dh%02d", r.time().getHour(), r.time().getMinute()));
-        PushPayload payload = new PushPayload(TITLE, body, "/dates", "event-" + r.eventId());
+        PushPayload payload = new PushPayload(TITLE, body, "/dates?event=" + r.eventId(), "event-" + r.eventId());
         for (User recipient : users.findAll()) {
             send(recipient, payload, false);
         }
+    }
+
+    /** A new date on the shared calendar: the other person hears what and when. */
+    @Async(PushConfig.EXECUTOR)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onEventAdded(EventAdded e) {
+        String when = e.day().format(DAY) + (e.time() == null ? ""
+                : " à " + String.format("%02dh%02d", e.time().getHour(), e.time().getMinute()));
+        String what = (e.emoji() == null ? "" : e.emoji() + " ") + e.title() + " · " + when;
+        PushPayload payload = new PushPayload(e.actorName() + " a ajouté une date 📅", what,
+                "/dates?event=" + e.eventId(), "event-" + e.eventId());
+        for (User recipient : othersThan(e.actorId())) {
+            notify(recipient, payload, false);
+        }
+    }
+
+    /** The sentence alone, or as the title over the excerpt when there is one. */
+    private static PushPayload payload(String sentence, String excerpt, String url, String tag) {
+        return excerpt == null
+                ? new PushPayload(TITLE, sentence, url, tag)
+                : new PushPayload(sentence, excerpt, url, tag);
     }
 
     private boolean firstInAWhile(Long listId) {

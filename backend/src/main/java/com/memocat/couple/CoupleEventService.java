@@ -57,7 +57,10 @@ public class CoupleEventService {
         }
         CoupleEvent event = new CoupleEvent(me);
         apply(event, request);
-        return changed(me, events.save(event));
+        CoupleEvent saved = events.save(event);
+        publisher.publishEvent(new EventAdded(saved.getId(), me.getId(), me.getDisplayName(), saved.getTitle(),
+                saved.getEmoji(), saved.getDay(), saved.getTime()));
+        return changed(me, saved);
     }
 
     @Transactional
