@@ -26,18 +26,24 @@ export function MoodPicker({
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  async function save(nextEmoji: string) {
+  async function save(nextEmoji: string, nextLabel = label) {
     setEmoji(nextEmoji);
     setSaving(true);
     setError(null);
     try {
-      onSaved(await setMood(nextEmoji, label.trim() || null));
+      onSaved(await setMood(nextEmoji, nextLabel.trim() || null));
       onClose();
     } catch {
       setError("Impossible d'enregistrer l'humeur.");
     } finally {
       setSaving(false);
     }
+  }
+
+  // Empties the little word; with a mood already set, it is saved without it.
+  function clearLabel() {
+    setLabel("");
+    if (emoji) void save(emoji, "");
   }
 
   return (
@@ -67,6 +73,26 @@ export function MoodPicker({
           onChange={(e) => setLabel(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && emoji && void save(emoji)}
         />
+        <button
+          type="button"
+          disabled={!emoji || saving}
+          onClick={() => void save(emoji)}
+          aria-label="Enregistrer le petit mot"
+          title={emoji ? "Enregistrer" : "Choisis d'abord un emoji"}
+          className="grid w-10 shrink-0 place-items-center rounded-token text-xl font-bold text-[var(--color-success)] press hover:bg-surface-2 disabled:opacity-40"
+        >
+          ✓
+        </button>
+        <button
+          type="button"
+          disabled={!label || saving}
+          onClick={clearLabel}
+          aria-label="Effacer le petit mot"
+          title="Effacer"
+          className="grid w-10 shrink-0 place-items-center rounded-token text-xl font-bold text-danger press hover:bg-surface-2 disabled:opacity-40"
+        >
+          ✗
+        </button>
         <Button variant="surface" type="button" onClick={onClose} className="!px-3">
           Fermer
         </Button>
