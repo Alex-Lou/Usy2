@@ -30,6 +30,7 @@ export type IconName =
   | "menu"
   | "chevronDown"
   | "smile"
+  | "refresh"
   | "paperclip"
   | "file"
   | "download"
@@ -168,6 +169,12 @@ const PATHS: Record<IconName, JSX.Element> = {
     <>
       <path d="M8 4h8v5a4 4 0 0 1-8 0z" />
       <path d="M8 6H5a2 2 0 0 0 0 4h1M16 6h3a2 2 0 0 1 0 4h-1M10 14h4M9 20h6M12 14v6" />
+    </>
+  ),
+  refresh: (
+    <>
+      <path d="M20 11a8 8 0 1 0-2.3 5.7" />
+      <path d="M20 4v7h-7" />
     </>
   ),
   bell: (
