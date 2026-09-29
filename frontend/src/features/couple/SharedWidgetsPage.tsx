@@ -13,6 +13,7 @@ import { getSharedWidgets, saveSharedWidgets } from "./api";
 import { copiesOfLinked } from "./linked";
 import { arrange, linkedKey, saveSidebarPrefs, sidebarItems, useMySidebarPrefs, type SidebarItem } from "./sidebar";
 import type { SharedWidgets } from "./types";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 /**
  * "Ma barre latérale": everything the side menu shows, and my say on it.
@@ -163,10 +164,7 @@ export function SharedWidgetsPage() {
     <SpaceSwitcher />
     <div className="grid gap-6 lg:grid-cols-[1fr_16rem]">
       <div className="flex flex-col gap-4">
-        <div>
-          <h1 className="font-display text-2xl font-bold">Ma barre latérale</h1>
-          <p className="text-sm text-text-muted">Tout ce qui s'y affiche, et comment. L'ordre, les widgets masqués et l'affichage ne changent que chez toi.</p>
-        </div>
+        <PageHeader title="Ma barre latérale" subtitle="Tout ce qui s'y affiche, et comment. L'ordre, les widgets masqués et l'affichage ne changent que chez toi." />
 
         {changedBy && (
           <div role="status" className="flex flex-wrap items-center gap-2 rounded-token border border-primary/40 bg-primary/10 p-3 text-sm">

@@ -69,7 +69,7 @@ export function VoiceNote({ asset, mine }: { asset: Asset; mine: boolean }) {
       ref={ref}
       className={
         "flex w-60 max-w-full items-center gap-3 rounded-token px-3 py-2.5 " +
-        (mine ? "btn-brand" : "border border-border bg-surface-2")
+        (mine ? "bg-primary text-primary-foreground" : "border border-border bg-surface-2")
       }
     >
       <button

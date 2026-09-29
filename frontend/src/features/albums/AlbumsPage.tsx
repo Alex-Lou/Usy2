@@ -9,6 +9,7 @@ import { EmptyState } from "../../components/ui/states";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { createAlbum, listAlbums } from "./api";
 import type { Album } from "./types";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 export function AlbumsPage() {
   const [items, setItems] = useState<Album[] | null>(null);
@@ -58,13 +59,15 @@ export function AlbumsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <header className="flex items-center justify-between animate-fade-up">
-        <h1 className="font-display text-2xl font-bold">Nos albums</h1>
-        <Button onClick={() => setOpen((o) => !o)} variant={open ? "surface" : "brand"}>
-          <Icon name={open ? "x" : "plus"} size={16} />
-          {open ? "Fermer" : "Nouvel album"}
-        </Button>
-      </header>
+      <PageHeader
+        title="Nos albums"
+        action={
+          <Button onClick={() => setOpen((o) => !o)} variant={open ? "surface" : "brand"} className="!px-3 !py-2 text-sm">
+            <Icon name={open ? "x" : "plus"} size={16} />
+            {open ? "Fermer" : "Nouvel album"}
+          </Button>
+        }
+      />
 
       {open && (
         <form onSubmit={submit} className="card animate-fade-up p-4">

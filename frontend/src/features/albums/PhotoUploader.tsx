@@ -50,11 +50,11 @@ export function PhotoUploader({
   }
 
   return (
-    <div className="card p-4">
-      <div className="flex flex-wrap gap-3">
-        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-token btn-brand px-4 py-3 font-semibold press">
+    <div>
+      <div className="flex flex-wrap gap-2">
+        <label className="flex cursor-pointer items-center gap-2 rounded-full btn-brand px-4 py-2 text-sm font-semibold press">
           <Icon name="images" size={18} />
-          Choisir des photos
+          Ajouter des photos
           <input
             type="file"
             accept="image/*"
@@ -67,9 +67,9 @@ export function PhotoUploader({
             }}
           />
         </label>
-        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-token border border-primary/60 px-4 py-3 font-semibold text-primary press hover:bg-primary/10">
+        <label className="chip flex cursor-pointer items-center gap-2 !px-4 !py-2 font-semibold text-text press hover:border-primary/50">
           <Icon name="camera" size={18} />
-          Prendre une photo
+          Caméra
           <input
             type="file"
             accept="image/*"

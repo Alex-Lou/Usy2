@@ -59,6 +59,12 @@
   .chip {
     @apply rounded-full border border-border bg-surface px-3 py-1 text-sm;
   }
+  /* The chosen tab / segment / option: a tint of the theme colour. The brand
+     gradient is kept for the one main action of a screen. */
+  .seg-on {
+    background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+    color: var(--color-primary);
+  }
 }
 
 @layer utilities {
