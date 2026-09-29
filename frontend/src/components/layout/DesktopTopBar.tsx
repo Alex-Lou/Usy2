@@ -2,6 +2,8 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../features/auth/useAuth";
 import { Icon } from "../ui/Icon";
 import { AccountMenu } from "./AccountMenu";
+import { useUnreadMessages } from "../../features/chat/unread";
+import { CountBubble } from "../ui/CountBubble";
 import { navItems } from "./nav";
 import { NotificationBell } from "./NotificationBell";
 
@@ -14,6 +16,7 @@ export function DesktopTopBar({ railOpen, onRail }: { railOpen: boolean; onRail:
   const { user } = useAuth();
   // The profile lives in the account menu, on the right.
   const tabs = navItems(user?.id).filter((it) => it.to !== "/profile");
+  const unread = useUnreadMessages();
 
   return (
     <header className="fixed inset-x-0 top-0 z-40 hidden h-desk-bar items-center border-b border-border glass lg:flex">
@@ -39,7 +42,10 @@ export function DesktopTopBar({ railOpen, onRail }: { railOpen: boolean; onRail:
             {({ isActive }) => (
               <>
                 <span className={"grid h-11 w-full place-items-center rounded-token-sm " + (isActive ? "" : "group-hover:bg-surface-2/70")}>
-                  <Icon name={it.icon} size={22} />
+                  <span className="relative">
+                    <Icon name={it.icon} size={22} />
+                    {it.to === "/chat" && <CountBubble count={unread} label={`${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}`} />}
+                  </span>
                 </span>
                 <span className={"absolute inset-x-2 bottom-0 h-[3px] rounded-t-full " + (isActive ? "bg-primary" : "bg-transparent")} aria-hidden="true" />
               </>

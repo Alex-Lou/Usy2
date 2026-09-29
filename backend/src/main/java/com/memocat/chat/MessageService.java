@@ -95,6 +95,14 @@ public class MessageService {
                 ? new ChatReadDto(reader.getId(), upToId, now) : null;
     }
 
+    /** How many of the other one's messages {@code username} has not seen yet. */
+    @Transactional(readOnly = true)
+    public long unreadCount(String username) {
+        User me = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return messageRepository.countUnreadFor(me.getId());
+    }
+
     @Transactional(readOnly = true)
     public PageResponse<MessageDto> history(int page, int size) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), clampSize(size));

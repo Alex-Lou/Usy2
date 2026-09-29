@@ -9,6 +9,7 @@ import { emitNaval } from "../naval/api";
 import { feel } from "../../lib/feel";
 import type { NotificationEntry } from "./api";
 import { emitToast } from "./liveToast";
+import { refreshUnread } from "../chat/unread";
 import { createNotifClient, markActive, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
 import { showSystemNotification } from "./systemNotify";
@@ -49,6 +50,7 @@ export function NotificationsListener() {
 
   useEffect(() => {
     const onNotification = (n: NotificationEntry) => {
+      if (n.tag === "chat") refreshUnread(); // the red bubble on the Messages tab
       if (alreadyThere(n)) {
         void markRead(n.id); // seen on the page itself
         return;
