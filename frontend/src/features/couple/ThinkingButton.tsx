@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ApiError } from "../../lib/api/client";
+import { feel } from "../../lib/feel";
 import { thinkOfYou } from "./api";
 
 const QUIET_MS = 60_000; // same minute as the server's limit
@@ -24,6 +25,7 @@ export function ThinkingButton() {
     setError(null);
     try {
       await thinkOfYou();
+      feel.tap();
       const at = Date.now();
       setSentAt(at);
       setHearts((h) => [...h, at]);

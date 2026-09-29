@@ -6,6 +6,7 @@ import { CompanionPicker } from "../ui/CompanionPicker";
 import { Icon } from "../ui/Icon";
 import { HomeWidgets } from "../../features/feed/HomeWidgets";
 import { navItems } from "./nav";
+import { FeelToggle } from "./FeelToggle";
 import { ThemeToggle } from "./ThemeToggle";
 
 /**
@@ -95,6 +96,10 @@ export function MobileMenu() {
               <div>
                 <p className="mb-1.5 text-xs font-semibold text-text-muted">Thème</p>
                 <ThemeToggle />
+              </div>
+              <div>
+                <p className="mb-1.5 text-xs font-semibold text-text-muted">Sons et vibrations</p>
+                <FeelToggle />
               </div>
               <button
                 onClick={logout}

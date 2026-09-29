@@ -26,6 +26,7 @@ import { useSharedAppearance } from "../couple/appearance";
 import { readingStyle, useReading } from "./reading";
 import { ReadingMenu } from "./ReadingMenu";
 import type { Message, MessageReaction } from "./types";
+import { feel } from "../../lib/feel";
 
 /** Adds messages not seen yet, keeping chronological (id) order. */
 function mergeById(prev: Message[], fresh: Message[]): Message[] {
@@ -80,6 +81,7 @@ export function ChatPage() {
       if (me == null) return;
       const before = messages.find((m) => m.id === messageId)?.reactions ?? [];
       const others = before.filter((r) => r.userId !== me);
+      if (emoji) feel.tap();
       setReactions(messageId, emoji ? [...others, { userId: me, emoji }] : others);
       reactToMessage(messageId, emoji)
         .then((r) => setReactions(r.messageId, r.reactions))
@@ -127,7 +129,10 @@ export function ChatPage() {
     };
     const client = createChatClient(
       (m) => {
-        if (m.sender.id !== myIdRef.current) stopTyping(); // their message is here
+        if (m.sender.id !== myIdRef.current) {
+          stopTyping(); // their message is here
+          if (document.visibilityState === "visible") feel.message();
+        }
         setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
         onMessageRef.current(m);
         if (m.effect && !effectSeen(m.id)) {
@@ -252,6 +257,7 @@ export function ChatPage() {
     const client = clientRef.current;
     if (!client) return;
     stickToBottom.current = true;
+    feel.tap();
     sendMessage(client, text, attachment?.id ?? null, replyRef.current?.id ?? null, look);
     setReplyTo(null);
   }, []);
