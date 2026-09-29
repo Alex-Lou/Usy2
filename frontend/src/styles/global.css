@@ -78,14 +78,16 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  /* "backwards", not "both": once played, no transform is left on the element
+     (a leftover transform traps position: fixed children and makes a layer). */
   .animate-fade-up {
-    animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
   .animate-sheet-up {
-    animation: sheet-up 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: sheet-up 0.22s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
   .animate-pop {
-    animation: pop 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: pop 0.25s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
   .press {
     @apply transition-transform active:scale-95;

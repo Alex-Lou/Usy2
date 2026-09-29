@@ -38,6 +38,7 @@ function isOlder(next: Pet, cur: Pet | null): boolean {
  */
 export function usePet(myId: number | undefined) {
   const [pet, setPet] = useState<Pet | null>(null);
+  const [loading, setLoading] = useState(true); // first load: lets the page keep the pet's room
   const [reaction, setReaction] = useState<CatPose | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState(0);
@@ -51,7 +52,8 @@ export function usePet(myId: number | undefined) {
         setPet(p);
         if (p.lastActionAt) setLastActivity((t) => Math.max(t, new Date(p.lastActionAt as string).getTime()));
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
     const tick = window.setInterval(() => setNow(Date.now()), 20_000);
     return () => {
       window.clearInterval(tick);
@@ -118,5 +120,5 @@ export function usePet(myId: number | undefined) {
   const asleep = lastActivity > 0 && now - lastActivity > SLEEP_AFTER_MS;
   const pose: CatPose = reaction ?? (asleep ? "sleep" : pet?.mood === "hungry" ? "hungry" : "idle");
 
-  return { pet, setPet, pose, caption, act, react, onActivity, onMessage, noteHistory };
+  return { pet, loading, setPet, pose, caption, act, react, onActivity, onMessage, noteHistory };
 }

@@ -55,7 +55,7 @@ export function ChatPage() {
   const contentRef = useRef<HTMLDivElement>(null);
   const everConnected = useRef(false);
   const stickToBottom = useRef(true);
-  const { pet, setPet, pose, caption, act, onActivity, onMessage, noteHistory } = usePet(user?.id);
+  const { pet, loading: petLoading, setPet, pose, caption, act, onActivity, onMessage, noteHistory } = usePet(user?.id);
   const [petOpen, setPetOpen] = useState(() => readPetOpen());
   const { reading, save: saveReading, error: readingError } = useReading();
   const common = useSharedAppearance();
@@ -248,6 +248,8 @@ export function ChatPage() {
       </header>
 
       {pet && petOpen && <PetStage pet={pet} pose={pose} caption={caption} onAct={act} onRenamed={setPet} />}
+      {/* Keeps the pet's room while it loads, so the conversation does not jump down. */}
+      {!pet && petLoading && petOpen && <div className="card h-[120px] shrink-0 animate-pulse" aria-hidden="true" />}
 
       <div
         ref={scrollerRef}
