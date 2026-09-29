@@ -17,7 +17,7 @@ import {
 } from "./api";
 import { PhotoUploader } from "./PhotoUploader";
 import type { Album, Photo } from "./types";
-import { getMyProfile, updateMyProfile } from "../profile/api";
+import { setProfilePhoto } from "../profile/api";
 
 async function loadAllPhotos(albumId: number): Promise<Photo[]> {
   let page = 0;
@@ -43,8 +43,8 @@ export function AlbumPage() {
   const [description, setDescription] = useState("");
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [framingPhoto, setFramingPhoto] = useState<Photo | null>(null); // cover being framed
-  const [profileUpdateLoading, setProfileUpdateLoading] = useState(false);
-  const [profileUpdateError, setProfileUpdateError] = useState<string | null>(null);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMessage, setProfileMessage] = useState<string | null>(null);
 
   const refresh = useCallback(() => {
     getAlbum(albumId)
@@ -90,35 +90,16 @@ export function AlbumPage() {
     navigate("/albums", { replace: true });
   }
 
-  async function handleSetAsProfile() {
-    setProfileUpdateError(null);
-    setProfileUpdateLoading(true);
+  async function applyToProfile(kind: "avatar" | "cover", assetId: number) {
+    setProfileSaving(true);
+    setProfileMessage(null);
     try {
-      const profile = await getMyProfile();
-      await updateMyProfile({
-        ...profile,
-        avatarAssetId: photos[lightbox]?.assetId ?? null,
-      });
-    } catch (err) {
-      setProfileUpdateError("Failed to set profile picture.");
+      await setProfilePhoto(kind, assetId);
+      setProfileMessage(kind === "avatar" ? "✓ C'est ta photo de profil" : "✓ C'est ta couverture de profil");
+    } catch {
+      setProfileMessage("La photo n'a pas pu être utilisée pour ton profil.");
     } finally {
-      setProfileUpdateLoading(false);
-    }
-  }
-
-  async function handleSetAsCover() {
-    setProfileUpdateError(null);
-    setProfileUpdateLoading(true);
-    try {
-      const profile = await getMyProfile();
-      await updateMyProfile({
-        ...profile,
-        coverAssetId: photos[lightbox]?.assetId ?? null,
-      });
-    } catch (err) {
-      setProfileUpdateError("Failed to set cover photo.");
-    } finally {
-      setProfileUpdateLoading(false);
+      setProfileSaving(false);
     }
   }
 
@@ -169,7 +150,13 @@ export function AlbumPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {photos.map((photo, i) => (
             <div key={photo.id} className="card animate-fade-up overflow-hidden p-0">
-              <button onClick={() => setLightbox(i)} className="block aspect-square w-full bg-surface-2 press">
+              <button
+                onClick={() => {
+                  setProfileMessage(null);
+                  setLightbox(i);
+                }}
+                className="block aspect-square w-full bg-surface-2 press"
+              >
                 <AssetImage assetId={photo.assetId} className="h-full w-full object-cover" />
               </button>
               <div className="p-2">
@@ -214,25 +201,29 @@ export function AlbumPage() {
             </button>
             <button
               type="button"
-              onClick={handleSetAsProfile}
-              disabled={profileUpdateLoading}
-              className={`rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white press hover:bg-white/25 ${profileUpdateLoading ? "opacity-50" : ""}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                void applyToProfile("avatar", photos[lightbox].assetId);
+              }}
+              disabled={profileSaving}
+              className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white press hover:bg-white/25 disabled:opacity-50"
             >
-              {profileUpdateLoading ? "Chargement…" : "Utiliser comme photo de profil"}
+              Photo de profil
             </button>
             <button
               type="button"
-              onClick={handleSetAsCover}
-              disabled={profileUpdateLoading}
-              className={`rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white press hover:bg-white/25 ${profileUpdateLoading ? "opacity-50" : ""}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                void applyToProfile("cover", photos[lightbox].assetId);
+              }}
+              disabled={profileSaving}
+              className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white press hover:bg-white/25 disabled:opacity-50"
             >
-              {profileUpdateLoading ? "Chargement…" : "Utiliser comme photo de couverture"}
+              Couverture du profil
             </button>
             <button className="rounded-full btn-brand px-5 py-2 text-sm font-semibold press">Fermer</button>
           </div>
-          {profileUpdateError && (
-            <p className="mt-2 text-center text-sm text-danger">{profileUpdateError}</p>
-          )}
+          {profileMessage && <p className="mt-2 text-center text-sm text-white">{profileMessage}</p>}
         </div>
       )}
 
