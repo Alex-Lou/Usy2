@@ -47,7 +47,6 @@ export function NotificationsListener() {
 
   useEffect(() => {
     const onNotification = (n: NotificationEntry) => {
-      if (n.recipientId !== myId) return; // the other person's bell
       if (alreadyThere(n)) {
         void markRead(n.id); // seen on the page itself
         return;
