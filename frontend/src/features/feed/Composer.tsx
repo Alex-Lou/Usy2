@@ -37,6 +37,7 @@ export function Composer({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [focused, setFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -96,8 +97,11 @@ export function Composer({
     }
   }
 
+  // One line until used, like "Quoi de neuf ?" on Facebook: the tools show once writing.
+  const expanded = focused || text.length > 0 || file !== null || busy;
+
   return (
-    <form onSubmit={submit} className="card p-4">
+    <form onSubmit={submit} className={"card " + (expanded ? "p-4" : "px-4 py-3")}>
       <StudioDraftCard
         onResume={(f, edits) => {
           setFile(f);
@@ -106,7 +110,7 @@ export function Composer({
           setStudio(true);
         }}
       />
-      <div className="flex gap-3">
+      <div className={"flex gap-3 " + (expanded ? "" : "items-center")}>
         <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
         <div className="flex-1">
           <textarea
@@ -117,10 +121,12 @@ export function Composer({
               setCaret(e.target.selectionStart ?? e.target.value.length);
             }}
             onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? 0)}
-            placeholder="Quoi de neuf, mon cœur ? (@ pour taguer)"
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            placeholder={expanded ? "Quoi de neuf, mon cœur ? (@ pour taguer)" : "Quoi de neuf, mon cœur ?"}
             maxLength={2000}
-            rows={2}
-            className="w-full resize-none bg-transparent text-text placeholder:text-text-muted outline-none"
+            rows={expanded ? 2 : 1}
+            className="block w-full resize-none bg-transparent text-text placeholder:text-text-muted outline-none"
           />
           <MentionSuggest
             text={text}
@@ -164,6 +170,12 @@ export function Composer({
             </div>
           )}
         </div>
+        {!expanded && (
+          <label className="grid h-10 w-10 shrink-0 cursor-pointer place-items-center rounded-full text-text-muted transition hover:text-primary press" aria-label="Ajouter une photo">
+            <Icon name="images" size={20} />
+            <input type="file" accept="image/*" className="hidden" onChange={(e) => pick(e.target)} />
+          </label>
+        )}
       </div>
 
       {error && <p role="alert" className="mt-2 text-sm text-danger">{error}</p>}
@@ -185,7 +197,11 @@ export function Composer({
         />
       )}
 
-      <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+      {/* Clicking the tools must not blur the text (that would fold them away mid-click). */}
+      <div
+        onMouseDown={(e) => e.preventDefault()}
+        className={"mt-3 items-center justify-between border-t border-border pt-3 " + (expanded ? "flex" : "hidden")}
+      >
         <div className="flex items-center gap-1">
           <label className="flex cursor-pointer items-center gap-2 rounded-token-sm px-2 py-1.5 text-sm font-medium text-text-muted transition hover:text-primary press">
             <Icon name="images" size={18} />
