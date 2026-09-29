@@ -53,11 +53,30 @@ export function createNotifClient(
   return client;
 }
 
+/** Untouched for this long, a page left open (a computer at home) no longer counts as being looked at. */
+const IDLE_MS = 2 * 60_000;
+let lastActive = Date.now();
+let lastReported: boolean | null = null;
+
+/** Someone touched, typed or scrolled. */
+export function markActive(): void {
+  lastActive = Date.now();
+}
+
+/** On screen and used recently. */
+export function isLooking(): boolean {
+  return document.visibilityState === "visible" && Date.now() - lastActive < IDLE_MS;
+}
+
 /**
- * Tells the server whether this page is on screen: it only sends push
- * notifications to someone who isn't looking at the app.
+ * Tells the server whether this page is being looked at: it only sends push
+ * notifications to someone who isn't (so the phone still rings while a
+ * computer sits open and unused). `onlyIfChanged`: skip when nothing changed.
  */
-export function reportPresence(client: Client): void {
+export function reportPresence(client: Client, onlyIfChanged = false): void {
   if (!client.connected) return;
-  client.publish({ destination: "/app/presence", body: JSON.stringify({ visible: document.visibilityState === "visible" }) });
+  const visible = isLooking();
+  if (onlyIfChanged && visible === lastReported) return;
+  lastReported = visible;
+  client.publish({ destination: "/app/presence", body: JSON.stringify({ visible }) });
 }

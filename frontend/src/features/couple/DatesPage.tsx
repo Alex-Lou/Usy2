@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { createEvent, deleteEvent, updateEvent } from "./api";
@@ -22,6 +23,22 @@ export function DatesPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
+  const [params, setParams] = useSearchParams();
+  const wanted = Number(params.get("event")) || null; // from a notification: show that date
+
+  useEffect(() => {
+    if (!wanted || !events) return;
+    const event = events.find((e) => e.id === wanted);
+    if (event) {
+      const day = nextOccurrence(event, today()) ?? parseDay(event.date);
+      setSelected(day);
+      setMonth(new Date(day.getFullYear(), day.getMonth(), 1));
+    }
+    setParams((p) => {
+      p.delete("event");
+      return p;
+    }, { replace: true });
+  }, [wanted, events, setParams]);
 
   const list = events ?? [];
   const weeks = useMemo(() => monthGrid(month), [month]);

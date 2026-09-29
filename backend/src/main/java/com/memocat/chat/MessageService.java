@@ -72,7 +72,7 @@ public class MessageService {
                 .orElseThrow(() -> new ContentValidationException("Le message cité n'existe plus"));
         Message message = messageRepository.save(
                 new Message(sender, validateContent(content, attachment != null), attachment, replyTo, bubble, screen));
-        events.publishEvent(new ChatMessageSent(sender.getId(), sender.getDisplayName()));
+        events.publishEvent(new ChatMessageSent(sender.getId(), sender.getDisplayName(), message.getId()));
         return MessageDto.from(message);
     }
 

@@ -8,7 +8,7 @@ import type { CoupleActivity } from "../couple/types";
 import { emitLive, type LiveView } from "../live/api";
 import { emitNaval, type NavalPing } from "../naval/api";
 import { emitCommentReactions, emitFeedActivity, type FeedActivity, type ReactionAdded } from "../feed/activity";
-import { createNotifClient, reportPresence } from "./notifClient";
+import { createNotifClient, markActive, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
 import { showSystemNotification } from "./systemNotify";
 
@@ -74,12 +74,13 @@ export function NotificationsListener() {
     const onCouple = (a: CoupleActivity) => {
       emitCoupleActivity(a); // open views re-fetch (also my other devices)
       if (a.actorId === myId) return;
+      // The "Nous" space shows both moods and the notes; "je pense à toi" opens the chat, to answer.
       if (a.kind === "mood") {
-        notify(`${a.actorName} a changé d'humeur : ${a.detail ?? ""}`);
+        notify(`${a.actorName} a changé d'humeur : ${a.detail ?? ""}`, "/profile/nous");
       } else if (a.kind === "note") {
-        notify(`${a.actorName} t'a laissé un mot`);
+        notify(`${a.actorName} t'a laissé un mot 💌`, "/profile/nous");
       } else if (a.kind === "thinking") {
-        notify(`${a.actorName} pense à toi 💭`);
+        notify(`${a.actorName} pense à toi 💭`, "/chat");
       } else if ((a.kind === "quiz-challenge" || a.kind === "quiz-done") && !window.location.pathname.startsWith("/jeux/quiz")) {
         // On the quiz page the duel list updates by itself.
         if (a.kind === "quiz-challenge") notify(`${a.actorName} te lance un défi quiz 🎯 ${a.detail ?? ""}`, "/jeux/quiz");
@@ -141,7 +142,7 @@ export function NotificationsListener() {
       (m) => {
         if (m.sender.id === myId) return; // my own message
         if (window.location.pathname.startsWith("/chat") && document.visibilityState === "visible") return; // already reading
-        notify(`${m.sender.displayName} t'a envoyé un message 💬`, "/chat");
+        notify(`${m.sender.displayName} t'a envoyé un message 💬`, `/chat?m=${m.id}`);
       },
       (state) => {
         const g = state.game;
@@ -169,10 +170,22 @@ export function NotificationsListener() {
       onNaval,
     );
     clientRef.current = client;
-    const onVisibility = () => reportPresence(client);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") markActive();
+      reportPresence(client);
+    };
+    const onActivity = () => {
+      markActive();
+      reportPresence(client, true); // back from idle
+    };
+    const ACTIVITY = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
     document.addEventListener("visibilitychange", onVisibility);
+    for (const type of ACTIVITY) window.addEventListener(type, onActivity, { passive: true });
+    const idleCheck = window.setInterval(() => reportPresence(client, true), 30_000); // gone idle
     return () => {
       document.removeEventListener("visibilitychange", onVisibility);
+      for (const type of ACTIVITY) window.removeEventListener(type, onActivity);
+      window.clearInterval(idleCheck);
       void client.deactivate();
     };
   }, [myId, add]);
