@@ -65,6 +65,7 @@ class ProfileCoverTest {
     @Test
     void framingIsKeptWithItsPhotoAndDroppedWithoutOne() {
         when(assets.findById(7L)).thenReturn(Optional.of(new Asset("k", "c.jpg", "image/jpeg", 1, lou)));
+        when(assets.findById(5L)).thenReturn(Optional.of(new Asset("k", "a.jpg", "image/jpeg", 1, lou)));
         Framing top = new Framing(0.5, 0, 1.5);
 
         var saved = service.updateMyProfile("lou", new ProfileUpdateRequest(theme, List.of(), 5L, null, 7L, top, top));
@@ -81,10 +82,14 @@ class ProfileCoverTest {
     }
 
     @Test
-    void someoneElsesFileOrADocumentIsRefused() {
+    void theOtherPersonsPhotoCanBeTheCover() {
         when(assets.findById(8L)).thenReturn(Optional.of(new Asset("k", "c.jpg", "image/jpeg", 1, sam)));
+        assertThat(service.updateMyProfile("lou", withCover(8L)).coverAssetId()).isEqualTo(8L);
+    }
+
+    @Test
+    void aDocumentOrAMissingFileIsRefusedAsCover() {
         when(assets.findById(9L)).thenReturn(Optional.of(new Asset("k", "doc.pdf", "application/pdf", 1, lou)));
-        assertThatThrownBy(() -> service.updateMyProfile("lou", withCover(8L))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> service.updateMyProfile("lou", withCover(9L))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> service.updateMyProfile("lou", withCover(99L))).isInstanceOf(ContentValidationException.class);
     }
@@ -109,5 +114,24 @@ class ProfileCoverTest {
         assertThatThrownBy(() -> service.updateMyProfile("lou", withPagePhoto(8L))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> service.updateMyProfile("lou", withPagePhoto(9L))).isInstanceOf(ContentValidationException.class);
         assertThatThrownBy(() -> service.updateMyProfile("lou", withPagePhoto(99L))).isInstanceOf(ContentValidationException.class);
+    }
+
+    private ProfileUpdateRequest withAvatar(Long avatar) {
+        return new ProfileUpdateRequest(theme, List.of(), avatar, null, null);
+    }
+
+    @Test
+    void anyPhotoCanBeTheAvatarButNotADocument() {
+        when(assets.findById(8L)).thenReturn(Optional.of(new Asset("k", "c.jpg", "image/jpeg", 1, sam)));
+        when(assets.findById(9L)).thenReturn(Optional.of(new Asset("k", "doc.pdf", "application/pdf", 1, lou)));
+        assertThat(service.updateMyProfile("lou", withAvatar(8L)).avatarAssetId()).isEqualTo(8L);
+        assertThatThrownBy(() -> service.updateMyProfile("lou", withAvatar(9L))).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.updateMyProfile("lou", withAvatar(99L))).isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
+    void theAvatarAlreadySetIsNotCheckedAgain() {
+        lou.setAvatarAssetId(42L); // e.g. an old avatar saved before the check existed
+        assertThat(service.updateMyProfile("lou", withAvatar(42L)).avatarAssetId()).isEqualTo(42L);
     }
 }

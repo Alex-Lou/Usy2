@@ -19,7 +19,7 @@ import { ChatComposer } from "./ChatComposer";
 import { createChatClient, sendMessage } from "./chatClient";
 import { effectSeen, markEffectSeen, SCREEN_EFFECTS, type MessageLook, type ScreenEffectId } from "./looks";
 import { ScreenEffect } from "./ScreenEffect";
-import { ImageViewer } from "./ImageViewer";
+import { ImageViewer } from "../../components/photo/ImageViewer";
 import { MessageList } from "./MessageList";
 import { useFonts } from "../../lib/fonts";
 import { useSharedAppearance } from "../couple/appearance";

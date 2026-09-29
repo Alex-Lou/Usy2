@@ -92,6 +92,14 @@ public class ProfileService {
                 .toList();
     }
 
+    private void requireImage(Long assetId, String what) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new ContentValidationException(what + " introuvable"));
+        if (!asset.getContentType().startsWith("image/")) {
+            throw new ContentValidationException(what + " : ce fichier n'est pas une image");
+        }
+    }
+
     @Transactional
     public ProfileDto updateMyProfile(String username, ProfileUpdateRequest request) {
         themeValidator.validate(request.theme());
@@ -100,21 +108,20 @@ public class ProfileService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (request.avatarAssetId() != null && request.avatarAssetId() <= 0) {
-            throw new ContentValidationException("Invalid avatar");
+        // Only a new avatar is checked: the one already set stays valid as it is.
+        Long avatar = request.avatarAssetId();
+        if (avatar != null && !avatar.equals(user.getAvatarAssetId())) {
+            requireImage(avatar, "Photo de profil");
         }
         String bio = request.bio() == null ? null : request.bio().strip();
         if (bio != null && bio.length() > MAX_BIO) {
             throw new ContentValidationException("Bio too long (max " + MAX_BIO + ")");
         }
 
+        // Any photo of the app can be the cover (both members see them all).
         Long cover = request.coverAssetId();
         if (cover != null) {
-            Asset asset = assetRepository.findById(cover)
-                    .orElseThrow(() -> new ContentValidationException("Photo de couverture introuvable"));
-            if (!asset.getUploader().getId().equals(user.getId()) || !asset.getContentType().startsWith("image/")) {
-                throw new ContentValidationException("La couverture doit être une de tes photos");
-            }
+            requireImage(cover, "Photo de couverture");
         }
 
         Long pagePhoto = pagePhotoOf(request.theme());
