@@ -12,6 +12,7 @@ import com.memocat.repository.MessageReactionRepository;
 import com.memocat.repository.MessageRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
+import com.memocat.web.ForbiddenException;
 import com.memocat.web.PageResponse;
 import com.memocat.web.ResourceNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
@@ -93,6 +94,25 @@ public class MessageService {
         Instant now = Instant.now();
         return messageRepository.markReadUpTo(reader.getId(), upToId, now) > 0
                 ? new ChatReadDto(reader.getId(), upToId, now) : null;
+    }
+
+    /**
+     * Its sender rewrites a message (any time; only its text, attachments stay).
+     * The new version goes out live on /topic/message-edited (see MessageController).
+     */
+    @Transactional
+    public MessageDto edit(String username, Long messageId, String content) {
+        User me = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Message not found"));
+        if (!message.getSender().getId().equals(me.getId())) {
+            throw new ForbiddenException("You can only edit your own messages");
+        }
+        message.edit(validateContent(content, message.getAttachment() != null), Instant.now());
+        List<MessageReactionDto> reactions = reactionRepository.findByMessageIdInOrderByCreatedAtAsc(List.of(messageId))
+                .stream().map(MessageReactionDto::from).toList();
+        return MessageDto.from(message, reactions);
     }
 
     /** How many of the other one's messages {@code username} has not seen yet. */

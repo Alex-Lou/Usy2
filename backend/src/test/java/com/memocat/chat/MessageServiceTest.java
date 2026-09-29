@@ -226,4 +226,34 @@ class MessageServiceTest {
 
         assertThat(messageService.unreadCount("sam")).isEqualTo(3L);
     }
+
+    @Test
+    void iCanRewriteMyOwnMessageAndItSaysSo() {
+        User lou = new User("lou", "h", "Lou");
+        org.springframework.test.util.ReflectionTestUtils.setField(lou, "id", 1L);
+        Message message = new Message(lou, "Coucou", null);
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(lou));
+        when(messageRepository.findById(9L)).thenReturn(Optional.of(message));
+
+        MessageDto dto = messageService.edit("lou", 9L, "Coucou toi 💕");
+
+        assertThat(dto.content()).isEqualTo("Coucou toi 💕");
+        assertThat(dto.editedAt()).isNotNull();
+    }
+
+    @Test
+    void neverSomeoneElsesMessageNorAnEmptyOne() {
+        User lou = new User("lou", "h", "Lou");
+        org.springframework.test.util.ReflectionTestUtils.setField(lou, "id", 1L);
+        User sam = new User("sam", "h", "Sam");
+        org.springframework.test.util.ReflectionTestUtils.setField(sam, "id", 2L);
+        when(userRepository.findByUsername("sam")).thenReturn(Optional.of(sam));
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(lou));
+        when(messageRepository.findById(9L)).thenReturn(Optional.of(new Message(lou, "Coucou", null)));
+
+        assertThatThrownBy(() -> messageService.edit("sam", 9L, "piraté"))
+                .isInstanceOf(com.memocat.web.ForbiddenException.class);
+        assertThatThrownBy(() -> messageService.edit("lou", 9L, "   "))
+                .isInstanceOf(com.memocat.web.ContentValidationException.class);
+    }
 }

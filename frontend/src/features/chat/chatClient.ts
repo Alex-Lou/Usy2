@@ -18,6 +18,7 @@ export function createChatClient(
   onRead?: (r: ChatRead) => void,
   onTyping?: (t: Typing) => void,
   onDelivered?: (d: ChatDelivered) => void,
+  onEdited?: (m: Message) => void,
 ): Client {
   const token = getToken();
   const client = new Client({
@@ -34,6 +35,7 @@ export function createChatClient(
         client.subscribe("/topic/message-reactions", (frame: IMessage) => onReactions(JSON.parse(frame.body) as MessageReactions));
       }
       if (onRead) client.subscribe("/topic/chat-read", (frame: IMessage) => onRead(JSON.parse(frame.body) as ChatRead));
+      if (onEdited) client.subscribe("/topic/message-edited", (frame: IMessage) => onEdited(JSON.parse(frame.body) as Message));
       if (onDelivered) client.subscribe("/topic/chat-delivered", (frame: IMessage) => onDelivered(JSON.parse(frame.body) as ChatDelivered));
       if (onTyping) client.subscribe("/topic/chat-typing", (frame: IMessage) => onTyping(JSON.parse(frame.body) as Typing));
     },

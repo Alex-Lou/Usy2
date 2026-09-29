@@ -118,6 +118,7 @@ export function ReactionBar({
   copyText,
   onPick,
   onReply,
+  onEdit,
   onClose,
 }: {
   anchor: DOMRect;
@@ -127,6 +128,8 @@ export function ReactionBar({
   copyText: string | null;
   onPick: (emoji: string) => void;
   onReply?: () => void;
+  /** My own text message: rewrite it. */
+  onEdit?: () => void;
   onClose: () => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -137,9 +140,11 @@ export function ReactionBar({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const barH = 52;
-  const extras = (copyText ? 1 : 0) + (onReply ? 1 : 0);
-  const width = Math.min(window.innerWidth - 16, emojis.length * 44 + extras * 64 + 16);
+  // Emojis on one row; the actions (Répondre, Modifier, Copier) on a second one, so they
+  // always fit on a phone instead of being pushed out of the bar.
+  const extras = (copyText ? 1 : 0) + (onReply ? 1 : 0) + (onEdit ? 1 : 0);
+  const barH = 52 + (extras ? 40 : 0);
+  const width = Math.min(window.innerWidth - 16, Math.max(emojis.length * 44 + 16, extras * 96));
   const above = anchor.top - barH - 8 > 72; // keep clear of the top bar
   const top = above ? anchor.top - barH - 8 : Math.min(window.innerHeight - barH - 8, anchor.bottom + 8);
   const left = Math.max(8, Math.min(window.innerWidth - width - 8, mine ? anchor.right - width : anchor.left));
@@ -155,9 +160,10 @@ export function ReactionBar({
         role="dialog"
         aria-label="Réagir au message"
         onClick={(e) => e.stopPropagation()}
-        className="absolute flex items-center gap-0.5 rounded-full border border-border bg-surface px-2 shadow-lg animate-pop"
+        className={"absolute flex flex-col border border-border bg-surface shadow-lg animate-pop " + (extras ? "rounded-[26px]" : "rounded-full")}
         style={{ top, left, width, height: barH }}
       >
+        <div className="no-scrollbar flex h-[52px] shrink-0 items-center gap-0.5 overflow-x-auto px-2">
         {emojis.map((e) => (
           <button
             key={e}
@@ -170,29 +176,46 @@ export function ReactionBar({
             {e}
           </button>
         ))}
-        {onReply && (
-          <button
-            type="button"
-            onClick={() => {
-              onReply();
-              onClose();
-            }}
-            className="ml-auto shrink-0 rounded-full px-2 py-1 text-xs font-semibold text-text-muted press hover:text-text"
-          >
-            Répondre
-          </button>
-        )}
-        {copyText && (
-          <button
-            type="button"
-            onClick={() => {
-              void navigator.clipboard?.writeText(copyText).then(() => setCopied(true)).catch(() => {});
-              window.setTimeout(onClose, 500);
-            }}
-            className="ml-auto shrink-0 rounded-full px-2 py-1 text-xs font-semibold text-text-muted press hover:text-text"
-          >
-            {copied ? "Copié" : "Copier"}
-          </button>
+        </div>
+        {extras > 0 && (
+          <div className="flex h-10 items-center justify-around border-t border-border px-2">
+            {onReply && (
+              <button
+                type="button"
+                onClick={() => {
+                  onReply();
+                  onClose();
+                }}
+                className="rounded-full px-3 py-1 text-sm font-semibold text-text-muted press hover:text-text"
+              >
+                ↩ Répondre
+              </button>
+            )}
+            {onEdit && (
+              <button
+                type="button"
+                onClick={() => {
+                  onEdit();
+                  onClose();
+                }}
+                className="rounded-full px-3 py-1 text-sm font-semibold text-text-muted press hover:text-text"
+              >
+                ✏️ Modifier
+              </button>
+            )}
+            {copyText && (
+              <button
+                type="button"
+                onClick={() => {
+                  void navigator.clipboard?.writeText(copyText).then(() => setCopied(true)).catch(() => {});
+                  window.setTimeout(onClose, 500);
+                }}
+                className="rounded-full px-3 py-1 text-sm font-semibold text-text-muted press hover:text-text"
+              >
+                {copied ? "Copié ✓" : "Copier"}
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>,

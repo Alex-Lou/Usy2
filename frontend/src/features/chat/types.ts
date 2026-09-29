@@ -13,6 +13,7 @@ export interface Message {
   effect?: string | null; // full-screen effect played for both (see looks.ts)
   deliveredAt?: string | null; // when it reached the other one's app or phone (✓✓), null until then
   readAt?: string | null; // when the other one saw it (✓✓ in colour), null until then
+  editedAt?: string | null; // when its sender last rewrote it ("modifié"), null if never
 }
 
 /** Broadcast on /topic/chat-read: readerId has seen the other one's messages up to upToId. */

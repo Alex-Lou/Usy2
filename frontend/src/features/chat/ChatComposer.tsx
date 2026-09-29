@@ -36,6 +36,9 @@ export function ChatComposer({
   myId,
   onCancelReply,
   onTyping,
+  editing = null,
+  onSaveEdit,
+  onCancelEdit,
 }: {
   connected: boolean;
   onSend: (text: string, attachment: Asset | null, look?: MessageLook) => void;
@@ -45,6 +48,10 @@ export function ChatComposer({
   onCancelReply?: () => void;
   /** Called while typing (the page decides how often to tell the other one). */
   onTyping?: () => void;
+  /** My message being rewritten: the box holds its text, sending saves it instead. */
+  editing?: Message | null;
+  onSaveEdit?: (text: string) => void;
+  onCancelEdit?: () => void;
 }) {
   const { text, setText, ref, insert, rememberCaret } = useRichInput<HTMLTextAreaElement>();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -60,6 +67,14 @@ export function ChatComposer({
   const voice = useVoiceRecorder((recording) => void sendVoice(recording));
 
   useAutoGrow(ref, text);
+
+  // "Modifier": the box takes the message's text, cursor at the end; leaving edit mode empties it.
+  const editingId = editing?.id;
+  useEffect(() => {
+    setText(editing ? editing.content : "");
+    if (editing) ref.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingId]);
 
   // Choosing "reply" puts the cursor in the box, ready to type.
   useEffect(() => {
@@ -105,6 +120,11 @@ export function ChatComposer({
   async function submit(e?: FormEvent, look?: MessageLook) {
     e?.preventDefault();
     const value = text.trim();
+    if (editing) {
+      if (value && value !== editing.content) onSaveEdit?.(value);
+      else onCancelEdit?.();
+      return;
+    }
     if ((!value && !pending) || !connected || sending) return;
     setSending(true);
     setError(null);
@@ -140,11 +160,22 @@ export function ChatComposer({
   }
 
   const canSend = connected && !sending && (text.trim().length > 0 || pending !== null);
-  const showMic = canRecordVoice && text.trim().length === 0 && pending === null;
+  const showMic = canRecordVoice && text.trim().length === 0 && pending === null && !editing;
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2">
-      {replyTo && (
+      {editing && (
+        <div className="flex items-center gap-2 rounded-token border-l-4 border-primary bg-surface px-3 py-2 animate-pop">
+          <span className="min-w-0 flex-1">
+            <span className="block text-xs font-semibold text-primary">✏️ Modifier le message</span>
+            <span className="block truncate text-sm text-text-muted">{editing.content}</span>
+          </span>
+          <button type="button" onClick={onCancelEdit} aria-label="Annuler la modification" className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">
+            <Icon name="x" size={16} />
+          </button>
+        </div>
+      )}
+      {replyTo && !editing && (
         <div className="flex items-center gap-2 rounded-token border-l-4 border-primary bg-surface px-3 py-2 animate-pop">
           <span className="min-w-0 flex-1">
             <span className="block text-xs font-semibold text-primary">

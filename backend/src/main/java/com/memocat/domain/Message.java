@@ -43,6 +43,10 @@ public class Message {
     @Column(name = "delivered_at")
     private Instant deliveredAt;
 
+    /** Last time its sender changed the text (null: never). */
+    @Column(name = "edited_at")
+    private Instant editedAt;
+
     /** Optional photo, GIF or document sent with the message. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attachment_asset_id")
@@ -123,6 +127,16 @@ public class Message {
 
     public Instant getDeliveredAt() {
         return deliveredAt;
+    }
+
+    public Instant getEditedAt() {
+        return editedAt;
+    }
+
+    /** Its sender rewrote it. */
+    public void edit(String newContent, Instant at) {
+        this.content = newContent;
+        this.editedAt = at;
     }
 
     public Asset getAttachment() {

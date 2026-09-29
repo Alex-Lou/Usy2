@@ -81,6 +81,7 @@ export function MessageList({
   onOpenImage,
   onReact,
   onReply,
+  onEdit,
   onReplay,
 }: {
   messages: Message[];
@@ -89,6 +90,8 @@ export function MessageList({
   onOpenImage: (a: Asset) => void;
   onReact: (messageId: number, emoji: string | null) => void;
   onReply: (m: Message) => void;
+  /** Rewrite one of my text messages. */
+  onEdit?: (m: Message) => void;
   /** Plays a message's screen effect again. */
   onReplay?: (effect: string) => void;
 }) {
@@ -169,8 +172,10 @@ export function MessageList({
                   }}
                 />
                 {hasText && !m.attachment && firstUrl(m.content) && <LinkPreview url={firstUrl(m.content)!} className="w-72 max-w-full" />}
+                {m.editedAt && !lastOfRun && <span className="px-1 text-[10px] italic text-text-muted">modifié</span>}
                 {lastOfRun && (
                   <span className="flex items-center gap-1 px-1 text-[10px] text-text-muted">
+                    {m.editedAt && <span className="italic">modifié ·</span>}
                     {time(m.createdAt)}
                     {mine && <Ticks message={m} />}
                   </span>
@@ -188,6 +193,7 @@ export function MessageList({
           current={myReaction(menu.message)}
           copyText={menu.message.content.trim() ? menu.message.content : null}
           onReply={() => onReply(menu.message)}
+          onEdit={onEdit && menu.message.sender.id === myId && menu.message.content.trim() ? () => onEdit(menu.message) : undefined}
           onPick={(emoji) => {
             onReact(menu.message.id, myReaction(menu.message) === emoji ? null : emoji);
             setMenu(null);
