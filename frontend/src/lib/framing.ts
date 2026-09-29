@@ -17,6 +17,11 @@ export const CENTRED: Framing = { x: 0.5, y: 0.5, zoom: 1 };
 export const MIN_ZOOM = 0.5;
 export const MAX_ZOOM = 4;
 
+/** The same framing, never zoomed out (for frames that must stay filled, like the profile cover). */
+export function filled(f: Framing | null | undefined): Framing | null | undefined {
+  return f && f.zoom < 1 ? { ...f, zoom: 1 } : f;
+}
+
 /** Zoomed out: the photo no longer fills its frame, a blurred copy fills the rest. */
 export function needsBackdrop(f: Framing | null | undefined): boolean {
   return !!f && f.zoom < 1;
