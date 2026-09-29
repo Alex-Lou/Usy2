@@ -22,6 +22,8 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
     long countByAlbumId(Long albumId);
 
+    Optional<Photo> findFirstByAssetId(Long assetId);
+
     /** Photos added on this month/day of an earlier year, in the given time zone ("il y a 1 an"). */
     @Query(value = """
             select * from photo

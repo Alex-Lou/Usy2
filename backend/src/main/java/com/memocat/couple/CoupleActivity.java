@@ -36,6 +36,9 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     /** 💞 Nous deux: answers started again (detail: mine / accepted), or a proposal dropped (cancelled / refused). */
     public static final String NOUS_RESET = "nous-reset";
 
+    /** 🐾 The other one found my hidden note (detail: where the photo is, refId: the note). */
+    public static final String HIDDEN_FOUND = "hidden-found";
+
     public static CoupleActivity of(String kind, User actor, String detail, Long refId) {
         return new CoupleActivity(kind, actor.getId(), actor.getDisplayName(), detail, refId);
     }
