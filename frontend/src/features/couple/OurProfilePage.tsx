@@ -12,6 +12,7 @@ import { onCoupleActivity } from "./activity";
 import { getNousTheme, saveNousTheme } from "./api";
 import { NousPanel } from "./NousPanel";
 import { SharedAppearancePanel } from "./SharedAppearancePanel";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 type Tab = "nous" | "allure" | "reglages";
 const TABS: { id: Tab; label: string; icon: string }[] = [
@@ -95,10 +96,7 @@ export function OurProfilePage() {
   return (
     <div className="flex flex-col gap-4">
       <SpaceSwitcher />
-      <div>
-        <h1 className="font-display text-2xl font-bold">Notre profil</h1>
-        <p className="text-sm text-text-muted">À vous deux : ce que vous partagez, son allure, et celle de l'app.</p>
-      </div>
+      <PageHeader title="Notre profil" subtitle="À vous deux : ce que vous partagez, son allure, et celle de l'app." />
       <div role="tablist" aria-label="Rubriques" className="-mx-1 flex gap-1.5 overflow-x-auto px-1 no-scrollbar">
         {TABS.map((t) => (
           <button

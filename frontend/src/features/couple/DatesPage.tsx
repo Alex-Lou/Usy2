@@ -7,6 +7,7 @@ import { dayKey, entriesOn, nextOccurrence, parseDay, sameDay, today, upcoming, 
 import { EventForm } from "./EventForm";
 import type { CoupleEvent, CoupleEventInput } from "./types";
 import { useDates } from "./useDates";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 const WEEKDAYS = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -76,15 +77,15 @@ export function DatesPage() {
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-4">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-bold">Calendrier</h1>
-          <p className="text-sm text-text-muted">Vos dates à deux : rendez-vous, anniversaires et comptes à rebours. Rappel la veille à 19h.</p>
-        </div>
-        <Button onClick={() => open(null)}>
-          <Icon name="plus" size={16} /> Ajouter
-        </Button>
-      </div>
+      <PageHeader
+        title="Calendrier"
+        subtitle="Vos dates à deux, avec un rappel la veille à 19h."
+        action={
+          <Button onClick={() => open(null)} className="!px-3 !py-2 text-sm">
+            <Icon name="plus" size={16} /> Ajouter
+          </Button>
+        }
+      />
 
       {(loadError || error) && (
         <p role="alert" className="text-sm text-danger">
