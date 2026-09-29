@@ -8,12 +8,14 @@ import com.memocat.domain.User;
 import com.memocat.game.dto.GameDto;
 import com.memocat.game.dto.GamesStateDto;
 import com.memocat.game.dto.ScoreDto;
+import com.memocat.live.LiveEvents;
 import com.memocat.repository.GameRepository;
 import com.memocat.repository.GameScoreRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ContentValidationException;
 import com.memocat.web.ForbiddenException;
 import com.memocat.web.ResourceNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,17 +38,20 @@ public class GameService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate messaging;
+    private final ApplicationEventPublisher events;
 
     public GameService(GameRepository gameRepository,
                        GameScoreRepository scoreRepository,
                        UserRepository userRepository,
                        ObjectMapper objectMapper,
-                       SimpMessagingTemplate messaging) {
+                       SimpMessagingTemplate messaging,
+                       ApplicationEventPublisher events) {
         this.gameRepository = gameRepository;
         this.scoreRepository = scoreRepository;
         this.userRepository = userRepository;
         this.objectMapper = objectMapper;
         this.messaging = messaging;
+        this.events = events;
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +68,11 @@ public class GameService {
         requireType(type);
         User creator = requireUser(username);
         Game game = gameRepository.findFirstByTypeAndStatus(type, "active")
-                .orElseGet(() -> createGame(type, creator));
+                .orElseGet(() -> {
+                    Game created = createGame(type, creator);
+                    notice(otherUser(creator), creator.getDisplayName() + " lance une partie de Morpion 🎮");
+                    return created;
+                });
         GamesStateDto state = state(type, game);
         messaging.convertAndSend(TOPIC, state);
         return state;
@@ -108,14 +117,23 @@ public class GameService {
             game.setWinnerUser(user);
             User loser = userRepository.findById(isX ? st.getO() : st.getX()).orElse(null);
             award(type, user, loser);
+            if (loser != null) {
+                notice(loser, user.getDisplayName() + " a gagné au Morpion 🏆 Revanche ?");
+            }
         } else if (MorpionLogic.isFull(st.getBoard())) {
             game.setStatus("finished");
             game.setTurnUser(null);
             game.setDraw(true);
             awardDraw(type, st.getX(), st.getO());
+            userRepository.findById(isX ? st.getO() : st.getX())
+                    .ifPresent(other -> notice(other, "Match nul au Morpion avec " + user.getDisplayName() + " 🤝"));
         } else {
             Long nextId = isX ? st.getO() : st.getX();
-            game.setTurnUser(userRepository.findById(nextId).orElse(null));
+            User next = userRepository.findById(nextId).orElse(null);
+            game.setTurnUser(next);
+            if (next != null) {
+                notice(next, user.getDisplayName() + " a joué : à toi au Morpion 🎮");
+            }
         }
 
         game.setState(write(st));
@@ -123,6 +141,11 @@ public class GameService {
         GamesStateDto state = state(type, game);
         messaging.convertAndSend(TOPIC, state);
         return state;
+    }
+
+    /** A push to the other player when they are not looking at the app (see PushNotifier). */
+    private void notice(User to, String body) {
+        events.publishEvent(new LiveEvents.Notice(to.getId(), body, "/jeux/morpion", "morpion"));
     }
 
     private Game createGame(String type, User creator) {

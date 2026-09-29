@@ -42,6 +42,7 @@ class PushNotifierTest {
     @Mock private PushSubscriptionRepository subscriptions;
     @Mock private UserRepository users;
     @Mock private WebPushSender sender;
+    @Mock private Previews previews; // no excerpt unless a test says so
 
     private final PresenceRegistry presence = new PresenceRegistry();
     private final ObjectMapper json = new ObjectMapper();
@@ -60,7 +61,7 @@ class PushNotifierTest {
 
     @BeforeEach
     void setUp() {
-        notifier = new PushNotifier(subscriptions, users, presence, sender, json);
+        notifier = new PushNotifier(subscriptions, users, presence, sender, previews, json);
         lenient().when(users.findAll()).thenReturn(List.of(lou, sam));
         lenient().when(subscriptions.findByUserIdOrderByCreatedAtAsc(2L)).thenReturn(List.of(phone, oldLaptop));
     }
@@ -76,7 +77,7 @@ class PushNotifierTest {
         when(sender.send(eq(phone), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
         when(sender.send(eq(oldLaptop), any(), eq(true))).thenReturn(WebPushSender.Outcome.GONE);
 
-        notifier.onChatMessage(new ChatMessageSent(1L, "Lou"));
+        notifier.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
 
         JsonNode payload = sentPayload(phone);
         assertThat(payload.get("title").asText()).isEqualTo("MemoCat");
@@ -88,10 +89,35 @@ class PushNotifierTest {
     }
 
     @Test
+    void aMessageShowsWhoThenWhatTheyWroteAndOpensIt() throws Exception {
+        when(previews.message(40L)).thenReturn("On se voit ce soir ?");
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
+
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("title").asText()).isEqualTo("Lou 💬");
+        assertThat(payload.get("body").asText()).isEqualTo("On se voit ce soir ?");
+        assertThat(payload.get("url").asText()).isEqualTo("/chat?m=40");
+    }
+
+    @Test
+    void aCommentShowsItsTextUnderTheSentence() throws Exception {
+        when(previews.comment(51L)).thenReturn("Trop beau 😍");
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onFeedActivity(new FeedActivity(FeedActivity.COMMENT, 1L, "Lou", 8L, 2L, null, List.of(), 51L, null));
+
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("title").asText()).isEqualTo("Lou a commenté ton post 💬");
+        assertThat(payload.get("body").asText()).isEqualTo("Trop beau 😍");
+    }
+
+    @Test
     void skipsSomeoneAlreadyLookingAtTheApp() {
         presence.report("session", "sam", true);
 
-        notifier.onChatMessage(new ChatMessageSent(1L, "Lou"));
+        notifier.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
 
         verify(sender, never()).send(any(), any(), anyBoolean());
     }
@@ -162,7 +188,7 @@ class PushNotifierTest {
         when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.LIST, 1L, "Lou", "Courses", 3L));
-        assertThat(sentPayload(phone).get("url").asText()).isEqualTo("/profile/2?tab=nous&list=3");
+        assertThat(sentPayload(phone).get("url").asText()).isEqualTo("/profile/nous?list=3");
     }
 
     @Test
@@ -174,14 +200,42 @@ class PushNotifierTest {
     }
 
     @Test
-    void noteNotificationNeverCarriesTheText() throws Exception {
+    void aNoteShowsItsTextAndOpensTheNousSpace() throws Exception {
+        when(previews.note(5L)).thenReturn("Bonne journée mon chat");
         when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
         notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.NOTE, 1L, "Lou", null, 5L));
 
         JsonNode payload = sentPayload(phone);
-        assertThat(payload.get("body").asText()).isEqualTo("Lou t'a laissé un mot");
+        assertThat(payload.get("title").asText()).isEqualTo("Lou t'a laissé un mot 💌");
+        assertThat(payload.get("body").asText()).isEqualTo("Bonne journée mon chat");
+        assertThat(payload.get("url").asText()).isEqualTo("/profile/nous");
         assertThat(payload.get("tag").asText()).isEqualTo("note");
+    }
+
+    @Test
+    void aMoodCarriesItsFewWords() throws Exception {
+        when(previews.moodLabel(1L)).thenReturn("crevée");
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.MOOD, 1L, "Lou", "😴", null));
+
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("title").asText()).isEqualTo("Lou a changé d'humeur : 😴");
+        assertThat(payload.get("body").asText()).isEqualTo("crevée");
+    }
+
+    @Test
+    void aNewDateTellsWhatAndWhenAndOpensIt() throws Exception {
+        when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        notifier.onEventAdded(new com.memocat.couple.EventAdded(4L, 1L, "Lou", "Resto", "🍝",
+                java.time.LocalDate.of(2026, 10, 10), LocalTime.of(20, 30)));
+
+        JsonNode payload = sentPayload(phone);
+        assertThat(payload.get("title").asText()).isEqualTo("Lou a ajouté une date 📅");
+        assertThat(payload.get("body").asText()).isEqualTo("🍝 Resto · sam. 10 oct. à 20h30");
+        assertThat(payload.get("url").asText()).isEqualTo("/dates?event=4");
     }
 
     @Test
@@ -198,7 +252,7 @@ class PushNotifierTest {
     @Test
     void listBurstNotifiesOnceThenAgainAfterAQuietWhile() {
         MutableClock clock = new MutableClock(Instant.parse("2026-09-23T10:00:00Z"));
-        PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, json, clock);
+        PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, previews, json, clock);
         when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
         CoupleActivity added = new CoupleActivity(CoupleActivity.LIST, 1L, "Lou", "Courses", 3L);
 
@@ -248,7 +302,7 @@ class PushNotifierTest {
         verify(sender).send(eq(louPhone), any(), eq(false));
         JsonNode payload = sentPayload(phone);
         assertThat(payload.get("body").asText()).isEqualTo("Demain : 🍝 Resto à 20h30");
-        assertThat(payload.get("url").asText()).isEqualTo("/dates");
+        assertThat(payload.get("url").asText()).isEqualTo("/dates?event=4");
         assertThat(payload.get("tag").asText()).isEqualTo("event-4");
     }
 

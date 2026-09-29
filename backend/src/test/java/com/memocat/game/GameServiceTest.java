@@ -40,6 +40,7 @@ class GameServiceTest {
     @Mock private GameScoreRepository scoreRepository;
     @Mock private UserRepository userRepository;
     @Mock private SimpMessagingTemplate messaging;
+    @Mock private org.springframework.context.ApplicationEventPublisher events;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,7 +50,7 @@ class GameServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new GameService(gameRepository, scoreRepository, userRepository, objectMapper, messaging);
+        service = new GameService(gameRepository, scoreRepository, userRepository, objectMapper, messaging, events);
         lou = user(1L, "lou", "Lou");
         mia = user(2L, "mia", "Mia");
         when(userRepository.findByUsername("lou")).thenReturn(Optional.of(lou));
@@ -109,6 +110,17 @@ class GameServiceTest {
         assertThat(state.game().xSpecies()).isEqualTo("chat");
         verify(gameRepository).save(game);
         verify(messaging).convertAndSend(eq("/topic/games"), any(GamesStateDto.class));
+    }
+
+    @Test
+    void theOtherPlayerHearsItIsTheirTurnOrThatTheyLost() {
+        activeGame(".........", lou);
+        service.move("lou", "morpion", 4, "chat");
+        verify(events).publishEvent(new com.memocat.live.LiveEvents.Notice(2L, "Lou a joué : à toi au Morpion 🎮", "/jeux/morpion", "morpion"));
+
+        activeGame("XX.OO....", lou);
+        service.move("lou", "morpion", 2, "chat");
+        verify(events).publishEvent(new com.memocat.live.LiveEvents.Notice(2L, "Lou a gagné au Morpion 🏆 Revanche ?", "/jeux/morpion", "morpion"));
     }
 
     @Test
