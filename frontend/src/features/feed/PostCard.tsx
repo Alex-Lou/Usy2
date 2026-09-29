@@ -181,7 +181,7 @@ export function PostCard({
         >
           {/* Edge to edge in the card, like a photo post should be. */}
           <EffectLayer effect={post.imageEffect}>
-            <AssetImage assetId={post.imageAssetId} ratio={4 / 3} className="max-h-[32rem] w-full object-cover" />
+            <AssetImage assetId={post.imageAssetId} ratio={post.imageWidth && post.imageHeight ? post.imageWidth / post.imageHeight : 4 / 3} className="max-h-[32rem] w-full object-cover" />
           </EffectLayer>
           {burst > 0 && (
             <span key={burst} data-heart-burst="" className="mc-heart-burst pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">

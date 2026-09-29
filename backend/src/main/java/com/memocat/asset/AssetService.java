@@ -101,8 +101,26 @@ public class AssetService {
                 bytes.length,
                 uploader));
         asset.setEffect(effect);
+        if (contentType.startsWith("image/")) {
+            setDimensions(asset, bytes);
+        }
         assetContentRepository.save(new AssetContent(asset.getId(), bytes));
         return AssetDto.from(asset);
+    }
+
+    /** Fills in the size of an image stored before sizes were recorded (see AssetDimensionsBackfill). */
+    @Transactional
+    public void fillDimensions(Long assetId) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset not found"));
+        assetContentRepository.findById(assetId).ifPresent(content -> setDimensions(asset, content.getBytes()));
+    }
+
+    private static void setDimensions(Asset asset, byte[] bytes) {
+        ImageDimensions d = ImageDimensions.read(bytes);
+        if (d != null) {
+            asset.setDimensions(d.width(), d.height());
+        }
     }
 
     /** File name shown and offered on download: no path, no control characters, bounded. */

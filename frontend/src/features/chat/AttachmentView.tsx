@@ -14,7 +14,7 @@ export function AttachmentView({ asset, onOpenImage, mine }: { asset: Asset; onO
     return (
       <button type="button" onClick={() => onOpenImage(asset)} className="block overflow-hidden rounded-token press" aria-label="Agrandir la photo">
         <EffectLayer effect={asset.effect}>
-          <AssetImage assetId={asset.id} ratio={4 / 3} className="max-h-72 w-full min-w-64 object-cover" />
+          <AssetImage assetId={asset.id} ratio={asset.width && asset.height ? asset.width / asset.height : 4 / 3} className="max-h-72 w-full min-w-64 object-cover" />
         </EffectLayer>
       </button>
     );
