@@ -42,7 +42,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // Heartbeats: server pings every 10s and expects the client every 30s, so a
         // phone that vanished (no clean disconnect) is dropped within ~90s — it then
         // stops counting as "looking at the app" and gets push notifications again.
-        registry.enableSimpleBroker("/topic")
+        // /queue: one person's own messages (the bell), sent with convertAndSendToUser.
+        registry.enableSimpleBroker("/topic", "/queue")
                 .setHeartbeatValue(new long[] {10_000, 30_000})
                 .setTaskScheduler(heartbeatScheduler);
         registry.setApplicationDestinationPrefixes("/app");

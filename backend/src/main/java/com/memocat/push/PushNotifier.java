@@ -258,7 +258,7 @@ public class PushNotifier {
     }
 
     private void record(User recipient, Alert alert) {
-        notifications.publish(notifications.record(recipient.getId(), alert.text(), alert.excerpt(), alert.url(), alert.tag()));
+        notifications.publish(recipient.getUsername(), notifications.record(recipient.getId(), alert.text(), alert.excerpt(), alert.url(), alert.tag()));
     }
 
     private void push(User recipient, Alert alert, boolean urgent) {
