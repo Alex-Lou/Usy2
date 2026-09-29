@@ -16,6 +16,9 @@ import { SharedLook } from "./SharedLook";
 import { Sidebar } from "./Sidebar";
 import { Loader } from "../ui/states";
 import { primeSound } from "../../lib/feel";
+import { useRefreshOnReturn } from "../../lib/refresh";
+import { PullToRefresh } from "./PullToRefresh";
+import { UpdateBanner } from "./UpdateBanner";
 
 export function AppLayout() {
   // Between lg and xl the right rail is a drawer; a new page closes it.
@@ -24,6 +27,7 @@ export function AppLayout() {
   useEffect(() => setRailOpen(false), [pathname]);
   const closeRail = useCallback(() => setRailOpen(false), []);
   useEffect(() => primeSound(), []); // sounds can play once the page was touched
+  useRefreshOnReturn(); // back after a while: the open page catches up
 
   return (
     <div className="relative min-h-dvh">
@@ -40,6 +44,8 @@ export function AppLayout() {
       <NotificationsListener />
       <LoveBurst />
       <LiveToast />
+      <PullToRefresh />
+      <UpdateBanner />
       <AppFonts />
       <GlassSync />
       <DailyMemory />

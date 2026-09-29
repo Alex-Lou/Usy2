@@ -4,6 +4,7 @@ import { Icon } from "../../components/ui/Icon";
 import { Skeleton } from "../../components/ui/Skeleton";
 import { EmptyState } from "../../components/ui/states";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { useOnRefresh } from "../../lib/refresh";
 import { useAuth } from "../auth/useAuth";
 import { getNewsPrefs } from "../news/api";
 import { NewsTab } from "../news/NewsTab";
@@ -100,6 +101,13 @@ export function FeedPage() {
   useEffect(() => {
     load(0);
   }, [load]);
+
+  // Back in the app after a while: the latest posts, without asking.
+  const reloadLatest = useCallback(() => {
+    setFreshFrom(null);
+    void load(0);
+  }, [load]);
+  useOnRefresh(reloadLatest);
 
   const hasMore = page + 1 < totalPages;
   const sentinel = useInfiniteScroll<HTMLDivElement>(() => {
