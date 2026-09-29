@@ -8,6 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
+    /** The other one's messages that {@code readerId} has not seen yet (the red bubble on the chat tab). */
+    @org.springframework.data.jpa.repository.Query("select count(m) from Message m "
+            + "where m.sender.id <> :readerId and m.readAt is null")
+    long countUnreadFor(Long readerId);
+
     /** The other one's messages up to {@code upToId} are now seen by {@code readerId} (so received too). */
     @org.springframework.data.jpa.repository.Modifying
     @org.springframework.data.jpa.repository.Query("update Message m set m.readAt = :at, "

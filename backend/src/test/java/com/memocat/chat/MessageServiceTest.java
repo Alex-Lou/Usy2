@@ -216,4 +216,14 @@ class MessageServiceTest {
         assertThat(messageService.markRead("sam", 40L)).isNull();
         assertThat(messageService.markRead("sam", null)).isNull();
     }
+
+    @Test
+    void unreadCountsOnlyTheOtherOnesUnseenMessages() {
+        User sam = new User("sam", "h", "Sam");
+        org.springframework.test.util.ReflectionTestUtils.setField(sam, "id", 2L);
+        when(userRepository.findByUsername("sam")).thenReturn(Optional.of(sam));
+        when(messageRepository.countUnreadFor(2L)).thenReturn(3L);
+
+        assertThat(messageService.unreadCount("sam")).isEqualTo(3L);
+    }
 }

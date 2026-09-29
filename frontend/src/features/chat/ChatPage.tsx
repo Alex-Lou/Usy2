@@ -27,6 +27,7 @@ import { readingStyle, useReading } from "./reading";
 import { ReadingMenu } from "./ReadingMenu";
 import type { Message, MessageReaction } from "./types";
 import { feel } from "../../lib/feel";
+import { refreshUnread } from "./unread";
 
 /** Adds messages not seen yet, keeping chronological (id) order. */
 function mergeById(prev: Message[], fresh: Message[]): Message[] {
@@ -144,7 +145,10 @@ export function ChatPage() {
       (a) => onActivityRef.current(a),
       (r) => setReactions(r.messageId, r.reactions),
       (r) => {
-        if (r.readerId === myIdRef.current) return; // my own reading
+        if (r.readerId === myIdRef.current) {
+          refreshUnread(); // I read them (here or on my other device): the red bubble goes
+          return;
+        }
         // They saw my messages up to there (so received them too): the ticks turn to colour.
         setMessages((prev) =>
           prev.map((m) =>

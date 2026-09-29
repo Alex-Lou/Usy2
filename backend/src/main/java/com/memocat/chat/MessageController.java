@@ -25,6 +25,15 @@ public class MessageController {
         this.reactionService = reactionService;
     }
 
+    /** Messages from the other one not seen yet (the red bubble on the chat tab). */
+    @GetMapping("/unread")
+    public UnreadDto unread(Principal principal) {
+        return new UnreadDto(messageService.unreadCount(principal.getName()));
+    }
+
+    public record UnreadDto(long count) {
+    }
+
     @GetMapping
     public PageResponse<MessageDto> history(@RequestParam(defaultValue = "0") int page,
                                             @RequestParam(defaultValue = "30") int size) {

@@ -1,11 +1,14 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../features/auth/useAuth";
+import { useUnreadMessages } from "../../features/chat/unread";
+import { CountBubble } from "../ui/CountBubble";
 import { Icon } from "../ui/Icon";
 import { navItems } from "./nav";
 
 export function BottomTabBar() {
   const { user } = useAuth();
   const items = navItems(user?.id);
+  const unread = useUnreadMessages();
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 glass border-t border-border pb-[env(safe-area-inset-bottom)] lg:hidden">
@@ -27,11 +30,12 @@ export function BottomTabBar() {
                 {/* Icons only: seven labels do not fit a phone's width. */}
                 <span
                   className={
-                    "grid h-9 w-9 place-items-center rounded-token-sm transition " +
+                    "relative grid h-9 w-9 place-items-center rounded-token-sm transition " +
                     (isActive ? "seg-on" : "")
                   }
                 >
                   <Icon name={it.icon} size={21} />
+                  {it.to === "/chat" && <CountBubble count={unread} label={`${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}`} />}
                 </span>
               </>
             )}
