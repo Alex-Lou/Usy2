@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent, type PointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import type { MessageReaction } from "./types";
+import { feel } from "../../lib/feel";
 
 const HOLD_MS = 450;
 const MOVE_TOLERANCE = 10; // px: more than this is a scroll (or a swipe), not a press
@@ -38,7 +39,7 @@ export function LongPress({
 
   function fire() {
     fired.current = true;
-    navigator.vibrate?.(10);
+    feel.tap();
     if (ref.current) onLongPress(ref.current.getBoundingClientRect());
   }
 
@@ -73,7 +74,7 @@ export function LongPress({
       onPointerUp={() => {
         if (swiping.current && dx >= SWIPE_REPLY && onSwipe) {
           fired.current = true; // no click after the swipe
-          navigator.vibrate?.(10);
+          feel.tap();
           onSwipe();
         }
         cancel();
