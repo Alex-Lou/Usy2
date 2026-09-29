@@ -43,6 +43,7 @@ class PushNotifierTest {
     @Mock private UserRepository users;
     @Mock private WebPushSender sender;
     @Mock private Previews previews; // no excerpt unless a test says so
+    @Mock private com.memocat.notification.NotificationService notifications;
 
     private final PresenceRegistry presence = new PresenceRegistry();
     private final ObjectMapper json = new ObjectMapper();
@@ -61,7 +62,7 @@ class PushNotifierTest {
 
     @BeforeEach
     void setUp() {
-        notifier = new PushNotifier(subscriptions, users, presence, sender, previews, json);
+        notifier = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, json);
         lenient().when(users.findAll()).thenReturn(List.of(lou, sam));
         lenient().when(subscriptions.findByUserIdOrderByCreatedAtAsc(2L)).thenReturn(List.of(phone, oldLaptop));
     }
@@ -99,6 +100,8 @@ class PushNotifierTest {
         assertThat(payload.get("title").asText()).isEqualTo("Lou 💬");
         assertThat(payload.get("body").asText()).isEqualTo("On se voit ce soir ?");
         assertThat(payload.get("url").asText()).isEqualTo("/chat?m=40");
+        verify(notifications).record(2L, "Lou t'a envoyé un message 💬", "On se voit ce soir ?", "/chat?m=40", "chat");
+        verify(notifications, never()).record(eq(1L), any(), any(), any(), any()); // never the sender's own bell
     }
 
     @Test
@@ -120,6 +123,8 @@ class PushNotifierTest {
         notifier.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
 
         verify(sender, never()).send(any(), any(), anyBoolean());
+        // …but it still goes into the bell, shared by all their devices.
+        verify(notifications).record(2L, "Lou t'a envoyé un message 💬", null, "/chat", "chat");
     }
 
     @Test
@@ -132,7 +137,7 @@ class PushNotifierTest {
 
         JsonNode payload = sentPayload(phone);
         assertThat(payload.get("body").asText()).isEqualTo("Lou a réagi 😍 à ton post");
-        assertThat(payload.get("tag").asText()).isEqualTo("post-8");
+        assertThat(payload.get("tag").asText()).isEqualTo("post-8-reactions"); // never replaces a comment
         assertThat(payload.get("url").asText()).isEqualTo("/posts/8"); // opens that very post
     }
 
@@ -252,7 +257,7 @@ class PushNotifierTest {
     @Test
     void listBurstNotifiesOnceThenAgainAfterAQuietWhile() {
         MutableClock clock = new MutableClock(Instant.parse("2026-09-23T10:00:00Z"));
-        PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, previews, json, clock);
+        PushNotifier throttled = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, json, clock);
         when(sender.send(any(), any(), eq(false))).thenReturn(WebPushSender.Outcome.DELIVERED);
         CoupleActivity added = new CoupleActivity(CoupleActivity.LIST, 1L, "Lou", "Courses", 3L);
 
