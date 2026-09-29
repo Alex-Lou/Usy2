@@ -6,9 +6,13 @@ import type { CoupleOverview } from "./types";
 /** The shared overview, kept fresh when either person changes a mood, a note or the date. */
 export function useCouple() {
   const [couple, setCouple] = useState<CoupleOverview | null>(null);
+  const [loading, setLoading] = useState(true); // first load only
 
   const reload = useCallback(() => {
-    getCouple().then(setCouple).catch(() => {});
+    getCouple()
+      .then(setCouple)
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -18,5 +22,5 @@ export function useCouple() {
     });
   }, [reload]);
 
-  return { couple, setCouple, reload };
+  return { couple, loading, setCouple, reload };
 }
