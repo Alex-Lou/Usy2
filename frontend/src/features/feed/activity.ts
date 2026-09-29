@@ -11,20 +11,6 @@ export interface FeedActivity {
   replyToId?: number | null; // author of the comment it answers
 }
 
-/**
- * The other person reacted to one of my chat messages or comments, broadcast
- * on /topic/reactions (see ReactionAdded.java). refId: message or comment id.
- */
-export interface ReactionAdded {
-  target: "message" | "comment";
-  actorId: number;
-  actorName: string;
-  ownerId: number;
-  emoji: string;
-  refId: number;
-  postId: number | null;
-}
-
 // Tiny in-app bus: the app-wide notification socket re-emits the partner's feed
 // activity so pages (e.g. the feed) can react without opening another socket.
 const EVENT = "memocat:feed-activity";
