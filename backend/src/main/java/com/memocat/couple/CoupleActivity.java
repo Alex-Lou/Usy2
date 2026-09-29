@@ -36,6 +36,11 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     /** 💞 Nous deux: answers started again (detail: mine / accepted), or a proposal dropped (cancelled / refused). */
     public static final String NOUS_RESET = "nous-reset";
 
+    /** 📸 My photo for this week's challenge is posted, theirs not yet (detail: the theme). */
+    public static final String CHALLENGE_POSTED = "challenge-posted";
+    /** 📸 Both photos of this week's challenge are there (detail: the theme). */
+    public static final String CHALLENGE_BOTH = "challenge-both";
+
     public static CoupleActivity of(String kind, User actor, String detail, Long refId) {
         return new CoupleActivity(kind, actor.getId(), actor.getDisplayName(), detail, refId);
     }

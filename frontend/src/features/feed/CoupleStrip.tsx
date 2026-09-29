@@ -176,6 +176,9 @@ export function CoupleStrip() {
                 {theirNote ? "Répondre par un mot" : "Laisser un mot"}
               </button>
               <ThinkingButton />
+              <Link to="/defi" className="chip press hover:border-primary/50">
+                📸 Défi
+              </Link>
             </div>
           )}
 
