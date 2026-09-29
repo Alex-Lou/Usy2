@@ -7,6 +7,7 @@ export interface NotificationEntry {
   text: string;
   excerpt: string | null;
   url: string;
+  tag: string; // what it is about, e.g. "post-8" for a new post
   read: boolean;
   createdAt: string;
 }
