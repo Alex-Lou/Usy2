@@ -94,7 +94,7 @@ self.addEventListener("fetch", (event) => {
 });
 
 // Web Push from the server (the app may be closed). The payload is small JSON:
-// { title, body, url, tag } — who did what, never message content.
+// { title, body, url, tag } — who did what, and a short excerpt when there is one.
 self.addEventListener("push", (event) => {
   let data = {};
   try {
@@ -107,6 +107,11 @@ self.addEventListener("push", (event) => {
     icon: "/icons/icon-192.png",
     badge: "/icons/badge-96.png", // Android status bar: white silhouette on transparent
     data: { url: typeof data.url === "string" && /^\/(?!\/)/.test(data.url) ? data.url : "/" },
+    // Makes itself felt: a clear buzz and the time it happened. On recent Android the phone's
+    // settings for the app (sound, pop-up on screen) have the last word.
+    vibrate: [200, 100, 200],
+    timestamp: Date.now(),
+    silent: false,
   };
   if (data.tag) {
     options.tag = data.tag; // same conversation/post: replace instead of stacking
