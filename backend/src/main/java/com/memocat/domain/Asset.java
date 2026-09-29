@@ -46,6 +46,13 @@ public class Asset {
     @Column
     private String effect;
 
+    /** Displayed size of an image (see ImageDimensions), or null. */
+    @Column
+    private Integer width;
+
+    @Column
+    private Integer height;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -103,5 +110,18 @@ public class Asset {
 
     public void setEffect(String effect) {
         this.effect = effect;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setDimensions(Integer width, Integer height) {
+        this.width = width;
+        this.height = height;
     }
 }

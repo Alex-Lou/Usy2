@@ -11,6 +11,8 @@ public record PostDto(
         String text,
         Long imageAssetId,
         String imageEffect,
+        Integer imageWidth,
+        Integer imageHeight,
         Instant createdAt,
         Instant updatedAt,
         boolean edited,
