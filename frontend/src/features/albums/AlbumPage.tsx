@@ -212,7 +212,7 @@ export function AlbumPage() {
           {photos[lightbox].caption && <p className="mt-3 text-center text-white">{photos[lightbox].caption}</p>}
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {album.coverAssetId === photos[lightbox].assetId && (
-              <span className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">✓ Couverture de l'album</span>
+              <span className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">✓ Photo à la une de l'album</span>
             )}
             <button
               type="button"
@@ -222,7 +222,7 @@ export function AlbumPage() {
               }}
               className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white press hover:bg-white/25"
             >
-              {album.coverAssetId === photos[lightbox].assetId ? "Recadrer la couverture" : "Utiliser comme couverture"}
+              {album.coverAssetId === photos[lightbox].assetId ? "Recadrer la photo à la une" : "Mettre à la une"}
             </button>
             <button
               type="button"
@@ -265,7 +265,7 @@ export function AlbumPage() {
           assetId={framingPhoto.assetId}
           aspect={1} // album tiles are square
           initial={album.coverAssetId === framingPhoto.assetId ? album.coverFraming : null}
-          title="Cadrer la couverture de l'album"
+          title="Cadrer la photo à la une"
           onCancel={() => setFramingPhoto(null)}
           onSave={(f) => {
             setAlbumCover(albumId, framingPhoto.id, f).then(setAlbum).catch(() => {});
