@@ -50,7 +50,12 @@ export function ReadingMenu({
         Aa
       </button>
       {open && (
-        <div role="dialog" aria-label="Police des messages" className="absolute right-0 top-11 z-30 flex max-h-[60dvh] w-72 flex-col gap-3 overflow-y-auto rounded-token border border-border bg-surface p-3 shadow-card animate-pop">
+        <div
+          role="dialog"
+          aria-label="Police des messages"
+          className="absolute right-0 top-11 z-30 flex max-h-[60dvh] w-72 flex-col gap-3 overflow-y-auto rounded-token border border-border bg-surface p-3 shadow-card animate-pop"
+          style={{ backgroundColor: "var(--color-surface)" }} // stays opaque over a chosen background (the glass look would let the messages show through)
+        >
           <p className="text-xs text-text-muted">Comment <strong>toi</strong> tu lis les messages (sur tous tes appareils).</p>
           <div className="grid grid-cols-4 gap-1" role="group" aria-label="Taille du texte">
             {READING_SIZES.map((s) => (
