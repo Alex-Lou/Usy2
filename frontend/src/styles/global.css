@@ -229,8 +229,9 @@
 }
 .slide-in {
   animation:
-    slide-fade 1.4s ease-in-out both,
-    slide-zoom 7s ease-out both;
+    slide-fade var(--slide-fade, 1.2s) ease-in-out both,
+    slide-zoom var(--slide-zoom, 6s) ease-out both;
+  will-change: opacity, transform; /* its own layer: the fade and zoom stay on the GPU */
 }
 .slide-in.paused {
   animation-play-state: running, paused;
