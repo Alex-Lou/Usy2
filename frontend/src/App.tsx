@@ -27,6 +27,7 @@ const SharedWidgetsPage = lazy(() => import("./features/couple/SharedWidgetsPage
 const OurProfilePage = lazy(() => import("./features/couple/OurProfilePage").then((m) => ({ default: m.OurProfilePage })));
 const ChallengePage = lazy(() => import("./features/challenge/ChallengePage").then((m) => ({ default: m.ChallengePage })));
 const DatesPage = lazy(() => import("./features/couple/DatesPage").then((m) => ({ default: m.DatesPage })));
+const SearchPage = lazy(() => import("./features/search/SearchPage").then((m) => ({ default: m.SearchPage })));
 
 export function App() {
   return (
@@ -63,6 +64,7 @@ export function App() {
         <Route path="/widgets" element={<Navigate to="/profile/barre" replace />} />
         <Route path="/dates" element={<DatesPage />} />
         <Route path="/defi" element={<ChallengePage />} />
+        <Route path="/recherche" element={<SearchPage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

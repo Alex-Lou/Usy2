@@ -10,6 +10,7 @@ import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { createAlbum, listAlbums } from "./api";
 import type { Album } from "./types";
 import { PageHeader } from "../../components/ui/PageHeader";
+import { OurYear } from "./OurYear";
 
 export function AlbumsPage() {
   const [items, setItems] = useState<Album[] | null>(null);
@@ -76,6 +77,8 @@ export function AlbumsPage() {
           <Button type="submit" disabled={creating || !title.trim()}>{creating ? "Création…" : "Créer"}</Button>
         </form>
       )}
+
+      <OurYear />
 
       {items === null ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">

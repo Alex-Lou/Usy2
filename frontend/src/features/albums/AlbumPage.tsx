@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AssetImage } from "../../components/AssetImage";
 import { FramingEditor } from "../../components/photo/FramingEditor";
+import { Slideshow } from "../../components/photo/Slideshow";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
@@ -45,6 +46,7 @@ export function AlbumPage() {
   const [framingPhoto, setFramingPhoto] = useState<Photo | null>(null); // cover being framed
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileMessage, setProfileMessage] = useState<string | null>(null);
+  const [slideshow, setSlideshow] = useState(false);
 
   const refresh = useCallback(() => {
     getAlbum(albumId)
@@ -113,6 +115,11 @@ export function AlbumPage() {
         </Link>
         {!editing && (
           <div className="flex gap-1">
+            {photos.length > 0 && (
+              <button onClick={() => setSlideshow(true)} aria-label="Diaporama" className="grid h-9 w-9 place-items-center rounded-token-sm text-text-muted hover:text-text press">
+                <Icon name="play" size={18} />
+              </button>
+            )}
             <button onClick={() => setEditing(true)} aria-label="Éditer" className="grid h-9 w-9 place-items-center rounded-token-sm text-text-muted hover:text-text press">
               <Icon name="sliders" size={18} />
             </button>
@@ -243,6 +250,14 @@ export function AlbumPage() {
           </div>
           {profileMessage && <p className="mt-2 text-center text-sm text-white">{profileMessage}</p>}
         </div>
+      )}
+
+      {slideshow && (
+        <Slideshow
+          title={album.title}
+          slides={photos.map((p) => ({ assetId: p.assetId, caption: p.caption, date: p.createdAt }))}
+          onClose={() => setSlideshow(false)}
+        />
       )}
 
       {framingPhoto && (

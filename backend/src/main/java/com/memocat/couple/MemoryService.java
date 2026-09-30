@@ -14,9 +14,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-/** "Il y a 1 an": posts and album photos from this day in earlier years. */
+/** "Il y a 1 an": posts and album photos from this day in earlier years; « Notre année ». */
 @Service
 public class MemoryService {
+
+    /** At most this many photos in a year's slideshow. */
+    static final int YEAR_MAX = 500;
 
     private final PostRepository posts;
     private final PhotoRepository photos;
@@ -41,6 +44,30 @@ public class MemoryService {
                 .map(p -> fromPhoto(p, year));
         return Stream.concat(fromPosts, fromPhotos)
                 .sorted(Comparator.comparing(MemoryDto::createdAt).reversed())
+                .toList();
+    }
+
+    /** « Notre année »: the photos of a year (albums and posts), oldest first, for the slideshow. */
+    @Transactional(readOnly = true)
+    public List<MemoryDto> year(int year) {
+        String zone = clock.zone().getId();
+        Stream<MemoryDto> fromPosts = posts.findWithImageInYear(zone, year, YEAR_MAX).stream()
+                .map(p -> fromPost(p, year));
+        Stream<MemoryDto> fromPhotos = photos.findInYear(zone, year, YEAR_MAX).stream()
+                .map(p -> fromPhoto(p, year));
+        return Stream.concat(fromPosts, fromPhotos)
+                .sorted(Comparator.comparing(MemoryDto::createdAt))
+                .limit(YEAR_MAX)
+                .toList();
+    }
+
+    /** The years that have photos (albums or posts), most recent first. */
+    @Transactional(readOnly = true)
+    public List<Integer> years() {
+        String zone = clock.zone().getId();
+        return Stream.concat(photos.findYears(zone).stream(), posts.findYearsWithImage(zone).stream())
+                .distinct()
+                .sorted(Comparator.reverseOrder())
                 .toList();
     }
 

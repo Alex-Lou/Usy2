@@ -35,6 +35,16 @@ export function getMemories(): Promise<Memory[]> {
   return apiRequest<Memory[]>("/api/couple/memories");
 }
 
+/** « Notre année »: the year's photos (albums and posts), oldest first. */
+export function getYearPhotos(year: number): Promise<Memory[]> {
+  return apiRequest<Memory[]>(`/api/couple/year?year=${year}`);
+}
+
+/** The years that have photos, most recent first. */
+export function getPhotoYears(): Promise<number[]> {
+  return apiRequest<number[]>("/api/couple/years");
+}
+
 export function getLists(): Promise<SharedList[]> {
   return apiRequest<SharedList[]>("/api/couple/lists");
 }
