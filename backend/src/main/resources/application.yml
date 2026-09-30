@@ -7,6 +7,9 @@ spring:
     url: ${MEMOCAT_DB_URL:jdbc:postgresql://${MEMOCAT_DB_HOST:localhost}:${MEMOCAT_DB_PORT:5432}/${MEMOCAT_DB_NAME:memocat}}
     username: ${MEMOCAT_DB_USER:memocat}
     password: ${MEMOCAT_DB_PASSWORD:memocat}
+    hikari:
+      # Two people: a few connections are plenty, each one costs memory.
+      maximum-pool-size: 5
   jpa:
     hibernate:
       ddl-auto: validate
@@ -26,6 +29,10 @@ spring:
 server:
   # PORT is injected by most PaaS (e.g. Render); falls back to MEMOCAT_SERVER_PORT then 8080.
   port: ${PORT:${MEMOCAT_SERVER_PORT:8080}}
+  # Two people: 20 request threads instead of 200 (each one reserves memory).
+  tomcat:
+    threads:
+      max: 20
   # Text answers (app code, JSON) travel gzipped: about 3x smaller on the phone.
   compression:
     enabled: true
