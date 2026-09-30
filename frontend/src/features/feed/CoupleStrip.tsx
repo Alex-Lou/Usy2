@@ -179,6 +179,9 @@ export function CoupleStrip() {
               <Link to="/carnet" className="chip press hover:border-primary/50">
                 📓 Carnet
               </Link>
+              <Link to="/defi" className="chip press hover:border-primary/50">
+                📸 Défi
+              </Link>
             </div>
           )}
 

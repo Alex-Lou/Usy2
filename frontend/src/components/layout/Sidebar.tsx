@@ -6,6 +6,7 @@ import { Avatar } from "../ui/Avatar";
 const SHORTCUTS: { to: string; label: string; emoji: string }[] = [
   { to: "/profile/nous", label: "Notre profil", emoji: "💑" },
   { to: "/carnet", label: "Notre carnet", emoji: "📓" },
+  { to: "/defi", label: "Défi photo", emoji: "📸" },
   { to: "/jeux/nous", label: "Nous deux", emoji: "💞" },
   { to: "/jeux/chat", label: "La maison de Moka", emoji: "🐱" },
   { to: "/jeux/quiz", label: "Quiz", emoji: "🧠" },
