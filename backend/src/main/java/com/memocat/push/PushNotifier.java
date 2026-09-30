@@ -165,6 +165,7 @@ public class PushNotifier {
                     previews.moodLabel(a.actorId()), "/profile/nous", "mood");
             case CoupleActivity.NOTE -> alert(a.actorName() + " t'a laissé un mot 💌", previews.note(a.refId()), "/profile/nous", "note");
             case CoupleActivity.THINKING -> alert(a.actorName() + " pense à toi 💭", "/chat", "thinking");
+            case CoupleActivity.HIDDEN_FOUND -> alert(a.actorName() + " a trouvé ton mot caché 🐾", a.detail(), "hidden-" + a.refId());
             // The photo stays secret until the other one posts theirs: only the theme is told.
             case CoupleActivity.CHALLENGE_POSTED -> alert(a.actorName() + " a relevé le défi photo 📸 À toi !",
                     "« " + a.detail() + " »", "/defi", "challenge");

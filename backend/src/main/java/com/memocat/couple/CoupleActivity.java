@@ -36,6 +36,8 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     /** 💞 Nous deux: answers started again (detail: mine / accepted), or a proposal dropped (cancelled / refused). */
     public static final String NOUS_RESET = "nous-reset";
 
+    /** 🐾 The other one found my hidden note (detail: where the photo is, refId: the note). */
+    public static final String HIDDEN_FOUND = "hidden-found";
     /** 📸 My photo for this week's challenge is posted, theirs not yet (detail: the theme). */
     public static final String CHALLENGE_POSTED = "challenge-posted";
     /** 📸 Both photos of this week's challenge are there (detail: the theme). */

@@ -17,6 +17,7 @@ import {
   updatePhotoCaption,
 } from "./api";
 import { PhotoUploader } from "./PhotoUploader";
+import { HiddenNotesPanel, PawLayer, useHiddenNotes } from "../hidden/HiddenNotes";
 import type { Album, Photo } from "./types";
 import { setProfilePhoto } from "../profile/api";
 
@@ -208,8 +209,7 @@ export function AlbumPage() {
 
       {lightbox !== null && photos[lightbox] && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 animate-pop" onClick={() => setLightbox(null)}>
-          <AssetImage assetId={photos[lightbox].assetId} className="max-h-[80vh] max-w-full rounded-token object-contain" />
-          {photos[lightbox].caption && <p className="mt-3 text-center text-white">{photos[lightbox].caption}</p>}
+          <LightboxPhoto assetId={photos[lightbox].assetId} caption={photos[lightbox].caption} />
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {album.coverAssetId === photos[lightbox].assetId && (
               <span className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">✓ Couverture de l'album</span>
@@ -274,5 +274,22 @@ export function AlbumPage() {
         />
       )}
     </div>
+  );
+}
+
+/** The photo in the album lightbox, with its 🐾 hidden notes (a tap on the photo still closes). */
+function LightboxPhoto({ assetId, caption }: { assetId: number; caption: string | null }) {
+  const hidden = useHiddenNotes(assetId);
+  return (
+    <>
+      <div className="relative max-w-full">
+        <AssetImage assetId={assetId} className="max-h-[70vh] max-w-full rounded-token object-contain" />
+        <PawLayer notes={hidden.notes} onFound={hidden.found} />
+      </div>
+      {caption && <p className="mt-3 text-center text-white">{caption}</p>}
+      <div className="mt-3 flex w-full justify-center">
+        <HiddenNotesPanel assetId={assetId} notes={hidden.notes} revealed={hidden.revealed} onChanged={hidden.reload} />
+      </div>
+    </>
   );
 }

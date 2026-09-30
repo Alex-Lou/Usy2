@@ -196,6 +196,7 @@ export function PostCard({
         <ImageViewer
           asset={{ id: post.imageAssetId, originalFilename: `memocat-${post.id}.jpg` }}
           onClose={() => setViewing(false)}
+          hiddenNotes
         />
       )}
 
