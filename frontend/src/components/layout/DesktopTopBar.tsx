@@ -6,6 +6,7 @@ import { useUnreadMessages } from "../../features/chat/unread";
 import { CountBubble } from "../ui/CountBubble";
 import { navItems } from "./nav";
 import { NotificationBell } from "./NotificationBell";
+import { SearchButton } from "./SearchButton";
 
 /**
  * 🖥️ The desktop top bar (lg and up), Facebook-like: the logo over the left
@@ -65,6 +66,7 @@ export function DesktopTopBar({ railOpen, onRail }: { railOpen: boolean; onRail:
         >
           <Icon name="sparkles" size={20} />
         </button>
+        <SearchButton inline />
         <NotificationBell inline />
         <AccountMenu />
       </div>
