@@ -28,11 +28,19 @@ import { ReadingMenu } from "./ReadingMenu";
 import type { Message, MessageReaction } from "./types";
 import { feel } from "../../lib/feel";
 import { refreshUnread } from "./unread";
+import { useOnRefresh } from "../../lib/refresh";
 
 /** Adds messages not seen yet, keeping chronological (id) order. */
 function mergeById(prev: Message[], fresh: Message[]): Message[] {
   const known = new Set(prev.map((m) => m.id));
   return [...prev, ...fresh.filter((m) => !known.has(m.id))].sort((a, b) => a.id - b.id);
+}
+
+/** Like mergeById, but the fresh copies win: ticks, reactions and edits come up to date. */
+function upsertById(prev: Message[], fresh: Message[]): Message[] {
+  const byId = new Map(prev.map((m) => [m.id, m]));
+  for (const m of fresh) byId.set(m.id, m);
+  return [...byId.values()].sort((a, b) => a.id - b.id);
 }
 
 export function ChatPage() {
@@ -242,6 +250,22 @@ export function ChatPage() {
       .catch(() => {});
   }, [connected]);
 
+  // « Actualiser » (the ↻ button, or back in the app after a while): the latest
+  // messages again, without reloading the page nor losing the scroll position.
+  const [refreshing, setRefreshing] = useState(false);
+  const catchUp = useCallback(() => {
+    setRefreshing(true);
+    const started = Date.now();
+    getHistory(0, 30)
+      .then((p) => setMessages((prev) => upsertById(prev, [...p.content].reverse())))
+      .catch(() => {})
+      .finally(() => {
+        refreshUnread();
+        window.setTimeout(() => setRefreshing(false), Math.max(0, 500 - (Date.now() - started))); // the turn stays visible
+      });
+  }, []);
+  useOnRefresh(catchUp);
+
   // Stay pinned to the newest message — while photos load and grow the list, or
   // when the emoji sheet shrinks the view — unless the user scrolled up.
   useEffect(() => {
@@ -304,7 +328,7 @@ export function ChatPage() {
   }, []);
 
   return (
-    <div className="flex h-[calc(100dvh-var(--topbar-h)-max(var(--tabbar-h),var(--picker-h,0px))-2rem)] flex-col gap-3 lg:h-[calc(100dvh-var(--desk-topbar-h)-2rem-max(2rem,var(--picker-h,0px))-1rem)]">
+    <div data-no-pull className="flex h-[calc(100dvh-var(--topbar-h)-max(var(--tabbar-h),var(--picker-h,0px))-2rem)] flex-col gap-3 lg:h-[calc(100dvh-var(--desk-topbar-h)-2rem-max(2rem,var(--picker-h,0px))-1rem)]">
       <header className="relative z-20 flex items-center gap-3 animate-fade-up">
         {partner && (
           <ProfileLink userId={partner.userId} className="shrink-0 rounded-full">
@@ -326,7 +350,20 @@ export function ChatPage() {
             {connected ? "Connecté" : "Connexion…"}
           </p>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              feel.tap();
+              catchUp();
+            }}
+            disabled={refreshing}
+            aria-label="Actualiser la conversation"
+            title="Actualiser"
+            className="grid h-10 w-10 place-items-center rounded-full text-text-muted press hover:text-text"
+          >
+            <Icon name="refresh" size={20} className={refreshing ? "animate-spin" : ""} />
+          </button>
           <ReadingMenu reading={reading} onChange={saveReading} error={readingError} commonFont={common.chatFont} />
         </div>
         {pet && (
