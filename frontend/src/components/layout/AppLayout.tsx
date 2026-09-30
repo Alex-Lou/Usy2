@@ -12,6 +12,7 @@ import { NotificationBell } from "./NotificationBell";
 import { ColorModeSync } from "./ColorModeSync";
 import { DesktopTopBar } from "./DesktopTopBar";
 import { RightRail } from "./RightRail";
+import { SearchButton } from "./SearchButton";
 import { SharedLook } from "./SharedLook";
 import { Sidebar } from "./Sidebar";
 import { Loader } from "../ui/states";
@@ -40,6 +41,7 @@ export function AppLayout() {
       {/* Mobile top bar backdrop: content scrolls under it, never under bare buttons. */}
       <div className="fixed inset-x-0 top-0 z-30 h-[var(--topbar-h)] glass border-b border-border lg:hidden" aria-hidden="true" />
       <MobileMenu />
+      <SearchButton />
       <NotificationBell />
       <NotificationsListener />
       <LoveBurst />
