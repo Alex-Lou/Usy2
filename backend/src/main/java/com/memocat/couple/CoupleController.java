@@ -85,6 +85,18 @@ public class CoupleController {
         return memoryService.onThisDay();
     }
 
+    /** « Notre année »: the year's photos (albums and posts), oldest first. */
+    @GetMapping("/year")
+    public List<MemoryDto> year(@RequestParam int year) {
+        return memoryService.year(year);
+    }
+
+    /** The years that have photos, most recent first. */
+    @GetMapping("/years")
+    public List<Integer> years() {
+        return memoryService.years();
+    }
+
     /** The widgets of both side menus (editable by both). */
     @GetMapping("/widgets")
     public SharedWidgetsDto widgets() {
