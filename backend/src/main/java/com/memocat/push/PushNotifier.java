@@ -165,6 +165,10 @@ public class PushNotifier {
                     previews.moodLabel(a.actorId()), "/profile/nous", "mood");
             case CoupleActivity.NOTE -> alert(a.actorName() + " t'a laissé un mot 💌", previews.note(a.refId()), "/profile/nous", "note");
             case CoupleActivity.THINKING -> alert(a.actorName() + " pense à toi 💭", "/chat", "thinking");
+            case CoupleActivity.CROSSWORD -> alert(a.actorName() + " t'attend sur une grille de mots fléchés ✏️",
+                    "Grille " + a.detail() + ", à remplir à deux", "/jeux/mots-fleches?partie=" + a.refId(), "crossword-" + a.refId());
+            case CoupleActivity.CROSSWORD_DONE -> alert(a.actorName() + " a posé la dernière lettre : grille terminée 🎉",
+                    "/jeux/mots-fleches?partie=" + a.refId(), "crossword-" + a.refId());
             case CoupleActivity.HIDDEN_FOUND -> alert(a.actorName() + " a trouvé ton mot caché 🐾", a.detail(), "hidden-" + a.refId());
             // The photo stays secret until the other one posts theirs: only the theme is told.
             case CoupleActivity.CHALLENGE_POSTED -> alert(a.actorName() + " a relevé le défi photo 📸 À toi !",

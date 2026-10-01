@@ -1,3 +1,4 @@
+import { emitCrossword } from "../crossword/api";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../app/notifications";
@@ -73,6 +74,7 @@ export function NotificationsListener() {
       onCommentReactions: emitCommentReactions, // open comment lists update live
       onLive: emitLive,
       onNaval: emitNaval,
+      onCrossword: emitCrossword,
     });
     const onVisibility = () => {
       if (document.visibilityState === "visible") markActive();

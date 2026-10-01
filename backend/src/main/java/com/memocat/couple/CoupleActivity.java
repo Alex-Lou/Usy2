@@ -43,6 +43,11 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     /** 📸 Both photos of this week's challenge are there (detail: the theme). */
     public static final String CHALLENGE_BOTH = "challenge-both";
 
+    /** ✏️ A shared "mots fléchés" grid was started (detail: its size, refId: the game). */
+    public static final String CROSSWORD = "crossword";
+    /** ✏️ A shared "mots fléchés" grid is complete (detail: its size, refId: the game). */
+    public static final String CROSSWORD_DONE = "crossword-done";
+
     public static CoupleActivity of(String kind, User actor, String detail, Long refId) {
         return new CoupleActivity(kind, actor.getId(), actor.getDisplayName(), detail, refId);
     }
