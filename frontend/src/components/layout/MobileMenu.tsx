@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { openTab } from "../../lib/refresh";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
@@ -72,6 +73,7 @@ export function MobileMenu() {
             <nav className="flex flex-col gap-1">
               {items.map((it) => (
                 <NavLink
+                  onClick={openTab}
                   key={it.to}
                   to={it.to}
                   end={it.end}

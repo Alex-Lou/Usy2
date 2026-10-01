@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { openTab } from "../../lib/refresh";
 import { useAuth } from "../../features/auth/useAuth";
 import { useUnreadMessages } from "../../features/chat/unread";
 import { CountBubble } from "../ui/CountBubble";
@@ -15,6 +16,7 @@ export function BottomTabBar() {
       <div className="mx-auto flex max-w-lg items-stretch justify-around px-2">
         {items.map((it) => (
           <NavLink
+            onClick={openTab}
             key={it.to}
             to={it.to}
             end={it.end}

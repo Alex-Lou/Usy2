@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * « Actualiser » without reloading: pages that show shared data listen and
@@ -36,4 +36,22 @@ export function useRefreshOnReturn(): void {
     document.addEventListener("visibilitychange", onVisibility);
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
+}
+
+/** A tab of the menu was tapped (even the one already open): it opens up to date. */
+const TAB_EVENT = "memocat:tab";
+
+export function openTab(): void {
+  window.dispatchEvent(new Event(TAB_EVENT));
+}
+
+/** Counts the tab taps: used as a key, the open page starts over and fetches everything again. */
+export function useTabNonce(): number {
+  const [nonce, setNonce] = useState(0);
+  useEffect(() => {
+    const bump = () => setNonce((n) => n + 1);
+    window.addEventListener(TAB_EVENT, bump);
+    return () => window.removeEventListener(TAB_EVENT, bump);
+  }, []);
+  return nonce;
 }

@@ -17,7 +17,9 @@ import { SharedLook } from "./SharedLook";
 import { Sidebar } from "./Sidebar";
 import { Loader } from "../ui/states";
 import { primeSound } from "../../lib/feel";
-import { useRefreshOnReturn } from "../../lib/refresh";
+import { emitRefresh, useRefreshOnReturn, useTabNonce } from "../../lib/refresh";
+import { useNotifications } from "../../app/notifications";
+import { refreshUnread } from "../../features/chat/unread";
 import { PullToRefresh } from "./PullToRefresh";
 import { UpdateBanner } from "./UpdateBanner";
 
@@ -29,6 +31,17 @@ export function AppLayout() {
   const closeRail = useCallback(() => setRailOpen(false), []);
   useEffect(() => primeSound(), []); // sounds can play once the page was touched
   useRefreshOnReturn(); // back after a while: the open page catches up
+  // A tab tapped in the menu: the page starts over (fetches everything again), the
+  // bell and the messages bubble catch up too, and the view goes back to the top.
+  const tab = useTabNonce();
+  const { reload: reloadNotifications } = useNotifications();
+  useEffect(() => {
+    if (tab === 0) return;
+    window.scrollTo({ top: 0 });
+    refreshUnread();
+    void reloadNotifications();
+    emitRefresh(); // what lives outside the page (right rail…) listens to this
+  }, [tab, reloadNotifications]);
 
   return (
     <div className="relative min-h-dvh">
@@ -56,7 +69,7 @@ export function AppLayout() {
         {/* Clears the top bar (burger + bell, below the status bar) and whatever covers the
             bottom: the tab bar, or the emoji sheet while it is open (--picker-h). */}
         <div className="mx-auto w-full max-w-content px-4 lg:px-6 pb-[calc(max(var(--tabbar-h),var(--picker-h,0px))+1rem)] pt-[calc(var(--topbar-h)+1rem)] lg:pb-[calc(max(2rem,var(--picker-h,0px))+1rem)] lg:pt-8">
-          <Suspense fallback={<Loader />}>
+          <Suspense key={tab} fallback={<Loader />}>
             <Outlet />
           </Suspense>
         </div>

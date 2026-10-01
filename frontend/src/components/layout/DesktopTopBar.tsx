@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { openTab } from "../../lib/refresh";
 import { useAuth } from "../../features/auth/useAuth";
 import { Icon } from "../ui/Icon";
 import { AccountMenu } from "./AccountMenu";
@@ -31,6 +32,7 @@ export function DesktopTopBar({ railOpen, onRail }: { railOpen: boolean; onRail:
       <nav className="flex h-full flex-1 items-stretch justify-center gap-1" aria-label="Sections">
         {tabs.map((it) => (
           <NavLink
+            onClick={openTab}
             key={it.to}
             to={it.to}
             end={it.end}
