@@ -24,7 +24,10 @@ WORKDIR /app
 COPY --from=backend /app/backend/target/*.jar app.jar
 ENV MEMOCAT_STORAGE_PATH=/tmp/memocat-uploads
 EXPOSE 8080
-# Java takes only 25% of the container's memory by default (~128 MB on a 512 MB
-# instance): give it 60%, the rest covers threads and class metadata. On an
-# out-of-memory error, exit so the host restarts it instead of limping along.
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=60", "-XX:+ExitOnOutOfMemoryError", "-jar", "/app/app.jar"]
+# Fits a 512 MB instance with room to spare (measured: ~300 MB at rest, ~330 MB
+# serving many photos at once; the app itself needs ~50 MB of heap). The heap is
+# capped at 40% (~200 MB); Serial GC, smaller thread stacks, a small code cache
+# and the quick compiler only keep the rest of the process small. Above 512 MB
+# the host kills the app (502/503 while it restarts). On an out-of-memory error,
+# exit so the host restarts it instead of limping along.
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=40", "-XX:+UseSerialGC", "-Xss512k", "-XX:ReservedCodeCacheSize=64m", "-XX:MaxMetaspaceSize=192m", "-XX:TieredStopAtLevel=1", "-XX:+ExitOnOutOfMemoryError", "-jar", "/app/app.jar"]
