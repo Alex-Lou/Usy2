@@ -1,0 +1,579 @@
+# Mots fléchés : MOT|définition (mot en majuscules sans accent, définition courte).
+AN|Douze mois
+AS|Carte maîtresse
+AU|Contraction de « à le »
+CE|Démonstratif
+DE|Préposition
+DO|Note de musique
+DU|Article partitif
+EN|Pronom adverbial
+ET|Conjonction
+EU|Participe d'avoir
+IL|Pronom masculin
+LA|Note de musique
+LE|Article défini
+LU|Parcouru des yeux
+MA|Possessif féminin
+MI|Note de musique
+NE|Négation
+NI|Ni l'un ___ l'autre
+NU|Sans vêtement
+ON|Pronom indéfini
+OR|Métal précieux
+OS|Pièce du squelette
+OU|Conjonction de choix
+RE|Note de musique
+RI|S'est esclaffé
+SA|Possessif féminin
+SE|Pronom réfléchi
+SI|Note ou condition
+SU|Connu
+TA|Possessif féminin
+TE|Pronom personnel
+TU|Pronom de l'intime
+UN|Premier nombre
+VA|Se déplace
+VU|Aperçu
+OH|Exclamation
+AH|Cri de surprise
+ES|Tu ___ là ?
+ADO|Jeune de quinze ans
+AGE|Années vécues
+AIE|Cri de douleur
+AIL|Condiment du Sud
+AIR|On le respire
+AME|Souffle vital
+AMI|Copain
+ANE|Baudet
+ANS|Années
+ARA|Perroquet coloré
+ARC|Lance des flèches
+ARE|Cent mètres carrés
+ART|Peinture ou musique
+AVE|Prière à Marie
+BAC|Examen de fin de lycée
+BAL|Soirée dansante
+BAS|Pas haut
+BEC|Bouche d'oiseau
+BIO|Sans pesticides
+BLE|Céréale dorée
+BOA|Serpent ou écharpe
+BOB|Chapeau d'été
+BOL|Tasse sans anse
+BUS|Transport en commun
+BUT|Objectif
+CAP|Pointe de terre
+CAR|Autocar
+CEP|Pied de vigne
+CIL|Poil de paupière
+CLE|Ouvre la porte
+COU|Relie la tête au corps
+CRI|Éclat de voix
+CRU|Pas cuit
+DES|Petits cubes à jouer
+DIX|Deux fois cinq
+DON|Cadeau
+DOS|Arrière du corps
+DUO|Chanté à deux
+DUR|Pas mou
+EAU|H2O
+ECU|Bouclier ancien
+ELU|Choisi par vote
+EMU|Touché au cœur
+EPI|Tête de blé
+ERE|Longue époque
+EST|Levant
+ETE|Saison chaude
+FEE|Agite sa baguette
+FER|Métal de la poêle
+FEU|Flammes
+FIL|Sert à coudre
+FIN|Terme
+GAI|Joyeux
+GAZ|Ni solide ni liquide
+GEL|Fait geler l'eau
+ICI|En ce lieu
+ILE|Terre entourée d'eau
+IRA|Se rendra
+JEU|Divertissement
+JUS|Boisson de fruits
+KIT|Prêt à monter
+LAC|Étendue d'eau douce
+LAS|Fatigué
+LES|Article pluriel
+LIE|Dépôt du vin
+LIS|Fleur royale
+LIT|Meuble pour dormir
+LOI|Règle votée
+LOT|Gain à la loterie
+LUE|Parcourue des yeux
+LUI|Pronom masculin
+MAI|Mois du muguet
+MAL|Douleur
+MER|Grande bleue
+MES|Possessif pluriel
+MIE|Intérieur du pain
+MIS|Posé
+MOI|Ego
+MOT|Groupe de lettres
+MOU|Pas dur
+MUE|Change de peau
+MUR|Cloison
+NET|Clair et propre
+NEZ|Sert à sentir
+NID|Maison d'oiseau
+NIE|Dément
+NOM|Prénom et ___
+NOS|Possessif pluriel
+NUE|Sans vêtement
+NUL|Zéro pointé
+OIE|Oiseau de basse-cour
+ONU|Nations unies
+OSA|Se risqua
+OSE|Téméraire
+OTE|Enlève
+OUF|Soupir de soulagement
+OUI|Accord
+PAN|Bruit de tir
+PAS|Enjambée
+PEU|Pas beaucoup
+PIE|Oiseau bavard
+PIN|Arbre à aiguilles
+PIS|Encore plus mal
+PLI|Marque sur le tissu
+POT|Récipient
+POU|Parasite des cheveux
+PRE|Champ d'herbe
+PUB|Réclame
+PUR|Sans mélange
+QUI|Pronom interrogatif
+RAS|Au ___ des pâquerettes
+RAT|Gros rongeur
+RIZ|Céréale d'Asie
+ROI|Porte la couronne
+RUE|Voie de ville
+SAC|Fourre-tout
+SAS|Petite pièce étanche
+SEC|Pas mouillé
+SEL|Cristaux de la mer
+SES|Possessif pluriel
+SKI|Glisse sur la neige
+SOI|Chez ___
+SOL|Plancher ou note
+SON|Bruit
+SUD|Opposé du nord
+SUR|Au-dessus de
+TAC|Du tac au ___
+TAG|Graffiti signé
+TAS|Pile
+TEL|Pareil
+TES|Possessif pluriel
+THE|Infusion
+TIC|Petite manie
+TIR|Coup de feu
+TOC|Imitation sans valeur
+TOI|Pas moi
+TON|Couleur de la voix
+TOT|De bonne heure
+TRI|Sélection
+TUE|Fait mourir
+UNE|Article féminin
+UNI|Sans motif
+UNS|Les ___ et les autres
+USE|Abîme à la longue
+VAN|Transport de chevaux
+VER|De terre ou à soie
+VIE|Existence
+VIN|Rouge ou blanc
+VIS|Se visse
+VOL|Larcin ou trajet aérien
+VOS|Possessif pluriel
+VUE|Panorama
+ZEN|Calme et serein
+ZOO|Parc aux animaux
+AGIR|Passer à l'acte
+AIDE|Coup de main
+AILE|Sert à voler
+AIME|Chérit
+AIRS|Mélodies
+ALLO|Au téléphone
+AMER|Pas sucré
+AMIE|Copine
+ANGE|Être céleste
+ANIS|Parfum du pastis
+ARME|Pistolet ou épée
+ARTS|Beaux-___
+ASIE|Continent
+AUBE|Lever du jour
+AVIS|Opinion
+BAIE|Petit golfe
+BAIN|Dans la baignoire
+BEAU|Joli
+BEBE|Nourrisson
+BETE|Animal
+BIEN|Contraire de mal
+BISE|Petit baiser
+BLEU|Couleur du ciel
+BOIS|Matière des arbres
+BOUE|Terre mouillée
+BOUT|Extrémité
+BRAS|Membre supérieur
+CAFE|Petit noir
+CAGE|Prison d'oiseau
+CAPE|Grand manteau
+CHAT|Miaule
+CIEL|Au-dessus de nos têtes
+CITE|Ville
+CLOU|Se plante au marteau
+CODE|Mot de passe
+COTE|Bord de mer
+COUP|Choc
+CRIS|Hurlements
+CUBE|Six faces
+DAME|Pièce d'échecs
+DATE|Jour précis
+DENT|Dans la bouche
+DEUX|Un plus un
+DIRE|Exprimer
+DODO|Sommeil d'enfant
+DOSE|Quantité prescrite
+DOUX|Tendre
+DUEL|Combat à deux
+DUNE|Colline de sable
+ECHO|Son répété
+EGAL|Pareil
+ELAN|Impulsion
+ELLE|Pronom féminin
+EPEE|Arme de duel
+ETAT|Nation
+ETES|Saisons chaudes
+ETRE|Exister
+EURO|Monnaie européenne
+FACE|Côté de la pièce
+FAIM|Envie de manger
+FARD|Maquillage
+FETE|Célébration
+FIER|Orgueilleux
+FILS|Garçon des parents
+FOIN|Herbe séchée
+GARE|Arrêt des trains
+GENS|Personnes
+GOLF|Sport de green
+GOUT|Saveur
+GRIS|Couleur de souris
+HALO|Cercle lumineux
+HIER|Veille d'aujourd'hui
+HUIT|Sept plus un
+IDEE|Pensée
+ILES|Terres entourées d'eau
+IRIS|Fleur ou partie de l'œil
+JOIE|Bonheur
+JOUR|Opposé de la nuit
+JUPE|Vêtement féminin
+KIWI|Fruit poilu
+LAIE|Femelle du sanglier
+LAIT|Boisson blanche
+LAME|Partie du couteau
+LIEN|Attache
+LIER|Attacher
+LION|Roi des animaux
+LIRE|Parcourir un livre
+LOGE|Place au théâtre
+LOIN|À grande distance
+LOUP|Hurle à la lune
+LUNE|Astre de la nuit
+MAIN|Cinq doigts
+MALE|Pas femelle
+MARE|Petite étendue d'eau
+MERE|Maman
+MIDI|Douze heures
+MIEL|Fait par les abeilles
+MINE|Air du visage
+MODE|Tendance
+MOIS|Trente jours environ
+MOKA|Café… ou notre chat
+MONT|Montagne
+MOTO|Deux-roues
+MUET|Sans voix
+MUSE|Inspire l'artiste
+NAGE|Crawl ou brasse
+NAIN|Ami de Blanche-Neige
+NEUF|Tout nouveau
+NIER|Démentir
+NOEL|Fête de décembre
+NOIR|Couleur de la nuit
+NOTE|Do, ré ou mi
+NUIT|Opposé du jour
+OEIL|Organe de la vue
+ONDE|Vague
+ONZE|Dix plus un
+ORAL|Examen parlé
+OSER|Se risquer
+OTER|Retirer
+OUIE|Sens des sons
+OURS|Gros plantigrade
+PAGE|Feuille de livre
+PAIN|Baguette
+PAIX|Contraire de guerre
+PAPI|Grand-père
+PARI|Mise
+PEAU|Enveloppe du corps
+PERE|Papa
+PEUR|Frousse
+PIED|Au bout de la jambe
+PILE|Batterie ou tas
+PIPE|Pour fumer
+PLAT|Mets ou sans relief
+POIS|Petit légume rond
+POLE|Nord ou sud
+PORT|Abri des bateaux
+PURE|Sans mélange
+RAIL|Voie ferrée
+RAME|Aviron
+RANG|Rangée
+RARE|Peu commun
+REVE|Fait la nuit
+RIEN|Néant
+RIRE|S'esclaffer
+RIVE|Bord de rivière
+ROBE|Tenue de soirée
+ROSE|Fleur à épines
+ROUE|Tourne sous la voiture
+SAGE|Raisonnable
+SALE|Pas propre
+SENS|Direction
+SEPT|Jours de la semaine
+SEUL|Sans personne
+SOIE|Tissu précieux
+SOIF|Envie de boire
+SOIR|Fin de journée
+SOLO|Seul en scène
+SORT|Destin
+SOUS|En dessous de
+TAIE|Housse d'oreiller
+TARD|Pas tôt
+TAXI|Voiture à compteur
+TETE|Sommet du corps
+TIGE|Porte la fleur
+TOIT|Couvre la maison
+TOUR|Château ou périple
+TRES|Beaucoup
+TROU|Cavité
+TUTU|Jupe de danseuse
+URNE|Pour voter
+VASE|Pour les fleurs
+VEAU|Petit de la vache
+VELO|Bicyclette
+VENT|Souffle d'air
+VERS|Ligne de poème
+VERT|Couleur de l'herbe
+VIDE|Rien dedans
+VITE|Rapidement
+VOIE|Chemin
+VOIX|Parole ou chant
+YEUX|Organes de la vue
+ZERO|Rien du tout
+AIMER|Chérir
+ALBUM|Recueil de photos
+AMOUR|Sentiment tendre
+ANNEE|Douze mois
+APPEL|Coup de fil
+ARBRE|Chêne ou sapin
+ATOUT|Carte maîtresse
+AUTRE|Différent
+AVION|Vole dans le ciel
+BALLE|Se lance
+BIJOU|Ornement précieux
+BLANC|Couleur de la neige
+BOTTE|Chaussure haute
+BULLE|De savon
+CADRE|Entoure le tableau
+CALIN|Tendre étreinte
+CALME|Tranquille
+CANAL|Voie d'eau
+CANOE|Petite embarcation
+CARTE|À jouer ou routière
+CHANT|Mélodie
+CHIEN|Aboie
+CHOSE|Objet quelconque
+CIDRE|Boisson de pomme
+CLOWN|Amuse au cirque
+COCON|Abri douillet
+COEUR|Bat dans la poitrine
+COLLE|Fait tenir
+CONTE|Histoire pour enfants
+CORPS|Organisme
+CRABE|Marche de côté
+CRAIE|Pour le tableau noir
+CREPE|De la Chandeleur
+DANSE|Valse ou tango
+DESIR|Envie
+DINER|Repas du soir
+DOUCE|Agréable au toucher
+DRAME|Tragédie
+ECOLE|Lieu des élèves
+ECRAN|Télé ou ordinateur
+ENVIE|Désir
+EPICE|Poivre ou cannelle
+ETANG|Plan d'eau
+FILLE|Pas garçon
+FINAL|Dernier
+FLEUR|Rose ou tulipe
+FOIRE|Fête foraine
+FORET|Bois étendu
+FOULE|Multitude
+FRERE|Fils des mêmes parents
+FROID|Glacial
+FRUIT|Pomme ou poire
+GENOU|Articulation de la jambe
+GLACE|Crème glacée ou miroir
+GOMME|Efface
+GRAIN|De sable ou de café
+GUIDE|Montre le chemin
+HERBE|Pousse dans le pré
+HEURE|Soixante minutes
+HIVER|Saison froide
+HOTEL|Pour une nuit en voyage
+HUILE|D'olive
+IDEAL|Parfait
+IMAGE|Illustration
+JAUNE|Couleur du citron
+JOUER|S'amuser
+JOUET|Pour s'amuser
+LAINE|Vient du mouton
+LAPIN|Aime les carottes
+LARME|Coule en pleurant
+LIGNE|Trait
+LIVRE|Se lit
+LUNDI|Début de semaine
+MAMIE|Grand-mère
+MATIN|Début de journée
+MELON|Fruit d'été
+MERCI|Remerciement
+METRO|Train souterrain
+MONDE|Planète et ses habitants
+MUSEE|On y voit des œuvres
+NEIGE|Flocons blancs
+NOYAU|Au cœur de la pêche
+NUAGE|Dans le ciel gris
+OASIS|Îlot vert du désert
+OCEAN|Vaste mer
+OLIVE|Fruit de l'olivier
+OMBRE|Contraire de lumière
+ONCLE|Frère du père
+OPERA|Spectacle chanté
+ORAGE|Tonnerre et éclairs
+OURSE|Grande ___ (étoiles)
+PANDA|Ours noir et blanc
+PARIS|Capitale
+PATTE|Jambe d'animal
+PECHE|Fruit à noyau
+PERLE|Bijou d'huître
+PHARE|Guide les bateaux
+PHOTO|Cliché
+PIANO|Instrument à touches
+PIEGE|Traquenard
+PLAGE|Sable et mer
+PLUIE|Tombe des nuages
+PLUME|D'oiseau ou d'écrivain
+POEME|Vers en strophes
+POIRE|Fruit en goutte
+POMME|Fruit d'Ève
+PORTE|S'ouvre et se ferme
+POULE|Pond des œufs
+RADIO|Poste à musique
+REINE|Épouse du roi
+ROBOT|Machine humanoïde
+ROMAN|Long récit
+ROUGE|Couleur du sang
+RUCHE|Maison d'abeilles
+SABLE|Sur la plage
+SALON|Pièce à vivre
+SALUT|Bonjour familier
+SIGNE|Geste ou indice
+SOLDE|Prix réduit
+SONGE|Rêve
+SOUPE|Potage
+SUCRE|Rend doux
+TABLE|Meuble à manger
+TANGO|Danse argentine
+TAPIS|Couvre le sol
+TASSE|Pour le café
+TEMPS|Météo ou durée
+TENTE|Abri de camping
+TERRE|Notre planète
+TIGRE|Félin rayé
+TRAIN|Roule sur des rails
+TROIS|Deux plus un
+UNION|Mariage
+USINE|Fabrique
+VACHE|Donne du lait
+VAGUE|Ondulation de la mer
+VALSE|Danse à trois temps
+VERRE|Pour boire
+VILLE|Agglomération
+VOILE|Fait avancer le voilier
+ZEBRE|Cheval rayé
+ARGENT|Monnaie ou métal
+BAISER|Bisou
+BALADE|Promenade
+BATEAU|Navigue sur l'eau
+BOUGIE|Éclaire à la flamme
+CANAPE|Sofa
+CERISE|Petit fruit rouge
+CHEMIN|Sentier
+CIRQUE|Sous un chapiteau
+CITRON|Agrume acide
+FARINE|Pour le pain
+FRAISE|Fruit rouge des bois
+GATEAU|Dessert d'anniversaire
+JARDIN|Potager ou parterre
+LETTRE|Missive
+MAISON|Foyer
+MIROIR|Reflète l'image
+NAVIRE|Grand bateau
+OISEAU|A des plumes
+ORANGE|Agrume ou couleur
+PAPIER|Feuille blanche
+PILOTE|Conduit l'avion
+PRINCE|Fils de roi
+RAISIN|Fruit de la vigne
+RIDEAU|Devant la fenêtre
+RIVAGE|Bord de l'eau
+SAISON|Été ou hiver
+SALADE|Laitue
+SIESTE|Repos après le repas
+SOLEIL|Astre du jour
+TIROIR|Dans la commode
+TRESOR|Coffre de pirate
+TULIPE|Fleur de Hollande
+VALISE|Bagage
+VERGER|Arbres fruitiers
+VIOLON|Instrument à archet
+VOYAGE|Périple
+BONHEUR|Grande joie
+CHATEAU|Demeure de seigneur
+CUISINE|Pièce des repas
+DESSERT|Fin de repas sucrée
+DOUCEUR|Tendresse
+ECHARPE|Autour du cou
+FENETRE|Ouverture vitrée
+FROMAGE|Brie ou camembert
+GUITARE|Instrument à cordes
+JOURNAL|Quotidien
+LUMIERE|Clarté
+MARIAGE|Union
+MUSIQUE|Art des sons
+PINCEAU|Outil du peintre
+PLANETE|Mars ou Vénus
+SEMAINE|Sept jours
+SOURIRE|Air joyeux
+CAMPAGNE|Loin de la ville
+CHOCOLAT|Douceur cacaotée
+DIMANCHE|Jour de repos
+MONTAGNE|Sommets enneigés
+PAPILLON|Ailes colorées
+SOUVENIR|Mémoire du passé
+VACANCES|Congés
+PROMENADE|Balade
+TENDRESSE|Affection douce

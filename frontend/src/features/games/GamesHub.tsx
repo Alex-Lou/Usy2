@@ -62,6 +62,13 @@ const GAMES: GameCard[] = [
     emoji: "🐍",
   },
   {
+    to: "/jeux/mots-fleches",
+    title: "Mots fléchés",
+    tagline: "Une nouvelle grille à chaque partie, en trois tailles. Seul, ou à deux sur la même grille en direct.",
+    mode: "Solo · à deux",
+    emoji: "✏️",
+  },
+  {
     to: "/jeux/sudoku",
     title: "Sudoku",
     tagline: "Quatre niveaux, de Facile à Expert : une nouvelle grille à chaque partie.",
