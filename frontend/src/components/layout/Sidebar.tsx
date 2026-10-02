@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { openTab } from "../../lib/refresh";
 import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
 
@@ -27,7 +28,7 @@ export function Sidebar() {
 
   return (
     <aside className="fixed bottom-0 left-0 top-desk-bar z-30 hidden w-shell flex-col gap-1 overflow-y-auto overflow-x-hidden border-r border-border glass px-3 py-4 lg:flex">
-      <NavLink to={user ? `/profile/${user.id}` : "/profile"} className={row}>
+      <NavLink onClick={openTab} to={user ? `/profile/${user.id}` : "/profile"} className={row}>
         <Avatar name={user?.displayName ?? "?"} size={36} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
         <span className="min-w-0 truncate">{user?.displayName}</span>
       </NavLink>
@@ -35,7 +36,7 @@ export function Sidebar() {
       <p className="mt-4 px-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Raccourcis</p>
       <nav className="flex flex-col gap-0.5" aria-label="Raccourcis">
         {SHORTCUTS.map((s) => (
-          <NavLink key={s.to} to={s.to} className={row}>
+          <NavLink onClick={openTab} key={s.to} to={s.to} className={row}>
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-token-sm bg-bg-2/60 text-lg" aria-hidden="true">{s.emoji}</span>
             <span className="truncate">{s.label}</span>
           </NavLink>
