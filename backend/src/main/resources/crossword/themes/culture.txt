@@ -1,0 +1,125 @@
+# Musique, cinéma & loisirs
+MUSIQUE|1|Art des sons|Adoucit les mœurs
+CHANSON|1|Paroles et musique|C'est toujours la même ___
+CHANT|1|Mélodie|Grégorien, à l'église
+CHANTEUR|1|Interprète|De charme
+CHORALE|1|Groupe de chanteurs|À plusieurs voix
+CONCERT|1|Spectacle musical|De louanges
+FESTIVAL|1|Grand rassemblement musical|Celui de Cannes
+OPERA|1|Spectacle chanté|Garnier ou Bastille
+ORCHESTRE|1|Ensemble de musiciens|Chef à la baguette
+PIANO|1|Instrument à touches|Qui va ___ va sano
+GUITARE|1|Instrument à cordes|Électrique pour le rock
+VIOLON|1|Instrument à archet|D'Ingres, passe-temps
+BATTERIE|1|Tambours et cymbales|De cuisine ou de téléphone
+FLUTE|1|Instrument à vent|Enchantée chez Mozart
+TROMPETTE|1|Instrument en cuivre|Nez en ___
+HARPE|2|Grand instrument à cordes|Des anges
+SAXO|1|Saxophone|Jazz en cuivre
+TAMBOUR|1|Instrument à percussion|Sans ___ ni trompette
+ACCORDEON|1|Piano à bretelles|Plié en ___
+NOTE|1|Do, ré ou mi|Fausse, elle grince
+GAMME|1|Do ré mi fa sol la si|Haut de ___
+RYTHME|1|Cadence|Avoir le ___ dans la peau
+TEMPO|2|Vitesse d'un morceau|Battement musical
+MELODIE|1|Air de musique|Ritournelle
+REFRAIN|1|Revient dans la chanson|Toujours le même ___
+COUPLET|1|Partie de chanson|Entre deux refrains
+DISQUE|1|Vinyle|Changer de ___, radoter
+ALBUM|1|Recueil de chansons|Sorti en vinyle
+TUBE|1|Chanson à succès|Tout l'été à la radio
+JAZZ|1|Musique de La Nouvelle-Orléans|Club enfumé
+ROCK|1|Musique électrique|And roll
+RAP|1|Chant parlé rythmé|Battle de mots
+VALSE|1|Danse à trois temps|Des étiquettes, elle change les prix
+TANGO|1|Danse argentine|Il faut être deux pour le danser
+SALSA|1|Danse latine|Sauce piquante
+DANSE|1|Valse ou tango|Mener la ___
+BALLET|1|Spectacle de danse|Le Lac des cygnes
+CINEMA|1|Septième art|Se faire du ___, s'inventer des histoires
+FILM|1|Long métrage|Fais-moi pas ton ___
+ACTEUR|1|Joue un rôle|Comédien
+ACTRICE|1|Comédienne|Star de l'écran
+STAR|1|Vedette|Étoile filante d'Hollywood
+ROLE|1|Personnage joué|À tour de ___
+SCENE|1|Partie de film|Faire une ___ de ménage
+ECRAN|1|Toile de cinéma|Crever l'___
+TOILE|1|Écran de cinéma|Se faire une ___
+CAMERA|1|Filme|Cachée, pour piéger
+OSCAR|1|Statuette dorée|Prix d'Hollywood
+CESAR|1|Prix du cinéma français|Ave, empereur
+SCENARIO|1|Histoire d'un film|Catastrophe, le pire
+COMEDIE|1|Film drôle|Jouer la ___, faire semblant
+DRAME|1|Film triste|Pas de quoi en faire un
+WESTERN|1|Film de cow-boys|Duel au soleil
+POLAR|1|Film policier|Roman noir
+HORREUR|1|Film qui fait peur|Quelle ___ !
+DESSINANIME|1|Film d'animation|Disney en fait
+SERIE|1|Feuilleton|Noire, malchance en chaîne
+EPISODE|1|Partie de série|Le dernier, attendu
+SAISON|1|Ensemble d'épisodes|Huit pour Game of Thrones
+POPCORN|1|Maïs éclaté|Grignoté au cinéma
+TICKET|1|Billet d'entrée|De métro ou de cinéma
+THEATRE|1|Art de la scène|Coup de ___
+PIECE|1|Œuvre de théâtre|Montée par une troupe
+RIDEAU|1|Ouvre le spectacle|Tombe à la fin
+CIRQUE|1|Sous un chapiteau|Quel ___ !
+CLOWN|1|Amuse au cirque|Faire le ___
+MAGIE|1|Tour de prestidigitateur|La ___ de Noël
+LIVRE|1|Se lit|De poche
+ROMAN|1|Long récit|Photo, ou d'amour
+POEME|1|Vers en strophes|C'est tout un ___
+CONTE|1|Histoire pour enfants|De fées
+BD|1|Bande dessinée|Neuvième art
+AUTEUR|1|Écrivain|Droits d'___
+PEINTURE|1|Art des couleurs|Fraîche, ne pas toucher
+TABLEAU|1|Œuvre peinte|Brosser le ___
+PINCEAU|1|Outil du peintre|S'emmêler les ___
+DESSIN|1|Image au crayon|Faut-il te faire un ___ ?
+SCULPTURE|1|Art du volume|Statue taillée
+MUSEE|1|On y voit des œuvres|Pièce de ___, très ancienne
+ARTISTE|1|Créateur|Nom d'___, pseudonyme
+PHOTO|1|Cliché|Il n'y a pas ___
+JEU|1|Divertissement|Vidéo, sur console
+JEUVIDEO|1|Sur console|Manette en main
+CONSOLE|1|Pour jouer aux jeux vidéo|Meuble d'appoint
+CARTES|1|Belote ou tarot|Jouer ___ sur table
+ECHECS|1|Jeu des rois|Et mat !
+DAMES|1|Jeu à pions|Pièces qui sautent
+PUZZLE|1|Jeu de pièces|Casse-tête
+DOMINO|1|Pièce à points|En cascade
+LOTO|1|Jeu de hasard|Gros lot
+SUDOKU|1|Grille de chiffres|Casse-tête japonais
+MOTSCROISES|2|Grille de définitions|Cousins des mots fléchés
+QUIZ|1|Série de questions|Jeu télévisé
+KARAOKE|1|Chanter sur un écran|Micro du samedi soir
+FETE|1|Célébration|Faire la ___
+SOIREE|1|Fête du soir|Pyjama, entre copines
+BAL|1|Soirée dansante|Masqué, à Venise
+DISCO|1|Musique des seventies|Boule à facettes
+DJ|1|Mixe les disques|Platines en soirée
+MICRO|1|Amplifie la voix|Ouvert, pour tous
+APPLAUDIR|1|Battre des mains|Bravo !
+BIS|1|Encore !|Une deuxième fois
+BRAVO|1|Félicitations|Applaudissements en un mot
+PUBLIC|1|Spectateurs|Grand ___
+FAN|1|Admirateur|Groupie
+IDOLE|1|Vedette adorée|Des jeunes
+AFFICHE|1|Annonce le film|Tête d'___
+SPECTACLE|1|Représentation|Le ___ doit continuer
+PREMIERE|1|Séance inaugurale|Avant-___, avant la sortie
+STUDIO|1|Lieu de tournage|Petit appartement
+TOURNAGE|1|Film en cours|Silence, on tourne !
+REALISATEUR|1|Dirige le film|Metteur en scène
+CASTING|1|Choix des acteurs|Erreur de ___
+GENERIQUE|1|Défile à la fin|Médicament sans marque
+SUITE|1|Film d'après|Et la ___ ?
+HEROS|1|Personnage principal|Super, en cape
+VILAIN|1|Méchant du film|Pas beau
+PRINCESSE|1|Fille de roi|Disney en a plein
+SORCIER|1|Fait de la magie|Harry Potter en est un
+DRAGON|1|Crache du feu|Gardien de trésor
+FEE|1|Clochette en est une|Mains de ___
+ELFE|2|Être magique aux oreilles pointues|Lutin de Tolkien
+ROBOT|1|Machine de science-fiction|R2-D2 en est un
+ALIEN|1|Extraterrestre|Le huitième passager

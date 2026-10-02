@@ -1,0 +1,128 @@
+# Voyage & pays
+AVION|1|Vole dans le ciel|En papier, il se plie
+TRAIN|1|Roule sur des rails|Mener grand ___
+BUS|1|Transport en commun|Navette à étages à Londres
+TAXI|1|Voiture à compteur|De la Marne en 1914
+VELO|1|Bicyclette|Petite reine
+MOTO|1|Deux-roues|Gros cube
+BATEAU|1|Navigue sur l'eau|Monter un ___, mentir
+NAVIRE|1|Grand bateau|Le ___ va, dit la chanson
+METRO|1|Train souterrain|___, boulot, dodo
+TRAM|1|Tramway|Roule sur rails en ville
+GARE|1|Arrêt des trains|Du Nord à Paris
+PORT|1|Abri des bateaux|De pêche ou de plaisance
+AEROPORT|1|Piste et terminal|Roissy ou Orly
+VALISE|1|Bagage|Diplomatique, elle est inviolable
+SAC|1|Fourre-tout|À dos, en randonnée
+BILLET|1|Titre de transport|Doux, il est amoureux
+PASSEPORT|1|Papiers du voyageur|Visa pour ailleurs
+VISA|1|Permis d'entrer|Carte bancaire
+CARTE|1|Plan routier|Postale, envoyée de vacances
+PLAN|1|Carte de ville|Laisser en ___, abandonner
+GUIDE|1|Montre le chemin|Du routard
+HOTEL|1|Pour une nuit en voyage|De ville, la mairie
+CAMPING|1|Vacances sous la tente|Les Flots bleus, au cinéma
+TENTE|1|Abri de camping|Toile du campeur
+CARAVANE|1|Maison roulante|Les chiens aboient, elle passe
+ROUTE|1|Voie|Celle des vacances est encombrée
+AUTOROUTE|1|Voie rapide à péage|Du soleil, l'A7
+PEAGE|2|Barrière payante|Bouchon de juillet
+ESCALE|1|Arrêt en voyage|Pause en chemin
+CROISIERE|1|Voyage en paquebot|Vitesse de ___
+VOYAGE|1|Périple|De noces, en amoureux
+EXCURSION|2|Petite sortie|Visite d'un jour
+RANDONNEE|1|Longue marche|Sac au dos dans la montagne
+VACANCES|1|Congés|Les grandes, en été
+SOUVENIR|1|Rapporté de vacances|Petite tour Eiffel en plastique
+CARTEPOSTALE|2|Envoyée de vacances|Paysage timbré
+PHOTO|1|Cliché|Prise devant le monument
+FRONTIERE|1|Limite entre pays|Sans elle, le monde est ouvert
+DOUANE|1|Contrôle aux frontières|Rien à déclarer ?
+PAYS|1|Nation|Le ___ du soleil levant
+VILLE|1|Agglomération|Lumière, c'est Paris
+CAPITALE|1|Première ville|Lettre majuscule
+VILLAGE|1|Petite commune|Global, c'est la planète
+ILE|1|Terre entourée d'eau|De beauté, la Corse
+PLAGE|1|Sable et mer|Privée, réservée
+MONTAGNE|1|Sommets enneigés|Vacances au ski
+EUROPE|1|Notre continent|Enlevée par Zeus
+ASIE|1|Continent|Mineure, la Turquie
+AFRIQUE|1|Continent du Sahara|Berceau de l'humanité
+AMERIQUE|1|Nouveau Monde|Découverte en 1492
+OCEANIE|2|Continent des îles|Australie et Pacifique
+FRANCE|1|Hexagone|Pays des fromages
+ITALIE|1|Pays de la botte|Rome est sa capitale
+ESPAGNE|1|Pays du flamenco|Ses châteaux font rêver
+PORTUGAL|1|Pays de Lisbonne|Terre du fado
+GRECE|1|Pays d'Athènes|Berceau de la démocratie
+JAPON|1|Pays du soleil levant|Archipel des sushis
+CHINE|1|Pays de la Grande Muraille|Empire du Milieu
+INDE|1|Pays du Taj Mahal|Sous-continent
+MAROC|1|Pays de Marrakech|Royaume du Maghreb
+EGYPTE|1|Pays des pyramides|Don du Nil
+BRESIL|1|Pays du carnaval de Rio|Patrie de Pelé
+CANADA|1|Pays de l'érable|Feuille rouge sur le drapeau
+MEXIQUE|1|Pays des sombreros|Terre des Aztèques
+PEROU|1|Pays du Machu Picchu|Ce n'est pas le ___ !
+IRLANDE|1|Île verte|Pays du trèfle
+ECOSSE|1|Pays du kilt|Terre des Highlands
+SUISSE|1|Pays du chocolat et des montres|Neutre, au centre de l'Europe
+BELGIQUE|1|Pays des frites et de la BD|Royaume plat
+PARIS|1|Capitale de la France|Vaut bien une messe
+ROME|1|Capitale de l'Italie|Ne s'est pas faite en un jour
+LONDRES|1|Capitale anglaise|Ville de Big Ben
+VENISE|1|Ville des gondoles|Cité des Doges
+NICE|1|Ville de la Promenade des Anglais|Gentil, en anglais
+LYON|1|Ville des bouchons|Capitale des Gaules
+MARSEILLE|1|Cité phocéenne|Son vieux port
+BORDEAUX|1|Ville du vin|Couleur vin rouge
+NANTES|2|Ville des ducs de Bretagne|Son édit fut révoqué
+TOKYO|1|Capitale du Japon|Mégapole nippone
+NEWYORK|1|Big Apple|Ville qui ne dort jamais
+SAHARA|1|Grand désert|Océan de sable
+NIL|1|Fleuve d'Égypte|Il a ses crues sacrées
+ALPES|1|Montagnes du Mont-Blanc|Chaîne enneigée
+TOURISTE|1|Voyageur en visite|Il prend tout en photo
+VOYAGEUR|1|Qui voyage|Sans bagages, chez Anouilh
+PILOTE|1|Conduit l'avion|Automatique, sans les mains
+HOTESSE|1|Accueille à bord|De l'air
+VOL|1|Trajet aérien|Long-courrier
+ESCALIER|1|Marches|Celui de service
+SIESTE|1|Repos après le repas|Espagnole, elle est sacrée
+SOLEIL|1|Astre du jour|Crème indispensable
+BRONZER|1|Prendre des couleurs|Les ___, au cinéma
+MAILLOT|1|Tenue de bain|Jaune, pour le leader
+PARASOL|1|Abri de plage|Grand champignon de toile
+SERVIETTE|1|Pour se sécher|De bain, sur le sable
+LUNETTES|1|Protègent les yeux|De soleil
+CASQUETTE|1|Couvre-chef à visière|En porter plusieurs, c'est cumuler
+CHAPEAU|1|Couvre la tête|Bravo !
+SANDALE|1|Chaussure d'été|Ouverte sur les orteils
+TONGS|1|Sandales de plage|Clac-clac sur le sable
+RESERVATION|2|Place retenue|Faite à l'avance
+ACCUEIL|1|Réception|Comité d'___
+CHAMBRE|1|Pièce pour dormir|Avec vue sur mer
+CLE|1|Ouvre la porte|De la chambre d'hôtel
+BOUSSOLE|1|Indique le nord|Aiguille aimantée
+CARNET|1|Petit cahier|De voyage
+AVENTURE|1|Expérience risquée|Partir à l'___
+EXPLORATEUR|2|Découvre le monde|Christophe Colomb en fut un
+EXOTIQUE|1|D'ailleurs|Fruit lointain
+ETRANGER|1|D'un autre pays|Partir à l'___
+LANGUE|1|Parlée dans un pays|Donner sa ___ au chat
+ACCENT|1|Manière de parler|Du Sud, il chante
+DEPART|1|Commencement du voyage|Prendre un nouveau ___
+ARRIVEE|1|Fin du trajet|Ligne d'___
+RETARD|1|Attente imprévue|En ___, comme le lapin blanc
+QUAI|1|Bord de voie|Au ___ des Orfèvres
+WAGON|1|Voiture de train|Raccrocher les ___
+TICKET|1|Petit billet|Avoir un ___, plaire
+MUSEE|1|On y voit des œuvres|Le Louvre en est un
+CHATEAU|1|Demeure de seigneur|En Espagne, il est imaginaire
+CATHEDRALE|1|Grande église|Notre-Dame de Paris
+PONT|1|Enjambe la rivière|Faire le ___, ne pas travailler
+TOUR|1|Celle de Pise penche|Faire le ___ du monde
+PHARE|1|Guide les bateaux|Celui d'Alexandrie
+MARCHE|1|Étals en plein air|Flottant à Bangkok
+GONDOLE|2|Barque vénitienne|Tête de rayon
+PYRAMIDE|1|Tombeau de pharaon|Du Louvre

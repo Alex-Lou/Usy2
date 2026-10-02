@@ -1,0 +1,121 @@
+# Sport & forme
+SPORT|1|Activité physique|C'est pas du ___ !
+FOOT|1|Football|Ballon rond
+RUGBY|1|Ballon ovale|Mêlée et essais
+TENNIS|1|Raquette et filet|De table, ping-pong
+GOLF|1|Sport de green|Dix-huit trous
+SKI|1|Glisse sur la neige|De fond ou alpin
+SURF|1|Glisse sur les vagues|Sur Internet aussi
+JUDO|1|Art martial japonais|Ceinture noire
+KARATE|1|Art martial à coups|Kid, au cinéma
+BOXE|1|Combat aux poings|Noble art
+VOILE|1|Sport à bateau|Faire de la ___
+VELO|1|Bicyclette|Tour de France
+COURSE|1|Compétition de vitesse|Contre la montre
+MARATHON|1|42 kilomètres|Très longue séance
+SPRINT|1|Course de vitesse|Final rapide
+NATATION|1|Sport de nageur|Piscine olympique
+PISCINE|1|Bassin de nage|Faire ___, passer à côté
+PLONGEON|1|Saut dans l'eau|Faire un ___, chuter
+YOGA|1|Postures et respiration|Salutation au soleil
+DANSE|1|Mouvements en musique|Classique ou hip-hop
+GYM|1|Gymnastique|Salle de ___
+MUSCU|1|Musculation|Haltères et abdos
+FITNESS|1|Sport en salle|Remise en forme
+ESCALADE|1|Grimpe sur la paroi|Montée des tensions
+RANDO|1|Randonnée|Marche en montagne
+MARCHE|1|Pas à pas|Nordique, avec bâtons
+FOOTING|1|Petite course|Jogging du dimanche
+JOGGING|1|Course lente|Survêtement
+BALLON|1|Se lance au foot|Rond ou ovale
+BALLE|1|Petite boule de jeu|De match
+RAQUETTE|1|Frappe la balle|Pour marcher dans la neige
+FILET|1|Sépare le terrain|De pêche ou de bœuf
+BUT|1|Le gardien le défend|Marquer un ___
+CAGE|1|But de foot|Aux fauves
+TERRAIN|1|Lieu de jeu|Gagner du ___
+STADE|1|Grande enceinte sportive|De France
+MATCH|1|Rencontre sportive|Nul, sans vainqueur
+EQUIPE|1|Groupe de joueurs|Esprit d'___
+JOUEUR|1|Membre de l'équipe|Mauvais ___
+ARBITRE|1|Siffle les fautes|Libre ___
+SIFFLET|1|Outil de l'arbitre|Couper le ___
+CARTON|1|Jaune ou rouge|Faire un ___, réussir
+PENALTY|1|Tir au but|Sur la ligne des onze mètres
+CORNER|1|Coup de pied de coin|Coin du terrain
+GARDIEN|1|Protège le but|De la paix
+ATTAQUANT|1|Marque des buts|Avant-centre
+DEFENSE|1|Protège le camp|Légitime, elle excuse
+ESSAI|1|Point au rugby|Coup d'___
+MELEE|1|Poussée au rugby|Se jeter dans la ___
+SET|1|Manche au tennis|Jeu, ___ et match
+ACE|2|Service gagnant|As, en anglais
+SMASH|1|Coup frappé vers le bas|Puissant au filet
+PODIUM|1|Marches des vainqueurs|Trois places
+MEDAILLE|1|Récompense en métal|Le revers de la ___
+OR|1|Première médaille|Médaille du vainqueur
+ARGENT|1|Deuxième médaille|Métal du dauphin
+BRONZE|1|Troisième médaille|Statue ou bronzage
+COUPE|1|Trophée|Du monde
+TROPHEE|1|Prix du vainqueur|Sur l'étagère
+CHAMPION|1|Vainqueur|Du monde
+RECORD|1|Meilleure performance|Battu, il tombe
+VICTOIRE|1|Triomphe|Crier ___ trop tôt
+DEFAITE|1|Échec|Encaissée
+ENTRAINEUR|1|Coach|Prépare l'équipe
+COACH|1|Entraîneur|Sportif ou de vie
+ECHAUFFEMENT|1|Avant l'effort|Préparation des muscles
+EFFORT|1|Dépense d'énergie|Faire un ___
+SUEUR|1|Transpiration|À la ___ de son front
+SOUFFLE|1|Respiration|À couper le ___
+MUSCLE|1|Se contracte|Biceps
+ABDOS|1|Muscles du ventre|Tablette de chocolat
+FORME|1|Bonne condition|Tenir la ___
+ENDURANCE|1|Résistance|Pour le marathon
+VITESSE|1|Rapidité|Excès de ___
+SAUT|1|Bond|En hauteur ou en longueur
+LANCER|1|Jeter|Du poids
+HALTERE|2|Poids de musculation|Soulevé à bout de bras
+TAPIS|1|De course ou de sol|Au ___, KO
+CORDE|1|À sauter|Sur le ring
+RING|1|Carré du boxeur|Monter sur le ___
+GANT|1|De boxe|Jeter le ___, défier
+KIMONO|1|Tenue de judo|Japonais traditionnel
+CEINTURE|1|Grade au judo|Se serrer la ___
+CASQUE|1|Protège la tête|Du cycliste
+MAILLOT|1|Tenue du joueur|Jaune du Tour de France
+SHORT|1|Culotte de sport|Court pantalon
+BASKETS|1|Chaussures de sport|Lâche-moi les ___ !
+SURVET|1|Survêtement|Tenue de jogging
+BASKET|1|Panier et ballon|Chaussure ou sport
+HANDBALL|1|Ballon à la main|Sport des Experts
+VOLLEY|1|Ballon par-dessus le filet|Sur la plage
+PINGPONG|1|Tennis de table|Échange rapide
+BADMINTON|1|Volant et raquette|Sport de jardin
+PETANQUE|1|Boules provençales|Tu tires ou tu pointes ?
+BOULE|1|Se lance à la pétanque|Perdre la ___
+COCHONNET|2|Petite boule de la pétanque|But du pointeur
+BILLARD|1|Queue et boules|C'est du ___, c'est facile
+FLECHETTES|1|Jeu de cible|Au pub
+CIBLE|1|À viser|Dans le mille
+ARC|1|Tir à l'___|Celui de triomphe
+EPEE|1|Arme d'escrime|Croiser le fer
+ESCRIME|1|Combat à l'épée|En garde !
+EQUITATION|1|Sport à cheval|Saut d'obstacles
+GALOP|1|Course de cheval|Au triple ___
+PATIN|1|Glisse sur la glace|Rouler un ___
+GLISSE|1|Ski ou surf|Sports de ___
+LUGE|1|Petit traîneau|Descente d'hiver
+SNOWBOARD|1|Surf des neiges|Planche en montagne
+PLANCHE|1|Surf ou skate|Gainage au sol
+SKATE|1|Planche à roulettes|Rampe de ___
+ROLLER|1|Patin à roulettes|Sur la piste
+OLYMPIQUE|1|Des Jeux|Forme ___
+TOUR|1|De France, à vélo|Grande boucle
+ETAPE|1|Partie du Tour|Brûler les ___
+PELOTON|1|Groupe de cyclistes|D'exécution
+SPRINTER|1|Coureur rapide|Il finit en trombe
+CHRONO|1|Mesure le temps|Contre la montre
+FINALE|1|Dernier match|Grande ___
+SUPPORTER|1|Fan d'une équipe|Encourage du gradin
+OLA|1|Vague du stade|Bras levés en tribune

@@ -1,0 +1,716 @@
+# Mélange : mots courants, utilisés dans toutes les grilles.
+# MOT|niveau (1 courant, 2 moins courant, 3 rare)|définition facile|définition difficile
+AN|1|Douze mois|Se fête avec du champagne
+AS|1|Carte maîtresse|Champion ou carte
+AU|1|Contraction de « à le »|Petit article contracté
+CE|1|Démonstratif|Désigne sans montrer du doigt
+DE|1|Préposition|Lie les mots ou se lance
+DO|1|Note de musique|Ouvre la gamme
+DU|1|Article partitif|Un peu de tout
+EN|1|Pronom adverbial|Dans une autre langue ou dedans
+ET|1|Conjonction|Petit trait d'union verbal
+EU|1|Participe d'avoir|Possédé, ou dupé
+IL|1|Pronom masculin|Lui, sujet
+LA|1|Note de musique|Le diapason la donne
+LE|1|Article défini|Masculin bien défini
+LU|1|Parcouru des yeux|Dévoré, pour un roman
+MA|1|Possessif féminin|À moi, au féminin
+MI|1|Note de musique|À moitié
+NE|1|Négation|Né d'une négation
+NI|1|Ni l'un ___ l'autre|Refuse deux fois
+NU|1|Sans vêtement|Comme un ver
+ON|1|Pronom indéfini|Nous, familièrement
+OR|1|Métal précieux|Doré ou donc
+OS|1|Pièce du squelette|Le chien le ronge
+OU|1|Conjonction de choix|Pose une alternative
+RE|1|Note de musique|Deuxième marche de la gamme
+RI|1|S'est esclaffé|A trouvé ça drôle
+SA|1|Possessif féminin|La sienne
+SE|1|Pronom réfléchi|Pronom qui se regarde
+SI|1|Note ou condition|Avec des « ___ », on mettrait Paris en bouteille
+SU|1|Connu|Appris par cœur
+TA|1|Possessif féminin|La tienne
+TE|1|Pronom personnel|Toi, en complément
+TU|1|Pronom de l'intime|Tutoiement en deux lettres
+UN|1|Premier nombre|Le premier de tous
+VA|1|Se déplace|Ça ___ ? Ça ___ !
+VU|1|Aperçu|Ni ___ ni connu
+OH|1|Exclamation|Cri d'étonnement
+AH|1|Cri de surprise|Ça alors, en deux lettres
+ES|1|Tu ___ là ?|Tu existes
+ADO|1|Jeune de quinze ans|Âge ingrat, en abrégé
+AGE|1|Années vécues|Il n'a pas d'importance, dit-on
+AIE|1|Cri de douleur|Ça fait mal !
+AIL|1|Condiment du Sud|Éloigne les vampires
+AIR|1|On le respire|Mélodie ou atmosphère
+AME|1|Souffle vital|Sœur de cœur
+AMI|1|Copain|Un vrai se reconnaît dans le besoin
+ANE|1|Baudet|Son bonnet punit l'élève
+ANS|1|Années|Ils s'accumulent sur le gâteau
+ARA|2|Perroquet coloré|Bavard des tropiques
+ARC|1|Lance des flèches|Celui de Cupidon fait des ravages
+ARE|3|Cent mètres carrés|Petite surface agricole
+ART|1|Peinture ou musique|Le septième est au cinéma
+AVE|3|Prière à Marie|Salutation latine
+BAC|1|Examen de fin de lycée|Passeport pour la fac
+BAL|1|Soirée dansante|Cendrillon y perdit sa pantoufle
+BAS|1|Pas haut|Porté sous la jupe
+BEC|1|Bouche d'oiseau|Clouer le sien, c'est faire taire
+BIO|1|Sans pesticides|Étiquette verte au marché
+BLE|1|Céréale dorée|Argent, en argot
+BOA|2|Serpent ou écharpe|Il serre fort, à plumes ou à écailles
+BOB|2|Chapeau d'été|Couvre-chef de pêcheur
+BOL|1|Tasse sans anse|En avoir ras le ___
+BUS|1|Transport en commun|Il a sa voie réservée
+BUT|1|Objectif|Le gardien veut l'empêcher
+CAP|1|Pointe de terre|On le garde dans la tempête
+CAR|1|Autocar|Parce que, ou véhicule
+CEP|2|Pied de vigne|Champignon ou souche
+CIL|1|Poil de paupière|Il bat sans faire de bruit
+CLE|1|Ouvre la porte|Elle est sous le paillasson
+COU|1|Relie la tête au corps|Celui de la girafe est long
+CRI|1|Éclat de voix|Dernier, à la mode
+CRU|1|Pas cuit|Grand vin ou poisson japonais
+DES|1|Petits cubes à jouer|On les jette, le sort est fait
+DIX|1|Deux fois cinq|Note parfaite sur cette base
+DON|1|Cadeau|Talent ou générosité
+DOS|1|Arrière du corps|On le tourne en partant
+DUO|1|Chanté à deux|Un couple sur scène
+DUR|1|Pas mou|Œuf qui a bouilli dix minutes
+EAU|1|H2O|Elle dort, la plus dangereuse
+ECU|3|Bouclier ancien|Vieille pièce du royaume
+ELU|1|Choisi par vote|Député ou maire
+EMU|1|Touché au cœur|Les larmes aux yeux
+EPI|2|Tête de blé|Rebelle chez les cheveux
+ERE|2|Longue époque|Celle des dinosaures fut longue
+EST|1|Levant|Le soleil s'y lève
+ETE|1|Saison chaude|Indien, il arrive en octobre
+FEE|1|Agite sa baguette|Marraine de Cendrillon
+FER|1|Métal de la poêle|Il se repasse
+FEU|1|Flammes|Rouge, il arrête
+FIL|1|Sert à coudre|Celui du téléphone a disparu
+FIN|1|Terme|Mot de la ___
+GAI|1|Joyeux|Comme un pinson
+GAZ|1|Ni solide ni liquide|Il chauffe la casserole
+GEL|1|Fait geler l'eau|Coiffe ou fige
+ICI|1|En ce lieu|Pas là-bas
+ILE|1|Terre entourée d'eau|Robinson y vécut seul
+IRA|1|Se rendra|Futur départ
+JEU|1|Divertissement|Les dés en font partie
+JUS|1|Boisson de fruits|Café, en argot
+KIT|2|Prêt à monter|Meuble en pièces détachées
+LAC|1|Étendue d'eau douce|Celui des cygnes est un ballet
+LAS|2|Fatigué|À bout de forces
+LES|1|Article pluriel|Pluriel défini
+LIE|2|Dépôt du vin|Fond de bouteille
+LIS|2|Fleur royale|Emblème des rois de France
+LIT|1|Meuble pour dormir|On le fait chaque matin
+LOI|1|Règle votée|Nul n'est censé l'ignorer
+LOT|1|Gain à la loterie|Tombola ou département
+LUE|2|Parcourue des yeux|Lettre déjà ouverte
+LUI|1|Pronom masculin|Pas elle
+MAI|1|Mois du muguet|Fais ce qu'il te plaît, dit le dicton
+MAL|1|Douleur|Il y en a de mer
+MER|1|Grande bleue|Méditerranée ou Manche
+MES|1|Possessif pluriel|Les miens
+MIE|1|Intérieur du pain|Le contraire de la croûte
+MIS|1|Posé|Bien habillé
+MOI|1|Ego|Je, en insistant
+MOT|1|Groupe de lettres|Le dernier, on veut l'avoir
+MOU|1|Pas dur|On le donne au chat
+MUE|2|Change de peau|Change de voix à l'adolescence
+MUR|1|Cloison|Les oreilles qu'il aurait
+NET|1|Clair et propre|Internet, en abrégé
+NEZ|1|Sert à sentir|Celui de Pinocchio s'allonge
+NID|1|Maison d'oiseau|Douillet, pour un couple
+NIE|1|Dément|Dit que non
+NOM|1|Prénom et ___|Il se porte et se donne
+NOS|1|Possessif pluriel|Les nôtres
+NUE|2|Sans vêtement|Le ciel, en poésie
+NUL|1|Zéro pointé|Match sans vainqueur
+OIE|1|Oiseau de basse-cour|Son jeu a soixante-trois cases
+ONU|2|Nations unies|Siège à New York
+OSA|2|Se risqua|Prit son courage à deux mains
+OSE|2|Téméraire|Qui ne recule devant rien
+OTE|2|Enlève|Retire son chapeau
+OUF|1|Soupir de soulagement|On l'est à moitié fou
+OUI|1|Accord|Mot du mariage
+PAN|2|Bruit de tir|Peter, qui ne grandit pas
+PAS|1|Enjambée|Petit, il fait du chemin
+PEU|1|Pas beaucoup|À ___ près
+PIE|1|Oiseau bavard|Voleuse en noir et blanc
+PIN|1|Arbre à aiguilles|Ses pommes nourrissent les écureuils
+PIS|2|Encore plus mal|Mamelle de vache
+PLI|1|Marque sur le tissu|Prendre le ___, c'est s'habituer
+POT|1|Récipient|Tourner autour, c'est hésiter
+POU|1|Parasite des cheveux|Laid comme lui
+PRE|1|Champ d'herbe|Les vaches y broutent
+PUB|1|Réclame|Bar irlandais
+PUR|1|Sans mélange|___ et dur, sans compromis
+QUI|1|Pronom interrogatif|Question de personne
+RAS|2|Au ___ des pâquerettes|En avoir ___ le bol
+RAT|1|Gros rongeur|Celui de bibliothèque lit beaucoup
+RIZ|1|Céréale d'Asie|Se jette sur les mariés
+ROI|1|Porte la couronne|Il est nu dans le conte
+RUE|1|Voie de ville|À la ___, sans toit
+SAC|1|Fourre-tout|Vider le sien, c'est tout dire
+SAS|2|Petite pièce étanche|Passage entre deux mondes
+SEC|1|Pas mouillé|Vin peu sucré
+SEL|1|Cristaux de la mer|Il en faut une pincée
+SES|1|Possessif pluriel|Les siens
+SKI|1|Glisse sur la neige|Planche de montagne
+SOI|1|Chez ___|Le moi profond
+SOL|1|Plancher ou note|Il est sous nos pieds
+SON|1|Bruit|Écorce du blé
+SUD|1|Opposé du nord|Midi, sur la boussole
+SUR|1|Au-dessus de|Aigre, comme un fruit vert
+TAC|3|Bruit sec|Du « tic » au « ___ » de l'horloge
+TAG|2|Graffiti signé|Signature sur un mur
+TAS|1|Pile|Dans le ___, au hasard
+TEL|1|Pareil|___ père, ___ fils
+TES|1|Possessif pluriel|Les tiens
+THE|1|Infusion|Servi à cinq heures
+TIC|2|Petite manie|Geste qui revient tout seul
+TIR|1|Coup de feu|Au but, il est réussi
+TOC|2|Imitation sans valeur|Faux bijou
+TOI|1|Pas moi|Chez ___ ou chez moi ?
+TON|1|Couleur de la voix|Il fait la musique
+TOT|1|De bonne heure|Avenir des lève-___
+TRI|1|Sélection|Sélectif, pour les déchets
+TUE|2|Fait mourir|L'ennui le fait, dit-on
+UNE|1|Article féminin|Elle fait la ___ des journaux
+UNI|1|Sans motif|Tissu sans dessin
+UNS|2|Les ___ et les autres|Quelques-___
+USE|2|Abîme à la longue|Fatigue le tissu
+VAN|2|Transport de chevaux|Camion d'écurie
+VER|1|De terre ou à soie|Il est dans le fruit
+VIE|1|Existence|C'est la ___ !
+VIN|1|Rouge ou blanc|Il vieillit en cave
+VIS|1|Se visse|Pas de ___ sans tournevis
+VOL|1|Larcin ou trajet aérien|Il décolle ou il dérobe
+VOS|1|Possessif pluriel|Les vôtres
+VUE|1|Panorama|Perdre de ___, c'est oublier
+ZEN|1|Calme et serein|Restons-le en toutes circonstances
+ZOO|1|Parc aux animaux|Où l'on va voir les fauves
+AGIR|1|Passer à l'acte|Ne plus se contenter de parler
+AIDE|1|Coup de main|Ce que l'on demande en criant
+AILE|1|Sert à voler|Le poulet en a deux
+AIME|1|Chérit|Je t'___, à la folie
+AIRS|2|Mélodies|Il se les donne, le prétentieux
+ALLO|1|Au téléphone|Premier mot décroché
+AMER|1|Pas sucré|Goût du café noir ou des regrets
+AMIE|1|Copine|Petite, c'est presque une fiancée
+ANGE|1|Être céleste|Il passe dans les silences
+ARME|1|Pistolet ou épée|Celle du crime est cherchée
+ARTS|1|Beaux-___|Les sept ont leurs muses
+AUBE|1|Lever du jour|Avant le chant du coq
+AVIS|1|Opinion|Sauf ___ contraire
+BAIE|1|Petit golfe|Fruit rouge ou fenêtre
+BAIN|1|Dans la baignoire|Être dans le ___, c'est être au courant
+BEAU|1|Joli|Il fait ___ quand il fait soleil
+BEBE|1|Nourrisson|Il fait ses premiers pas
+BETE|1|Animal|Pas bien malin
+BIEN|1|Contraire de mal|Très ___ !
+BISE|1|Petit baiser|Vent froid ou bisou
+BLEU|1|Couleur du ciel|Steak à peine saisi
+BOIS|1|Matière des arbres|Le cerf les porte
+BOUE|1|Terre mouillée|Les cochons y sont heureux
+BOUT|1|Extrémité|Le ___ du tunnel
+BRAS|1|Membre supérieur|___ dessus, ___ dessous
+CAGE|1|Prison d'oiseau|Celle d'escalier n'enferme personne
+CAPE|1|Grand manteau|Rire sous ___
+CHAT|1|Miaule|On lui donne sa langue
+CIEL|1|Au-dessus de nos têtes|Le septième est le plus heureux
+CITE|1|Ville|Universitaire ou citée
+CLOU|1|Se plante au marteau|Le ___ du spectacle
+CODE|1|Mot de passe|De la route ou secret
+COTE|1|Bord de mer|D'Azur ou de bœuf
+COUP|1|Choc|De foudre, il est amoureux
+CUBE|1|Six faces|Celui de Rubik se tourne
+DAME|1|Pièce d'échecs|Elle a son jeu sur le damier
+DATE|1|Jour précis|À retenir dans l'agenda
+DENT|1|Dans la bouche|Celle de sagesse pousse tard
+DEUX|1|Un plus un|Le nombre du couple
+DIRE|1|Exprimer|Vouloir ___, c'est signifier
+DODO|1|Sommeil d'enfant|Oiseau disparu, ou nuit d'enfant
+DOSE|1|Quantité prescrite|Il en faut une bonne
+DOUX|1|Tendre|Comme un agneau
+DUEL|1|Combat à deux|À l'aube, à l'épée
+DUNE|1|Colline de sable|Celle du Pilat est géante
+ECHO|1|Son répété|Il répond dans la montagne
+EGAL|1|Pareil|Ça m'est ___, je m'en fiche
+ELAN|1|Impulsion|Cerf du Nord ou enthousiasme
+ELLE|1|Pronom féminin|Pas lui
+EPEE|1|Arme de duel|De Damoclès, elle menace
+ETAT|1|Nation|Coup d'___, prise de pouvoir
+ETRE|1|Exister|Ou ne pas ___
+EURO|1|Monnaie européenne|Il a remplacé le franc
+FACE|1|Côté de la pièce|Pile ou ___ ?
+FAIM|1|Envie de manger|Une ___ de loup
+FETE|1|Célébration|Celle des mères est en mai
+FIER|1|Orgueilleux|___ comme un paon
+FILS|1|Garçon des parents|Tel père, tel ___
+FOIN|1|Herbe séchée|Aiguille introuvable dans sa botte
+GARE|1|Arrêt des trains|___ à toi !
+GENS|1|Personnes|Les bonnes ___
+GOUT|1|Saveur|Des couleurs et des ___
+GRIS|1|Couleur de souris|Un peu ivre
+HIER|1|Veille d'aujourd'hui|Pas né d'___, expérimenté
+HUIT|1|Sept plus un|Couché, c'est l'infini
+IDEE|1|Pensée|Elle germe ou on la change
+JOIE|1|Bonheur|Celle de vivre
+JOUR|1|Opposé de la nuit|Le grand, c'est le mariage
+JUPE|1|Vêtement féminin|Courte ou plissée
+LAIT|1|Boisson blanche|Il monte sur le feu
+LAME|1|Partie du couteau|De fond, elle submerge
+LIEN|1|Attache|Hypertexte ou affectif
+LIER|1|Attacher|___ connaissance
+LION|1|Roi des animaux|Signe de l'été
+LIRE|1|Parcourir un livre|Entre les lignes, c'est deviner
+LOIN|1|À grande distance|Aller trop ___, c'est exagérer
+LOUP|1|Hurle à la lune|Quand on en parle, il sort du bois
+LUNE|1|Astre de la nuit|De miel, après le mariage
+MAIN|1|Cinq doigts|Demandée en mariage
+MALE|1|Pas femelle|Le coq en est un
+MERE|1|Maman|Celle de toutes les batailles
+MIDI|1|Douze heures|Chercher ___ à quatorze heures
+MIEL|1|Fait par les abeilles|Lune de ___
+MINE|1|Air du visage|De crayon ou de charbon
+MODE|1|Tendance|Elle se démode
+MOIS|1|Trente jours environ|Le ___ du blanc, c'est janvier
+MOKA|1|Café… ou notre chat|Gâteau, café ou félin chéri
+MONT|1|Montagne|Promettre ___ et merveilles
+MUET|1|Sans voix|Cinéma d'avant le parlant
+MUSE|2|Inspire l'artiste|Elles sont neuf, filles de Zeus
+NEUF|1|Tout nouveau|Huit plus un
+NIER|1|Démentir|Refuser l'évidence
+NOEL|1|Fête de décembre|Le père a une hotte
+NOIR|1|Couleur de la nuit|Petit, on le boit au comptoir
+NOTE|1|Do, ré ou mi|Salée, c'est l'addition
+NUIT|1|Opposé du jour|Blanche, elle est sans sommeil
+OEIL|1|Organe de la vue|À l'___, c'est gratuit
+ONDE|2|Vague|De choc ou radio
+ONZE|1|Dix plus un|Une équipe de foot
+ORAL|1|Examen parlé|Pas écrit
+OSER|1|Se risquer|Qui ne tente rien…
+OTER|1|Retirer|Enlever son chapeau
+OUIE|1|Sens des sons|Tout ___, très attentif
+PAGE|1|Feuille de livre|Tourner la ___, c'est passer à autre chose
+PAIN|1|Baguette|Gagner son ___
+PAIX|1|Contraire de guerre|Fiche-moi la ___ !
+PARI|1|Mise|Tenu, il est gagné
+PEAU|1|Enveloppe du corps|Celle de l'ours ne se vend pas trop tôt
+PERE|1|Papa|Celui Noël passe par la cheminée
+PEUR|1|Frousse|Bleue, elle est intense
+PIED|1|Au bout de la jambe|C'est le ___ !
+PILE|1|Batterie ou tas|Ou face
+PLAT|1|Mets ou sans relief|Pays sans montagne
+POLE|1|Nord ou sud|Position de départ en course
+PORT|1|Abri des bateaux|Arriver à bon ___
+RAIL|1|Voie ferrée|Remettre sur les ___
+RANG|1|Rangée|Se mettre en ___ d'oignons
+RARE|1|Peu commun|Steak à peine cuit, en anglais
+REVE|1|Fait la nuit|Américain ou éveillé
+RIEN|1|Néant|De ___, c'est la politesse
+RIRE|1|S'esclaffer|Le meilleur des remèdes
+RIVE|1|Bord de rivière|Gauche, elle est parisienne
+ROBE|1|Tenue de soirée|Celle de mariée est blanche
+ROSE|1|Fleur à épines|Voir la vie en ___
+ROUE|1|Tourne sous la voiture|La cinquième ne sert à rien
+SAGE|1|Raisonnable|Comme une image
+SALE|1|Pas propre|Un ___ quart d'heure
+SENS|1|Direction|Il y en a cinq
+SEPT|1|Jours de la semaine|Les merveilles du monde
+SEUL|1|Sans personne|___ au monde
+SOIF|1|Envie de boire|Garder une poire pour elle
+SOIR|1|Fin de journée|Le grand, c'est la première
+SOLO|1|Seul en scène|Han, chez Star Wars
+SORT|1|Destin|Jeter un ___, c'est ensorceler
+SOUS|1|En dessous de|Argent de poche
+TARD|1|Pas tôt|Mieux vaut ___ que jamais
+TETE|1|Sommet du corps|En avoir une de mule
+TOIT|1|Couvre la maison|Crier sur les ___
+TOUR|1|Château ou périple|Celle de Babel
+TRES|1|Beaucoup|___ bien, merci
+TROU|1|Cavité|Normand, il fait de la place
+VIDE|1|Rien dedans|Il fait peur au bord du précipice
+VITE|1|Rapidement|___ fait, bien fait
+VOIE|1|Chemin|Lactée, elle est céleste
+VOIX|1|Parole ou chant|Elle compte aux élections
+YEUX|1|Organes de la vue|Les ___ doux des amoureux
+ZERO|1|Rien du tout|Partir de ___
+AIMER|1|Chérir|À la folie, passionnément
+ANNEE|1|Douze mois|Bonne ___ !
+APPEL|1|Coup de fil|Faire l'___, compter les élèves
+ATOUT|1|Carte maîtresse|Avantage décisif
+AUTRE|1|Différent|L'___, c'est toi
+BALLE|1|Se lance|Renvoyer la ___
+BLANC|1|Couleur de la neige|Chèque en ___
+CALME|1|Tranquille|Plat, pour la mer
+CARTE|1|À jouer ou routière|Blanche, elle laisse libre
+CHOSE|1|Objet quelconque|Un truc, un machin
+CLOWN|1|Amuse au cirque|Nez rouge
+CORPS|1|Organisme|À ___ perdu
+CRAIE|2|Pour le tableau noir|Falaise d'Étretat
+DESIR|1|Envie|Prendre ses ___ pour des réalités
+DRAME|1|Tragédie|En faire tout un
+ECOLE|1|Lieu des élèves|Buissonnière, on la fait
+ECRAN|1|Télé ou ordinateur|Total, il protège du soleil
+ENVIE|1|Désir|Elle peut être pressante
+FILLE|1|Pas garçon|Celle de l'air est partie
+FINAL|1|Dernier|Point ___
+FOULE|1|Multitude|Bain de ___
+FRERE|1|Fils des mêmes parents|Grand, il veille sur toi
+FROID|1|Glacial|De canard, il pique
+GRAIN|1|De sable ou de café|Un ___ de folie
+GUIDE|1|Montre le chemin|Michelin, il donne des étoiles
+HEURE|1|Soixante minutes|D'été, elle change
+IDEAL|1|Parfait|Modèle à atteindre
+IMAGE|1|Illustration|Sage comme elle
+JOUER|1|S'amuser|___ cartes sur table
+LETTRE|1|Missive|À la ___, au pied du mot
+LIGNE|1|Trait|Garder la ___
+LIVRE|1|Se lit|Demi-kilo ou roman
+MATIN|1|Début de journée|Le ___ appartient à ceux qui se lèvent tôt
+MERCI|1|Remerciement|À la ___ de quelqu'un
+MONDE|1|Planète et ses habitants|Tout le ___ en parle
+OMBRE|1|Contraire de lumière|Elle nous suit au soleil
+ORAGE|1|Tonnerre et éclairs|Il y a de l'___ dans l'air
+PORTE|1|S'ouvre et se ferme|Claquer la ___
+RADIO|1|Poste à musique|Faire une ___ des poumons
+ROBOT|1|Machine humanoïde|Ménager, il aide en cuisine
+SALUT|1|Bonjour familier|Il peut être éternel
+SIGNE|1|Geste ou indice|Du zodiaque
+SONGE|2|Rêve|Celui d'une nuit d'été
+TEMPS|1|Météo ou durée|De chien, il pleut
+TERRE|1|Notre planète|Tomber à ___
+TROIS|1|Deux plus un|Jamais deux sans lui
+UNION|1|Mariage|Elle fait la force
+USINE|1|Fabrique|À rêves, c'est Hollywood
+VILLE|1|Agglomération|En ___, pas à la campagne
+ARGENT|1|Monnaie ou métal|Il ne fait pas le bonheur
+BALADE|1|Promenade|Petit tour à pied
+CHEMIN|1|Sentier|Tous mènent à Rome
+MAISON|1|Foyer|___ mère, faite à la main
+MIROIR|1|Reflète l'image|Le ___ magique de la reine
+PAPIER|1|Feuille blanche|Être dans les petits ___
+SAISON|1|Été ou hiver|Il y en a quatre
+TRESOR|1|Coffre de pirate|Mon petit ___ !
+VOYAGE|1|Périple|Forme la jeunesse
+BONHEUR|1|Grande joie|Il est dans le pré
+JOURNAL|1|Quotidien|Intime, on l'écrit le soir
+LUMIERE|1|Clarté|Ville ___, c'est Paris
+SEMAINE|1|Sept jours|Celle des quatre jeudis n'existe pas
+SOURIRE|1|Air joyeux|Celui de la Joconde intrigue
+SOUVENIR|1|Mémoire du passé|Rapporté de vacances
+VACANCES|1|Congés|Grandes, elles durent l'été
+PROMENADE|1|Balade|Celle des Anglais est à Nice
+ADIEU|1|Au revoir pour toujours|Dernier salut
+AFIN|2|Dans le but de|___ que, pour que
+AINSI|1|De cette façon|___ soit-il
+ALORS|1|Donc|Et ___ ?
+APRES|1|Ensuite|___ moi, le déluge
+ASSEZ|1|Suffisamment|Y en a ___ !
+AUCUN|1|Pas un seul|___ doute
+AUSSI|1|De même|Moi ___
+AVANT|1|Plus tôt|Il y a un ___ et un après
+AVEC|1|En compagnie de|Sans ou ___ sucre ?
+BEAUCOUP|1|Énormément|Merci ___
+CHAQUE|1|Tous un par un|___ chose en son temps
+CHEZ|1|Dans la maison de|___ soi
+COMME|1|De même que|___ ci, ___ ça
+DANS|1|À l'intérieur de|___ le mille !
+DEJA|1|Plus tôt que prévu|Sentiment de ___-vu
+DEMAIN|1|Le jour d'après|Jamais remis à ce jour, dit-on
+DONC|1|Par conséquent|Je pense, ___ je suis
+ENCORE|1|Une fois de plus|Le public le crie en anglais
+ENFIN|1|Pour finir|Soupir de soulagement
+ENTRE|1|Au milieu de|Entrez sans frapper
+JAMAIS|1|À aucun moment|Mieux vaut tard que ___
+JUSTE|1|Équitable|Tout ___, de peu
+LONG|1|Pas court|Le ___ fleuve tranquille
+LOURD|1|Pesant|Poids ___ du ring
+MIEUX|1|Plus bien|Tant ___ !
+MOINS|1|Pas plus|Signe de la soustraction
+NOUS|1|Toi et moi|Pronom du couple
+OUVERT|1|Pas fermé|Esprit sans préjugés
+PARCE|1|___ que|Début de justification
+PARFOIS|1|De temps en temps|Pas toujours
+PETIT|1|Pas grand|Le ___ dernier de la famille
+PLEIN|1|Rempli|Faire le ___ d'essence
+PLUS|1|Davantage|Signe de l'addition
+POUR|1|En faveur de|Le ___ et le contre
+PRES|1|Pas loin|À peu ___
+PUIS|1|Ensuite|Et ___ quoi encore ?
+QUAND|1|À quel moment|___ on veut, on peut
+SANS|1|Privé de|___ dessus dessous
+SOUVENT|1|Fréquemment|Pas rarement
+TOUJOURS|1|Éternellement|Pour ___, comme dans les contes
+TOUT|1|L'ensemble|___ est bien qui finit bien
+TRAVAIL|1|Emploi|Le ___ c'est la santé
+VERS|1|En direction de|Ligne de poème
+VRAI|1|Exact|Pour de ___
+ABRI|1|Refuge|Être à l'___
+ACTE|1|Action|Partie de pièce de théâtre
+AGILE|1|Souple|Comme un chat
+AIGU|2|Pointu|Accent ou son perçant
+AISE|2|Contentement|À l'___, confortable
+AMOUR|1|Sentiment tendre|Il rend aveugle, dit-on
+ANCRE|1|Retient le bateau|Jeter l'___, s'installer
+APRE|3|Rude|Avide, quand il s'agit de gain
+ARENE|2|Sable du cirque|Lieu des gladiateurs
+ARGILE|2|Terre du potier|Colosse aux pieds d'___
+AROME|2|Parfum|Celui du café le matin
+ASTRE|1|Corps céleste|Le soleil en est un
+ATLAS|2|Recueil de cartes|Titan qui porte le ciel
+AUDACE|2|Hardiesse|La fortune sourit à elle
+AVENIR|1|Futur|Lire l'___ dans les cartes
+BANC|1|Siège allongé|Celui de touche, pour les remplaçants
+BARQUE|1|Petit bateau|Celle de Charon traverse le Styx
+BIDON|2|Récipient de métal|C'est du ___, c'est faux
+BLAGUE|1|Plaisanterie|Sans ___ ?
+BLOC|1|Masse compacte|Faire ___, s'unir
+BORD|1|Limite|Au ___ de la mer
+BOSSE|1|Enflure|Celle du chameau
+BOUCLE|1|Mèche frisée|D'oreille, elle brille
+BRIN|1|Petit morceau|Un ___ de causette
+BRUIT|1|Son fort|Beaucoup de ___ pour rien
+BRUME|1|Brouillard léger|Au petit matin sur la mer
+CACHE|1|Dissimulé|Jeu de ___-___
+CADEAU|1|Présent|Ne pas faire de ___
+CALE|2|Fond du navire|Coincé, bloqué
+CASE|1|Petite maison|Celle de l'oncle Tom
+CHANCE|1|Hasard heureux|Bonne ___ !
+CHAUD|1|Brûlant|Ça me fait ni ___ ni froid
+CIME|2|Sommet|Haut de l'arbre
+CLAIR|1|Lumineux|Au ___ de lune
+COIN|1|Angle|Le petit ___, c'est les toilettes
+COLERE|1|Rage|Tout rouge de ___
+CONTE|1|Histoire pour enfants|De fées
+CORDE|1|Gros fil|Sensible, elle émeut
+COUR|1|Espace devant la maison|Faire la ___
+COURSE|1|Compétition de vitesse|Faire les ___
+CREUX|1|Vide à l'intérieur|Avoir un petit ___
+CROIX|1|Signe +|Mettre une ___ dessus
+DEFI|1|Challenge|Relever le ___
+DESERT|1|Étendue de sable|Prêcher dans le ___
+DESTIN|1|Sort|Écrit dans les étoiles
+DEVOIR|1|Obligation|Les élèves les font le soir
+DIEU|1|Divinité|Mon ___ !
+DOUTE|1|Incertitude|Dans le ___, abstiens-toi
+DROIT|1|Rectiligne|Tout ___ !
+ECLAT|1|Morceau brisé|De rire, il est sonore
+EFFET|1|Conséquence|Spéciaux au cinéma
+EPAIS|1|Pas mince|Brouillard à couper au couteau
+ESPOIR|1|Espérance|Il fait vivre
+ETOILE|1|Brille la nuit|Filante, on fait un vœu
+EXPRES|1|Volontaire|Pas fait ___ !
+FACILE|1|Pas dur|Simple comme bonjour
+FAUTE|1|Erreur|À qui la ___ ?
+FAVEUR|1|Service rendu|Billet de ___
+FERME|1|Exploitation agricole|Ta ___ !
+FIERTE|1|Orgueil|Mal placée, elle gêne
+FLAMME|1|Langue de feu|Déclarer sa ___
+FORCE|1|Puissance|Que la ___ soit avec toi
+FORME|1|Silhouette|Être en ___
+FORT|1|Puissant|Château ou costaud
+FOU|1|Insensé|Pièce d'échecs en diagonale
+FRAIS|1|Un peu froid|Dépenses ou tout juste pêché
+GANT|1|Habille la main|Aller comme un ___
+GLOBE|1|Sphère|Terrestre, sur le bureau
+GRAND|1|Pas petit|Le ___ méchant loup
+GRATUIT|1|Sans payer|Offert par la maison
+GRAVE|1|Sérieux|Accent ou basse
+GUERRE|1|Conflit armé|De Cent Ans
+HASARD|1|Chance|Par le plus grand des ___
+HAUT|1|Pas bas|Les ___ et les bas
+HONTE|1|Embarras|Avoir toute ___ bue
+HUMEUR|1|État d'esprit|De bonne ___
+ILLICO|3|Immédiatement|___ presto
+INSTANT|1|Moment bref|Profiter de l'___
+JALOUX|1|Envieux|Vert de jalousie
+JEUNE|1|Pas vieux|___ et jolie
+JOLI|1|Mignon|C'est du ___ !
+JOYEUX|1|Gai|___ anniversaire !
+LARGE|1|Pas étroit|Prendre le ___, s'enfuir
+LEGER|1|Peu lourd|Comme une plume
+LENT|1|Pas rapide|Comme un escargot
+LIBRE|1|Indépendant|Comme l'air
+LIMITE|1|Frontière|Il faut savoir les fixer
+LOISIR|1|Temps libre|À ___, autant qu'on veut
+LUXE|1|Faste|Ordre et beauté, chez Baudelaire
+MAGIE|1|Sorcellerie|Tour de ___
+MALIN|1|Rusé|Le ___ plaisir
+MARCHE|1|Pas à pas|Ou on l'achète, le samedi
+MASQUE|1|Cache le visage|Bal costumé
+MEMOIRE|1|Souvenir|D'éléphant, elle n'oublie rien
+METIER|1|Profession|Avoir du ___
+MIETTE|1|Petit morceau de pain|Ne pas en perdre une
+MILIEU|1|Centre|Le juste ___
+MINCE|1|Fin|Zut, en plus poli
+MOYEN|1|Ni bon ni mauvais|Le ___ Âge
+NATURE|1|Environnement|Seconde ___, habitude
+NUANCE|1|Légère différence|Tout est dans la ___
+OBJET|1|Chose|Volant non identifié
+OFFRE|1|Proposition|Spéciale, en promotion
+ORDRE|1|Commandement|Tout est en ___
+PARFUM|1|Odeur agréable|Être au ___, savoir
+PAROLE|1|Mot|Donner sa ___
+PASSE|1|Temps écoulé|Simple, en grammaire
+PATIENCE|1|Calme pour attendre|Mère de toutes les vertus
+PAUSE|1|Arrêt|___ café
+PENSEE|1|Réflexion|Fleur ou idée
+PERTE|1|Manque|À ___ de vue
+PIECE|1|Salle|Montée au théâtre
+PLAISIR|1|Joie|Faire ___
+PLUIE|1|Tombe des nuages|Après elle, le beau temps
+POIDS|1|Masse|Lourd, à la boxe
+POINT|1|Petit rond|Final, il clôt la phrase
+PRIX|1|Coût|À tout ___
+PROPRE|1|Net|___ comme un sou neuf
+QUETE|2|Recherche|Celle du Graal
+RAISON|1|Bon sens|Avoir ___
+RAPIDE|1|Véloce|Comme l'éclair
+RECIT|1|Histoire racontée|De voyage
+REGARD|1|Coup d'œil|Il en dit long
+REPOS|1|Détente|Le dimanche, jour de ___
+RETOUR|1|Revenir|Billet aller-___
+RICHE|1|Fortuné|Nouveau ___
+RIDE|1|Pli de la peau|Marque des années
+RISQUE|1|Danger|À vos ___ et périls
+ROND|1|Circulaire|Tourner en ___
+ROUTE|1|Voie|En ___ !
+SAVOIR|1|Connaissance|___-faire
+SECRET|1|Confidence|Garder le ___
+SILENCE|1|Absence de bruit|Il est d'or
+SIMPLE|1|Facile|___ comme bonjour
+SOUPIR|1|Souffle de lassitude|Rendre le dernier
+SUCCES|1|Réussite|Fou, il triomphe
+SURPRISE|1|Étonnement|Fête organisée en cachette
+TALENT|1|Don|Il a de l'or dans les mains
+TENDRE|1|Doux|Âge innocent
+TIMIDE|1|Réservé|Rougit facilement
+TRISTE|1|Malheureux|Comme un jour sans pain
+VALEUR|1|Prix|Mettre en ___
+VERITE|1|Réalité|Toute ___ n'est pas bonne à dire
+VICTOIRE|1|Triomphe|Le V des doigts
+VIEUX|1|Âgé|Mon ___ !
+VISAGE|1|Figure|À ___ découvert
+VIVANT|1|En vie|Bon ___
+VOISIN|1|Habite à côté|Le pré du ___
+ACIER|2|Fer allié|Nerfs d'___
+AGNEAU|1|Petit du mouton|Doux comme lui
+AIGLE|1|Oiseau royal|Pas un ___, pas très malin
+ALBUM|1|Recueil de photos|Celui de famille
+ALIBI|2|Excuse de suspect|Il était ailleurs, prouve-t-il
+ALPHA|2|Première lettre grecque|Et l'oméga, du début à la fin
+AMPLE|2|Large|De plus ___ informations
+ANNEAU|1|Bague|Celui de Sauron
+ANTAN|3|Autrefois|Les neiges d'___
+APPAT|2|Leurre|Mordre à l'hameçon
+ARCHE|2|Voûte|Celle de Noé
+ARDENT|2|Brûlant|Désir ou soleil
+ARGOT|2|Langage populaire|Celui des voyous
+ARIDE|2|Sec|Désertique
+ASILE|2|Refuge|Droit d'___
+ATELIER|1|Lieu de travail manuel|Celui du peintre
+AUBERGE|2|Hôtel de campagne|Espagnole, on y trouve ce qu'on apporte
+AUTEL|2|Table sacrée|On s'y marie à l'église
+AVARE|2|Radin|Harpagon le fut
+AVEU|2|Confession|Celui d'amour coûte
+BAGUE|1|Anneau|Au doigt de la fiancée
+BALCON|1|Terrasse suspendue|Roméo y grimpa
+BAMBOU|2|Grande herbe|Le panda en raffole
+BANDE|1|Groupe|Dessinée, en bulles
+BARRE|1|Tige rigide|Coup de ___, fatigue
+BATEAU|1|Navigue sur l'eau|Mener en ___
+BOUGIE|1|Éclaire à la flamme|Soufflée sur le gâteau
+BOUSSOLE|2|Indique le nord|Perdre la ___
+CABANE|1|Petite maison de bois|Au fond du jardin
+CADRE|1|Entoure le tableau|De vie
+CANAPE|1|Sofa|Toast apéritif
+CARNET|1|Petit cahier|Celui de notes
+CASQUE|1|Protège la tête|Audio ou de moto
+CERCLE|1|Rond|Vicieux, il tourne mal
+CHAINE|1|Suite d'anneaux|De télé
+CHANT|1|Mélodie|Du cygne, le dernier
+CHARME|1|Séduction|Arbre ou attrait
+CHEF|1|Patron|Grand cuisinier
+CHOIX|1|Option|L'embarras du ___
+CLOCHE|1|Sonne à l'église|Se faire sonner les ___
+COCON|1|Abri douillet|Chrysalide du ver à soie
+COFFRE|1|Malle|À jouets ou de voiture
+COLLINE|1|Petite hauteur|Les sept de Rome
+COMPTE|1|Calcul|En banque
+CONSEIL|1|Avis|De classe
+COPAIN|1|Ami|Petit ___
+COULEUR|1|Teinte|Annoncer la ___
+COURAGE|1|Bravoure|Bon ___ !
+CRAYON|1|Pour dessiner|Mine de ___
+CRISTAL|2|Verre fin|Noces de quinze ans
+CULTURE|1|Savoir|Ce qui reste quand on a tout oublié
+DEBUT|1|Commencement|Les ___ sont difficiles
+DECOR|1|Ornement|Envers du ___
+DENTELLE|2|Tissu ajouré|Ne pas faire dans la ___
+DIAMANT|1|Pierre précieuse|Éternel, dit la pub
+DOMINO|2|Pièce à points|Effet ___
+DRAPEAU|1|Emblème national|Tricolore
+ECHELLE|1|Pour grimper|Faire la courte ___
+EGLISE|1|Lieu de culte|Au milieu du village
+ENIGME|2|Devinette|Celle du Sphinx
+EPOQUE|1|Période|Belle, vers 1900
+ESCALE|1|Arrêt en voyage|Vol avec ___
+ESPACE|1|Cosmos|Touche du clavier
+ETOFFE|2|Tissu|Avoir l'___ d'un héros
+FANTOME|1|Revenant|Il hante le château
+FENETRE|1|Ouverture vitrée|Jeter l'argent par la ___
+FICELLE|1|Petite corde|Tirer les ___
+FLECHE|1|Trait d'arc|Partir comme une ___
+FORTUNE|1|Richesse|Faire ___
+FRISSON|1|Tremblement|D'horreur ou de plaisir
+GALET|2|Caillou poli|Sur la plage d'Étretat
+GENIE|1|Grand talent|Celui de la lampe
+GLOIRE|1|Célébrité|Heure de ___
+GOUTTE|1|Petite larme|Celle qui fait déborder le vase
+GRENIER|1|Sous le toit|Trésors oubliés
+HAMAC|2|Lit suspendu|Sieste entre deux arbres
+HORIZON|1|Ligne du ciel|À l'___
+ICONE|2|Image sainte|Petit dessin d'écran
+INDICE|1|Piste|Le détective le cherche
+JOUEUR|1|Qui joue|Mauvais, il triche
+LANTERNE|2|Lampe portative|Prendre des vessies pour des ___
+LEGENDE|1|Récit fabuleux|Sous la photo
+LUCARNE|3|Fenêtre de toit|Le ballon y entre, au foot
+MAGIQUE|1|Enchanté|Baguette ___
+MARIONNETTE|2|Poupée à fils|Pinocchio en était une
+MERVEILLE|1|Chose admirable|Alice au pays des ___
+MOULIN|1|Écrase le grain|Celui de Daudet
+MYSTERE|1|Énigme|Et boule de gomme
+NUAGE|1|Dans le ciel gris|Être sur un petit ___
+OASIS|2|Îlot vert du désert|Le chameau y boit
+ORACLE|3|Prophétie|Celui de Delphes
+PANIER|1|Corbeille|Celui de basket
+PARADIS|1|Ciel des élus|Il est perdu, chez Milton
+PASSION|1|Amour ardent|Fruit de la ___
+PIRATE|1|Corsaire|À la jambe de bois
+PLANETE|1|Mars ou Vénus|La bleue, c'est la nôtre
+POCHE|1|Petit sac cousu|Livre de ___
+PRINCE|1|Fils de roi|Charmant, il réveille
+PUZZLE|1|Jeu de pièces|Il manque toujours une pièce
+RECETTE|1|Mode de préparation|Celle de grand-mère
+REFLET|1|Image renvoyée|Dans le miroir
+RICHESSE|1|Fortune|La santé en est une
+RUBAN|1|Bande de tissu|Bleu, il récompense
+SABLIER|2|Mesure le temps|Il s'écoule grain à grain
+SIRENE|1|Femme-poisson|Alarme ou Ariel
+SOLEIL|1|Astre du jour|Coup de ___
+SORCIERE|1|Fait des sortilèges|Sur son balai
+TAPIS|1|Couvre le sol|Volant chez Aladdin
+TEMPETE|1|Vent violent|Dans un verre d'eau
+TRAJET|1|Parcours|Aller-retour
+TRAVERSE|2|Raccourci|Chemin de ___
+TROPHEE|1|Coupe gagnée|Sur l'étagère du champion
+TUNNEL|1|Passage souterrain|Voir le bout du ___
+VALISE|1|Bagage|Faire ses ___
+VELOURS|2|Tissu doux|Jouer sur du ___
+VOILE|1|Fait avancer le voilier|Mettre les ___

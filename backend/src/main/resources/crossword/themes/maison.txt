@@ -1,0 +1,121 @@
+# Maison & quotidien
+MAISON|1|Foyer|Gâteau ___
+SALON|1|Pièce à vivre|De thé ou de coiffure
+CHAMBRE|1|Pièce pour dormir|Garder la ___, rester malade
+CUISINE|1|Pièce des repas|Faire sa petite ___
+GARAGE|1|Abri de la voiture|Pas de son groupe de rock
+CAVE|1|Sous la maison|Naïf, en argot
+GRENIER|1|Sous le toit|À blé, une région fertile
+JARDIN|1|Autour de la maison|D'Éden
+BALCON|1|Terrasse suspendue|Premier rang au théâtre
+TERRASSE|1|Plateforme extérieure|En ___ de café
+PORTE|1|S'ouvre et se ferme|Mettre à la ___
+FENETRE|1|Ouverture vitrée|Sur cour ou sur rue
+VOLET|1|Ferme la fenêtre|Trier sur le ___
+MUR|1|Cloison|Faire le ___, sortir en douce
+TOIT|1|Couvre la maison|Le ___ du monde, l'Himalaya
+ESCALIER|1|Marches|Esprit de l'___, répartie tardive
+COULOIR|1|Passage intérieur|Bruit de ___, rumeur
+PLAFOND|1|Au-dessus de nos têtes|Atteindre un ___, plafonner
+PLANCHER|1|Sol en bois|Débarrasser le ___
+CHEMINEE|1|Foyer à bois|Le père Noël y descend
+LIT|1|Meuble pour dormir|Se lever du pied gauche
+OREILLER|1|Pour la tête|Confidences sur l'___
+COUETTE|1|Grosse couverture|Queue de cheval double
+DRAP|1|Linge de lit|Dans de beaux ___, en difficulté
+COUSSIN|1|Petit oreiller du canapé|Péteur, en farce
+CANAPE|1|Sofa|Convertible pour les invités
+FAUTEUIL|1|Siège à accoudoirs|Arriver dans un ___, gagner facilement
+CHAISE|1|Siège à dossier|Électrique, aux États-Unis
+TABLE|1|Meuble à manger|De nuit, au chevet
+BUREAU|1|Table de travail|Ovale, à la Maison-Blanche
+ARMOIRE|1|Rangement à vêtements|À glace, très costaud
+TIROIR|1|Dans la commode|À double fond
+ETAGERE|1|Planche de rangement|Pour les livres
+MIROIR|1|Reflète l'image|Aux alouettes, il attire
+LAMPE|1|Éclaire|D'Aladdin, magique
+RIDEAU|1|Devant la fenêtre|Tirer le ___, finir
+TAPIS|1|Couvre le sol|Envoyer au ___, mettre KO
+HORLOGE|1|Donne l'heure|Biologique, interne
+REVEIL|1|Sonne le matin|Celui-matin est dur
+TELE|1|Écran du salon|Petit écran
+RADIO|1|Poste à musique|Libre, en FM
+TELEPHONE|1|Pour appeler|Arabe, il déforme
+ORDINATEUR|1|PC|Portable ou de bureau
+CLE|1|Ouvre la porte|À molette
+SERRURE|1|Pour la clé|Regarder par le trou de la ___
+SONNETTE|1|Annonce un visiteur|Tirer la ___ d'alarme
+BOITE|1|Contenant|Aux lettres
+COLIS|1|Paquet envoyé|Livré par le facteur
+FACTEUR|1|Apporte le courrier|Sonne toujours deux fois
+COURRIER|1|Lettres reçues|Des lecteurs
+VOISIN|1|Habite à côté|De palier
+DOUCHE|1|Pour se laver debout|Écossaise, chaude et froide
+BAIGNOIRE|1|Pour prendre un bain|Loge au théâtre
+LAVABO|1|Évier de salle de bain|Pour se laver les mains
+SAVON|1|Fait des bulles|Passer un ___, gronder
+SERVIETTE|1|Pour se sécher|Ne pas mélanger avec les torchons
+BROSSE|1|À dents ou à cheveux|Coupe en ___
+PEIGNE|1|Démêle les cheveux|Passer au ___ fin
+DENTIFRICE|1|Sur la brosse à dents|Sourire étincelant
+SHAMPOOING|1|Lave les cheveux|Mousse en flacon
+MENAGE|1|Nettoyage|Couple, ou faire place nette
+BALAI|1|Pour balayer|Monture de la sorcière
+ASPIRATEUR|1|Avale la poussière|Robot du ménage
+POUBELLE|1|Pour les déchets|Préfet qui l'inventa
+EPONGE|1|Absorbe l'eau|Jeter l'___, abandonner
+LESSIVE|1|Lave le linge|Grand nettoyage
+LINGE|1|Vêtements à laver|Blanc comme un ___
+REPASSAGE|1|Fer sur le linge|Corvée du dimanche
+CINTRE|1|Porte-manteau|Arc de voûte
+PLACARD|1|Armoire murale|Mettre au ___, écarter
+CARTON|1|Boîte de déménagement|Rouge, expulsion
+DEMENAGEMENT|1|Changer de maison|Cartons partout
+LOYER|1|Prix du logement|Payé chaque mois
+CLOTURE|2|Barrière du jardin|Fin de séance
+PORTAIL|1|Grande porte d'entrée|Site d'accueil web
+PELOUSE|1|Gazon|Interdit de marcher dessus
+POTAGER|1|Jardin de légumes|Carré de tomates
+ARROSOIR|1|Pour les plantes|L'arroseur arrosé
+TONDEUSE|1|Coupe le gazon|Tond aussi les cheveux
+OUTIL|1|Marteau ou scie|Boîte à ___
+MARTEAU|1|Plante les clous|Être ___, être fou
+SCIE|1|Coupe le bois|Rengaine agaçante
+VIS|1|Se visse|Serrer la ___, être sévère
+CLOU|1|Se plante|Maigre comme lui
+PERCEUSE|1|Fait des trous|Outil électrique
+ECHELLE|1|Pour grimper|De Richter
+AMPOULE|1|Éclaire|Cloque au pied
+PRISE|1|Pour brancher|De judo
+INTERRUPTEUR|2|Allume la lumière|Bouton on-off
+CHAUFFAGE|1|Réchauffe la maison|Central
+RADIATEUR|1|Chauffe la pièce|Refroidit le moteur
+BOUGIE|1|Petite flamme|Du moteur
+VASE|1|Pour les fleurs|La goutte qui le fait déborder
+CADRE|1|Entoure la photo|Supérieur, en entreprise
+TABLEAU|1|Peinture accrochée|Noir, à l'école
+HORLOGERIE|3|Art des montres|Mécanique précise
+CLIMATISEUR|2|Rafraîchit l'air|Clim, en abrégé
+FRIGO|1|Garde au frais|Mettre au ___
+CONGELATEUR|1|Garde le surgelé|Très froid, à -18
+FOUR|1|Pour cuire|Faire un ___, échouer
+MICROONDES|1|Réchauffe vite|Ding !
+MACHINE|1|À laver|À café
+CAFETIERE|1|Fait le café|Tête, en argot
+BOUILLOIRE|1|Chauffe l'eau|Elle siffle
+GRILLEPAIN|1|Dore les tartines|Toaster
+NAPPE|1|Couvre la table|À carreaux
+COUVERTS|1|Fourchettes et couteaux|Mettre le ___
+CHAT|1|Animal de compagnie|Notre Moka en est un
+PANIER|1|Lit du chat|Mettre dans le même ___
+GAMELLE|1|Bol de l'animal|Se prendre une ___, tomber
+DOUDOU|1|Peluche du soir|Câlin d'enfant
+PELUCHE|1|Jouet doux|Nounours
+JOUET|1|Pour s'amuser|Être le ___ de quelqu'un
+POUPEE|1|Jouet en forme de fille|Russe, elles s'emboîtent
+CAHIER|1|Pour écrire|Des charges
+STYLO|1|Pour écrire|Plume ou bille
+LIVRE|1|Se lit|Ouvert, on lit en lui
+JOURNAL|1|Quotidien|Télévisé à 20 heures
+COURSES|1|Achats du quotidien|Liste de ___
+CADDIE|1|Chariot de supermarché|Porteur au golf

@@ -1,0 +1,596 @@
+# Mélange (suite) : mots courts et courants, pour bien remplir les grilles.
+ACTE|1|Action|Prendre ___, noter
+ALLER|1|Se rendre|Billet simple
+AMENER|1|Conduire vers|Mener jusqu'ici
+ANNEXE|2|Supplément|Bâtiment voisin
+ANSE|2|Poignée de tasse|Petite baie
+APTE|2|Capable|Bon pour le service
+ARENE|2|Piste du cirque romain|Descendre dans l'___
+ARIA|3|Air d'opéra|Mélodie pour soliste
+ARRET|1|Halte|De bus
+ASSIS|1|Pas debout|Sur une chaise
+ATRE|2|Foyer de cheminée|Où crépite le feu
+AUNE|3|Ancienne mesure|À l'___ de, en comparaison
+AVAL|2|En bas du courant|Donner son ___, approuver
+AVENUE|1|Grande rue|Des Champs-Élysées
+AXE|1|Ligne centrale|Du monde
+BAGAGE|1|Valise|Plier ___, partir
+BAIL|2|Contrat de location|Ça fait un ___ !
+BANAL|1|Ordinaire|Sans originalité
+BARBE|1|Poils du menton|Quelle ___ !
+BARON|2|Titre de noblesse|Gros industriel
+BASE|1|Fondement|De données
+BATON|1|Morceau de bois|Mettre des ___ dans les roues
+BENIR|2|Bénédiction|Donner la ___ du prêtre
+BETON|1|Matériau de construction|En ___, solide
+BIAIS|2|Détour|De ___, en diagonale
+BILAN|1|Résultat|Faire le ___
+BLAME|2|Reproche|Sanction écrite
+BOLIDE|2|Voiture rapide|Météorite
+BONNE|1|Pas mauvaise|À la ___ heure !
+BORNE|1|Limite de route|Kilométrique
+BOUDER|1|Faire la tête|Ne pas vouloir parler
+BRAVE|1|Courageux|Un ___ type, gentil
+BREF|1|Court|En ___, pour résumer
+BRISE|1|Vent léger|Marine, sur la côte
+BRUN|1|Couleur châtain|Cheveux foncés
+BUREAU|1|Lieu de travail|Ovale à Washington
+CALE|2|Fond du navire|Coin sous la roue
+CANNE|1|Bâton de marche|À pêche
+CASSER|1|Briser|Les pieds, ennuyer
+CAUSE|1|Raison|À ___ de toi
+CELA|1|Ça|Comme ___
+CENT|1|Dix fois dix|Pour ___, pourcentage
+CHAMP|1|Terrain cultivé|Laisser le ___ libre
+CHER|1|Coûteux|Mon ___ ami
+CHUTE|1|Tombée|D'eau ou de reins
+CLASSE|1|Salle d'école|Avoir de la ___
+CLE|1|Ouvre la porte|De sol, en musique
+COLLE|1|Fait tenir|Question difficile
+CONTRE|1|Opposé à|Le pour et le ___
+COPIE|1|Reproduction|Rendre sa ___
+CORNE|1|Sur la tête du taureau|Prendre le taureau par les ___
+COTON|1|Fibre douce|Élever dans du ___
+COUCHE|1|Strate|D'ozone
+COUPE|1|Trophée ou verre|De cheveux
+COURT|1|Pas long|De tennis
+COUSIN|1|Fils de l'oncle|Moustique ou parent
+CRAINTE|1|Peur|De ___ que
+CREDIT|1|Prêt bancaire|Faire ___, avoir confiance
+CRISE|1|Moment difficile|De nerfs
+CROIRE|1|Avoir foi|Je n'en crois pas mes yeux
+CUIR|1|Peau tannée|Blouson de motard
+CYCLE|1|Suite qui revient|De la vie
+DECOR|1|Ornement|Changement de ___
+DEGRE|1|Unité de température|Second ___, ironie
+DELAI|1|Temps accordé|Dans les ___
+DEPOT|1|Entrepôt|De bilan
+DETTE|1|Somme due|Il faut l'honorer
+DIGNE|1|Méritant|___ de confiance
+DISPO|1|Disponible|Libre, en abrégé
+DIVAN|2|Canapé|Du psychanalyste
+DOIGT|1|Au bout de la main|Se mettre le ___ dans l'œil
+DONNER|1|Offrir|Qui ___ reçoit
+DORMIR|1|Faire dodo|Sur ses deux oreilles
+DOUBLE|1|Deux fois|Sosie
+DOUCHE|1|Jet d'eau|Écossaise, chaude et froide
+DROLE|1|Amusant|Bizarre ou comique
+DUVET|1|Plumes douces|Sac de couchage
+ECART|1|Distance|Grand, en gymnastique
+ECHEC|1|Revers|Et mat
+ECRIN|2|Boîte à bijoux|Cadre précieux
+ECRIT|1|Rédigé|Examen sur papier
+ELEVE|1|Écolier|Haut placé
+EMOI|2|Trouble|En ___, troublé
+ENJEU|1|Ce qu'on risque|Le prix du pari
+ENNUI|1|Lassitude|Souci ou mélancolie
+ENVOI|1|Expédition|Coup d'___
+EPAVE|2|Bateau échoué|Personne déchue
+EPOPEE|2|Récit héroïque|Aventure grandiose
+ERREUR|1|Faute|Judiciaire, irréparable
+ESSAI|1|Tentative|Coup d'___
+ESTIME|2|Considération|Succès d'___
+ETAGE|1|Niveau d'immeuble|Premier, deuxième…
+ETAL|2|Table de marché|Présentoir du boucher
+ETAPE|1|Partie de trajet|Brûler les ___
+ETE|1|Saison chaude|Indien en octobre
+ETUDE|1|Travail scolaire|Du notaire
+EVEIL|1|Réveil|En ___, attentif
+EXCES|1|Abus|De vitesse
+EXIL|2|Bannissement|Loin de sa patrie
+FACON|1|Manière|De toute ___
+FADE|1|Sans goût|Plat insipide
+FAIRE|1|Agir|Savoir-___
+FAMEUX|1|Célèbre|Pas ___, pas terrible
+FARCE|1|Blague|Garniture de dinde
+FAUX|1|Pas vrai|Outil de la Mort
+FEINTE|2|Ruse|Fausse attaque
+FENTE|1|Ouverture étroite|De la tirelire
+FERME|1|Solide|Exploitation agricole
+FIBRE|1|Filament|Optique
+FICHE|1|Petite carte|De paie
+FIDELE|1|Loyal|Lecteur assidu
+FIGURE|1|Visage|De style
+FILET|1|Mailles|À provisions
+FLAQUE|1|Eau au sol|Sauter dedans
+FLOU|1|Pas net|Artistique
+FOIRE|1|Fête foraine|Faire la ___
+FOND|1|Bas|Au ___ du trou
+FONTE|2|Fusion|Des neiges
+FORGE|2|Atelier du forgeron|Battre le fer
+FOSSE|1|Trou creusé|Aux lions
+FOYER|1|Maison|De la cheminée
+FRANC|1|Sincère|Ancienne monnaie
+FUITE|1|Évasion|D'eau
+FUMEE|1|Sort de la cheminée|Pas de ___ sans feu
+FUSEE|1|Engin spatial|Feu d'artifice
+GACHE|2|Gaspillé|Mortier
+GAGNER|1|Remporter|Du temps
+GALA|2|Fête officielle|Soirée de ___
+GAMIN|1|Gosse|Enfant des rues
+GARDE|1|Surveillance|Montante, à Buckingham
+GAUCHE|1|Pas droite|Maladroit
+GELEE|1|Confiture|Royale, des abeilles
+GENRE|1|Sorte|Faire du ___
+GESTE|1|Mouvement|Joindre le ___ à la parole
+GIBIER|2|Animaux chassés|De potence
+GIRON|3|Sein|Rentrer dans le ___
+GLAND|2|Fruit du chêne|Benêt
+GOMME|1|Efface|À mâcher
+GORGE|1|Dans le cou|Profonde, dans les montagnes
+GOSSE|1|Enfant|Beau ___
+GRACE|1|Élégance|Action de ___
+GRADE|1|Rang|Monter en ___
+GRAS|1|Plein de matière grasse|Mardi
+GRILLE|1|Clôture en fer|De mots fléchés
+GROS|1|Pas mince|En ___
+GUIDON|1|Pour diriger le vélo|Avoir le nez dans le ___
+HABIT|1|Vêtement|Ne fait pas le moine
+HACHE|1|Coupe le bois|Enterrer la ___ de guerre
+HAIE|1|Rangée d'arbustes|D'honneur
+HALTE|1|Arrêt|___-là !
+HAMEAU|2|Petit village|Écart de campagne
+HERBE|1|Gazon|Mauvaise, elle pousse vite
+HIBOU|1|Rapace nocturne|Chouette cornue
+HOTE|1|Qui reçoit|Ou qui est reçu
+HUILE|1|Graisse liquide|Grosse ___, gros bonnet
+IDIOT|1|Bête|Du village
+IMPOT|1|Taxe|Sur le revenu
+INDIC|2|Informateur|Balance, en argot
+INTOX|2|Désinformation|Fausse nouvelle
+ITEM|3|Élément de liste|De même
+JADIS|2|Autrefois|Il était une fois…
+JARRE|2|Grand vase|Pour l'huile
+JAUGE|2|Indicateur de niveau|D'essence
+JETON|1|Pièce de jeu|Faux ___, hypocrite
+JOUR|1|Opposé de la nuit|Au grand ___
+JUGE|1|Rend la justice|Et partie
+JURY|1|Groupe de jurés|D'examen
+LACET|1|Lien de chaussure|Virage en épingle
+LAINE|1|Vient du mouton|Pull chaud
+LAISSE|1|Lien du chien|Tenir en ___
+LAMPE|1|Éclaire|De poche
+LANCE|1|Arme pointue|À incendie
+LARGE|1|Ample|Au ___ de la côte
+LAVER|1|Nettoyer|Son linge sale en famille
+LECON|1|Cours|Donner une ___
+LEVER|1|Soulever|Du soleil
+LIBRE|1|Indépendant|Service, au tennis
+LIEU|1|Endroit|Avoir ___
+LIGUE|2|Association|Des champions
+LISSE|1|Sans aspérité|Cheveux raides
+LISTE|1|Énumération|De courses
+LOCAL|1|Du coin|Salle de réunion
+LOGIS|2|Maison|Fée du ___
+LOTO|1|Jeu de hasard|Gagner au ___
+LOUER|1|Prendre en location|Faire l'éloge
+LUCIDE|2|Clairvoyant|Bien éveillé
+LUEUR|1|Faible lumière|D'espoir
+LUTTE|1|Combat|Gréco-romaine
+MAGOT|2|Trésor caché|Économies
+MAIGRE|1|Très mince|Comme un clou
+MAIRE|1|Élu de la commune|Écharpe tricolore
+MALLE|1|Gros coffre|Se faire la ___
+MANCHE|1|Partie du vêtement|La ___, entre France et Angleterre
+MANTEAU|1|Vêtement chaud|Sous le ___, en cachette
+MARGE|1|Bord de page|Vivre en ___
+MARRON|1|Couleur châtaigne|Tirer les ___ du feu
+MATCH|1|Rencontre sportive|Retour
+MATIERE|1|Substance|Grise
+MECHE|1|Partie de bougie|Vendre la ___
+MEILLEUR|1|Le plus bon|Pour le ___ et pour le pire
+MELER|1|Mélanger|Se ___ de ses affaires
+MENER|1|Conduire|En bateau
+MERITE|1|Valeur|Ordre national
+METRE|1|Cent centimètres|Ruban de couturière
+MEUBLE|1|Table ou armoire|Sauver les ___
+MIGNON|1|Adorable|Péché ___
+MILLE|1|Dix fois cent|Dans le ___ !
+MINUTE|1|Soixante secondes|___, papillon !
+MOELLE|2|Dans l'os|Jusqu'à la ___
+MOINE|1|Religieux|L'habit ne le fait pas
+MOMENT|1|Instant|Au bon ___
+MOTEUR|1|Fait avancer|Action !
+MOUCHE|1|Insecte|Faire ___, viser juste
+MOULE|1|Récipient de forme|Coquillage
+MOUSSE|1|Écume|Au chocolat
+MOYEN|1|Façon|Les ___ du bord
+MUSEAU|1|Nez d'animal|Truffe
+NAPPE|1|Couvre la table|Phréatique
+NATION|1|Peuple|Unie
+NAVETTE|1|Aller-retour|Spatiale
+NEANT|2|Rien|Être et ___
+NEVEU|1|Fils du frère|Du roi
+NIVEAU|1|Degré|À bulle
+NOBLE|1|Aristocrate|Généreux
+NOMBRE|1|Chiffre|D'or
+NORD|1|Opposé du sud|Perdre le ___
+NOTE|1|Évaluation|Bonne, sur la copie
+NOUVEAU|1|Récent|Rien de ___ sous le soleil
+NOYAU|1|Cœur du fruit|Dur, de l'équipe
+OBEIR|1|Se soumettre|Au doigt et à l'œil
+ODEUR|1|Parfum|En ___ de sainteté
+OFFRIR|1|Donner|Un verre
+OISIF|2|Sans occupation|Désœuvré
+ONCLE|1|Frère du père|D'Amérique
+OPALE|2|Pierre irisée|Côte d'___
+ORGUE|2|Instrument d'église|De Barbarie
+ORTIE|2|Plante qui pique|Jeter son froc aux ___
+OUTRE|2|Sac en peau|En ___, de plus
+PACTE|2|Accord|Avec le diable
+PAGNE|2|Bout de tissu|Tarzan en porte un
+PAIRE|1|Deux pareils|Une autre ___ de manches
+PALAIS|1|Demeure royale|Haut de la bouche
+PALME|2|Feuille de palmier|D'or à Cannes
+PANNE|1|Arrêt de machine|Sèche
+PAPI|1|Grand-père|Pépé
+PARC|1|Jardin public|D'attractions
+PART|1|Portion|À ___ entière
+PARTIE|1|Morceau|Remise
+PASSE|1|Temps écoulé|Mot de ___
+PATTE|1|Jambe d'animal|Graisser la ___
+PAUME|1|Creux de la main|Jeu de ___
+PAVE|1|Pierre de rue|Dans la mare
+PAYE|1|Salaire|Ça fait une ___
+PECHE|1|Fruit ou loisir|Avoir la ___
+PELLE|1|Pour creuser|Ramasser une ___
+PENTE|1|Descente|Remonter la ___
+PERLE|1|Bijou d'huître|Rare
+PERTE|1|Manque|Et fracas
+PESER|1|Mesurer le poids|Le pour et le contre
+PETALE|1|Morceau de fleur|Effeuillé
+PHASE|1|Étape|De la lune
+PIANO|1|Instrument à touches|Doucement, en musique
+PIEGE|1|Traquenard|À loup
+PIERRE|1|Caillou|Précieuse
+PILOTE|1|Conduit|Automatique
+PINCE|1|Outil qui serre|À linge
+PIPE|1|Pour fumer|Casser sa ___
+PISTE|1|Trace|De danse
+PITIE|1|Compassion|Par ___ !
+PLACE|1|Endroit|Publique
+PLAGE|1|Sable et mer|Horaire, à la radio
+PLAINE|1|Terrain plat|Vaste étendue
+PLANCHE|1|Morceau de bois|De salut
+PLAQUE|1|Feuille rigide|D'immatriculation
+PLONGER|1|Sauter dans l'eau|Dans un livre
+POCHE|1|Petit sac cousu|Argent de ___
+POELE|1|Ustensile de cuisine|Chauffage
+POIGNEE|1|Pour ouvrir|De main
+POINTE|1|Bout pointu|Des pieds
+POLICE|1|Forces de l'ordre|De caractère
+POMPE|1|Machine à aspirer|Funèbre
+PONT|1|Enjambe le fleuve|Couper les ___
+PORC|1|Cochon|Viande blanche
+POSTE|1|Emploi|Bureau des lettres
+POUCE|1|Gros doigt|Se tourner les ___
+POUDRE|1|Fine poussière|Aux yeux
+POULE|1|Pond|Mouillée, peureuse
+POUPEE|1|Jouet|Barbie en est une
+PRESSE|1|Journaux|Agrume ___
+PRETE|1|Disposée|Fin ___ pour le départ
+PRIERE|1|Supplication|D'insérer
+PRISE|1|Capture|De courant
+PROFIL|1|Vu de côté|Bas, discret
+PROIE|1|Victime|Lâcher la ___ pour l'ombre
+PROMO|1|Réduction|Année d'école
+PROPRE|1|Net|Nom ___
+PRUNE|1|Fruit violet|Contravention
+PUCE|1|Insecte sauteur|Électronique
+PUITS|1|Trou à eau|De science
+QUAI|1|Bord de voie|De gare
+QUART|1|Un sur quatre|D'heure
+QUEUE|1|Arrière de l'animal|Faire la ___
+RACE|1|Lignée|Chien de ___
+RADEAU|1|Embarcation de fortune|De la Méduse
+RAFALE|1|Coup de vent|Tir en ___
+RAMPE|1|Garde-corps|Feux de la ___
+RAYON|1|Trait de lumière|De soleil
+REBUT|2|Déchet|Mettre au ___
+RECOLTE|1|Moisson|Des fruits
+REGLE|1|Instrument de mesure|En ___ générale
+REINE|1|Épouse du roi|Des abeilles
+RELAIS|1|Course en équipe|Prendre le ___
+RENNE|1|Tire le traîneau|Animal du Nord
+RESEAU|1|Maillage|Social
+RESTE|1|Ce qui demeure|Du ___
+REVUE|1|Magazine|Passer en ___
+RIDE|1|Pli de la peau|Sans une ___
+RIVAL|1|Concurrent|Sans ___
+ROCHE|1|Pierre|Eau de ___
+RONDE|1|Danse en cercle|De nuit
+ROSEE|1|Gouttes du matin|Perles de l'aube
+ROUET|3|Machine à filer|Belle au bois dormant
+RUCHE|1|Maison d'abeilles|Bourdonnante
+RUINE|1|Décombres|Courir à sa ___
+RUSE|1|Astuce|De Sioux
+SABLE|1|Sur la plage|Biscuit breton
+SABOT|1|Pied de cheval|Chaussure en bois
+SALIR|1|Tacher|Sa réputation
+SALLE|1|Pièce|De bains
+SAUCE|1|Assaisonnement|Mettre à toutes les ___
+SAUTER|1|Bondir|Du coq à l'âne
+SAVANT|1|Érudit|Fou, dans les films
+SCEAU|2|Cachet officiel|Sous le ___ du secret
+SEAU|1|Récipient à anse|Il pleut à ___
+SECTEUR|1|Zone|Privé
+SEMER|1|Planter|La zizanie
+SERRE|1|Abri vitré pour plantes|Griffe d'aigle
+SERVIR|1|Être utile|À quoi ça sert ?
+SIEGE|1|Chaise|Social
+SIROP|1|Boisson sucrée|D'érable
+SOCLE|1|Base|Piédestal
+SOMME|1|Total|Petit, sieste
+SOMMET|1|Cime|Réunion de chefs d'État
+SONDE|2|Instrument de mesure|Spatiale
+SORTIE|1|Issue|De secours
+SOUCI|1|Inquiétude|Fleur jaune
+SOUPE|1|Potage|Cheveu dedans
+SOURD|1|N'entend pas|Dialogue de ___
+STADE|1|Terrain de sport|Étape
+STAGE|1|Formation|En entreprise
+STYLE|1|Manière|Avoir du ___
+SUCER|1|Téter|Glace à ___
+SUITE|1|Continuation|Tout de ___
+SUJET|1|Thème|Brûlant
+SUPER|1|Formidable|Carburant
+TACHE|1|Salissure|D'huile
+TAILLE|1|Hauteur|Fine, mannequin
+TAPE|1|Petit coup|Dans le dos
+TARIF|1|Prix|Réduit
+TAUPE|1|Creuse sous terre|Myope comme elle
+TAXE|1|Impôt|Hors ___
+TEINT|1|Couleur de peau|De pêche
+TEMPE|1|Côté du front|Battements
+TENIR|1|Garder en main|Le coup
+TENUE|1|Habillement|Correcte exigée
+TERME|1|Fin|Mot
+TERRE|1|Sol|Ferme
+TEXTE|1|Écrit|À trous
+TIGE|1|Porte la fleur|De botte
+TIMBRE|1|Sur l'enveloppe|De voix
+TIRE|1|Remorque|Caramel du Québec
+TISSU|1|Étoffe|De mensonges
+TITRE|1|Nom d'œuvre|À ___ gracieux
+TOILE|1|Tissu|D'araignée
+TOMBE|1|Sépulture|Muet comme une ___
+TONNE|1|Mille kilos|En faire des ___
+TORCHE|1|Lampe portative|Humaine
+TORT|1|Erreur|Avoir ___
+TOUCHE|1|De clavier|Sur la ___, mis de côté
+TRACE|1|Empreinte|Suivre à la ___
+TRAIT|1|Ligne|D'union
+TRAME|2|Intrigue|De fond
+TRANCHE|1|Part coupée|De vie
+TREVE|2|Pause des hostilités|Des confiseurs
+TRIBU|1|Clan|Famille nombreuse
+TROC|1|Échange|Sans argent
+TRONC|1|Corps d'arbre|Commun
+TROUPE|1|Groupe|De théâtre
+TUBE|1|Cylindre creux|Succès musical
+TUILE|1|Couvre le toit|Ennui imprévu
+TYPE|1|Gars|Modèle
+UNIQUE|1|Seul de son espèce|Sens ___
+URNE|1|Boîte à bulletins|Funéraire
+USAGE|1|Utilisation|D'___, habituel
+UTILE|1|Pratique|Joindre l'___ à l'agréable
+VAGUE|1|Imprécis|Nouvelle, au cinéma
+VALEUR|1|Prix|Sûre
+VAPEUR|1|Gaz d'eau|À toute ___
+VEDETTE|1|Star|Bateau rapide
+VEILLE|1|Jour d'avant|Mise en ___
+VELO|1|Bicyclette|Tout-terrain
+VENIR|1|Arriver|Voir ___
+VENTE|1|Cession|Aux enchères
+VERBE|1|Mot d'action|Avoir le ___ haut
+VERSO|1|Dos de la page|Recto ___
+VESTE|1|Veston|Retourner sa ___
+VIEUX|1|Âgé|Comme Hérode
+VIGNE|1|Donne le raisin|Dans les ___ du Seigneur
+VIRAGE|1|Courbe|En épingle
+VISITE|1|Venue|Guidée
+VITRE|1|Carreau|Casser les ___
+VIVRE|1|Exister|Savoir-___
+VOGUE|2|Mode|En ___
+VOILE|1|Toile du bateau|De la mariée
+VOLER|1|Planer|Dérober
+VOTE|1|Suffrage|À main levée
+VOUTE|2|Plafond courbe|Céleste
+WAGON|1|Voiture de train|Restaurant
+ZONE|1|Région|Grise
+ABIME|1|Gouffre|Endommagé
+ACCORD|1|Entente|D'___ !
+ADRESSE|1|Habileté ou domicile|Email ou postale
+AFFAIRE|1|Commerce|Classée, terminée
+AGENT|1|Policier|Secret, 007
+AIMANT|1|Attire le fer|Affectueux
+ALARME|1|Signal de danger|Sonner l'___
+ALIGNER|2|Mettre en ligne|Les points
+ALLEE|1|Chemin de jardin|Et venue
+ALLUMER|1|Éclairer|Le feu
+AMENDE|1|Contravention|Faire ___ honorable
+AMPLEUR|2|Importance|Prendre de l'___
+ANGLE|1|Coin|Arrondir les ___
+ANIMAL|1|Bête|De compagnie
+APPUI|1|Soutien|Point d'___
+ARGUMENT|1|Raison avancée|Massue, imparable
+ARMEE|1|Troupes|De l'air
+ARRIVER|1|Venir|À ses fins
+ASPECT|1|Apparence|Sous cet ___
+ATTENTE|1|Patience|Salle d'___
+AVANCE|1|Avancée|En ___, pas en retard
+AVOCAT|1|Défend au tribunal|Fruit vert
+BAISSE|1|Diminution|Des prix
+BALAYER|1|Nettoyer le sol|Devant sa porte
+BANQUE|1|Garde l'argent|Faire sauter la ___
+BASSIN|1|Petit plan d'eau|Os de la hanche
+BATAILLE|1|Combat|Navale
+BESOIN|1|Nécessité|Au ___
+BLESSER|1|Faire mal|Vexer
+BOUTON|1|Petite pièce ronde|De rose
+BRILLER|1|Étinceler|Par son absence
+BROUILLON|1|Premier jet|Désordonné
+CABINET|1|Petite pièce|Ministériel
+CAILLOU|1|Petite pierre|Du Petit Poucet
+CALCUL|1|Opération|Mental
+CAMION|1|Poids lourd|Routier
+CAPABLE|1|Apte|De tout
+CAPITAINE|1|Chef de navire|Crochet
+CARREAU|1|Vitre|Rester sur le ___
+CASIER|1|Rangement|Judiciaire
+CELEBRE|1|Connu|Fameux
+CENTRE|1|Milieu|Commercial
+CHALEUR|1|Température|Vague de ___
+CHANGER|1|Modifier|D'avis
+CHARGE|1|Poids|Revenir à la ___
+CHASSE|1|Traque|Au trésor
+CHEMISE|1|Vêtement à col|Changer d'avis comme de ___
+CHERCHER|1|Rechercher|Midi à quatorze heures
+CHIFFRE|1|Nombre|D'affaires
+CITOYEN|1|Habitant d'un pays|Du monde
+CLIENT|1|Acheteur|Roi, dit-on
+CLIMAT|1|Météo d'un lieu|Ambiance
+COLLIER|1|Bijou du cou|Coup de ___
+COMMERCE|1|Boutique|De proximité
+CONCOURS|1|Compétition|De circonstances
+CONFORT|1|Bien-être|Douillet
+CONSTRUIRE|1|Bâtir|Un avenir
+CONTACT|1|Toucher|Garder le ___
+COPINE|1|Amie|Petite ___
+CORRECT|1|Juste|Politiquement
+COSTUME|1|Habit|Trois-pièces
+COUSINE|1|Fille de l'oncle|Parente
+COUTUME|1|Tradition|Une fois n'est pas ___
+CRAQUER|1|Céder|Pour quelqu'un
+CREER|1|Inventer|Faire naître
+CRIME|1|Grave délit|Parfait
+CROISER|1|Rencontrer|Les doigts
+CUILLER|1|Ustensile|À café
+DANGER|1|Péril|Public
+DECISION|1|Choix|Prendre une ___
+DEFENDRE|1|Protéger|Interdire
+DEGAT|1|Dommage|Faire des ___
+DEPENSE|1|Frais|Folle
+DETAIL|1|Petit élément|Vente au ___
+DIRECTION|1|Sens|Assistée
+DIVORCE|1|Séparation|Par consentement mutuel
+DOSSIER|1|Chemise de documents|De chaise
+ECHANGE|1|Troc|Standard
+ECLAIRER|1|Illuminer|Expliquer
+ECOUTER|1|Entendre|Aux portes
+EFFACER|1|Gommer|L'ardoise
+ELEGANT|1|Chic|Raffiné
+EMPLOI|1|Travail|Du temps
+ENTRER|1|Pénétrer|En scène
+ENVOYER|1|Expédier|Promener
+EPICERIE|1|Petit commerce|Fine
+ESPRIT|1|Intellect|De famille
+ESSENCE|1|Carburant|Nature profonde
+ETONNER|1|Surprendre|Ne plus rien ___
+EVITER|1|Esquiver|Le pire
+EXEMPLE|1|Modèle|Par ___
+FERMER|1|Clore|Les yeux
+FINIR|1|Terminer|En beauté
+FLOCON|1|Neige|D'avoine
+FONTAINE|1|Jet d'eau|De jouvence
+FUMER|1|Tirer sur la cigarette|Nuit gravement
+GALERIE|1|Passage couvert|D'art
+GARCON|1|Jeune homme|De café
+GAZETTE|2|Journal|Bavard
+GLISSER|1|Patiner|Un mot
+GOURDE|1|Bouteille de rando|Idiote
+GRANDIR|1|Pousser|Mûrir
+GRATTER|1|Racler|Les fonds de tiroir
+HABITER|1|Résider|Chez soi
+HERITAGE|1|Legs|Culturel
+HISTOIRE|1|Récit|Sans ___
+HONNEUR|1|Dignité|Parole d'___
+HUMAIN|1|Homme|Trop ___
+ILLUSION|1|Mirage|Se faire des ___
+INVITER|1|Convier|À dîner
+JOUEUSE|1|Qui joue|Taquine
+JUMEAU|1|Né en même temps|Frère ___
+JUSTICE|1|Équité|Rendre ___
+LIBERTE|1|Indépendance|Égalité, fraternité
+MAGASIN|1|Boutique|Grand
+MANGER|1|Se nourrir|À sa faim
+MARCHER|1|Avancer à pied|Sur des œufs
+MARIN|1|Navigateur|D'eau douce
+MATELAS|1|Sous le drap|De billets
+MENTEUR|1|Qui ment|Comme un arracheur de dents
+MESSAGE|1|Communication|Passer le ___
+MONTRE|1|Donne l'heure|Contre la ___
+MOUCHOIR|1|Pour le nez|Grand comme un ___ de poche
+NAGER|1|Se déplacer dans l'eau|En plein bonheur
+NATUREL|1|Spontané|Chassez-le, il revient
+NUMERO|1|Chiffre|Un sacré ___
+OCCASION|1|Chance|D'___, pas neuf
+PARAPLUIE|1|Abri contre la pluie|Ouvrir le ___, se couvrir
+PARTAGE|1|Division|Des tâches
+PATRON|1|Chef|Modèle de couture
+PAYSAGE|1|Panorama|Audiovisuel
+PECHEUR|1|Attrape des poissons|Qui commet un péché
+PENSER|1|Réfléchir|À toi
+PERDRE|1|Égarer|Le nord
+PERSONNE|1|Individu|Nul ne vient
+POCHETTE|1|Petit sac|Surprise
+POLITESSE|1|Courtoisie|Des rois, l'exactitude
+POSITION|1|Place|Prendre ___
+PRESENT|1|Cadeau|Temps du verbe
+PROBLEME|1|Difficulté|Pas de ___ !
+PROFESSEUR|1|Enseignant|Tournesol
+QUARTIER|1|Partie de ville|Libre
+QUESTION|1|Interrogation|Hors de ___
+RACONTER|1|Narrer|Des salades
+RAPPORT|1|Lien|Compte rendu
+REFUGE|1|Abri|De montagne
+REMEDE|1|Médicament|Pire que le mal
+REPONSE|1|Réplique|À tout
+REUSSIR|1|Gagner|Son coup
+ROUGE|1|Couleur du sang|Tapis ___
+SAUVAGE|1|Pas domestique|Camping ___
+SCIENCE|1|Savoir|Fiction
+SEMBLANT|1|Apparence|Faire ___
+SENTIR|1|Flairer|Bon
+SERIEUX|1|Grave|Garder son ___
+SIGNAL|1|Avertissement|D'alarme
+SOLDAT|1|Militaire|De plomb
+SOMBRE|1|Obscur|Coupe ___
+SORTIR|1|Quitter|Du lot
+SOUCOUPE|1|Sous la tasse|Volante
+SOUPIRER|1|Exhaler|D'amour
+TACHER|1|Salir|Essayer, avec un accent
+TOMBER|1|Chuter|Amoureux
+TOURNER|1|Pivoter|La page
+TRAVAUX|1|Chantier|Pratiques
+TROMPER|1|Duper|Son monde
+TROUVER|1|Découvrir|Chaussure à son pied
+UNIVERS|1|Cosmos|Impitoyable
+VAINQUEUR|1|Gagnant|Par KO
+VENDRE|1|Céder contre argent|La mèche
+VETEMENT|1|Habit|Seconde main
+VIOLETTE|1|Fleur mauve|Timide
+VISITEUR|1|Qui visite|Du soir
+VITRINE|1|Devanture|Lèche-___
+VOITURE|1|Automobile|En ___ !
+VOLONTE|1|Détermination|Bonne

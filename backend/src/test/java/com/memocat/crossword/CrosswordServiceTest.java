@@ -69,7 +69,7 @@ class CrosswordServiceTest {
 
     /** A tiny grid "#AB" / "#C#": cells 1, 2 and 4 hold letters. */
     private CrosswordGame tiny(boolean shared) {
-        CrosswordGame g = new CrosswordGame(lou, "petite", shared, 3, 2, "[]", "#AB#C#", Instant.now());
+        CrosswordGame g = new CrosswordGame(lou, "petite", "melange", "facile", shared, 3, 2, "[]", "#AB#C#", Instant.now());
         ReflectionTestUtils.setField(g, "id", 5L);
         lenient().when(games.findForUpdate(5L)).thenReturn(Optional.of(g));
         lenient().when(games.findById(5L)).thenReturn(Optional.of(g));
@@ -78,11 +78,13 @@ class CrosswordServiceTest {
 
     @Test
     void aNewGridIsEmptyAndASharedOneInvitesTheOther() {
-        var game = service.create("lou", "moyenne", true);
+        var game = service.create("lou", "moyenne", true, "cuisine", "difficile");
         assertThat(game.width()).isEqualTo(9);
         assertThat(game.height()).isEqualTo(11);
         assertThat(game.letters()).doesNotContainPattern("[A-Z]");
         assertThat(game.clues()).isNotEmpty();
+        assertThat(game.theme()).isEqualTo("cuisine");
+        assertThat(game.level()).isEqualTo("difficile");
         ArgumentCaptor<CoupleActivity> sent = ArgumentCaptor.forClass(CoupleActivity.class);
         verify(events).publishEvent(sent.capture());
         assertThat(sent.getValue().kind()).isEqualTo(CoupleActivity.CROSSWORD);
@@ -90,7 +92,7 @@ class CrosswordServiceTest {
 
     @Test
     void aSoloGridTellsNobody() {
-        service.create("lou", "petite", false);
+        service.create("lou", "petite", false, null, null);
         verify(events, never()).publishEvent(any());
     }
 
@@ -157,7 +159,23 @@ class CrosswordServiceTest {
     }
 
     @Test
-    void unknownSizeIsRefused() {
-        assertThatThrownBy(() -> service.create("lou", "geante", false)).isInstanceOf(ContentValidationException.class);
+    void unknownSizeThemeOrLevelIsRefused() {
+        assertThatThrownBy(() -> service.create("lou", "geante", false, null, null)).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.create("lou", "petite", false, "espace", null)).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> service.create("lou", "petite", false, null, "extreme")).isInstanceOf(ContentValidationException.class);
+    }
+
+    @Test
+    void theLevelChoosesWordsAndClues() {
+        var words = new ArrowWords();
+        var easy = service.entries("melange", CrosswordService.Level.FACILE);
+        var hard = service.entries("melange", CrosswordService.Level.DIFFICILE);
+        assertThat(hard.size()).isGreaterThan(easy.size());
+        var easyClue = new java.util.HashMap<String, String>();
+        var hardClue = new java.util.HashMap<String, String>();
+        words.words().forEach(w -> { easyClue.put(w.word(), w.easy()); hardClue.put(w.word(), w.hard()); });
+        assertThat(easy).allMatch(e -> e.clue().equals(easyClue.get(e.word())) && !e.favored());
+        assertThat(hard).allMatch(e -> e.clue().equals(hardClue.get(e.word())));
+        assertThat(service.entries("sport", CrosswordService.Level.MOYEN)).anyMatch(ArrowGenerator.Entry::favored);
     }
 }

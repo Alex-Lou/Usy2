@@ -18,8 +18,16 @@ import java.util.Set;
  */
 public final class ArrowGenerator {
 
-    public record Entry(String word, String clue) {
+    /** {@code favored}: a word of the chosen theme, placed first whenever it fits. */
+    public record Entry(String word, String clue, boolean favored) {
+
+        public Entry(String word, String clue) {
+            this(word, clue, false);
+        }
     }
+
+    /** How much a theme word outweighs another one when choosing what to place. */
+    static final double THEME_BONUS = 7;
 
     private static final int RIGHT = 1;
     private static final int DOWN = 2;
@@ -71,6 +79,7 @@ public final class ArrowGenerator {
             List<Entry> firsts = new ArrayList<>(entries.stream()
                     .filter(e -> e.word().length() >= Math.min(5, w - 1) && e.word().length() <= w - 1).toList());
             Collections.shuffle(firsts, rnd);
+            firsts.sort((a, b) -> Boolean.compare(b.favored(), a.favored())); // a theme word opens the grid
             int row = rnd.nextInt(Math.max(1, h / 2));
             for (Entry e : firsts) {
                 if (fits(e.word(), false, row, 1) >= 0) {
@@ -94,6 +103,7 @@ public final class ArrowGenerator {
         Candidate bestLoose() {
             List<Entry> pool = new ArrayList<>(entries);
             Collections.shuffle(pool, rnd);
+            pool.sort((a, b) -> Boolean.compare(b.favored(), a.favored())); // theme words are always tried
             Candidate best = null;
             int tried = 0;
             for (Entry e : pool) {
@@ -105,7 +115,8 @@ public final class ArrowGenerator {
                     for (boolean down : new boolean[] {false, true}) {
                         if (fits(e.word(), down, r, c) != 0) continue;
                         int clueCell = down ? cell - w : cell - 1;
-                        double score = e.word().length() * 2 + (clueBits[clueCell] != 0 ? 3 : 0) + rnd.nextDouble() * 2;
+                        double score = e.word().length() * 2 + (clueBits[clueCell] != 0 ? 3 : 0) + rnd.nextDouble() * 2
+                                + (e.favored() ? THEME_BONUS : 0);
                         if (best == null || score > best.score) best = new Candidate(e, down, r, c, score);
                     }
                 }
@@ -119,6 +130,7 @@ public final class ArrowGenerator {
         Candidate bestCandidate() {
             List<Entry> pool = new ArrayList<>(entries);
             Collections.shuffle(pool, rnd);
+            pool.sort((a, b) -> Boolean.compare(b.favored(), a.favored())); // theme words are always tried
             Candidate best = null;
             int tried = 0;
             for (Entry e : pool) {
@@ -137,7 +149,8 @@ public final class ArrowGenerator {
                             int crossings = fits(word, down, sr, sc);
                             if (crossings <= 0) continue;
                             // Crossings make a dense grid; length fills it; a little chance varies it.
-                            double score = crossings * 6 + word.length() + rnd.nextDouble() * 3;
+                            double score = crossings * 6 + word.length() + rnd.nextDouble() * 3
+                                    + (e.favored() ? THEME_BONUS : 0);
                             if (best == null || score > best.score) best = new Candidate(e, down, sr, sc, score);
                         }
                     }

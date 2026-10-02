@@ -11,12 +11,54 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ArrowGeneratorTest {
 
-    private static final List<ArrowGenerator.Entry> WORDS = ArrowWords.load("crossword/mots.txt");
+    private static final List<ArrowWords.Word> DICTIONARY = ArrowWords.loadAll();
+    private static final List<ArrowGenerator.Entry> WORDS = DICTIONARY.stream()
+            .map(w -> new ArrowGenerator.Entry(w.word(), w.easy())).toList();
 
     @Test
-    void theWordListLoads() {
-        assertThat(WORDS).hasSizeGreaterThan(400);
-        assertThat(WORDS).allMatch(e -> e.word().matches("[A-Z]+") && !e.clue().isBlank());
+    void theDictionaryLoadsWithItsThemes() {
+        assertThat(DICTIONARY).hasSizeGreaterThan(2000);
+        assertThat(DICTIONARY).allMatch(w -> w.word().matches("[A-Z]{2,12}") && !w.easy().isBlank() && !w.hard().isBlank());
+        for (String theme : ArrowWords.THEMES) {
+            if (theme.equals("melange")) continue;
+            assertThat(DICTIONARY.stream().filter(w -> w.themes().contains(theme)).count())
+                    .as(theme).isGreaterThan(100);
+        }
+    }
+
+    /** A clue never gives its own answer away (words of 3 letters or more). */
+    @Test
+    void noClueContainsItsAnswer() {
+        for (ArrowWords.Word w : DICTIONARY) {
+            if (w.word().length() < 3) continue;
+            for (String clue : List.of(w.easy(), w.hard())) {
+                String plain = java.text.Normalizer.normalize(clue, java.text.Normalizer.Form.NFD)
+                        .replaceAll("\\p{M}", "").toUpperCase().replace("Œ", "OE");
+                assertThat(plain.split("[^A-Z]+")).as("%s : %s", w.word(), clue).doesNotContain(w.word());
+            }
+        }
+    }
+
+    @Test
+    void aThemeFillsItsGrid() {
+        double total = 0;
+        for (int seed = 0; seed < 10; seed++) {
+            List<ArrowGenerator.Entry> entries = DICTIONARY.stream()
+                    .map(w -> new ArrowGenerator.Entry(w.word(), w.easy(), w.themes().contains("cuisine"))).toList();
+            ArrowGrid g = new ArrowGenerator(entries).generate(9, 11, new Random(seed), 8);
+            java.util.Set<String> cuisine = new java.util.HashSet<>(DICTIONARY.stream()
+                    .filter(w -> w.themes().contains("cuisine")).map(ArrowWords.Word::word).toList());
+            long themed = g.clues().stream().filter(c -> cuisine.contains(answer(g, c))).count();
+            total += (double) themed / g.clues().size();
+        }
+        assertThat(total / 10).isGreaterThan(0.4);
+    }
+
+    static String answer(ArrowGrid g, ArrowGrid.Clue c) {
+        int step = c.dir().equals("down") ? g.width() : 1;
+        StringBuilder sb = new StringBuilder();
+        for (int k = 0; k < c.length(); k++) sb.append(g.solution().charAt(c.start() + k * step));
+        return sb.toString();
     }
 
     @Test

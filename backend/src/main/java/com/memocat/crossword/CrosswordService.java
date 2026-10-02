@@ -34,20 +34,39 @@ import java.util.Random;
 @Service
 public class CrosswordService {
 
-    /** The three sizes: columns × rows. */
+    /** The three sizes: columns × rows, and how many grids are tried (the fullest wins; big ones cost more). */
     enum Size {
-        PETITE(7, 8), MOYENNE(9, 11), GRANDE(11, 13);
+        PETITE(7, 8, 8), MOYENNE(9, 11, 6), GRANDE(11, 13, 5);
 
         final int width;
         final int height;
+        final int attempts;
 
-        Size(int width, int height) {
+        Size(int width, int height, int attempts) {
             this.width = width;
             this.height = height;
+            this.attempts = attempts;
         }
     }
 
-    static final int ATTEMPTS = 8;
+    /** How hard the grid is: which words it uses, and which of their two clues. */
+    enum Level {
+        /** Common words, direct clues. */
+        FACILE(1, 0.0),
+        /** Less common words too; a third of the clues are the tricky ones. */
+        MOYEN(2, 0.35),
+        /** Every word, tricky clues (puns, double meanings, ___ to complete). */
+        DIFFICILE(3, 1.0);
+
+        final int maxWordLevel;
+        final double hardClues;
+
+        Level(int maxWordLevel, double hardClues) {
+            this.maxWordLevel = maxWordLevel;
+            this.hardClues = hardClues;
+        }
+    }
+
     static final int MAX_CHANGES = 60;
     static final int LIST_SIZE = 30;
 
@@ -77,23 +96,37 @@ public class CrosswordService {
     }
 
     @Transactional
-    public GameDto create(String username, String size, boolean shared) {
+    public GameDto create(String username, String size, boolean shared, String theme, String level) {
         User me = requireUser(username);
         Size s = parseSize(size);
-        ArrowGrid grid = new ArrowGenerator(words.entries()).generate(s.width, s.height, random, ATTEMPTS);
-        CrosswordGame game = games.save(new CrosswordGame(me, s.name().toLowerCase(Locale.ROOT), shared,
-                grid.width(), grid.height(), toJson(grid.clues()), grid.solution(), clock.instant()));
+        String t = parseTheme(theme);
+        Level l = parseLevel(level);
+        ArrowGrid grid = new ArrowGenerator(entries(t, l)).generate(s.width, s.height, random, s.attempts);
+        CrosswordGame game = games.save(new CrosswordGame(me, s.name().toLowerCase(Locale.ROOT), t,
+                l.name().toLowerCase(Locale.ROOT), shared, grid.width(), grid.height(), toJson(grid.clues()),
+                grid.solution(), clock.instant()));
         if (shared) {
             events.publishEvent(CoupleActivity.of(CoupleActivity.CROSSWORD, me, game.getSize(), game.getId()));
         }
         return toDto(game);
     }
 
+    /** The words a grid may use, with the clue it shows; the theme's words come first. */
+    List<ArrowGenerator.Entry> entries(String theme, Level level) {
+        boolean anyTheme = theme.equals("melange");
+        return words.words().stream()
+                .filter(w -> w.level() <= level.maxWordLevel)
+                .map(w -> new ArrowGenerator.Entry(w.word(),
+                        random.nextDouble() < level.hardClues ? w.hard() : w.easy(),
+                        !anyTheme && w.themes().contains(theme)))
+                .toList();
+    }
+
     @Transactional(readOnly = true)
     public List<SummaryDto> list(String username) {
         User me = requireUser(username);
         return games.findVisibleTo(me.getId(), PageRequest.of(0, LIST_SIZE)).stream()
-                .map(g -> new SummaryDto(g.getId(), g.getSize(), g.isShared(), g.getOwner().getDisplayName(),
+                .map(g -> new SummaryDto(g.getId(), g.getSize(), g.getTheme(), g.getLevel(), g.isShared(), g.getOwner().getDisplayName(),
                         g.getOwner().getId().equals(me.getId()), progress(g), g.getCreatedAt(), g.getUpdatedAt(),
                         g.getFinishedAt()))
                 .toList();
@@ -172,6 +205,20 @@ public class CrosswordService {
         }
     }
 
+    static String parseTheme(String raw) {
+        String t = raw == null || raw.isBlank() ? "melange" : raw.strip().toLowerCase(Locale.ROOT);
+        if (!ArrowWords.THEMES.contains(t)) throw new ContentValidationException("Thème inconnu");
+        return t;
+    }
+
+    static Level parseLevel(String raw) {
+        try {
+            return Level.valueOf((raw == null || raw.isBlank() ? "facile" : raw.strip()).toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new ContentValidationException("Niveau inconnu");
+        }
+    }
+
     static int progress(CrosswordGame g) {
         String letters = g.getLetters();
         int cells = 0;
@@ -194,7 +241,7 @@ public class CrosswordService {
     }
 
     private GameDto toDto(CrosswordGame g) {
-        return new GameDto(g.getId(), g.getSize(), g.isShared(), g.getOwner().getId(), g.getOwner().getDisplayName(),
+        return new GameDto(g.getId(), g.getSize(), g.getTheme(), g.getLevel(), g.isShared(), g.getOwner().getId(), g.getOwner().getDisplayName(),
                 g.getWidth(), g.getHeight(), fromJson(g.getClues()), g.getSolution(), g.getLetters(), g.getAuthors(),
                 g.getCreatedAt(), g.getUpdatedAt(), g.getFinishedAt());
     }

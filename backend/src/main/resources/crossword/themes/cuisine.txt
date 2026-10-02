@@ -1,0 +1,155 @@
+# Cuisine & gourmandise
+AIL|1|Condiment du Sud|Gousse qui éloigne les vampires
+SEL|1|Cristaux de la mer|De Guérande, il est fin
+THE|1|Infusion|Servi à cinq heures à Londres
+RIZ|1|Céréale d'Asie|Base du risotto
+VIN|1|Rouge ou blanc|Il se bonifie en cave
+JUS|1|Boisson de fruits|D'orange au petit-déjeuner
+OEUF|1|Pondu par la poule|Brouillé ou à la coque
+LAIT|1|Boisson blanche|Il tourne s'il est vieux
+PAIN|1|Baguette|Perdu, il devient dessert
+MIEL|1|Fait par les abeilles|Doux nectar de la ruche
+SOUPE|1|Potage|Au lait, elle s'emporte
+SUCRE|1|Rend doux|En morceaux dans le café
+BEURRE|1|Fait avec la crème|Doux ou demi-sel
+CREPE|1|De la Chandeleur|Se fait sauter à la poêle
+GATEAU|1|Dessert d'anniversaire|C'est du ___, c'est facile
+FARINE|1|Pour le pain|Blé moulu
+FROMAGE|1|Brie ou camembert|Plateau avant le dessert
+DESSERT|1|Fin de repas sucrée|La cerise sur le gâteau
+CHOCOLAT|1|Douceur cacaotée|Noir, au lait ou blanc
+CUISINE|1|Pièce des repas|On y mijote
+RECETTE|1|Mode de préparation|De grand-mère, elle est secrète
+FOUR|1|Pour cuire|Un échec au théâtre
+POELE|1|Pour les crêpes|Tenir la queue de la ___
+CASSEROLE|1|Ustensile à manche|En traîner une, c'est un souci
+PLAT|1|Mets|Mettre les petits dans les grands
+TABLE|1|Meuble à manger|Mettre les pieds sous la ___
+TASSE|1|Pour le café|Boire la ___, se noyer
+VERRE|1|Pour boire|Lever son ___
+BOL|1|Tasse sans anse|De céréales le matin
+CAFE|1|Petit noir|Serré, au comptoir
+POIVRE|1|Épice noire|Et sel
+EPICE|1|Poivre ou cannelle|Elle relève le plat
+HUILE|1|D'olive|Jeter de l'___ sur le feu
+OLIVE|1|Fruit de l'olivier|Verte ou noire, à l'apéro
+SALADE|1|Laitue|Raconter des ___, mentir
+TOMATE|1|Fruit rouge du potager|Rouge comme elle
+CAROTTE|1|Légume orange|Les ___ sont cuites
+NAVET|2|Légume blanc|Mauvais film
+POIREAU|2|Légume vert et blanc|Faire le ___, attendre
+OIGNON|1|Fait pleurer|Aux petits ___, aux petits soins
+CHOU|1|Légume rond|Mon petit ___
+EPINARD|2|Légume de Popeye|Mettre du beurre dans les ___
+PATE|1|Spaghetti ou coquillettes|À tarte ou à modeler
+PIZZA|1|Spécialité de Naples|Quatre fromages
+FRITE|1|Bâtonnet de pomme de terre|Avoir la ___, la pêche
+STEAK|1|Tranche de bœuf|Haché, dans le burger
+RAGOUT|2|Plat mijoté|Viande en sauce
+SAUCE|1|Accompagne le plat|Béchamel ou béarnaise
+SAUCISSE|1|Charcuterie grillée|Merguez ou de Toulouse
+JAMBON|1|Charcuterie de porc|Beurre, dans le sandwich
+LARD|1|Gras de porc|Faire du ___, grossir
+POULET|1|Rôti du dimanche|Policier, en argot
+CANARD|1|Magret ou confit|Journal enchaîné
+SAUMON|1|Poisson rose|Fumé à Noël
+THON|1|Poisson en boîte|À l'huile ou au naturel
+MOULE|1|Coquillage frites|Récipient de pâtissier
+HUITRE|1|Coquillage à perle|Fermée comme elle
+CREVETTE|1|Petit crustacé|Rose au cocktail
+DINER|1|Repas du soir|Presque parfait à la télé
+DEJEUNER|1|Repas de midi|Petit, le matin
+GOUTER|1|Collation de quatre heures|Essayer un plat
+MENU|1|Carte du jour|Liste d'options à l'écran
+CHEF|1|Patron des cuisines|Toque blanche
+TOQUE|2|Chapeau de cuisinier|Haute, chez le chef
+FOUET|2|Pour monter les blancs|De l'écuyer
+LOUCHE|2|Grande cuillère|Suspect
+SPATULE|2|Ustensile plat|Retourne la crêpe
+CUILLERE|1|Pour la soupe|En argent, dans la bouche des riches
+FOURCHETTE|1|Pour piquer|Bonne, elle mange bien
+COUTEAU|1|Pour couper|Entre les dents, il est menaçant
+ASSIETTE|1|Plat individuel|Ne pas être dans son ___
+NAPPE|1|Couvre la table|D'eau souterraine
+TARTE|1|Dessert à pâte|Gifle ou aux pommes
+TARTINE|1|Pain beurré|En mettre une, en faire trop
+CONFITURE|1|Fruits cuits au sucre|De fraise sur la tartine
+CROISSANT|1|Viennoiserie|Lune à demi
+BRIOCHE|1|Pain sucré moelleux|Petit ventre rond
+MADELEINE|2|Petit gâteau de Proust|Pleurer comme une ___
+MACARON|2|Petit gâteau coloré|Insigne rond
+ECLAIR|1|Pâtisserie allongée|Zèbre du ciel d'orage
+SORBET|1|Glace sans lait|Rafraîchit entre deux plats
+GLACE|1|Crème glacée|Miroir ou eau gelée
+CREME|1|Fouettée ou fraîche|La ___ de la ___, le meilleur
+YAOURT|1|Laitage|Pot de lait fermenté
+CEREALE|1|Grain du petit-déjeuner|Blé ou avoine
+NOIX|1|Fruit sec à coque|À la ___, sans valeur
+NOISETTE|1|Fruit de l'écureuil|Couleur de beurre
+AMANDE|1|Fruit à coque|Pâte du massepain
+CITRON|1|Agrume acide|Presser comme un ___
+ORANGE|1|Agrume|Pressée au petit-déjeuner
+POMME|1|Fruit d'Ève|Tomber dans les ___
+POIRE|1|Fruit en goutte|Couper la ___ en deux
+PECHE|1|Fruit à noyau|Avoir la ___
+FRAISE|1|Fruit rouge|Ramener sa ___
+CERISE|1|Petit fruit rouge|Sur le gâteau
+RAISIN|1|Fruit de la vigne|Sec, il se ride
+BANANE|1|Fruit jaune|Avoir la ___, sourire
+ANANAS|1|Fruit tropical|Couronné de feuilles
+MELON|1|Fruit d'été|Chapeau rond
+KIWI|1|Fruit poilu|Oiseau néo-zélandais
+FIGUE|2|Fruit du figuier|Mi-___, mi-raisin
+PRUNE|2|Fruit violet|Pour des ___, pour rien
+ABRICOT|1|Fruit orange|Couleur pêche pâle
+CITROUILLE|1|Courge d'Halloween|Carrosse de Cendrillon
+COURGETTE|2|Légume d'été|Dans la ratatouille
+AUBERGINE|2|Légume violet|Dans la moussaka
+RADIS|2|Petit légume rouge|Pas un ___, plus un sou
+PERSIL|2|Herbe aromatique|Dans le nez du veau
+BASILIC|2|Herbe du pistou|Serpent mythique
+THYM|2|Herbe de Provence|Et laurier
+CANNELLE|2|Épice en bâton|Dans le vin chaud
+VANILLE|1|Gousse parfumée|Glace classique
+CARAMEL|1|Sucre fondu|Beurre salé
+NOUGAT|2|Confiserie de Montélimar|C'est du ___, facile
+BONBON|1|Friandise|Coûter ___, cher
+SIROP|1|Boisson sucrée|Contre la toux
+BIERE|1|Boisson à mousse|Pression au comptoir
+CIDRE|1|Boisson de pomme|Breton et pétillant
+CHAMPAGNE|1|Vin à bulles|On le sabre
+APERO|1|Avant le repas|Petit verre et cacahuètes
+TOAST|1|Pain grillé|Porté en levant son verre
+SANDWICH|1|Pain garni|Pris en ___, coincé
+BURGER|1|Steak dans un pain|Fast-food américain
+SUSHI|1|Spécialité japonaise|Riz et poisson cru
+CURRY|2|Mélange d'épices|Plat indien
+RISOTTO|2|Riz crémeux|Spécialité italienne
+FONDUE|1|Fromage fondu|Savoyarde, on y trempe le pain
+RACLETTE|1|Fromage fondu des Alpes|Soirée d'hiver
+QUICHE|2|Tarte salée lorraine|Avec lardons
+OMELETTE|1|Œufs battus cuits|On ne la fait pas sans casser des œufs
+GRATIN|2|Plat doré au four|Le ___, le beau monde
+RATATOUILLE|2|Légumes du Sud mijotés|Rat cuisinier chez Pixar
+CROQUE|2|___-monsieur|Sandwich chaud
+FRIGO|1|Réfrigérateur|Mettre au ___, mettre de côté
+TIROIR|1|Dans la commode|Fond de ___
+EVIER|2|Bac de cuisine|On y fait la vaisselle
+VAISSELLE|1|Assiettes à laver|Corvée après le repas
+TABLIER|1|Protège les vêtements|Rendre son ___, démissionner
+MIJOTER|2|Cuire doucement|Préparer en secret
+GRILLER|1|Cuire sur le feu|Un feu rouge, pour le chauffard
+BOUILLIR|1|Chauffer à cent degrés|Faire ___ la marmite
+DORER|1|Faire roussir|Se ___ au soleil
+SAVEUR|1|Goût|Douce ou amère
+CROUTE|2|Bord du pain|Tableau raté
+MIETTE|1|Petit bout de pain|Le petit Poucet en sème
+AUBERGE|2|Restaurant de campagne|Pas sorti de l'___
+TRAITEUR|2|Cuisinier à domicile|Livre les buffets
+GOURMAND|1|Aime manger|Péché mignon
+FESTIN|1|Grand repas|Repas de roi
+PIQUENIQUE|1|Repas sur l'herbe|Nappe à carreaux
+BUFFET|1|Repas en libre-service|Meuble ou ventre
+ROTI|1|Viande au four|Le ___ du dimanche
+PUREE|1|Pommes de terre écrasées|Brouillard très épais, ___ de pois
+COMPOTE|1|Fruits cuits|Avoir les jambes en ___

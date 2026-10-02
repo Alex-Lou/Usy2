@@ -1,0 +1,114 @@
+# Corps & santé
+CORPS|1|Organisme|___ et âme
+TETE|1|Sommet du corps|Tenir ___
+VISAGE|1|Figure|Pâle, chez les cow-boys
+OEIL|1|Organe de la vue|Mon ___ !
+NEZ|1|Sert à sentir|Mener par le bout du ___
+BOUCHE|1|Pour manger|À ___ que veux-tu
+LEVRE|1|Bord de la bouche|Du bout des ___
+DENT|1|Dans la bouche|Avoir une ___ contre quelqu'un
+LANGUE|1|Dans la bouche|Mauvaise, elle médit
+OREILLE|1|Pour entendre|Tirer les ___
+JOUE|1|Côté du visage|Tendre l'autre ___
+MENTON|1|Bas du visage|Galoche
+FRONT|1|Au-dessus des yeux|Faire ___ commun
+CHEVEU|1|Poil de la tête|Couper les ___ en quatre
+SOURCIL|1|Au-dessus de l'œil|Froncer les ___
+CIL|1|Poil de paupière|Battre des ___
+COU|1|Relie la tête|Se casser le ___
+EPAULE|1|Haut du bras|Donner un coup d'___
+BRAS|1|Membre supérieur|Le ___ droit
+COUDE|1|Pli du bras|Se serrer les ___
+MAIN|1|Cinq doigts|Coup de ___
+DOIGT|1|Au bout de la main|Mettre le ___ sur le problème
+POUCE|1|Gros doigt|Faire du stop avec lui
+ONGLE|1|Au bout du doigt|Jusqu'au bout des ___
+POITRINE|1|Torse|Se frapper la ___
+VENTRE|1|Abdomen|Avoir les yeux plus gros que le ___
+DOS|1|Arrière du corps|En avoir plein le ___
+JAMBE|1|Membre inférieur|Prendre ses ___ à son cou
+GENOU|1|Articulation de la jambe|Être sur les ___
+PIED|1|Au bout de la jambe|Casser les ___
+ORTEIL|1|Doigt de pied|Gros, il souffre dans la chaussure
+TALON|1|Arrière du pied|D'Achille
+CHEVILLE|1|Relie pied et jambe|Ne pas arriver à la ___
+HANCHE|1|Haut de la cuisse|Les poings sur les ___
+CUISSE|1|Haut de la jambe|De grenouille
+PEAU|1|Enveloppe du corps|Avoir quelqu'un dans la ___
+OS|1|Pièce du squelette|Tomber sur un ___
+SQUELETTE|1|Charpente osseuse|Placard aux secrets
+MUSCLE|1|Se contracte|Gonflé à la salle
+COEUR|1|Bat dans la poitrine|Par ___
+POUMON|1|Pour respirer|Vert, le parc
+FOIE|1|Organe digestif|Gras, à Noël
+CERVEAU|1|Dans la tête|Le ___ de la bande
+SANG|1|Coule dans les veines|Se faire du mauvais ___
+VEINE|1|Vaisseau sanguin|Chance
+NERF|1|Transmet les sensations|Avoir du ___
+SOUFFLE|1|Respiration|Second ___
+SANTE|1|Bon état du corps|À votre ___ !
+MALADE|1|Pas en forme|Imaginaire, chez Molière
+RHUME|1|Nez qui coule|Attrapé en hiver
+GRIPPE|1|Maladie de l'hiver|Prendre en ___
+FIEVRE|1|Température élevée|Du samedi soir
+TOUX|1|Irritation de la gorge|Sirop contre elle
+MIGRAINE|1|Mal de tête|Excuse classique
+DOULEUR|1|Mal|Sans ___ ni gloire
+BLESSURE|1|Plaie|D'amour-propre
+PLAIE|1|Blessure ouverte|Quelle ___ !
+BOBO|1|Petit mal|Bourgeois bohème
+BLEU|1|Ecchymose|Tout ___, bleui de coups
+BOSSE|1|Enflure du crâne|Avoir la ___ des maths
+CICATRICE|1|Marque de blessure|Celle d'Harry Potter
+PANSEMENT|1|Protège la plaie|Sparadrap
+MEDECIN|1|Docteur|Malgré lui, chez Molière
+DOCTEUR|1|Médecin|House, à la télé
+INFIRMIERE|1|Soigne les malades|Blouse blanche
+HOPITAL|1|Lieu de soins|C'est l'___ qui se moque de la charité
+PHARMACIE|1|Vend des médicaments|Croix verte
+MEDICAMENT|1|Remède|Sur ordonnance
+PILULE|1|Comprimé|Avaler la ___
+SIROP|1|Remède liquide|Contre la toux
+VACCIN|1|Protège des maladies|Piqûre de rappel
+PIQURE|1|Injection|De moustique
+ORDONNANCE|1|Prescription|Remise par le médecin
+SOIN|1|Attention|Aux petits ___
+REPOS|1|Détente|Au ___ !
+SOMMEIL|1|Dort|Le ___ du juste
+SIESTE|1|Petit somme|Crapuleuse
+REVE|1|Fait la nuit|Américain
+FATIGUE|1|Épuisement|Coup de ___
+ENERGIE|1|Vitalité|Plein d'___
+FORME|1|Bonne condition|En pleine ___
+REGIME|1|Diète|Sec, sans alcool
+VITAMINE|1|Dans les fruits|C pour l'orange
+EAU|1|Boire de l'___|Source de vie
+SOURIRE|1|Air joyeux|Coin des lèvres relevé
+LARME|1|Coule en pleurant|Une ___ de lait
+RIRE|1|Rigoler|Meilleur médicament
+STRESS|1|Tension nerveuse|Pression
+CALME|1|Sérénité|Du ___ !
+DETENTE|1|Relaxation|Gâchette ou repos
+MASSAGE|1|Détente des muscles|Aux huiles essentielles
+SAUNA|1|Bain de vapeur|Finlandais
+SPA|1|Bain à bulles|Centre de bien-être
+HYGIENE|1|Propreté|Règles de base
+BAIN|1|Plongé dans l'eau|Moussant
+DOUCHE|1|Jet d'eau|Froide, elle refroidit
+DENTISTE|1|Soigne les dents|Peur de la fraise
+LUNETTES|1|Aident à voir|Sur le nez
+VUE|1|Sens des yeux|Perçante
+OUIE|1|Sens des sons|Fine
+TOUCHER|1|Sens du contact|Émouvoir
+ODORAT|1|Sens du nez|Flair
+GOUT|1|Sens de la langue|Avoir du ___
+POULS|1|Battement du cœur|Prendre le ___
+TENSION|1|Pression du sang|Électrique
+GORGE|1|Dans le cou|Rire à ___ déployée
+VOIX|1|Son de la parole|Éteinte, aphone
+ALLERGIE|1|Réaction au pollen|Rhume des foins
+ASPIRINE|1|Contre la fièvre|Comprimé effervescent
+THERMOMETRE|1|Mesure la fièvre|Monte en été
+URGENCES|1|Service d'hôpital|Série médicale
+AMBULANCE|1|Transporte les malades|Tirer sur l'___
+GUERIR|1|Aller mieux|Mieux vaut prévenir
