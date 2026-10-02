@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Icon } from "../../components/ui/Icon";
 import { PageHeader } from "../../components/ui/PageHeader";
-import { createGame, deleteGame, listGames, type Size, type Summary } from "./api";
+import { createGame, deleteGame, LEVELS, levelLabel, listGames, THEMES, themeOf, type Level, type Size, type Summary, type Theme } from "./api";
 import { PlayGrid } from "./PlayGrid";
 
 const SIZES: { id: Size; label: string; hint: string }[] = [
@@ -27,6 +27,8 @@ function Lobby() {
   const navigate = useNavigate();
   const [size, setSize] = useState<Size>("petite");
   const [shared, setShared] = useState(false);
+  const [theme, setTheme] = useState<Theme>("melange");
+  const [level, setLevel] = useState<Level>("facile");
   const [busy, setBusy] = useState(false);
   const [games, setGames] = useState<Summary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,7 @@ function Lobby() {
     setBusy(true);
     setError(null);
     try {
-      const g = await createGame(size, shared);
+      const g = await createGame(size, shared, theme, level);
       navigate(`/jeux/mots-fleches?partie=${g.id}`);
     } catch {
       setError("La grille n'a pas pu être créée.");
@@ -64,7 +66,7 @@ function Lobby() {
     <li key={g.id} className="flex items-center gap-3 px-3 py-2.5">
       <Link to={`/jeux/mots-fleches?partie=${g.id}`} className="min-w-0 flex-1 press">
         <p className="truncate font-semibold">
-          {SIZE_LABEL[g.size]} {g.shared ? "· à deux 💞" : ""}
+          {themeOf(g.theme).emoji} {SIZE_LABEL[g.size]} · {levelLabel(g.level)} {g.shared ? "· à deux 💞" : ""}
         </p>
         <p className="text-xs text-text-muted">
           {g.mine ? "Lancée par toi" : `Lancée par ${g.ownerName}`} · {g.finishedAt ? `terminée le ${day(g.finishedAt)}` : day(g.updatedAt)}
@@ -94,6 +96,34 @@ function Lobby() {
               {s.label} <span className="font-normal opacity-70">{s.hint}</span>
             </button>
           ))}
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Thème</p>
+          <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Thème">
+            {THEMES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                role="radio"
+                aria-checked={theme === t.id}
+                onClick={() => setTheme(t.id)}
+                className={"rounded-full border px-3 py-1.5 text-sm font-semibold transition press " + (theme === t.id ? "border-primary bg-primary/15 text-text" : "border-border text-text-muted hover:text-text")}
+              >
+                {t.emoji} {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Niveau</p>
+          <div className="flex gap-1 rounded-full border border-border bg-surface p-1" role="radiogroup" aria-label="Niveau">
+            {LEVELS.map((l) => (
+              <button key={l.id} type="button" role="radio" aria-checked={level === l.id} onClick={() => setLevel(l.id)} className={seg(level === l.id)}>
+                {l.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-center text-xs text-text-muted">{LEVELS.find((l) => l.id === level)?.hint}</p>
         </div>
         <div className="flex gap-1 rounded-full border border-border bg-surface p-1" role="radiogroup" aria-label="Avec qui">
           <button type="button" role="radio" aria-checked={!shared} onClick={() => setShared(false)} className={seg(!shared)}>

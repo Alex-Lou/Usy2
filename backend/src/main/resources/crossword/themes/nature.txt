@@ -1,0 +1,153 @@
+# Nature & animaux
+CHAT|1|Miaule|Il retombe sur ses pattes
+CHIEN|1|Aboie|Meilleur ami de l'homme
+LION|1|Roi des animaux|Crinière de la savane
+LOUP|1|Hurle à la lune|Il faut hurler avec eux
+OURS|1|Gros plantigrade|En peluche dans le lit
+TIGRE|1|Félin rayé|Tapis de chambre de chasseur
+ZEBRE|1|Cheval rayé|Drôle de ___, drôle de type
+GIRAFE|1|Long cou|Peigner la ___, ne rien faire
+SINGE|1|Grimpe aux arbres|Faire le ___
+ELEPHANT|1|Trompe et défenses|Mémoire infaillible
+RENARD|1|Rusé de la forêt|Celui de la fable flatte le corbeau
+LAPIN|1|Aime les carottes|Poser un ___, ne pas venir
+LIEVRE|1|Court plus vite que la tortue|Lever un ___, soulever un problème
+CERF|1|Porte des bois|Cri du brame
+BICHE|1|Femelle du cerf|Ma ___, terme tendre
+SANGLIER|1|Cochon sauvage|Obélix en raffole
+ECUREUIL|1|Rongeur roux|Fait des réserves de noisettes
+HERISSON|1|Piquant de la haie|Poisson-___ qui gonfle
+TORTUE|1|Avance lentement|Ninja en carapace
+SERPENT|1|Rampe sans pattes|Tentateur d'Ève
+LEZARD|1|Petit reptile|Faire le ___ au soleil
+GRENOUILLE|1|Saute dans la mare|Princesse en attente de baiser
+CRAPAUD|1|Batracien verruqueux|Bave qui n'atteint pas la blanche colombe
+VACHE|1|Donne du lait|Parler français comme une ___ espagnole
+COCHON|1|Animal de la ferme rose|Tout est bon dedans
+MOUTON|1|Animal à laine|Compté pour s'endormir
+CHEVRE|1|Donne un fromage|Ménager elle et le chou
+CHEVAL|1|Monture|À ___ donné, on ne regarde pas les dents
+ANE|1|Baudet|Têtu comme lui
+POULE|1|Pond des œufs|Quand elles auront des dents
+COQ|1|Chante au matin|Passer du ___ à l'âne
+CANARD|1|Fait coin-coin|Mare ou journal
+OIE|1|Oiseau de basse-cour|Blanche comme elle
+DINDE|1|Volaille de Noël|Sotte, en insulte
+PIGEON|1|Oiseau des villes|Facile à berner
+MOINEAU|1|Petit oiseau brun|Manger comme lui
+MERLE|1|Oiseau noir au bec jaune|Faute de grives…
+HIBOU|1|Oiseau de nuit|Chouette cornue
+CHOUETTE|1|Rapace nocturne|Génial !
+CORBEAU|1|Oiseau noir|Celui de la fable lâche son fromage
+AIGLE|1|Rapace royal|Œil perçant
+PERROQUET|1|Oiseau qui parle|Répète sans comprendre
+CYGNE|1|Oiseau blanc gracieux|Son chant est le dernier
+PAON|1|Fait la roue|Vaniteux comme lui
+PINGOUIN|1|Oiseau noir et blanc|Habillé en smoking
+DAUPHIN|1|Mammifère marin joueur|Héritier du trône
+BALEINE|1|Plus grand mammifère|Jonas en connut le ventre
+REQUIN|1|Grand poisson aux dents|Homme d'affaires impitoyable
+POISSON|1|Vit dans l'eau|D'avril, c'est une farce
+PIEUVRE|1|Huit bras|Mafia tentaculaire
+CRABE|1|Marche de côté|Panier de ___
+PHOQUE|1|Mammifère des banquises|Il a la peau qui plaît
+ABEILLE|1|Fait le miel|Butineuse de la ruche
+FOURMI|1|Petite travailleuse|Fable avec la cigale
+PAPILLON|1|Ailes colorées|Nœud ou nage
+MOUCHE|1|Insecte agaçant|Prendre la ___
+GUEPE|1|Pique en été|Taille fine
+COCCINELLE|1|Bête à bon Dieu|Rouge à points noirs
+ARAIGNEE|1|Tisse sa toile|Au plafond, une idée fixe
+ESCARGOT|1|Porte sa maison|Avancer comme lui
+VER|1|De terre|Nu comme lui
+SOURIS|1|Petit rongeur|Pilote l'ordinateur
+RAT|1|Gros rongeur|Celui des villes et celui des champs
+TAUPE|2|Creuse des galeries|Espionne infiltrée
+CHAUVESOURIS|2|Vole la nuit|Batman l'imite
+ARBRE|1|Chêne ou sapin|Cache la forêt
+CHENE|1|Arbre robuste|Fort comme lui
+SAPIN|1|Arbre de Noël|Costume en bois, pour l'enterrement
+PIN|1|Arbre à aiguilles|Des Landes
+SAULE|2|Arbre pleureur|Près de la rivière
+PALMIER|1|Arbre des tropiques|Pâtisserie feuilletée
+BOULEAU|2|Arbre à écorce blanche|Travail, en argot
+ERABLE|2|Arbre du Canada|Son sirop est célèbre
+FEUILLE|1|Tombe en automne|De papier ou de chou
+BRANCHE|1|Bras de l'arbre|Être ___, à la mode
+RACINE|1|Sous l'arbre|Carrée en maths
+FLEUR|1|Rose ou tulipe|À ___ de peau
+ROSE|1|Fleur à épines|Pas de ___ sans épines
+TULIPE|1|Fleur de Hollande|Bulbe printanier
+MARGUERITE|1|Fleur qu'on effeuille|Un peu, beaucoup…
+COQUELICOT|1|Fleur rouge des champs|Rouge comme lui
+TOURNESOL|1|Suit le soleil|Professeur chez Tintin
+MUGUET|1|Fleur du 1er mai|Porte-bonheur en clochettes
+LAVANDE|1|Fleur violette de Provence|Parfume les armoires
+ORCHIDEE|2|Fleur exotique|Fragile et précieuse
+HERBE|1|Pousse dans le pré|Couper l'___ sous le pied
+MOUSSE|1|Tapis vert|Écume ou jeune marin
+FOUGERE|2|Plante des sous-bois|Feuilles en crosse
+CHAMPIGNON|1|Pousse après la pluie|Appuyer dessus, accélérer
+FORET|1|Bois étendu|Cache l'arbre
+BOIS|1|Petite forêt|Toucher du ___
+JARDIN|1|Potager ou parterre|Cultiver son ___
+PRAIRIE|1|Grand pré|Petite maison dans la ___
+MONTAGNE|1|Sommets enneigés|Faire une ___ d'un rien
+COLLINE|1|Petite hauteur|Butte arrondie
+VALLEE|1|Entre deux montagnes|De larmes
+RIVIERE|1|Cours d'eau|Les petits ruisseaux font les grandes
+FLEUVE|1|Se jette dans la mer|La Seine ou la Loire
+RUISSEAU|1|Petit cours d'eau|Les petits font les grandes rivières
+SOURCE|1|Naissance d'une rivière|Couler de ___
+CASCADE|1|Chute d'eau|Une ___ de rires
+LAC|1|Étendue d'eau douce|Léman ou d'Annecy
+ETANG|1|Plan d'eau|Les grenouilles y chantent
+MER|1|Grande bleue|Ce n'est pas la ___ à boire
+OCEAN|1|Vaste mer|Atlantique ou Pacifique
+PLAGE|1|Sable et mer|Ses pavés, sous Mai 68
+VAGUE|1|Ondulation de la mer|Nouvelle, au cinéma
+ROCHER|1|Gros caillou|Chocolat praliné
+GROTTE|1|Caverne|Celle de Lascaux
+VOLCAN|1|Crache de la lave|Danser dessus, prendre des risques
+DESERT|1|Étendue de sable|Traversée longue et solitaire
+NEIGE|1|Flocons blancs|Boule de ___
+GLACE|1|Eau gelée|Briser la ___
+PLUIE|1|Tombe des nuages|Faire la ___ et le beau temps
+ORAGE|1|Tonnerre et éclairs|Gronde l'été
+VENT|1|Souffle d'air|Du ___ !
+NUAGE|1|Dans le ciel gris|Sans ___, parfait
+SOLEIL|1|Astre du jour|Le roi en était un
+ETOILE|1|Brille la nuit|Né sous une bonne ___
+ARCENCIEL|1|Sept couleurs après la pluie|Son pied cache un trésor
+SAISON|1|Été ou hiver|Fruit de ___
+PRINTEMPS|1|Saison des fleurs|Les hirondelles le font
+AUTOMNE|1|Saison des feuilles mortes|Il arrive en septembre
+HIVER|1|Saison froide|Il vient, chez Game of Thrones
+NID|1|Maison d'oiseau|Fait de brindilles
+PLUME|1|Couvre l'oiseau|Poids léger à la boxe
+TERRIER|1|Abri du lapin|Chien de chasse
+RUCHE|1|Maison d'abeilles|Bourdonnante d'activité
+TOILE|1|Ouvrage d'araignée|Le web, en français
+GRAINE|1|Donne une plante|En prendre de la ___
+BOURGEON|2|Promesse de feuille|Éclot au printemps
+ECORCE|2|Peau de l'arbre|Entre l'arbre et l'___
+EPINE|1|Pique sur la rose|Dorsale, elle soutient
+PETALE|1|Partie de fleur|S'effeuille pour savoir
+POLLEN|2|Poussière des fleurs|Fait éternuer au printemps
+FAUNE|2|Animaux d'un lieu|Dieu des bois à cornes
+FLORE|2|Plantes d'un lieu|Déesse des fleurs
+SAFARI|1|Chasse photo en Afrique|Excursion dans la savane
+SAVANE|1|Plaine d'Afrique|Royaume du lion
+JUNGLE|1|Forêt tropicale|Livre de Mowgli
+KOALA|1|Mange de l'eucalyptus|Peluche australienne
+PANDA|1|Ours noir et blanc|Mange du bambou
+KANGOUROU|1|Saute avec sa poche|Emblème australien
+CHAMEAU|1|Deux bosses|Méchant, en insulte
+CROCODILE|1|Gros reptile|Ses larmes sont fausses
+HIPPO|2|Hippopotame en abrégé|Gros mangeur de rivière
+RHINOCEROS|2|Corne sur le nez|Pièce de Ionesco
+GORILLE|1|Grand singe|Garde du corps costaud
+MARMOTTE|1|Dort tout l'hiver|Elle met le chocolat dans le papier d'alu
+BLAIREAU|2|Animal rayé des bois|Gros beauf
+CASTOR|2|Bâtit des barrages|Dents de bûcheron
+LOUTRE|2|Nage sur le dos|Joueuse des rivières

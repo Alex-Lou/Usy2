@@ -33,6 +33,12 @@ public class CrosswordGame {
     @Column(nullable = false)
     private boolean shared;
 
+    @Column(nullable = false, length = 16)
+    private String theme;
+
+    @Column(nullable = false, length = 12)
+    private String level;
+
     @Column(nullable = false)
     private int width;
 
@@ -65,10 +71,12 @@ public class CrosswordGame {
         // for JPA
     }
 
-    public CrosswordGame(User owner, String size, boolean shared, int width, int height, String clues,
-                         String solution, Instant at) {
+    public CrosswordGame(User owner, String size, String theme, String level, boolean shared, int width, int height,
+                         String clues, String solution, Instant at) {
         this.owner = owner;
         this.size = size;
+        this.theme = theme;
+        this.level = level;
         this.shared = shared;
         this.width = width;
         this.height = height;
@@ -98,6 +106,14 @@ public class CrosswordGame {
 
     public String getSize() {
         return size;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public String getLevel() {
+        return level;
     }
 
     public boolean isShared() {

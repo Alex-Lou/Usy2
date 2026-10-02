@@ -5,7 +5,7 @@ import { feel } from "../../lib/feel";
 import { useOnRefresh } from "../../lib/refresh";
 import { useAuth } from "../auth/useAuth";
 import { Confetti } from "../games/Confetti";
-import { getGame, onCrossword, play, type Change, type Clue, type Dir, type Game } from "./api";
+import { getGame, levelLabel, onCrossword, play, themeOf, type Change, type Clue, type Dir, type Game } from "./api";
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { BLOCK, cellsOf, cluesByCell, keyToLetter, readingOrder, wordsByCell } from "./logic";
@@ -270,9 +270,11 @@ export function PlayGrid({ id }: { id: number }) {
           <Icon name="chevronLeft" size={20} />
         </Link>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate font-display text-lg font-bold leading-tight">✏️ {SIZE_LABEL[game.size]}</h1>
-          <p className="text-xs text-text-muted">
-            {game.shared ? "À deux 💞" : "Seul"} · {Math.round((filled * 100) / letterCells)} %
+          <h1 className="truncate font-display text-lg font-bold leading-tight">
+            {themeOf(game.theme).emoji} {SIZE_LABEL[game.size]}
+          </h1>
+          <p className="truncate text-xs text-text-muted">
+            {themeOf(game.theme).label} · {levelLabel(game.level)} · {game.shared ? "à deux 💞" : "seul"} · {Math.round((filled * 100) / letterCells)} %
           </p>
         </div>
         {!done && (

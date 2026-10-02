@@ -1,6 +1,34 @@
 import { apiRequest } from "../../lib/api/client";
 
 export type Size = "petite" | "moyenne" | "grande";
+export type Theme = "melange" | "cuisine" | "nature" | "voyage" | "maison" | "culture" | "sport" | "corps" | "amour";
+export type Level = "facile" | "moyen" | "difficile";
+
+export const THEMES: { id: Theme; label: string; emoji: string }[] = [
+  { id: "melange", label: "Mélange", emoji: "🎲" },
+  { id: "cuisine", label: "Cuisine", emoji: "🍳" },
+  { id: "nature", label: "Nature & animaux", emoji: "🌿" },
+  { id: "voyage", label: "Voyage", emoji: "✈️" },
+  { id: "maison", label: "Maison", emoji: "🏠" },
+  { id: "culture", label: "Musique & cinéma", emoji: "🎬" },
+  { id: "sport", label: "Sport", emoji: "⚽" },
+  { id: "corps", label: "Corps & santé", emoji: "🩺" },
+  { id: "amour", label: "Amour & nous deux", emoji: "💞" },
+];
+
+export const LEVELS: { id: Level; label: string; hint: string }[] = [
+  { id: "facile", label: "Facile", hint: "mots courants, définitions directes" },
+  { id: "moyen", label: "Moyen", hint: "plus de mots, quelques définitions piégeuses" },
+  { id: "difficile", label: "Difficile", hint: "définitions à double sens et jeux de mots" },
+];
+
+export function themeOf(id: string | undefined): { label: string; emoji: string } {
+  return THEMES.find((t) => t.id === id) ?? THEMES[0];
+}
+
+export function levelLabel(id: string | undefined): string {
+  return LEVELS.find((l) => l.id === id)?.label ?? "Facile";
+}
 export type Dir = "right" | "down";
 
 /** A clue written in `cell`; its answer starts in `start` (to the right or below) for `length` cells. */
@@ -19,6 +47,8 @@ export interface Clue {
 export interface Game {
   id: number;
   size: Size;
+  theme: Theme;
+  level: Level;
   shared: boolean;
   ownerId: number;
   ownerName: string;
@@ -36,6 +66,8 @@ export interface Game {
 export interface Summary {
   id: number;
   size: Size;
+  theme: Theme;
+  level: Level;
   shared: boolean;
   ownerName: string;
   mine: boolean;
@@ -70,8 +102,8 @@ export function listGames(): Promise<Summary[]> {
   return apiRequest<Summary[]>("/api/crossword");
 }
 
-export function createGame(size: Size, shared: boolean): Promise<Game> {
-  return apiRequest<Game>("/api/crossword", { method: "POST", body: { size, shared } });
+export function createGame(size: Size, shared: boolean, theme: Theme, level: Level): Promise<Game> {
+  return apiRequest<Game>("/api/crossword", { method: "POST", body: { size, shared, theme, level } });
 }
 
 export function getGame(id: number): Promise<Game> {

@@ -39,11 +39,14 @@ public class CrosswordController {
         return crosswords.list(principal.getName());
     }
 
-    /** A new grid: {@code size} petite, moyenne or grande; {@code shared}: played together. */
+    /**
+     * A new grid: {@code size} petite, moyenne or grande; {@code theme} (melange by default);
+     * {@code level} facile, moyen or difficile (facile by default); {@code shared}: played together.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GameDto create(Principal principal, @RequestBody CreateRequest request) {
-        return crosswords.create(principal.getName(), request.size(), request.shared());
+        return crosswords.create(principal.getName(), request.size(), request.shared(), request.theme(), request.level());
     }
 
     @GetMapping("/{id}")

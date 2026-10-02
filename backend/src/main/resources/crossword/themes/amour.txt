@@ -1,0 +1,114 @@
+# Amour & nous deux
+AMOUR|1|Sentiment tendre|Fou d'___
+COEUR|1|Symbole d'amour|Avoir un coup de ___
+BISOU|1|Petit baiser|Gros ___
+BAISER|1|Bisou|Volé, il surprend
+CALIN|1|Tendre étreinte|Faire un ___
+TENDRESSE|1|Affection douce|Câlins et douceur
+DOUCEUR|1|Tendresse|En ___, doucement
+CHERI|1|Mon amour|Mon ___, ma chérie
+CHERIE|1|Ma bien-aimée|Petit nom tendre au féminin
+COUPLE|1|Deux amoureux|Former un beau ___
+NOUS|1|Toi et moi|Pronom du couple
+DEUX|1|Le nombre du couple|À ___, c'est mieux
+DUO|1|Couple sur scène|Inséparables
+MARIAGE|1|Union|Pour le meilleur et pour le pire
+NOCES|1|Fête de mariage|D'or, après cinquante ans
+ALLIANCE|1|Bague de mariage|Pacte
+BAGUE|1|Anneau|De fiançailles
+FIANCE|1|Promis|Futur marié
+FIANCAILLES|1|Promesse de mariage|Demande à genoux
+EPOUX|1|Mari|Conjoint
+EPOUSE|1|Femme mariée|Conjointe
+MARI|1|Époux|Le ___ de la dame
+LUNEDEMIEL|1|Voyage des jeunes mariés|Premiers temps heureux
+ROMANTIQUE|1|Sentimental|Dîner aux chandelles
+CHANDELLE|1|Petite bougie|Tenir la ___
+DINER|1|Repas du soir|En tête-à-tête
+RENDEZVOUS|1|Rencontre prévue|Galant
+SOIREE|1|Moment du soir|En amoureux
+ROSE|1|Fleur des amoureux|Rouge, elle déclare sa flamme
+FLEURS|1|Bouquet offert|Couvrir de ___
+BOUQUET|1|Fleurs assemblées|C'est le ___ !
+CADEAU|1|Présent|Surprise emballée
+SURPRISE|1|Inattendu|Fête-___
+LETTRE|1|Mot d'amour écrit|Missive enflammée
+POEME|1|Déclaration en vers|Pour sa dulcinée
+DECLARATION|1|Aveu d'amour|D'impôts, moins romantique
+AVEU|1|Confession|D'amour, difficile à faire
+JETAIME|1|Trois mots d'amour|Moi non plus, chez Gainsbourg
+PROMESSE|1|Engagement|De Gascon, jamais tenue
+SERMENT|1|Promesse solennelle|Prêté la main levée
+FIDELE|1|Loyal|Comme un chien
+CONFIANCE|1|Foi en l'autre|Se gagne et se perd
+COMPLICE|1|Partenaire secret|Regard qui se comprend
+COMPLICITE|1|Entente secrète|Clin d'œil partagé
+SOURIRE|1|Air joyeux|Ravageur
+REGARD|1|Coup d'œil|Langoureux
+YEUX|1|Organes de la vue|Faire les ___ doux
+MAIN|1|Se tient en marchant|Demander la ___
+ETREINTE|1|Bras autour de l'autre|Serrés fort
+ENLACER|1|Serrer dans ses bras|Embrasser
+CARESSE|1|Geste doux|Effleurement tendre
+FLIRT|1|Amourette|Badinage
+COUPDEFOUDRE|1|Amour soudain|Au premier regard
+PASSION|1|Amour ardent|Dévorante
+DESIR|1|Envie|Objet du ___
+JALOUSIE|1|Peur de perdre l'autre|Volet à lamelles
+DISPUTE|1|Querelle|Suivie de réconciliation
+PARDON|1|Excuse|Demander ___
+MANQUE|1|Absence de l'autre|Tu me ___
+ABSENCE|1|Quand l'autre est loin|Rend le cœur plus tendre
+DISTANCE|1|Éloignement|Amour à ___
+SOUVENIR|1|Moment gardé|Album photo
+PHOTO|1|Cliché de nous|Dans le portefeuille
+ALBUM|1|Recueil de photos|De mariage
+ANNIVERSAIRE|1|Fête annuelle|Des premières rencontres
+DATE|1|Jour important|À ne pas oublier
+ENSEMBLE|1|L'un avec l'autre|Tout ___, pour toujours
+TOUJOURS|1|Pour l'éternité|À ___
+ETERNITE|1|Pour toujours|Serment des amoureux
+DESTIN|1|Sort|Écrit dans les étoiles
+HASARD|1|Rencontre fortuite|Belle coïncidence
+RENCONTRE|1|Première fois qu'on se voit|Coup de foudre
+SEDUIRE|1|Charmer|Faire la cour
+CHARME|1|Séduction|Sous le ___
+COMPLIMENT|1|Mot gentil|Flatterie sincère
+BEAUTE|1|Charme physique|Grain de ___
+BELLE|1|Jolie|Et la Bête
+BEAU|1|Joli|Prince charmant
+PRINCE|1|Charmant, il réveille|Héritier royal
+PRINCESSE|1|Fille de roi|Au petit pois
+CONTEDEFEES|2|Histoire qui finit bien|Ils vécurent heureux
+HEUREUX|1|Comblé|Et eurent beaucoup d'enfants
+BONHEUR|1|Grande joie|Le ___ à deux
+JOIE|1|Gaieté|Larmes de ___
+NID|1|Foyer douillet|D'amour
+FOYER|1|Maison du couple|Fonder un ___
+FAMILLE|1|Parents et enfants|Agrandir la ___
+ENFANT|1|Fruit de l'amour|Prodige
+BEBE|1|Nourrisson|Fruit de l'amour, en couches
+CHAT|1|Moka en est un|Câlin à poils
+MOKA|1|Notre chat|Café ou félin chéri
+CANAPE|1|Soirée cocooning|Film et plaid
+PLAID|1|Couverture douillette|Soirée canapé
+COCON|1|Abri douillet|Bulle à deux
+CAFE|1|Partagé au réveil|Petit noir à deux
+PETITDEJ|1|Repas du matin|Au lit, le dimanche
+BRUNCH|1|Repas du dimanche midi|Petit-déjeuner tardif
+BALADE|1|Promenade|Main dans la main
+VOYAGE|1|Périple à deux|De noces
+VACANCES|1|Congés|En amoureux
+PROJET|1|Plan d'avenir|Commun
+AVENIR|1|Futur ensemble|Rose
+REVE|1|Projet chéri|De gosse
+MOITIE|1|Âme sœur|Ma ___, mon amour
+AMESOEUR|1|Moitié parfaite|Faite pour moi
+DOUDOU|1|Petit nom tendre|Peluche ou chéri
+LOULOU|1|Petit nom affectueux|Chien de Poméranie
+MINOU|1|Petit chat|Petit nom tendre
+TRESOR|1|Mon ___|Petit nom précieux
+AMOUREUX|1|Épris|Fou ___
+EPRIS|2|Amoureux|Tombé sous le charme
+FIDELITE|1|Loyauté|Carte de ___
+TENDRE|1|Doux|Carte du ___
