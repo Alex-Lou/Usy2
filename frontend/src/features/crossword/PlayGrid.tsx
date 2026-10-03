@@ -54,7 +54,7 @@ export function PlayGrid({ id }: { id: number }) {
   const width = game?.width ?? 1;
   const myMark = game && user?.id === game.ownerId ? "a" : "b";
   const words = useMemo(() => (game ? wordsByCell(game.clues, width) : new Map()), [game, width]);
-  const clueCells = useMemo(() => (game ? cluesByCell(game.clues) : new Map()), [game]);
+  const clueCells = useMemo(() => (game ? cluesByCell(game.clues) : new Map<number, Clue[]>()), [game]);
   const order = useMemo(() => (game ? readingOrder(game.clues) : []), [game]);
 
   // Start on the first word.
@@ -163,7 +163,8 @@ export function PlayGrid({ id }: { id: number }) {
       if (game.solution[cell] === BLOCK) {
         const here = clueCells.get(cell);
         if (!here) return;
-        const pick: Clue = here.right && here.down ? (activeClue === here.right ? here.down : here.right) : (here.right ?? here.down)!;
+        // Two clues in the cell: a second tap goes to the other one.
+        const pick: Clue = here.length > 1 && activeClue === here[0] ? here[1] : here[0];
         setCursor({ cell: pick.start, dir: pick.dir });
         return;
       }

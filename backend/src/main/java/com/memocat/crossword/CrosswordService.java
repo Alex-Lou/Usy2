@@ -34,9 +34,9 @@ import java.util.Random;
 @Service
 public class CrosswordService {
 
-    /** The three sizes: columns × rows, and how many grids are tried (the fullest wins; big ones cost more). */
+    /** The three sizes: columns × rows, and how many full grids are made to keep the best (big ones cost more). */
     enum Size {
-        PETITE(7, 8, 8), MOYENNE(9, 11, 6), GRANDE(11, 13, 5);
+        PETITE(7, 8, 4), MOYENNE(9, 11, 2), GRANDE(9, 13, 1);
 
         final int width;
         final int height;
@@ -66,6 +66,9 @@ public class CrosswordService {
             this.hardClues = hardClues;
         }
     }
+
+    /** In a theme grid the words longer than this all come from the theme; shorter ones hold the grid together. */
+    static final int THEME_GLUE_LENGTH = 4;
 
     static final int MAX_CHANGES = 60;
     static final int LIST_SIZE = 30;
@@ -111,11 +114,12 @@ public class CrosswordService {
         return toDto(game);
     }
 
-    /** The words a grid may use, with the clue it shows; the theme's words come first. */
+    /** The words a grid may use, with the clue it shows; in a theme grid, every long word is a theme word. */
     List<ArrowGenerator.Entry> entries(String theme, Level level) {
         boolean anyTheme = theme.equals("melange");
         return words.words().stream()
                 .filter(w -> w.level() <= level.maxWordLevel)
+                .filter(w -> anyTheme || w.word().length() <= THEME_GLUE_LENGTH || w.themes().contains(theme))
                 .map(w -> new ArrowGenerator.Entry(w.word(),
                         random.nextDouble() < level.hardClues ? w.hard() : w.easy(),
                         !anyTheme && w.themes().contains(theme)))

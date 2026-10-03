@@ -6,9 +6,9 @@ TAXI|1|Voiture à compteur|De la Marne en 1914
 VELO|1|Bicyclette|Petite reine
 MOTO|1|Deux-roues|Gros cube
 BATEAU|1|Navigue sur l'eau|Monter un ___, mentir
-NAVIRE|1|Grand bateau|Le ___ va, dit la chanson
+NAVIRE|1|Grand bateau|Bâtiment de mer
 METRO|1|Train souterrain|___, boulot, dodo
-TRAM|1|Tramway|Roule sur rails en ville
+TRAM|1|Rame en ville|Roule sur rails en ville
 GARE|1|Arrêt des trains|Du Nord à Paris
 PORT|1|Abri des bateaux|De pêche ou de plaisance
 AEROPORT|1|Piste et terminal|Roissy ou Orly
@@ -46,7 +46,7 @@ ILE|1|Terre entourée d'eau|De beauté, la Corse
 PLAGE|1|Sable et mer|Privée, réservée
 MONTAGNE|1|Sommets enneigés|Vacances au ski
 EUROPE|1|Notre continent|Enlevée par Zeus
-ASIE|1|Continent|Mineure, la Turquie
+ASIE|1|Plus grand continent|Mineure, la Turquie
 AFRIQUE|1|Continent du Sahara|Berceau de l'humanité
 AMERIQUE|1|Nouveau Monde|Découverte en 1492
 OCEANIE|2|Continent des îles|Australie et Pacifique
@@ -83,14 +83,14 @@ SAHARA|1|Grand désert|Océan de sable
 NIL|1|Fleuve d'Égypte|Il a ses crues sacrées
 ALPES|1|Montagnes du Mont-Blanc|Chaîne enneigée
 TOURISTE|1|Voyageur en visite|Il prend tout en photo
-VOYAGEUR|1|Qui voyage|Sans bagages, chez Anouilh
+VOYAGEUR|1|Globe-trotteur|Sans bagages, chez Anouilh
 PILOTE|1|Conduit l'avion|Automatique, sans les mains
 HOTESSE|1|Accueille à bord|De l'air
 VOL|1|Trajet aérien|Long-courrier
 ESCALIER|1|Marches|Celui de service
 SIESTE|1|Repos après le repas|Espagnole, elle est sacrée
 SOLEIL|1|Astre du jour|Crème indispensable
-BRONZER|1|Prendre des couleurs|Les ___, au cinéma
+BRONZER|1|Prendre des couleurs|Dorer sur la plage
 MAILLOT|1|Tenue de bain|Jaune, pour le leader
 PARASOL|1|Abri de plage|Grand champignon de toile
 SERVIETTE|1|Pour se sécher|De bain, sur le sable
@@ -126,3 +126,40 @@ PHARE|1|Guide les bateaux|Celui d'Alexandrie
 MARCHE|1|Étals en plein air|Flottant à Bangkok
 GONDOLE|2|Barque vénitienne|Tête de rayon
 PYRAMIDE|1|Tombeau de pharaon|Du Louvre
+# Pluriels
+BILLETS|1|Titres de transport|Doux, amoureux
+HOTELS|1|Pour dormir en voyage|De luxe
+TOURISTES|1|Voyageurs en visite|En short et sandales
+VISAS|1|Permis d'entrer|Tampons sur le passeport
+QUAIS|1|Bords de voie|De Seine
+PONTS|1|Enjambent la rivière|Couper les ___
+CHATEAUX|1|Demeures de seigneurs|De la Loire
+# Mots d'autres fichiers qui font aussi partie du thème
+VOLS
+CAR
+ILES
+MER
+RUE
+RUES
+SOUK
+RADE
+TIPI
+CAMP
+CAP
+NORD
+SUD
+EST
+VIA
+ALLER
+RETOUR
+GARES
+PORTS
+AVIONS
+TRAINS
+BATEAUX
+VELOS
+VOYAGES
+PHOTOS
+MUSEES
+ROUTES
+VILLES

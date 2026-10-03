@@ -4,7 +4,7 @@ CHIEN|1|Aboie|Meilleur ami de l'homme
 LION|1|Roi des animaux|Crinière de la savane
 LOUP|1|Hurle à la lune|Il faut hurler avec eux
 OURS|1|Gros plantigrade|En peluche dans le lit
-TIGRE|1|Félin rayé|Tapis de chambre de chasseur
+TIGRE|1|Félin rayé|Jaloux comme un ___
 ZEBRE|1|Cheval rayé|Drôle de ___, drôle de type
 GIRAFE|1|Long cou|Peigner la ___, ne rien faire
 SINGE|1|Grimpe aux arbres|Faire le ___
@@ -12,7 +12,7 @@ ELEPHANT|1|Trompe et défenses|Mémoire infaillible
 RENARD|1|Rusé de la forêt|Celui de la fable flatte le corbeau
 LAPIN|1|Aime les carottes|Poser un ___, ne pas venir
 LIEVRE|1|Court plus vite que la tortue|Lever un ___, soulever un problème
-CERF|1|Porte des bois|Cri du brame
+CERF|1|Porte des bois|Il brame en automne
 BICHE|1|Femelle du cerf|Ma ___, terme tendre
 SANGLIER|1|Cochon sauvage|Obélix en raffole
 ECUREUIL|1|Rongeur roux|Fait des réserves de noisettes
@@ -28,10 +28,10 @@ MOUTON|1|Animal à laine|Compté pour s'endormir
 CHEVRE|1|Donne un fromage|Ménager elle et le chou
 CHEVAL|1|Monture|À ___ donné, on ne regarde pas les dents
 ANE|1|Baudet|Têtu comme lui
-POULE|1|Pond des œufs|Quand elles auront des dents
+POULE|1|Pond des œufs|Chair de ___
 COQ|1|Chante au matin|Passer du ___ à l'âne
 CANARD|1|Fait coin-coin|Mare ou journal
-OIE|1|Oiseau de basse-cour|Blanche comme elle
+OIE|1|Oiseau de basse-cour|Jeu de l'___
 DINDE|1|Volaille de Noël|Sotte, en insulte
 PIGEON|1|Oiseau des villes|Facile à berner
 MOINEAU|1|Petit oiseau brun|Manger comme lui
@@ -50,10 +50,10 @@ REQUIN|1|Grand poisson aux dents|Homme d'affaires impitoyable
 POISSON|1|Vit dans l'eau|D'avril, c'est une farce
 PIEUVRE|1|Huit bras|Mafia tentaculaire
 CRABE|1|Marche de côté|Panier de ___
-PHOQUE|1|Mammifère des banquises|Il a la peau qui plaît
+PHOQUE|1|Mammifère des banquises|Souffler comme un ___
 ABEILLE|1|Fait le miel|Butineuse de la ruche
 FOURMI|1|Petite travailleuse|Fable avec la cigale
-PAPILLON|1|Ailes colorées|Nœud ou nage
+PAPILLON|1|Insecte aux ailes colorées|Nœud ou nage
 MOUCHE|1|Insecte agaçant|Prendre la ___
 GUEPE|1|Pique en été|Taille fine
 COCCINELLE|1|Bête à bon Dieu|Rouge à points noirs
@@ -120,7 +120,7 @@ SOLEIL|1|Astre du jour|Le roi en était un
 ETOILE|1|Brille la nuit|Né sous une bonne ___
 ARCENCIEL|1|Sept couleurs après la pluie|Son pied cache un trésor
 SAISON|1|Été ou hiver|Fruit de ___
-PRINTEMPS|1|Saison des fleurs|Les hirondelles le font
+PRINTEMPS|1|Saison des fleurs|Une hirondelle ne le fait pas
 AUTOMNE|1|Saison des feuilles mortes|Il arrive en septembre
 HIVER|1|Saison froide|Il vient, chez Game of Thrones
 NID|1|Maison d'oiseau|Fait de brindilles
@@ -144,10 +144,101 @@ PANDA|1|Ours noir et blanc|Mange du bambou
 KANGOUROU|1|Saute avec sa poche|Emblème australien
 CHAMEAU|1|Deux bosses|Méchant, en insulte
 CROCODILE|1|Gros reptile|Ses larmes sont fausses
-HIPPO|2|Hippopotame en abrégé|Gros mangeur de rivière
+HIPPO|2|Gros mammifère des fleuves, en bref|Il bâille dans le fleuve, en bref
 RHINOCEROS|2|Corne sur le nez|Pièce de Ionesco
 GORILLE|1|Grand singe|Garde du corps costaud
 MARMOTTE|1|Dort tout l'hiver|Elle met le chocolat dans le papier d'alu
 BLAIREAU|2|Animal rayé des bois|Gros beauf
 CASTOR|2|Bâtit des barrages|Dents de bûcheron
 LOUTRE|2|Nage sur le dos|Joueuse des rivières
+# Pluriels
+LAPINS|1|Aiment les carottes|Poser des ___
+RENARDS|1|Rusés de la forêt|Fourrures rousses
+TIGRES|1|Félins rayés|De papier
+SINGES|1|Grimpent aux arbres|Grands, comme le gorille
+SERPENTS|1|Rampent sans pattes|Charmeurs de ___
+OISEAUX|1|Volatiles|Drôles d'___
+PIGEONS|1|Oiseaux des villes|Voyageurs
+CHATS|1|Ils miaulent|Ils retombent sur leurs pattes
+CHIENS|1|Ils aboient|Entre ___ et loups
+CHEVAUX|1|Montures|Petits ___ de bois
+VACHES|1|Donnent du lait|Période des ___ maigres
+MOUTONS|1|Animaux à laine|Revenons à nos ___
+POULES|1|Pondeuses|Quand les ___ auront des dents
+CANARDS|1|Font coin-coin|Journaux, familièrement
+ABEILLES|1|Font le miel|Butineuses
+FOURMIS|1|Petites travailleuses|Avoir des ___ dans les jambes
+MOUCHES|1|Insectes agaçants|Pattes de ___, écriture
+FEUILLES|1|Tombent en automne|De papier
+BRANCHES|1|Bras d'arbre|Ramures
+RACINES|1|Sous l'arbre|Origines
+GRAINES|1|Semences|Semées au jardin
+NUAGES|1|Dans le ciel gris|Être dans les ___
+ETOILES|1|Brillent la nuit|Hôtel cinq ___
+VAGUES|1|Ondulations de la mer|Faire des ___, faire scandale
+PLAGES|1|Sable et mer|Horaires, à la radio
+CERFS|1|Portent des bois|Ils brament en automne
+BICHES|1|Femelles du cerf|Mes ___, mes chéries
+COQS|1|Chantent au matin|Emblèmes gaulois
+DINDES|1|Volailles de Noël|Sottes
+PAONS|1|Font la roue|Vaniteux
+CYGNES|1|Oiseaux blancs gracieux|Lac de Tchaïkovski
+DAUPHINS|1|Mammifères marins|Héritiers du trône
+REQUINS|1|Grands prédateurs marins|Hommes d'affaires sans pitié
+BALEINES|1|Géants des mers|Lames de corset
+CRABES|1|Marchent de côté|Pinces et carapaces
+PAPILLONS|1|Ailes colorées|Avoir des ___ dans le ventre
+TAUPES|1|Creusent des galeries|Espions infiltrés
+POISSONS|1|Vivent dans l'eau|Douzième signe du zodiaque
+FLEURS|1|Roses et tulipes|Couvrir de ___
+# Mots d'autres fichiers qui font aussi partie du thème
+IF
+RU
+LIN
+ORME
+FAON
+DAIM
+CANE
+GRUE
+JARS
+LAMA
+PUMA
+IRIS
+ROC
+ROCS
+PIC
+PICS
+VAL
+MONT
+MONTS
+ILE
+ILES
+LACS
+MERS
+ARBRES
+FORETS
+RIVES
+DUNES
+BAIES
+AILES
+NIDS
+OIES
+ANES
+PINS
+BLE
+PRE
+EAU
+AIR
+SOL
+TERRE
+CIEL
+LUNE
+MIEL
+BETE
+BETES
+GEL
+ROSEE
+BRISE
+BRUME
+EPI
+EPIS

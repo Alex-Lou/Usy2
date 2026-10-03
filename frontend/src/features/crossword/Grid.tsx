@@ -1,6 +1,6 @@
 import { memo } from "react";
-import type { Clue, Dir } from "./api";
-import { BLOCK } from "./logic";
+import type { Clue } from "./api";
+import { arrowOf, BLOCK, type Arrow } from "./logic";
 
 interface Props {
   width: number;
@@ -8,7 +8,7 @@ interface Props {
   letters: string;
   authors: string;
   myMark: string;
-  clueCells: Map<number, Partial<Record<Dir, Clue>>>;
+  clueCells: Map<number, Clue[]>;
   /** The selected word's cells, and the cursor. */
   wordCells: Set<number>;
   cursor: number;
@@ -18,8 +18,33 @@ interface Props {
   onCell: (cell: number) => void;
 }
 
-/** A clue as printed in its cell, with the arrow showing where its word goes. */
+/** Where each arrow sits in its clue (the side its word is on) and how it is drawn. */
+const ARROWS: Record<Arrow, { at: string; shape: JSX.Element }> = {
+  right: { at: "right-0 top-1/2 -translate-y-1/2", shape: <polygon points="3,2 8,5 3,8" /> },
+  down: { at: "bottom-0 left-1/2 -translate-x-1/2", shape: <polygon points="2,3 8,3 5,8" /> },
+  rightThenDown: {
+    at: "right-0 top-1/2 -translate-y-1/2",
+    shape: (
+      <>
+        <path d="M1 3H6V6" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        <polygon points="3.5,6 8.5,6 6,9.5" />
+      </>
+    ),
+  },
+  downThenRight: {
+    at: "bottom-0 left-1/2 -translate-x-1/2",
+    shape: (
+      <>
+        <path d="M3 1V6H6" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        <polygon points="6,3.5 6,8.5 9.5,6" />
+      </>
+    ),
+  },
+};
+
+/** A clue as printed in its cell, with the arrow showing where its word goes (bent on the edges). */
 function ClueText({ clue, half, active }: { clue: Clue; half: boolean; active: boolean }) {
+  const arrow = ARROWS[arrowOf(clue)];
   return (
     <span
       className={
@@ -29,13 +54,14 @@ function ClueText({ clue, half, active }: { clue: Clue; half: boolean; active: b
       style={{ fontSize: "max(6.5px, var(--cell) * 0.17)" }}
     >
       <span className={half ? "line-clamp-2" : "line-clamp-4"}>{clue.text}</span>
-      <span
-        className={"absolute text-primary " + (clue.dir === "right" ? "right-0 top-1/2 -translate-y-1/2" : "bottom-0 left-1/2 -translate-x-1/2 leading-none")}
-        style={{ fontSize: "max(7px, var(--cell) * 0.2)" }}
+      <svg
+        viewBox="0 0 10 10"
+        className={"absolute fill-current text-primary " + arrow.at}
+        style={{ width: "max(7px, var(--cell) * 0.2)", height: "max(7px, var(--cell) * 0.2)" }}
         aria-hidden="true"
       >
-        {clue.dir === "right" ? "▸" : "▾"}
-      </span>
+        {arrow.shape}
+      </svg>
     </span>
   );
 }
@@ -69,18 +95,19 @@ export const Grid = memo(function Grid({
         {Array.from(solution, (expected, cell) => {
           const clues = clueCells.get(cell);
           if (expected === BLOCK) {
+            // A cell with no clue only happens in grids made before every cell was used.
             if (!clues) return <div key={cell} className="aspect-square bg-bg" aria-hidden="true" />;
-            const both = Boolean(clues.right && clues.down);
             return (
               <button
                 key={cell}
                 type="button"
                 onClick={() => onCell(cell)}
                 className="flex aspect-square touch-manipulation flex-col divide-y divide-border bg-primary/15"
-                aria-label={[clues.right && `→ ${clues.right.text}`, clues.down && `↓ ${clues.down.text}`].filter(Boolean).join(" ; ")}
+                aria-label={clues.map((c) => `${c.dir === "right" ? "→" : "↓"} ${c.text}`).join(" ; ")}
               >
-                {clues.right && <ClueText clue={clues.right} half={both} active={activeClue === clues.right} />}
-                {clues.down && <ClueText clue={clues.down} half={both} active={activeClue === clues.down} />}
+                {clues.map((c) => (
+                  <ClueText key={c.start} clue={c} half={clues.length > 1} active={activeClue === c} />
+                ))}
               </button>
             );
           }

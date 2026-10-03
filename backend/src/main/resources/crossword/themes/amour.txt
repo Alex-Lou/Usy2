@@ -6,7 +6,7 @@ BAISER|1|Bisou|Volé, il surprend
 CALIN|1|Tendre étreinte|Faire un ___
 TENDRESSE|1|Affection douce|Câlins et douceur
 DOUCEUR|1|Tendresse|En ___, doucement
-CHERI|1|Mon amour|Mon ___, ma chérie
+CHERI|1|Mon amour|Petit nom de l'amoureux
 CHERIE|1|Ma bien-aimée|Petit nom tendre au féminin
 COUPLE|1|Deux amoureux|Former un beau ___
 NOUS|1|Toi et moi|Pronom du couple
@@ -80,7 +80,7 @@ BEAU|1|Joli|Prince charmant
 PRINCE|1|Charmant, il réveille|Héritier royal
 PRINCESSE|1|Fille de roi|Au petit pois
 CONTEDEFEES|2|Histoire qui finit bien|Ils vécurent heureux
-HEUREUX|1|Comblé|Et eurent beaucoup d'enfants
+HEUREUX|1|Comblé|Ils vécurent ___
 BONHEUR|1|Grande joie|Le ___ à deux
 JOIE|1|Gaieté|Larmes de ___
 NID|1|Foyer douillet|D'amour
@@ -94,7 +94,7 @@ CANAPE|1|Soirée cocooning|Film et plaid
 PLAID|1|Couverture douillette|Soirée canapé
 COCON|1|Abri douillet|Bulle à deux
 CAFE|1|Partagé au réveil|Petit noir à deux
-PETITDEJ|1|Repas du matin|Au lit, le dimanche
+PETITDEJ|1|Repas du matin, en bref|Au lit, le dimanche
 BRUNCH|1|Repas du dimanche midi|Petit-déjeuner tardif
 BALADE|1|Promenade|Main dans la main
 VOYAGE|1|Périple à deux|De noces
@@ -112,3 +112,46 @@ AMOUREUX|1|Épris|Fou ___
 EPRIS|2|Amoureux|Tombé sous le charme
 FIDELITE|1|Loyauté|Carte de ___
 TENDRE|1|Doux|Carte du ___
+# Pluriels
+AMOUREUSE|1|Éprise|Tombée sous le charme
+BISOUS|1|Petits baisers|Gros ___ !
+CALINS|1|Tendres étreintes|Moments de tendresse
+CARESSES|1|Gestes doux|Effleurements tendres
+MARIES|1|Jeunes époux|Vive les ___ !
+FIANCES|1|Promis|Futurs époux
+COEURS|1|Symboles d'amour|Couleur rouge du jeu de cartes
+PROMESSES|1|Engagements|Elles n'engagent que ceux qui y croient
+SERMENTS|1|Promesses solennelles|D'amour éternel
+# Mots d'autres fichiers qui font aussi partie du thème
+AME
+AMI
+AMIS
+AMIE
+AMIES
+AIME
+AIMER
+AIMEE
+AIMES
+BISE
+BISES
+BAGUES
+ROSES
+LIEN
+LIENS
+UNI
+UNIS
+UNIR
+FOI
+VOEU
+EDEN
+ANGE
+ANGES
+AMOURS
+CHER
+CHERS
+DOUX
+DOUCES
+MOI
+TOI
+LUNE
+MIEL
