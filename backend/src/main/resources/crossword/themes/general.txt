@@ -1,32 +1,32 @@
 # Mélange : mots courants, utilisés dans toutes les grilles.
 # MOT|niveau (1 courant, 2 moins courant, 3 rare)|définition facile|définition difficile
-AN|1|Douze mois|Se fête avec du champagne
+AN|1|Douze mois|Le Nouvel ___ se fête au champagne
 AS|1|Carte maîtresse|Champion ou carte
 AU|1|Contraction de « à le »|Petit article contracté
 CE|1|Démonstratif|Désigne sans montrer du doigt
 DE|1|Préposition|Lie les mots ou se lance
 DO|1|Note de musique|Ouvre la gamme
-DU|1|Article partitif|Un peu de tout
-EN|1|Pronom adverbial|Dans une autre langue ou dedans
-ET|1|Conjonction|Petit trait d'union verbal
+DU|1|Article partitif|___ coq à l'âne
+EN|1|Pronom adverbial|___ avant, marche !
+ET|1|Conjonction de coordination|Il relie Roméo à Juliette
 EU|1|Participe d'avoir|Possédé, ou dupé
 IL|1|Pronom masculin|Lui, sujet
-LA|1|Note de musique|Le diapason la donne
+LA|1|Note de musique|Note du diapason
 LE|1|Article défini|Masculin bien défini
 LU|1|Parcouru des yeux|Dévoré, pour un roman
 MA|1|Possessif féminin|À moi, au féminin
 MI|1|Note de musique|À moitié
-NE|1|Négation|Né d'une négation
-NI|1|Ni l'un ___ l'autre|Refuse deux fois
+NE|1|Particule négative|Accompagne souvent « pas »
+NI|1|Conjonction négative|Refuse deux fois
 NU|1|Sans vêtement|Comme un ver
 ON|1|Pronom indéfini|Nous, familièrement
-OR|1|Métal précieux|Doré ou donc
+OR|1|Métal ou conjonction|Conjonction précieuse
 OS|1|Pièce du squelette|Le chien le ronge
 OU|1|Conjonction de choix|Pose une alternative
 RE|1|Note de musique|Deuxième marche de la gamme
 RI|1|S'est esclaffé|A trouvé ça drôle
 SA|1|Possessif féminin|La sienne
-SE|1|Pronom réfléchi|Pronom qui se regarde
+SE|1|Pronom réfléchi|Réfléchi, chez le pronom
 SI|1|Note ou condition|Avec des « ___ », on mettrait Paris en bouteille
 SU|1|Connu|Appris par cœur
 TA|1|Possessif féminin|La tienne
@@ -37,25 +37,25 @@ VA|1|Se déplace|Ça ___ ? Ça ___ !
 VU|1|Aperçu|Ni ___ ni connu
 OH|1|Exclamation|Cri d'étonnement
 AH|1|Cri de surprise|Ça alors, en deux lettres
-ES|1|Tu ___ là ?|Tu existes
-ADO|1|Jeune de quinze ans|Âge ingrat, en abrégé
+ES|1|Tu ___ là ?|Existes
+ADO|1|Jeune de quinze ans|Jeune en pleine crise, en abrégé
 AGE|1|Années vécues|Il n'a pas d'importance, dit-on
 AIE|1|Cri de douleur|Ça fait mal !
 AIL|1|Condiment du Sud|Éloigne les vampires
 AIR|1|On le respire|Mélodie ou atmosphère
-AME|1|Souffle vital|Sœur de cœur
+AME|1|Souffle vital|___ sœur
 AMI|1|Copain|Un vrai se reconnaît dans le besoin
 ANE|1|Baudet|Son bonnet punit l'élève
 ANS|1|Années|Ils s'accumulent sur le gâteau
 ARA|2|Perroquet coloré|Bavard des tropiques
 ARC|1|Lance des flèches|Celui de Cupidon fait des ravages
 ARE|3|Cent mètres carrés|Petite surface agricole
-ART|1|Peinture ou musique|Le septième est au cinéma
+ART|1|Peinture ou musique|Le septième, c'est le cinéma
 AVE|3|Prière à Marie|Salutation latine
 BAC|1|Examen de fin de lycée|Passeport pour la fac
 BAL|1|Soirée dansante|Cendrillon y perdit sa pantoufle
 BAS|1|Pas haut|Porté sous la jupe
-BEC|1|Bouche d'oiseau|Clouer le sien, c'est faire taire
+BEC|1|Bouche d'oiseau|Cloué, il se tait
 BIO|1|Sans pesticides|Étiquette verte au marché
 BLE|1|Céréale dorée|Argent, en argot
 BOA|2|Serpent ou écharpe|Il serre fort, à plumes ou à écailles
@@ -64,7 +64,7 @@ BOL|1|Tasse sans anse|En avoir ras le ___
 BUS|1|Transport en commun|Il a sa voie réservée
 BUT|1|Objectif|Le gardien veut l'empêcher
 CAP|1|Pointe de terre|On le garde dans la tempête
-CAR|1|Autocar|Parce que, ou véhicule
+CAR|1|Grand bus|Parce que, ou véhicule
 CEP|2|Pied de vigne|Champignon ou souche
 CIL|1|Poil de paupière|Il bat sans faire de bruit
 CLE|1|Ouvre la porte|Elle est sous le paillasson
@@ -72,11 +72,11 @@ COU|1|Relie la tête au corps|Celui de la girafe est long
 CRI|1|Éclat de voix|Dernier, à la mode
 CRU|1|Pas cuit|Grand vin ou poisson japonais
 DES|1|Petits cubes à jouer|On les jette, le sort est fait
-DIX|1|Deux fois cinq|Note parfaite sur cette base
+DIX|1|Deux fois cinq|Autant que de doigts
 DON|1|Cadeau|Talent ou générosité
 DOS|1|Arrière du corps|On le tourne en partant
-DUO|1|Chanté à deux|Un couple sur scène
-DUR|1|Pas mou|Œuf qui a bouilli dix minutes
+DUO|1|Chant à deux|Un couple sur scène
+DUR|1|Pas mou|Comme un œuf bouilli dix minutes
 EAU|1|H2O|Elle dort, la plus dangereuse
 ECU|3|Bouclier ancien|Vieille pièce du royaume
 ELU|1|Choisi par vote|Député ou maire
@@ -86,17 +86,17 @@ ERE|2|Longue époque|Celle des dinosaures fut longue
 EST|1|Levant|Le soleil s'y lève
 ETE|1|Saison chaude|Indien, il arrive en octobre
 FEE|1|Agite sa baguette|Marraine de Cendrillon
-FER|1|Métal de la poêle|Il se repasse
-FEU|1|Flammes|Rouge, il arrête
-FIL|1|Sert à coudre|Celui du téléphone a disparu
+FER|1|Métal de la poêle|À repasser ou à cheval
+FEU|1|Brasier|Rouge, il arrête
+FIL|1|Sert à coudre|Passer un coup de ___
 FIN|1|Terme|Mot de la ___
 GAI|1|Joyeux|Comme un pinson
 GAZ|1|Ni solide ni liquide|Il chauffe la casserole
-GEL|1|Fait geler l'eau|Coiffe ou fige
+GEL|1|Grand froid|Coiffe ou fige
 ICI|1|En ce lieu|Pas là-bas
 ILE|1|Terre entourée d'eau|Robinson y vécut seul
-IRA|1|Se rendra|Futur départ
-JEU|1|Divertissement|Les dés en font partie
+IRA|1|Se rendra|Il ___ loin, ce petit
+JEU|1|Divertissement|Le ___ n'en vaut pas la chandelle
 JUS|1|Boisson de fruits|Café, en argot
 KIT|2|Prêt à monter|Meuble en pièces détachées
 LAC|1|Étendue d'eau douce|Celui des cygnes est un ballet
@@ -106,7 +106,7 @@ LIE|2|Dépôt du vin|Fond de bouteille
 LIS|2|Fleur royale|Emblème des rois de France
 LIT|1|Meuble pour dormir|On le fait chaque matin
 LOI|1|Règle votée|Nul n'est censé l'ignorer
-LOT|1|Gain à la loterie|Tombola ou département
+LOT|1|Gain de tombola|Rivière ou gain de tombola
 LUE|2|Parcourue des yeux|Lettre déjà ouverte
 LUI|1|Pronom masculin|Pas elle
 MAI|1|Mois du muguet|Fais ce qu'il te plaît, dit le dicton
@@ -119,8 +119,8 @@ MOI|1|Ego|Je, en insistant
 MOT|1|Groupe de lettres|Le dernier, on veut l'avoir
 MOU|1|Pas dur|On le donne au chat
 MUE|2|Change de peau|Change de voix à l'adolescence
-MUR|1|Cloison|Les oreilles qu'il aurait
-NET|1|Clair et propre|Internet, en abrégé
+MUR|1|Cloison|Il aurait des oreilles
+NET|1|Clair et propre|La Toile, en bref
 NEZ|1|Sert à sentir|Celui de Pinocchio s'allonge
 NID|1|Maison d'oiseau|Douillet, pour un couple
 NIE|1|Dément|Dit que non
@@ -133,7 +133,7 @@ ONU|2|Nations unies|Siège à New York
 OSA|2|Se risqua|Prit son courage à deux mains
 OSE|2|Téméraire|Qui ne recule devant rien
 OTE|2|Enlève|Retire son chapeau
-OUF|1|Soupir de soulagement|On l'est à moitié fou
+OUF|1|Soupir de soulagement|Enfin tiré d'affaire !
 OUI|1|Accord|Mot du mariage
 PAN|2|Bruit de tir|Peter, qui ne grandit pas
 PAS|1|Enjambée|Petit, il fait du chemin
@@ -175,10 +175,10 @@ TIR|1|Coup de feu|Au but, il est réussi
 TOC|2|Imitation sans valeur|Faux bijou
 TOI|1|Pas moi|Chez ___ ou chez moi ?
 TON|1|Couleur de la voix|Il fait la musique
-TOT|1|De bonne heure|Avenir des lève-___
+TOT|1|De bonne heure|L'avenir est aux lève-___
 TRI|1|Sélection|Sélectif, pour les déchets
-TUE|2|Fait mourir|L'ennui le fait, dit-on
-UNE|1|Article féminin|Elle fait la ___ des journaux
+TUE|2|Fait mourir|Le ridicule ne ___ pas
+UNE|1|Article féminin|À la ___ des journaux
 UNI|1|Sans motif|Tissu sans dessin
 UNS|2|Les ___ et les autres|Quelques-___
 USE|2|Abîme à la longue|Fatigue le tissu
@@ -186,7 +186,7 @@ VAN|2|Transport de chevaux|Camion d'écurie
 VER|1|De terre ou à soie|Il est dans le fruit
 VIE|1|Existence|C'est la ___ !
 VIN|1|Rouge ou blanc|Il vieillit en cave
-VIS|1|Se visse|Pas de ___ sans tournevis
+VIS|1|Se serre au tournevis|Serrer la ___, être sévère
 VOL|1|Larcin ou trajet aérien|Il décolle ou il dérobe
 VOS|1|Possessif pluriel|Les vôtres
 VUE|1|Panorama|Perdre de ___, c'est oublier
@@ -194,7 +194,7 @@ ZEN|1|Calme et serein|Restons-le en toutes circonstances
 ZOO|1|Parc aux animaux|Où l'on va voir les fauves
 AGIR|1|Passer à l'acte|Ne plus se contenter de parler
 AIDE|1|Coup de main|Ce que l'on demande en criant
-AILE|1|Sert à voler|Le poulet en a deux
+AILE|1|Sert à voler|Partie de poulet ou d'avion
 AIME|1|Chérit|Je t'___, à la folie
 AIRS|2|Mélodies|Il se les donne, le prétentieux
 ALLO|1|Au téléphone|Premier mot décroché
@@ -202,7 +202,7 @@ AMER|1|Pas sucré|Goût du café noir ou des regrets
 AMIE|1|Copine|Petite, c'est presque une fiancée
 ANGE|1|Être céleste|Il passe dans les silences
 ARME|1|Pistolet ou épée|Celle du crime est cherchée
-ARTS|1|Beaux-___|Les sept ont leurs muses
+ARTS|1|Beaux-___|Les ___ martiaux
 AUBE|1|Lever du jour|Avant le chant du coq
 AVIS|1|Opinion|Sauf ___ contraire
 BAIE|1|Petit golfe|Fruit rouge ou fenêtre
@@ -221,7 +221,7 @@ CAGE|1|Prison d'oiseau|Celle d'escalier n'enferme personne
 CAPE|1|Grand manteau|Rire sous ___
 CHAT|1|Miaule|On lui donne sa langue
 CIEL|1|Au-dessus de nos têtes|Le septième est le plus heureux
-CITE|1|Ville|Universitaire ou citée
+CITE|1|Ville|Universitaire ou interdite
 CLOU|1|Se plante au marteau|Le ___ du spectacle
 CODE|1|Mot de passe|De la route ou secret
 COTE|1|Bord de mer|D'Azur ou de bœuf
@@ -244,7 +244,7 @@ ELLE|1|Pronom féminin|Pas lui
 EPEE|1|Arme de duel|De Damoclès, elle menace
 ETAT|1|Nation|Coup d'___, prise de pouvoir
 ETRE|1|Exister|Ou ne pas ___
-EURO|1|Monnaie européenne|Il a remplacé le franc
+EURO|1|Monnaie de Bruxelles à Rome|Il a remplacé le franc
 FACE|1|Côté de la pièce|Pile ou ___ ?
 FAIM|1|Envie de manger|Une ___ de loup
 FETE|1|Célébration|Celle des mères est en mai
@@ -253,7 +253,7 @@ FILS|1|Garçon des parents|Tel père, tel ___
 FOIN|1|Herbe séchée|Aiguille introuvable dans sa botte
 GARE|1|Arrêt des trains|___ à toi !
 GENS|1|Personnes|Les bonnes ___
-GOUT|1|Saveur|Des couleurs et des ___
+GOUT|1|Saveur|Avoir du ___, être élégant
 GRIS|1|Couleur de souris|Un peu ivre
 HIER|1|Veille d'aujourd'hui|Pas né d'___, expérimenté
 HUIT|1|Sept plus un|Couché, c'est l'infini
@@ -279,7 +279,7 @@ MINE|1|Air du visage|De crayon ou de charbon
 MODE|1|Tendance|Elle se démode
 MOIS|1|Trente jours environ|Le ___ du blanc, c'est janvier
 MOKA|1|Café… ou notre chat|Gâteau, café ou félin chéri
-MONT|1|Montagne|Promettre ___ et merveilles
+MONT|1|Sommet|Le ___ Blanc
 MUET|1|Sans voix|Cinéma d'avant le parlant
 MUSE|2|Inspire l'artiste|Elles sont neuf, filles de Zeus
 NEUF|1|Tout nouveau|Huit plus un
@@ -300,15 +300,15 @@ PAIN|1|Baguette|Gagner son ___
 PAIX|1|Contraire de guerre|Fiche-moi la ___ !
 PARI|1|Mise|Tenu, il est gagné
 PEAU|1|Enveloppe du corps|Celle de l'ours ne se vend pas trop tôt
-PERE|1|Papa|Celui Noël passe par la cheminée
+PERE|1|Papa|Noël, il passe par la cheminée
 PEUR|1|Frousse|Bleue, elle est intense
 PIED|1|Au bout de la jambe|C'est le ___ !
 PILE|1|Batterie ou tas|Ou face
 PLAT|1|Mets ou sans relief|Pays sans montagne
 POLE|1|Nord ou sud|Position de départ en course
 PORT|1|Abri des bateaux|Arriver à bon ___
-RAIL|1|Voie ferrée|Remettre sur les ___
-RANG|1|Rangée|Se mettre en ___ d'oignons
+RAIL|1|Voie ferrée|Le ___, c'est le train
+RANG|1|File, alignement|Se mettre en ___ d'oignons
 RARE|1|Peu commun|Steak à peine cuit, en anglais
 REVE|1|Fait la nuit|Américain ou éveillé
 RIEN|1|Néant|De ___, c'est la politesse
@@ -329,7 +329,7 @@ SORT|1|Destin|Jeter un ___, c'est ensorceler
 SOUS|1|En dessous de|Argent de poche
 TARD|1|Pas tôt|Mieux vaut ___ que jamais
 TETE|1|Sommet du corps|En avoir une de mule
-TOIT|1|Couvre la maison|Crier sur les ___
+TOIT|1|Couvre la maison|Sous le même ___
 TOUR|1|Château ou périple|Celle de Babel
 TRES|1|Beaucoup|___ bien, merci
 TROU|1|Cavité|Normand, il fait de la place
@@ -352,7 +352,7 @@ CHOSE|1|Objet quelconque|Un truc, un machin
 CLOWN|1|Amuse au cirque|Nez rouge
 CORPS|1|Organisme|À ___ perdu
 CRAIE|2|Pour le tableau noir|Falaise d'Étretat
-DESIR|1|Envie|Prendre ses ___ pour des réalités
+DESIR|1|Envie|Objet du ___
 DRAME|1|Tragédie|En faire tout un
 ECOLE|1|Lieu des élèves|Buissonnière, on la fait
 ECRAN|1|Télé ou ordinateur|Total, il protège du soleil
@@ -371,7 +371,7 @@ JOUER|1|S'amuser|___ cartes sur table
 LETTRE|1|Missive|À la ___, au pied du mot
 LIGNE|1|Trait|Garder la ___
 LIVRE|1|Se lit|Demi-kilo ou roman
-MATIN|1|Début de journée|Le ___ appartient à ceux qui se lèvent tôt
+MATIN|1|Début de journée|De bon ___
 MERCI|1|Remerciement|À la ___ de quelqu'un
 MONDE|1|Planète et ses habitants|Tout le ___ en parle
 OMBRE|1|Contraire de lumière|Elle nous suit au soleil
@@ -390,10 +390,10 @@ USINE|1|Fabrique|À rêves, c'est Hollywood
 VILLE|1|Agglomération|En ___, pas à la campagne
 ARGENT|1|Monnaie ou métal|Il ne fait pas le bonheur
 BALADE|1|Promenade|Petit tour à pied
-CHEMIN|1|Sentier|Tous mènent à Rome
+CHEMIN|1|Sentier|Le ___ des écoliers
 MAISON|1|Foyer|___ mère, faite à la main
 MIROIR|1|Reflète l'image|Le ___ magique de la reine
-PAPIER|1|Feuille blanche|Être dans les petits ___
+PAPIER|1|Feuille blanche|___ mâché
 SAISON|1|Été ou hiver|Il y en a quatre
 TRESOR|1|Coffre de pirate|Mon petit ___ !
 VOYAGE|1|Périple|Forme la jeunesse
@@ -416,21 +416,21 @@ AUSSI|1|De même|Moi ___
 AVANT|1|Plus tôt|Il y a un ___ et un après
 AVEC|1|En compagnie de|Sans ou ___ sucre ?
 BEAUCOUP|1|Énormément|Merci ___
-CHAQUE|1|Tous un par un|___ chose en son temps
+CHAQUE|1|Tout, pris un à un|___ chose en son temps
 CHEZ|1|Dans la maison de|___ soi
 COMME|1|De même que|___ ci, ___ ça
 DANS|1|À l'intérieur de|___ le mille !
 DEJA|1|Plus tôt que prévu|Sentiment de ___-vu
-DEMAIN|1|Le jour d'après|Jamais remis à ce jour, dit-on
+DEMAIN|1|Le jour d'après|Ne remets pas à ___ ce que…
 DONC|1|Par conséquent|Je pense, ___ je suis
-ENCORE|1|Une fois de plus|Le public le crie en anglais
+ENCORE|1|Une fois de plus|Bis, au concert
 ENFIN|1|Pour finir|Soupir de soulagement
-ENTRE|1|Au milieu de|Entrez sans frapper
+ENTRE|1|Au milieu de|___ nous, en confidence
 JAMAIS|1|À aucun moment|Mieux vaut tard que ___
 JUSTE|1|Équitable|Tout ___, de peu
 LONG|1|Pas court|Le ___ fleuve tranquille
 LOURD|1|Pesant|Poids ___ du ring
-MIEUX|1|Plus bien|Tant ___ !
+MIEUX|1|En meilleur état|Tant ___ !
 MOINS|1|Pas plus|Signe de la soustraction
 NOUS|1|Toi et moi|Pronom du couple
 OUVERT|1|Pas fermé|Esprit sans préjugés
@@ -463,7 +463,7 @@ ARGILE|2|Terre du potier|Colosse aux pieds d'___
 AROME|2|Parfum|Celui du café le matin
 ASTRE|1|Corps céleste|Le soleil en est un
 ATLAS|2|Recueil de cartes|Titan qui porte le ciel
-AUDACE|2|Hardiesse|La fortune sourit à elle
+AUDACE|2|Hardiesse|Quelle ___ !
 AVENIR|1|Futur|Lire l'___ dans les cartes
 BANC|1|Siège allongé|Celui de touche, pour les remplaçants
 BARQUE|1|Petit bateau|Celle de Charon traverse le Styx
@@ -476,12 +476,12 @@ BOUCLE|1|Mèche frisée|D'oreille, elle brille
 BRIN|1|Petit morceau|Un ___ de causette
 BRUIT|1|Son fort|Beaucoup de ___ pour rien
 BRUME|1|Brouillard léger|Au petit matin sur la mer
-CACHE|1|Dissimulé|Jeu de ___-___
+CACHE|1|Dissimulé|Planqué
 CADEAU|1|Présent|Ne pas faire de ___
 CALE|2|Fond du navire|Coincé, bloqué
 CASE|1|Petite maison|Celle de l'oncle Tom
 CHANCE|1|Hasard heureux|Bonne ___ !
-CHAUD|1|Brûlant|Ça me fait ni ___ ni froid
+CHAUD|1|Brûlant|Ni ___ ni froid
 CIME|2|Sommet|Haut de l'arbre
 CLAIR|1|Lumineux|Au ___ de lune
 COIN|1|Angle|Le petit ___, c'est les toilettes
@@ -489,18 +489,18 @@ COLERE|1|Rage|Tout rouge de ___
 CONTE|1|Histoire pour enfants|De fées
 CORDE|1|Gros fil|Sensible, elle émeut
 COUR|1|Espace devant la maison|Faire la ___
-COURSE|1|Compétition de vitesse|Faire les ___
+COURSE|1|Compétition de vitesse|Contre la montre
 CREUX|1|Vide à l'intérieur|Avoir un petit ___
 CROIX|1|Signe +|Mettre une ___ dessus
 DEFI|1|Challenge|Relever le ___
 DESERT|1|Étendue de sable|Prêcher dans le ___
 DESTIN|1|Sort|Écrit dans les étoiles
-DEVOIR|1|Obligation|Les élèves les font le soir
+DEVOIR|1|Obligation|Faire son ___
 DIEU|1|Divinité|Mon ___ !
 DOUTE|1|Incertitude|Dans le ___, abstiens-toi
 DROIT|1|Rectiligne|Tout ___ !
 ECLAT|1|Morceau brisé|De rire, il est sonore
-EFFET|1|Conséquence|Spéciaux au cinéma
+EFFET|1|Conséquence|Faire de l'___
 EPAIS|1|Pas mince|Brouillard à couper au couteau
 ESPOIR|1|Espérance|Il fait vivre
 ETOILE|1|Brille la nuit|Filante, on fait un vœu
@@ -522,13 +522,13 @@ GRAND|1|Pas petit|Le ___ méchant loup
 GRATUIT|1|Sans payer|Offert par la maison
 GRAVE|1|Sérieux|Accent ou basse
 GUERRE|1|Conflit armé|De Cent Ans
-HASARD|1|Chance|Par le plus grand des ___
-HAUT|1|Pas bas|Les ___ et les bas
+HASARD|1|Chance|Par ___, sans le vouloir
+HAUT|1|Pas bas|___ les mains !
 HONTE|1|Embarras|Avoir toute ___ bue
 HUMEUR|1|État d'esprit|De bonne ___
 ILLICO|3|Immédiatement|___ presto
 INSTANT|1|Moment bref|Profiter de l'___
-JALOUX|1|Envieux|Vert de jalousie
+JALOUX|1|Envieux|Comme un tigre, en amour
 JEUNE|1|Pas vieux|___ et jolie
 JOLI|1|Mignon|C'est du ___ !
 JOYEUX|1|Gai|___ anniversaire !
@@ -536,12 +536,12 @@ LARGE|1|Pas étroit|Prendre le ___, s'enfuir
 LEGER|1|Peu lourd|Comme une plume
 LENT|1|Pas rapide|Comme un escargot
 LIBRE|1|Indépendant|Comme l'air
-LIMITE|1|Frontière|Il faut savoir les fixer
+LIMITE|1|Frontière|Date ___
 LOISIR|1|Temps libre|À ___, autant qu'on veut
 LUXE|1|Faste|Ordre et beauté, chez Baudelaire
 MAGIE|1|Sorcellerie|Tour de ___
 MALIN|1|Rusé|Le ___ plaisir
-MARCHE|1|Pas à pas|Ou on l'achète, le samedi
+MARCHE|1|Pas à pas|D'escalier, ou du samedi
 MASQUE|1|Cache le visage|Bal costumé
 MEMOIRE|1|Souvenir|D'éléphant, elle n'oublie rien
 METIER|1|Profession|Avoir du ___
@@ -574,10 +574,10 @@ RAPIDE|1|Véloce|Comme l'éclair
 RECIT|1|Histoire racontée|De voyage
 REGARD|1|Coup d'œil|Il en dit long
 REPOS|1|Détente|Le dimanche, jour de ___
-RETOUR|1|Revenir|Billet aller-___
+RETOUR|1|Fait de revenir|Billet aller-___
 RICHE|1|Fortuné|Nouveau ___
 RIDE|1|Pli de la peau|Marque des années
-RISQUE|1|Danger|À vos ___ et périls
+RISQUE|1|Danger|Prendre un ___
 ROND|1|Circulaire|Tourner en ___
 ROUTE|1|Voie|En ___ !
 SAVOIR|1|Connaissance|___-faire
@@ -587,8 +587,8 @@ SIMPLE|1|Facile|___ comme bonjour
 SOUPIR|1|Souffle de lassitude|Rendre le dernier
 SUCCES|1|Réussite|Fou, il triomphe
 SURPRISE|1|Étonnement|Fête organisée en cachette
-TALENT|1|Don|Il a de l'or dans les mains
-TENDRE|1|Doux|Âge innocent
+TALENT|1|Don|De l'or dans les mains
+TENDRE|1|Doux|Âge ___, l'enfance
 TIMIDE|1|Réservé|Rougit facilement
 TRISTE|1|Malheureux|Comme un jour sans pain
 VALEUR|1|Prix|Mettre en ___
@@ -604,10 +604,10 @@ AIGLE|1|Oiseau royal|Pas un ___, pas très malin
 ALBUM|1|Recueil de photos|Celui de famille
 ALIBI|2|Excuse de suspect|Il était ailleurs, prouve-t-il
 ALPHA|2|Première lettre grecque|Et l'oméga, du début à la fin
-AMPLE|2|Large|De plus ___ informations
+AMPLE|2|Large|Vêtement ___, pas serré
 ANNEAU|1|Bague|Celui de Sauron
 ANTAN|3|Autrefois|Les neiges d'___
-APPAT|2|Leurre|Mordre à l'hameçon
+APPAT|2|Leurre|Ver au bout de l'hameçon
 ARCHE|2|Voûte|Celle de Noé
 ARDENT|2|Brûlant|Désir ou soleil
 ARGOT|2|Langage populaire|Celui des voyous
@@ -637,10 +637,10 @@ CHANT|1|Mélodie|Du cygne, le dernier
 CHARME|1|Séduction|Arbre ou attrait
 CHEF|1|Patron|Grand cuisinier
 CHOIX|1|Option|L'embarras du ___
-CLOCHE|1|Sonne à l'église|Se faire sonner les ___
+CLOCHE|1|Sonne à l'église|Couvre le fromage
 COCON|1|Abri douillet|Chrysalide du ver à soie
 COFFRE|1|Malle|À jouets ou de voiture
-COLLINE|1|Petite hauteur|Les sept de Rome
+COLLINE|1|Petite hauteur|Rome en compte sept
 COMPTE|1|Calcul|En banque
 CONSEIL|1|Avis|De classe
 COPAIN|1|Ami|Petit ___
@@ -649,7 +649,7 @@ COURAGE|1|Bravoure|Bon ___ !
 CRAYON|1|Pour dessiner|Mine de ___
 CRISTAL|2|Verre fin|Noces de quinze ans
 CULTURE|1|Savoir|Ce qui reste quand on a tout oublié
-DEBUT|1|Commencement|Les ___ sont difficiles
+DEBUT|1|Commencement|Le ___ de la fin
 DECOR|1|Ornement|Envers du ___
 DENTELLE|2|Tissu ajouré|Ne pas faire dans la ___
 DIAMANT|1|Pierre précieuse|Éternel, dit la pub
@@ -664,26 +664,26 @@ ESPACE|1|Cosmos|Touche du clavier
 ETOFFE|2|Tissu|Avoir l'___ d'un héros
 FANTOME|1|Revenant|Il hante le château
 FENETRE|1|Ouverture vitrée|Jeter l'argent par la ___
-FICELLE|1|Petite corde|Tirer les ___
+FICELLE|1|Petite corde|Pain plus fin que la baguette
 FLECHE|1|Trait d'arc|Partir comme une ___
 FORTUNE|1|Richesse|Faire ___
 FRISSON|1|Tremblement|D'horreur ou de plaisir
 GALET|2|Caillou poli|Sur la plage d'Étretat
 GENIE|1|Grand talent|Celui de la lampe
 GLOIRE|1|Célébrité|Heure de ___
-GOUTTE|1|Petite larme|Celle qui fait déborder le vase
+GOUTTE|1|Perle d'eau|Celle qui fait déborder le vase
 GRENIER|1|Sous le toit|Trésors oubliés
 HAMAC|2|Lit suspendu|Sieste entre deux arbres
 HORIZON|1|Ligne du ciel|À l'___
 ICONE|2|Image sainte|Petit dessin d'écran
 INDICE|1|Piste|Le détective le cherche
-JOUEUR|1|Qui joue|Mauvais, il triche
-LANTERNE|2|Lampe portative|Prendre des vessies pour des ___
+JOUEUR|1|Membre de l'équipe|Mauvais, il triche
+LANTERNE|2|Lampe portative|La ___ rouge, le dernier
 LEGENDE|1|Récit fabuleux|Sous la photo
 LUCARNE|3|Fenêtre de toit|Le ballon y entre, au foot
 MAGIQUE|1|Enchanté|Baguette ___
 MARIONNETTE|2|Poupée à fils|Pinocchio en était une
-MERVEILLE|1|Chose admirable|Alice au pays des ___
+MERVEILLE|1|Chose admirable|À ___, parfaitement
 MOULIN|1|Écrase le grain|Celui de Daudet
 MYSTERE|1|Énigme|Et boule de gomme
 NUAGE|1|Dans le ciel gris|Être sur un petit ___
@@ -711,6 +711,6 @@ TRAJET|1|Parcours|Aller-retour
 TRAVERSE|2|Raccourci|Chemin de ___
 TROPHEE|1|Coupe gagnée|Sur l'étagère du champion
 TUNNEL|1|Passage souterrain|Voir le bout du ___
-VALISE|1|Bagage|Faire ses ___
+VALISE|1|Bagage|Faire sa ___
 VELOURS|2|Tissu doux|Jouer sur du ___
-VOILE|1|Fait avancer le voilier|Mettre les ___
+VOILE|1|Fait avancer le voilier|Bateau à ___

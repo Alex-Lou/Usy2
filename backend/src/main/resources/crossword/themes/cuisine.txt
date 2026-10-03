@@ -16,14 +16,14 @@ CREPE|1|De la Chandeleur|Se fait sauter à la poêle
 GATEAU|1|Dessert d'anniversaire|C'est du ___, c'est facile
 FARINE|1|Pour le pain|Blé moulu
 FROMAGE|1|Brie ou camembert|Plateau avant le dessert
-DESSERT|1|Fin de repas sucrée|La cerise sur le gâteau
+DESSERT|1|Fin de repas sucrée|Entre le fromage et le café
 CHOCOLAT|1|Douceur cacaotée|Noir, au lait ou blanc
 CUISINE|1|Pièce des repas|On y mijote
 RECETTE|1|Mode de préparation|De grand-mère, elle est secrète
 FOUR|1|Pour cuire|Un échec au théâtre
 POELE|1|Pour les crêpes|Tenir la queue de la ___
 CASSEROLE|1|Ustensile à manche|En traîner une, c'est un souci
-PLAT|1|Mets|Mettre les petits dans les grands
+PLAT|1|Mets|En faire tout un ___
 TABLE|1|Meuble à manger|Mettre les pieds sous la ___
 TASSE|1|Pour le café|Boire la ___, se noyer
 VERRE|1|Pour boire|Lever son ___
@@ -33,14 +33,14 @@ POIVRE|1|Épice noire|Et sel
 EPICE|1|Poivre ou cannelle|Elle relève le plat
 HUILE|1|D'olive|Jeter de l'___ sur le feu
 OLIVE|1|Fruit de l'olivier|Verte ou noire, à l'apéro
-SALADE|1|Laitue|Raconter des ___, mentir
+SALADE|1|Laitue|Panier à ___, fourgon de police
 TOMATE|1|Fruit rouge du potager|Rouge comme elle
-CAROTTE|1|Légume orange|Les ___ sont cuites
+CAROTTE|1|Légume orange|La ___ et le bâton
 NAVET|2|Légume blanc|Mauvais film
 POIREAU|2|Légume vert et blanc|Faire le ___, attendre
-OIGNON|1|Fait pleurer|Aux petits ___, aux petits soins
+OIGNON|1|Fait pleurer|Pelure d'___
 CHOU|1|Légume rond|Mon petit ___
-EPINARD|2|Légume de Popeye|Mettre du beurre dans les ___
+EPINARD|2|Légume de Popeye|Feuille verte pleine de fer
 PATE|1|Spaghetti ou coquillettes|À tarte ou à modeler
 PIZZA|1|Spécialité de Naples|Quatre fromages
 FRITE|1|Bâtonnet de pomme de terre|Avoir la ___, la pêche
@@ -80,16 +80,16 @@ MADELEINE|2|Petit gâteau de Proust|Pleurer comme une ___
 MACARON|2|Petit gâteau coloré|Insigne rond
 ECLAIR|1|Pâtisserie allongée|Zèbre du ciel d'orage
 SORBET|1|Glace sans lait|Rafraîchit entre deux plats
-GLACE|1|Crème glacée|Miroir ou eau gelée
-CREME|1|Fouettée ou fraîche|La ___ de la ___, le meilleur
+GLACE|1|Sorbet ou cornet|Miroir ou eau gelée
+CREME|1|Fouettée ou fraîche|Fine fleur
 YAOURT|1|Laitage|Pot de lait fermenté
 CEREALE|1|Grain du petit-déjeuner|Blé ou avoine
 NOIX|1|Fruit sec à coque|À la ___, sans valeur
-NOISETTE|1|Fruit de l'écureuil|Couleur de beurre
+NOISETTE|1|Fruit de l'écureuil|Beurre ___, roussi
 AMANDE|1|Fruit à coque|Pâte du massepain
 CITRON|1|Agrume acide|Presser comme un ___
 ORANGE|1|Agrume|Pressée au petit-déjeuner
-POMME|1|Fruit d'Ève|Tomber dans les ___
+POMME|1|Fruit d'Ève|D'Adam, dans la gorge
 POIRE|1|Fruit en goutte|Couper la ___ en deux
 PECHE|1|Fruit à noyau|Avoir la ___
 FRAISE|1|Fruit rouge|Ramener sa ___
@@ -100,7 +100,7 @@ ANANAS|1|Fruit tropical|Couronné de feuilles
 MELON|1|Fruit d'été|Chapeau rond
 KIWI|1|Fruit poilu|Oiseau néo-zélandais
 FIGUE|2|Fruit du figuier|Mi-___, mi-raisin
-PRUNE|2|Fruit violet|Pour des ___, pour rien
+PRUNE|2|Fruit violet|Contravention, familièrement
 ABRICOT|1|Fruit orange|Couleur pêche pâle
 CITROUILLE|1|Courge d'Halloween|Carrosse de Cendrillon
 COURGETTE|2|Légume d'été|Dans la ratatouille
@@ -125,7 +125,7 @@ BURGER|1|Steak dans un pain|Fast-food américain
 SUSHI|1|Spécialité japonaise|Riz et poisson cru
 CURRY|2|Mélange d'épices|Plat indien
 RISOTTO|2|Riz crémeux|Spécialité italienne
-FONDUE|1|Fromage fondu|Savoyarde, on y trempe le pain
+FONDUE|1|Savoyarde, au caquelon|On y trempe le pain
 RACLETTE|1|Fromage fondu des Alpes|Soirée d'hiver
 QUICHE|2|Tarte salée lorraine|Avec lardons
 OMELETTE|1|Œufs battus cuits|On ne la fait pas sans casser des œufs
@@ -153,3 +153,91 @@ BUFFET|1|Repas en libre-service|Meuble ou ventre
 ROTI|1|Viande au four|Le ___ du dimanche
 PUREE|1|Pommes de terre écrasées|Brouillard très épais, ___ de pois
 COMPOTE|1|Fruits cuits|Avoir les jambes en ___
+# Pluriels
+SALADES|1|Laitues|Raconter des ___
+CAROTTES|1|Légumes orange|Les ___ sont cuites
+OIGNONS|1|Font pleurer|Aux petits ___
+EPINARDS|1|Légumes de Popeye|Mettre du beurre dans les ___
+NAVETS|1|Légumes blancs|Mauvais films
+CHOUX|1|Légumes ronds|Bouts de ___, enfants
+CHAMPIGNONS|1|Poussent après la pluie|De Paris
+BISCUITS|1|Gâteaux secs|Pour le goûter
+CROISSANTS|1|Viennoiseries|Du dimanche matin
+MACARONS|1|Petits gâteaux colorés|Sucrés et ronds
+GLACONS|1|Eau gelée en cubes|Dans le pastis
+COUTEAUX|1|Pour couper|Être à ___ tirés
+CUILLERES|1|Pour la soupe|À café
+CASSEROLES|1|Ustensiles à manche|Traîner des ___
+DESSERTS|1|Fins de repas sucrées|Chariot des ___
+FROMAGES|1|Brie et camembert|Plateau de ___
+SAUCISSES|1|Charcuteries grillées|De Strasbourg
+EPICES|1|Poivre et cannelle|Pain d'___
+CITRONS|1|Agrumes acides|Pressés au comptoir
+ORANGES|1|Agrumes|Cadeaux de Noël d'antan
+BANANES|1|Fruits jaunes|Sacs ventraux
+RAISINS|1|Fruits de la vigne|Secs, dans le cake
+ABRICOTS|1|Fruits orange|Secs, à grignoter
+MELONS|1|Fruits d'été|Chapeaux ronds
+FIGUES|1|Fruits du figuier|Sèches, en hiver
+PECHES|1|Fruits à noyau|Fautes, pour le curé
+NOISETTES|1|Fruits de l'écureuil|Petits cafés crème
+AMANDES|1|Fruits à coque|Yeux en ___
+POMMES|1|Fruits d'Ève|Tomber dans les ___
+POIRES|1|Fruits en goutte|Bonnes ___, naïfs
+CERISES|1|Petits fruits rouges|Le temps des ___
+FRAISES|1|Fruits rouges|Aller aux ___
+PRUNES|1|Fruits violets|Pour des ___, pour rien
+TOMATES|1|Fruits rouges du potager|Lancées sur les mauvais acteurs
+OLIVES|1|Fruits de l'olivier|Noires ou vertes, à l'apéro
+OEUFS|1|Pondus par la poule|Marcher sur des ___
+PATES|1|Spaghetti et coquillettes|Les ___ à l'eau
+FRITES|1|Bâtonnets de pomme de terre|Moules-___
+CREPES|1|Desserts de la Chandeleur|Fines galettes
+GATEAUX|1|Desserts|Petits ___ secs
+TARTES|1|Desserts à pâte|Gifles
+VERRES|1|Pour boire|Lunettes
+TASSES|1|Pour le café|À thé, en porcelaine
+ASSIETTES|1|Plats individuels|Creuses ou plates
+LEGUMES|1|Carottes et poireaux|Grosses ___, gens importants
+# Mots d'autres fichiers qui font aussi partie du thème
+MIE
+POT
+GIN
+KIR
+RIS
+SOLE
+FLAN
+BRIE
+ANIS
+ORGE
+LIME
+VEAU
+POIS
+METS
+REPAS
+CUIT
+CUITE
+CRU
+CRUE
+FRIT
+BOIT
+MANGE
+BOIRE
+CUIRE
+SALER
+SUCRER
+GOUT
+GOUTS
+FAIM
+SOIF
+PAINS
+PLATS
+AMER
+SEC
+DOUX
+GRAS
+BAR
+CUILLER
+FONDRE
+ALE
+PUB

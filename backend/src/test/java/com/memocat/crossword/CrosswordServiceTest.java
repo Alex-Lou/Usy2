@@ -178,4 +178,23 @@ class CrosswordServiceTest {
         assertThat(hard).allMatch(e -> e.clue().equals(hardClue.get(e.word())));
         assertThat(service.entries("sport", CrosswordService.Level.MOYEN)).anyMatch(ArrowGenerator.Entry::favored);
     }
+
+    /** In a theme grid, the long words all belong to the theme; the short ones hold the grid together. */
+    @Test
+    void aThemeGridIsMadeOfItsThemeWords() {
+        var entries = service.entries("cuisine", CrosswordService.Level.FACILE);
+        assertThat(entries).filteredOn(e -> e.word().length() > CrosswordService.THEME_GLUE_LENGTH)
+                .isNotEmpty().allMatch(ArrowGenerator.Entry::favored);
+        assertThat(entries).anyMatch(e -> !e.favored());
+
+        var game = service.create("lou", "grande", false, "cuisine", "facile");
+        assertThat(game.width()).isEqualTo(9);
+        assertThat(game.height()).isEqualTo(13);
+        var cuisine = new java.util.HashSet<String>();
+        new ArrowWords().words().stream().filter(w -> w.themes().contains("cuisine")).forEach(w -> cuisine.add(w.word()));
+        var grid = new ArrowGrid(game.width(), game.height(), game.solution(), game.clues());
+        assertThat(game.clues()).map(c -> ArrowGeneratorTest.answer(grid, c))
+                .filteredOn(a -> a.length() > CrosswordService.THEME_GLUE_LENGTH)
+                .isNotEmpty().allMatch(cuisine::contains);
+    }
 }

@@ -1,0 +1,357 @@
+# Mélange (mots courts) : les petits mots classiques des grilles, pour qu'elles soient pleines.
+# Que des mots du vrai français (formes conjuguées et pluriels compris) : ni sigles, ni symboles.
+AI|1|J'___ faim|Paresseux d'Amazonie
+BU|1|Avalé, pour un verre|Qui a trop ___ titube
+CA|1|Cela, familièrement|___ va ?
+CI|1|Ici, en abrégé|Comme ___ comme ça
+EH|1|Interjection d'appel|___ bien, voilà !
+FA|1|Note après mi|Clé de ___
+HA|1|Cri de surprise|Rire en deux lettres
+HO|1|Cri d'appel|___ hisse !
+JE|1|Pronom de la première personne|Le moi qui parle
+ME|1|Moi, en complément|Il ___ regarde
+MU|1|Lettre grecque|Déplacé, ou poussé
+PI|1|Lettre grecque|Environ 3,14
+PU|1|Participe de pouvoir|Si j'avais ___…
+US|2|___ et coutumes|Usages anciens
+UT|2|Ancien do|Note d'autrefois
+IF|2|Conifère des cimetières|Arbre au bois rouge
+NA|1|Interjection boudeuse|Et ___ !
+GO|2|Tout de ___|Sans façon, d'un coup
+OC|2|Langue d'___|Oui, dans le Sud jadis
+RU|3|Petit ruisseau|Coule dans le pré
+BAI|2|Brun roux, pour un cheval|Robe de cheval
+BAN|2|Applaudissement rythmé|Ouvrir le ___
+BAR|1|Comptoir|Poisson ou bistrot
+BEL|1|Beau, devant une voyelle|Un ___ été
+BOF|1|Bah, sans enthousiasme|Expression de l'indifférence
+BON|1|Pas mauvais|___ appétit !
+BOT|3|Pied ___|Pied déformé
+BOX|2|Stalle de cheval|Garage fermé
+BRU|3|Belle-fille|Épouse du fils
+BUE|2|Avalée|L'eau est ___
+CAS|1|Situation|En tout ___
+CES|1|Démonstratif pluriel|___ gens-là
+CET|1|Démonstratif masculin|___ été
+COL|1|Passage de montagne|Blanc ou bleu, au travail
+COR|2|Instrument de chasse|Durillon du pied
+DIT|1|Prononcé|Aussitôt ___, aussitôt fait
+DOC|2|Toubib, en bref|Film du réel, en bref
+DOT|2|Apport de la mariée|Richesse du trousseau
+DUC|2|Noble au-dessus du comte|Grand hibou
+DUE|1|Que l'on doit|Somme ___
+EGO|2|Le moi|Il est surdimensionné chez le vaniteux
+ETA|3|Lettre grecque|Entre zêta et thêta
+EUE|2|Possédée|Bien ___, bien dupée
+EUS|2|Possédés|Ils ont été bien ___
+EUX|1|Pronom pluriel|Entre ___, entre soi
+EVE|1|Première femme|Elle croqua la pomme
+FAC|1|Université, en bref|Amphithéâtre et partiels
+FIT|1|Exécuta|Il ___ ce qu'il put
+FOI|1|Croyance|Ma ___ !
+FUT|1|Exista|Ce qui ___ n'est plus
+GAG|1|Effet comique|Blague de cinéma
+GIN|2|Alcool de genièvre|Il se mêle au tonic
+GUE|2|Passage dans la rivière|On y passe à pied sec
+HAI|2|Détesté|Pas aimé du tout
+HEP|1|Interjection pour héler|___ ! Taxi !
+HIC|1|Difficulté|Voilà le ___ !
+HUE|2|Cri du charretier|___ et dia
+HUM|1|Marque le doute|Mouais…
+ILS|1|Pronom pluriel|Eux, sujets
+ION|3|Atome chargé|Particule chargée
+JET|1|Projection|D'eau ou d'avion
+KIR|2|Blanc cassis|Royal, au champagne
+LEU|3|À la queue ___ ___|Comme le loup, jadis
+LIA|2|Attacha|___ connaissance
+LIN|2|Fibre textile|Toile d'été
+LOB|2|Coup en cloche|Passe par-dessus au tennis
+LUS|1|Parcourus des yeux|Livres déjà ___
+LUT|2|Parcourut des yeux|Il ___ la lettre
+MAT|2|Sans éclat|Échec et ___
+MAX|1|Le plus possible, en bref|À fond, en bref
+MEC|1|Type, familièrement|Gars
+MIL|3|Céréale africaine|L'an ___
+MON|1|Possessif masculin|À ___ avis
+NEF|2|Partie de l'église|Vaisseau ancien
+NEE|1|Venue au monde|Elle est ___ pour ça
+NES|2|Venus au monde|Ils sont ___ un 14 juillet
+NIA|2|Contesta|Il ___ tout en bloc
+NUS|1|Sans vêtements|Pieds ___
+ODE|2|Poème lyrique|Chant de Ronsard
+OLE|2|Cri de corrida|Bravo espagnol
+ONT|1|Possèdent|Ils ___ raison
+ORS|2|Dorures|Les ___ de la République
+OTA|2|Enleva|Il ___ son chapeau
+OUT|2|Dehors, au tennis|Balle sortie
+PAF|1|Bruit de coup|Ivre, familièrement
+PAR|1|Au moyen de|___ cœur
+PIC|1|Sommet pointu|Oiseau qui frappe l'arbre
+PIF|1|Nez, familièrement|Au ___, au jugé
+PRO|1|Pas amateur, en bref|Expert, familièrement
+PUE|2|Sent mauvais|Ça ___ !
+PUS|3|Liquide d'abcès|Infection jaunâtre
+PUT|2|Fut capable|Il fit ce qu'il ___
+RIA|3|Vallée envahie par la mer|Aber breton
+RIE|1|Qui s'amuse|Elle ___ de bon cœur
+RIS|2|De veau, en cuisine|Pris dans la voile
+RIT|1|S'amuse|Qui ___ le dernier…
+ROC|2|Gros caillou|Solide comme un ___
+RUA|3|Donna un coup de sabot|Le cheval ___ dans les brancards
+RUT|3|Période des amours du cerf|Brame d'automne
+SIC|3|Ainsi, en latin|Tel quel, entre parenthèses
+SIR|2|Monsieur, outre-Manche|Titre anglais
+SIX|1|Cinq plus un|Faces du dé
+SOC|3|Lame de charrue|Il ouvre le sillon
+SOT|1|Idiot|Il n'y a pas de ___ métier
+SOU|1|Petite pièce|Propre comme un ___ neuf
+SUA|3|Transpira|Il ___ sang et eau
+SUE|2|Transpire|Il ___ à grosses gouttes
+SUS|2|Connus|Courir ___ à l'ennemi
+TAO|3|Voie chinoise|Philosophie de Lao-tseu
+TEE|2|Support de balle de golf|Petit support du golfeur
+TOP|1|Le meilleur|Au ___ !
+TUB|3|Bassine de toilette|Bain d'autrefois
+TUA|2|Fit mourir|Il ___ le temps
+TUT|1|___ ! ___ ! Pas de ça|Fait taire l'enfant
+VAL|2|Creux entre deux collines|Par monts et par vaux, au singulier
+VAS|1|Tu ___ bien ?|Te déplaces
+VIA|1|En passant par|Par la route de
+VIF|1|Rapide|Piqué au ___
+VIL|2|Méprisable|Prix bas, à ___ prix
+VIT|1|Voit, au passé|Il ___ de peu
+VUS|1|Aperçus|Ni ___ ni connus
+YEN|2|Monnaie japonaise|Envie, ou argent de Tokyo
+ZIP|2|Fermeture à glissière|Fichier compressé
+ZUT|1|Mince alors !|Juron bien poli
+AIT|1|Qu'il ___ raison|Subjonctif d'avoir
+AGI|1|Passé à l'acte|Il a ___ vite
+ALE|3|Bière anglaise|Blonde de pub
+AMIS|1|Copains|Les ___ de mes ___
+ANES|1|Baudets|Ils portent des bonnets en classe
+ARCS|1|Tirent des flèches|De triomphe, au pluriel
+BECS|1|Bouches d'oiseaux|Fins ___, gourmets
+BOLS|1|Tasses sans anse|Servis au petit-déjeuner
+BUTS|1|Objectifs|Marqués au foot
+CILS|1|Poils des paupières|Battements de ___
+CLES|1|Ouvrent les portes|Trousseau de ___
+COLS|1|Passages de montagne|Blancs ou bleus
+CRIS|1|Éclats de voix|Pousser des ___
+DONS|1|Cadeaux|Talents innés
+ELUS|1|Choisis par vote|Les ___ du peuple
+ELUE|1|Choisie par vote|Miss France, une fois ___
+EPIS|2|Têtes de blé|Rebelles dans la chevelure
+FEES|1|Magiciennes|Marraines des contes
+FERS|1|Métaux|Mettre aux ___
+FEUX|1|Flammes|Tricolores, aux carrefours
+ILES|1|Terres entourées d'eau|Antilles ou Baléares
+JEUX|1|Divertissements|Olympiques
+LACS|1|Étendues d'eau douce|Grands, en Amérique
+LITS|1|Meubles pour dormir|Superposés
+LOIS|1|Règles votées|Faites au Parlement
+LOTS|1|Gains de tombola|Parts d'un partage
+MAUX|1|Douleurs|De tête, au pluriel
+MERS|1|Étendues salées|Les sept ___
+MOTS|1|Groupes de lettres|Fléchés ou croisés
+MURS|1|Cloisons|Entre quatre ___
+NIDS|1|Maisons d'oiseaux|À poule, sur la route
+NOMS|1|Appellations|Petits, entre amoureux
+OIES|1|Oiseaux de basse-cour|Blanches, sans malice
+PINS|1|Arbres à aiguilles|Des Landes
+PLIS|1|Marques sur le tissu|Lettres sous enveloppe
+POTS|1|Récipients|Payer les ___ cassés
+POUX|1|Parasites des cheveux|Chercher des ___, chicaner
+RATS|1|Rongeurs|Petits, de l'Opéra
+ROIS|1|Souverains|Galette des ___
+RUES|1|Voies de ville|Courir les ___
+SACS|1|Fourre-tout|À main
+SONS|1|Bruits|Et lumière
+TIRS|1|Coups de feu|Au but
+TONS|1|Nuances|Sur tous les ___
+VINS|1|Rouges ou blancs|Grands crus
+VOLS|1|Larcins|Long-courriers
+VUES|1|Panoramas|Points de ___
+NEFS|3|Parties d'églises|Vaisseaux anciens
+ROCS|2|Rochers|Blocs de pierre
+PICS|1|Sommets pointus|Coups de bec d'oiseau
+SOTS|1|Idiots|Ni ___ ni malins
+AIMA|1|Chérit, au passé|Il l'___ toute sa vie
+ALLE|2|Parti, au participe|Elle est ___ vite
+AURA|1|Possédera|Halo mystérieux
+DIRA|1|Exprimera|On ___ ce qu'on voudra
+DOIT|1|Est redevable|Il ___ y aller
+DORT|1|Fait dodo|Qui ___ dîne
+DITE|1|Prononcée|Chose ___, chose due
+DITS|1|Prononcés|Lieux-___
+FAIT|1|Réalisé|Tout ___ !
+FERA|1|Réalisera|Il ___ beau demain
+FINI|1|Terminé|C'est ___ !
+LIRA|1|Parcourra des yeux|Ancienne monnaie italienne
+MENT|1|Ne dit pas vrai|Il ___ comme il respire
+MISE|1|Enjeu|En scène
+PEUT|1|Est capable|Qui ___ le plus ___ le moins
+PRIT|1|Saisit, au passé|Il ___ ses jambes à son cou
+PRIS|1|Saisi|Occupé, pas libre
+RIRA|1|S'amusera|Qui ___ le dernier
+SAIT|1|Connaît|Qui ___ ?
+SERA|1|Existera|Que ___, ___
+SONT|1|Existent|Ils ___ là
+TINT|2|Garda en main|Il ___ parole
+VAIS|1|Me déplace|Je ___ bien
+VONT|1|Se déplacent|Ils ___ et viennent
+VEUT|1|Désire|Qui ___ la fin ___ les moyens
+VINT|1|Arriva|Il ___, il vit, il vainquit
+VOIT|1|Aperçoit|Qui ___ loin
+VECU|1|Passé, pour une vie|Expérience personnelle
+LUES|1|Parcourues des yeux|Lettres déjà ___
+NOUE|2|Attache|Fait un nœud
+ALTO|2|Voix grave de femme|Grand violon
+AMAS|2|Tas|Accumulation d'étoiles
+ANIS|2|Plante du pastis|Graine parfumée
+AXES|2|Lignes centrales|Routes principales
+BIDE|2|Échec, au théâtre|Four complet
+BILE|2|Sécrétion du foie|Se faire de la ___
+BRIE|1|Fromage de Meaux|Pâte molle de la région parisienne
+BRIO|2|Entrain|Avec ___, brillamment
+CAMP|1|Bivouac|Changer de ___
+CANE|2|Femelle du canard|Barbotte dans la mare
+CHOC|1|Collision|De plein fouet
+CIRE|1|Faite par l'abeille|Fait briller le parquet
+CLAN|1|Tribu|Esprit de ___
+COMA|2|Perte de conscience|Sommeil profond
+CONE|1|Forme de glace|Balise orange de chantier
+CRAN|1|Audace|Courage, ou entaille
+CRIN|2|Poil de cheval|À tout ___, à fond
+CURE|1|Traitement|N'en avoir ___, s'en moquer
+DAIM|2|Cervidé|Cuir velouté
+DARD|2|Aiguillon d'abeille|Pique
+DIVA|2|Grande cantatrice|Star capricieuse
+DOGE|3|Chef de Venise|Il régnait sur Venise
+DOME|2|Coupole|Celui des Invalides
+DONT|1|Pronom relatif|Ce ___ je parle
+EDEN|2|Paradis terrestre|Jardin d'Adam
+ENVI|3|À l'___, à qui mieux mieux|Avec émulation
+ETAI|3|Pièce de soutien|Appui de charpente
+ETAU|2|Outil qui serre|Pris comme dans un ___
+ETUI|2|Boîte à lunettes|Fourreau
+FAON|2|Petit du cerf|Bambi en est un
+FARD|2|Maquillage|Piquer un ___, rougir
+FIEF|3|Domaine du seigneur|Bastion électoral
+FIGE|2|Immobile|Sauce qui a refroidi
+FISC|2|Administration des impôts|Il prélève sa part
+FLAN|1|Dessert aux œufs|C'est du ___, c'est bidon
+FLOT|1|Vague|À ___, renfloué
+FOIS|1|Occasion|Il était une ___
+FRIC|1|Argent, familièrement|Pognon
+GAGE|2|Garantie|Jeu à ___
+GANG|1|Bande de malfrats|Chef de ___
+GARS|1|Jeune homme|Type
+GLAS|2|Cloche funèbre|Sonner le ___
+GRES|3|Roche de sable|Poterie dure
+GRUE|1|Engin de levage|Échassier migrateur
+GUET|2|Surveillance|Faire le ___
+HALL|1|Grand vestibule|De gare
+HARO|3|Crier ___ sur le baudet|Cri de réprobation
+HUER|2|Siffler|Conspuer
+HUIS|3|À ___ clos|Porte d'autrefois
+ILOT|2|Petite île|Pâté de maisons
+IRIS|1|Fleur ou partie de l'œil|Couleur du regard
+ISSU|2|Né de|___ d'une bonne famille
+IVRE|1|Soûl|___ de joie
+JAIS|3|Pierre noire|Cheveux de ___
+JARS|3|Mâle de l'oie|Il garde la basse-cour
+JURE|1|Membre du jury|Promis, la main levée
+KAKI|2|Fruit orange|Couleur militaire
+KILO|1|Mille grammes|En prendre un, c'est grossir
+LAID|1|Pas beau|Comme un pou
+LAMA|1|Animal des Andes|Moine tibétain
+LAPS|3|Durée|___ de temps
+LEST|2|Poids d'équilibre|Lâcher du ___, céder
+LIME|1|Outil à ongles|Citron vert
+LOGE|1|Place au théâtre|De concierge
+LOGO|1|Emblème de marque|Petit dessin de marque
+LYRE|2|Instrument d'Orphée|Harpe antique
+MAGE|2|Un des trois rois|Venu d'Orient
+MAIS|1|Pourtant|___ où est donc Ornicar ?
+MEME|1|Identique|Quand ___
+METS|1|Plat|Servi à table
+MIEN|2|Le ___, à moi|Possessif de la première personne
+MORS|2|Frein du cheval|Prendre le ___ aux dents
+MORT|1|Décédé|Nature ___
+MOUE|2|Grimace boudeuse|Faire la ___
+NAIF|1|Candide|Peintre du Douanier Rousseau
+NAIN|1|Tout petit|Ils sont sept chez Blanche-Neige
+NAGE|1|Natation|En ___, en sueur
+NEON|2|Tube lumineux|Éclairage de bureau
+NULS|1|Zéros|Les ___, à la télé
+OBUS|2|Projectile|Il explose en tombant
+OCRE|2|Brun-jaune|Terre de Roussillon
+OGRE|1|Mange les enfants|Shrek en est un
+ONCE|2|Petite quantité|Pas une ___ de bon sens
+OPUS|2|Œuvre musicale|Nouvel album
+ORGE|2|Céréale de la bière|Sucre d'___
+ORME|2|Arbre champêtre|Attendre sous l'___
+ORNE|3|Décore|Agrémente
+OVNI|1|Soucoupe volante|Objet non identifié
+PAIR|2|Divisible par deux|Au ___, logé et nourri
+PALE|1|Sans couleur|Blanc comme un linge
+PAPA|1|Père|À la ___, tranquillement
+PAPE|1|Chef de l'Église|Sérieux comme un ___
+PIRE|1|Plus mauvais|Le ___ est à venir
+PNEU|1|Roue gonflée|Crevé sur le bord de la route
+POIL|1|Petit cheveu du corps|À ___, tout nu
+POIS|1|Petit légume vert|Robe à ___
+POLI|1|Courtois|Lisse et brillant
+POSE|1|Attitude|Prendre la ___
+POUF|1|Petit siège bas|Bruit de chute
+PROF|1|Enseignant, en bref|Maître d'école
+PUMA|2|Félin d'Amérique|Cougar
+PURE|1|Sans mélange|___ laine
+RADE|2|Bassin de port|Laisser en ___, abandonner
+RAGE|1|Colère|Dent qui fait mal
+RAID|2|Attaque éclair|Rallye d'aventure
+RAMI|2|Jeu de cartes|Il se joue avec des combinaisons
+RAPT|2|Enlèvement|Kidnapping
+RATE|1|Manqué|Organe près de l'estomac
+RAVI|1|Enchanté|Content comme le ___ de la crèche
+RECU|1|Admis à l'examen|Ticket de caisse
+REIN|1|Filtre le sang|Tour de ___
+RIME|2|Fait écho en fin de vers|Sans ___ ni raison
+RITE|2|Cérémonie|Habitude immuable
+ROUX|1|Poil de carotte|Sauce liée au beurre
+RUDE|1|Rugueux|L'hiver est ___
+SAGA|2|Longue épopée|Récit familial
+SAIN|1|En bonne santé|___ et sauf
+SAUF|1|Excepté|Sain et ___
+SEIN|1|Poitrine|Au ___ de, à l'intérieur
+SOIE|1|Tissu précieux|Route de la ___
+SOLE|1|Poisson plat|Meunière
+SOUK|2|Marché oriental|Quel ___ !
+STOP|1|Arrêt|En ___, au bord de la route
+SUIE|2|Dépôt noir|Ramoneur couvert de ___
+SUER|1|Transpirer|___ sang et eau
+TACT|1|Délicatesse|Manquer de ___
+TAIE|2|Housse d'oreiller|Tache sur l'œil
+TIPI|2|Tente d'Indien|Cône de peau
+TOGE|2|Robe romaine|Robe de juge
+TOME|1|Volume|Premier ___
+TRIO|1|Groupe de trois|Infernal, chez les gangsters
+TROP|1|Excessivement|C'est ___ !
+TSAR|2|Empereur russe|Nicolas II en fut le dernier
+TUBA|2|Gros cuivre|Pour respirer sous l'eau
+TUER|1|Ôter la vie|Le temps, en s'ennuyant
+TUTU|1|Jupe de danseuse|Tulle du ballet
+UNIR|1|Joindre|Marier
+UNIS|1|Soudés|États-___
+USER|1|Abîmer à la longue|Utiliser jusqu'au bout
+VEAU|1|Petit de la vache|D'or, adoré
+VELU|2|Poilu|Couvert de poils
+VERT|1|Couleur de l'herbe|Pas mûr
+VETO|2|Refus|Droit de ___
+VOEU|1|Souhait|Fait en voyant une étoile filante
+VOIR|1|Regarder|___ Naples et mourir
+ZELE|2|Ardeur|Faire du ___
+ZOOM|1|Objectif de photo|Gros plan
+MITE|2|Mange la laine|Elle troue les pulls
+MECS|1|Gars|Types, familièrement
+NOIRE|1|Note de musique|Couleur de deuil

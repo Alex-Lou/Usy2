@@ -1,0 +1,409 @@
+# Mélange (formes) : pluriels, féminins, participes et verbes conjugués, comme dans toutes les vraies grilles.
+# La définition s'accorde toujours avec la forme : pluriel pour un pluriel, passé pour un passé.
+AILES|1|Permettent de voler|Le poulet en a deux
+ANGES|1|Êtres célestes|Gardiens invisibles
+ARMES|1|Fusils et épées|Prendre les ___
+BAIES|1|Petits fruits ronds|Fenêtres vitrées
+BAINS|1|Moments dans la baignoire|Établissements de ___
+BETES|1|Animaux|Petites, elles montent, elles montent
+BISES|1|Petits baisers|Grosses ___ en fin de lettre
+BLEUS|1|Ecchymoses|Les ___, l'équipe de France
+BOUTS|1|Extrémités|Joindre les deux ___
+CAGES|1|Prisons d'oiseaux|Buts de foot
+CAPES|1|Grands manteaux|Agitées par le torero
+CLOUS|1|Se plantent au marteau|Passage piéton d'antan
+CODES|1|Mots de passe|Phares baissés
+COTES|1|Bords de mer|Flancs de la cage thoracique
+COUPS|1|Chocs|Les trois ___ du théâtre
+CUBES|1|Six faces chacun|Glaçons
+DATES|1|Jours précis|Fruits du palmier
+DENTS|1|Mâchoire garnie|Avoir les ___ longues
+DOSES|1|Quantités prescrites|Mesures
+DUNES|1|Collines de sable|Paysages du Sahara
+ECHOS|1|Sons répétés|Rumeurs du journal
+EPEES|1|Armes de duel|Croisées par les mousquetaires
+ETATS|1|Nations|Unis, en Amérique
+FACES|1|Côtés des pièces|Visages
+FETES|1|Célébrations|De fin d'année
+FILLES|1|Pas garçons|Jeunes ___ en fleurs
+GARES|1|Arrêts de train|Du Nord et de l'Est
+GOUTS|1|Saveurs|Des ___ et des couleurs
+IDEES|1|Pensées|Avoir des ___ noires
+JOURS|1|Dates|Les beaux ___
+JUPES|1|Vêtements féminins|Accroché aux ___ de maman
+LAMES|1|Tranchants|De fond, en mer
+LIENS|1|Attaches|Du sang
+LUNES|1|Astres de nuit|Vieilles ___, idées dépassées
+MAINS|1|Paires de cinq doigts|En de bonnes ___
+MERES|1|Mamans|Fête des ___
+MINES|1|Airs du visage|Faire des ___, minauder
+MODES|1|Tendances|Manières, en grammaire
+MONTS|1|Montagnes|Par ___ et par vaux
+NOTES|1|Évaluations|Do, ré et mi
+NUITS|1|Opposées aux jours|Les Mille et Une ___
+PAGES|1|Feuilles de livre|Jeunes nobles au service du roi
+PAINS|1|Baguettes|Coups de poing, en argot
+PERES|1|Papas|Fête des ___, en juin
+PIEDS|1|Bouts des jambes|Casser les ___
+PILES|1|Batteries|Tas
+PLATS|1|Mets|Mettre les petits ___ dans les grands
+PORTS|1|Abris des bateaux|Marseille et Brest
+RAILS|1|Ils guident le train|Remettre sur les ___
+RANGS|1|Rangées|Serrer les ___
+REVES|1|Songes|Faites de beaux ___
+RIVES|1|Bords de rivière|Gauche et droite, à Paris
+ROBES|1|Tenues de soirée|Des juges et des avocats
+ROSES|1|Fleurs à épines|Envoyer sur les ___
+ROUES|1|Tournent sous la voiture|Mettre des bâtons dans les ___
+SOIRS|1|Fins de journée|Grands ___, premières
+TETES|1|Sommets du corps|Coups de ___, au foot
+TOITS|1|Couvrent les maisons|Crier sur les ___
+TOURS|1|Châteaux ou périples|Jouer des ___
+TROUS|1|Cavités|Dix-huit, au golf
+VOIES|1|Chemins|Celles du Seigneur sont impénétrables
+ZEROS|1|Notes nulles|Nuls, en classe
+ARBRES|1|Chênes ou sapins|Ils forment la forêt
+BALLES|1|Projectiles|Francs, en argot
+CHOSES|1|Objets|Les ___ de la vie
+ECOLES|1|Lieux des élèves|Grandes, pour l'élite
+FORETS|1|Bois étendus|Vierges, en Amazonie
+HEURES|1|Soixantaines de minutes|De pointe, dans le métro
+IMAGES|1|Illustrations|D'Épinal
+LETTRES|1|Missives|Belles-___
+LIGNES|1|Traits|Lire entre les ___
+LIVRES|1|Romans|Tenir les ___ de comptes
+MONDES|1|Planètes et habitants|Il y en a des parallèles
+OMBRES|1|Zones sans soleil|Chinoises, au théâtre
+PORTES|1|S'ouvrent et se ferment|Journée ___ ouvertes
+SIGNES|1|Gestes ou indices|Douze, au zodiaque
+TERRES|1|Sols|Australes et antarctiques
+VILLES|1|Agglomérations|Jumelées
+FRERES|1|Garçons de la fratrie|Les ___ Lumière
+SOEURS|1|Filles de la fratrie|Religieuses
+AMIES|1|Copines|Petites ___
+FEMMES|1|Épouses|Les ___ et les enfants d'abord
+HOMMES|1|Messieurs|Des souris et des ___
+VOISINS|1|Habitent à côté|Ceux du dessus font du bruit
+COPAINS|1|Amis|Les ___ d'abord, chez Brassens
+PARENTS|1|Père et mère|Réunion des ___ d'élèves
+COUSINS|1|Enfants de l'oncle|Germains
+ONCLES|1|Frères des parents|Tontons
+TANTE|1|Sœur de la mère|Ma ___, le mont-de-piété
+NIECE|1|Fille du frère|Fille de la sœur
+ADULTE|1|Grande personne|Majeur
+REPAS|1|Moment où l'on mange|Festin ou casse-croûte
+CHAMBRES|1|Pièces pour dormir|D'hôte
+SALONS|1|Pièces à vivre|De l'auto
+MAISONS|1|Foyers|De campagne
+JARDINS|1|Potagers ou parterres|Suspendus de Babylone
+FENETRES|1|Ouvertures vitrées|Jeter l'argent par les ___
+LAMPES|1|Éclairages|Halogènes ou LED
+CHAISES|1|Sièges à dossier|Musicales, au jeu
+TABLES|1|Meubles à manger|De multiplication
+JOUETS|1|Pour s'amuser|Coffre à ___
+STYLOS|1|Pour écrire|À bille
+VOITURES|1|Automobiles|Garées au parking
+ROUTES|1|Voies|Nationales ou départementales
+TRAINS|1|Roulent sur des rails|Fantômes, à la foire
+AVIONS|1|Volent dans le ciel|En papier, ils planent
+BATEAUX|1|Naviguent|Mouches, sur la Seine
+VELOS|1|Bicyclettes|Petites reines
+VOYAGES|1|Périples|Ils forment la jeunesse
+SOUVENIRS|1|Mémoires du passé|Rapportés de vacances
+PHOTOS|1|Clichés|Album de ___
+MUSEES|1|Lieux d'expositions|Le Louvre et Orsay
+FILMS|1|Longs métrages|Se faire des ___
+CHANSONS|1|Paroles et musiques|Tubes de l'été
+DANSES|1|Valses et tangos|Folkloriques
+MATCHS|1|Rencontres sportives|Aller et retour
+BALLONS|1|Ronds ou ovales|De baudruche
+SPORTS|1|Activités physiques|D'hiver
+EQUIPES|1|Groupes de joueurs|De nuit, à l'usine
+JOUEURS|1|Membres d'équipe|Ils tiennent les cartes
+COULEURS|1|Teintes|Défendre les ___ de son club
+PHRASES|1|Suites de mots|Faire des ___, parler pompeusement
+LANGUES|1|Parlées dans le monde|Mauvaises, médisantes
+HISTOIRES|1|Récits|Raconter des ___, mentir
+CONTES|1|Histoires pour enfants|De Perrault
+SECRETS|1|Confidences|De famille
+REGARDS|1|Coups d'œil|Croiser les ___
+CADEAUX|1|Présents|Sous le sapin
+LARMES|1|Coulent en pleurant|De crocodile
+RIRES|1|Éclats de joie|Fous ___
+SAUTS|1|Bonds|Petits ___ de joie
+PIERRES|1|Cailloux|Précieuses
+ROCHERS|1|Gros cailloux|Chocolats pralinés
+MONTAGNES|1|Sommets|Russes, à la fête foraine
+COLLINES|1|Petites hauteurs|Rome en a sept
+RIVIERES|1|Cours d'eau|De diamants
+FLEUVES|1|Se jettent dans la mer|Seine et Loire
+SAISONS|1|Été, automne…|Les Quatre ___, de Vivaldi
+SEMAINES|1|Sept jours chacune|De quatre jeudis
+ANNEES|1|Douze mois chacune|Folles, les 1920
+MINUTES|1|Soixante secondes chacune|Comptées
+SECONDES|1|Instants|Fractions de minute
+AMOURS|1|Idylles|Les premières ___
+BAGUES|1|Anneaux|Bijoux de doigts
+BOUGIES|1|Petites flammes|Sur le gâteau d'anniversaire
+CADRES|1|Entourent les tableaux|Supérieurs, en entreprise
+CHAINES|1|Suites d'anneaux|De télé
+CHANTS|1|Mélodies|De Noël
+CLOCHES|1|Sonnent à l'église|De Pâques, chargées d'œufs
+CORDES|1|Gros fils|Il pleut des ___
+CRAYONS|1|Pour dessiner|De couleur
+DESSINS|1|Images au crayon|Animés
+DRAPEAUX|1|Emblèmes nationaux|Hissés au mât
+EGLISES|1|Lieux de culte|Clochers des villages
+FLECHES|1|Traits d'arc|De Cupidon
+FORMES|1|Silhouettes|Mettre les ___
+GANTS|1|Habillent les mains|Prendre des ___
+GLACES|1|Sorbets|Miroirs
+GRAINS|1|De sable ou de café|Petites quantités
+GUIDES|1|Montrent le chemin|Scoutes
+JOURNAUX|1|Quotidiens|Télévisés
+LUMIERES|1|Clartés|Siècle des ___
+MASQUES|1|Cachent les visages|Bas les ___ !
+MIROIRS|1|Reflètent|Aux alouettes
+MOULINS|1|Écrasent le grain|À vent, contre Don Quichotte
+NUANCES|1|Légères différences|Cinquante, de Grey
+OBJETS|1|Choses|Trouvés, au service des ___
+PANIERS|1|Corbeilles|Percés, distraits
+PARFUMS|1|Odeurs agréables|Glaces aux mille ___
+PIRATES|1|Corsaires|Des Caraïbes
+PLANETES|1|Mars et Vénus|Alignement des ___
+POCHES|1|Petits sacs cousus|Cernes sous les yeux
+PRINCES|1|Fils de rois|Charmants
+RECETTES|1|Modes de préparation|Gains de la caisse
+REFLETS|1|Images renvoyées|Mèches éclaircies
+RUBANS|1|Bandes de tissu|Dans les cheveux
+TRESORS|1|Richesses cachées|Mes petits ___
+TUNNELS|1|Passages souterrains|Sous la Manche
+VALISES|1|Bagages|Avoir des ___ sous les yeux
+VOILES|1|Font avancer le voilier|Mettre les ___
+TABLEAUX|1|Peintures|Jouer sur tous les ___
+BELLES|1|Jolies|De ___ histoires
+GRANDES|1|Pas petites|Vacances d'été
+PETITES|1|Pas grandes|Les ___ annonces
+BONNES|1|Pas mauvaises|Les ___ affaires
+JOLIES|1|Mignonnes|Charmantes
+NOIRES|1|Couleur de nuit|Idées sombres
+BLANCHES|1|Couleur de neige|Nuits sans sommeil
+ROUGES|1|Comme des coquelicots|Feux qui arrêtent
+VERTES|1|Comme les prés au printemps|En dire des ___ et des pas mûres
+BLEUES|1|Comme le ciel et la mer|Peurs intenses
+GRISES|1|Comme des souris|Éminences ___
+DOUCES|1|Tendres|Eaux de rivière
+FORTES|1|Puissantes|Têtes de mule
+FINES|1|Minces|Herbes de cuisine
+LONGUES|1|Pas courtes|Dents ambitieuses
+COURTES|1|Pas longues|Paille tirée au sort
+HAUTES|1|Pas basses|Les ___ sphères
+PLEINES|1|Remplies|Lunes rondes
+VIDES|1|Rien dedans|Mains, sans cadeau
+NEUVES|1|Toutes nouvelles|Flambant ___
+VIEILLES|1|Âgées|Arsenic et ___ dentelles
+FROIDES|1|Glacées|Mains, cœur chaud
+SALES|1|Pas propres|Mains, au figuré
+NUES|1|Sans vêtements|Mains, sans arme
+SEULES|1|Sans personne|Toutes ___ au monde
+TRISTES|1|Malheureuses|Sans joie
+HEUREUSES|1|Comblées|Fins de contes
+LIBRES|1|Indépendantes|Places à prendre
+VRAIES|1|Exactes|Authentiques
+FAUSSES|1|Pas vraies|Notes qui grincent
+SAGES|1|Raisonnables|Femmes, à la maternité
+DROITES|1|Pas courbes|Lignes parallèles
+LOURDES|1|Pesantes|Ville de pèlerinage
+LEGERES|1|Peu lourdes|Comme des plumes
+RAPIDES|1|Véloces|Courants de rivière
+LENTES|1|Pas rapides|Œufs de poux
+FOLLES|1|Insensées|Années 1920
+JEUNES|1|Pas vieux|Les ___ mariés
+VIVANTS|1|En vie|Bons ___
+MORTS|1|Décédés|Jour des ___, le 2 novembre
+MORTES|1|Décédées|Feuilles d'automne
+CHERS|1|Coûteux|Mes ___ amis
+AIMEE|1|Chérie|Bien-___
+AIMES|1|Chéris|Tendrement chéris
+ASSISE|1|Pas debout|Bien ___, stable
+CACHEE|1|Dissimulée|Face ___ de la lune
+CHANTE|1|Interprète en musique|Il ___ sous la douche
+DONNE|1|Offert|Distribution des cartes
+DONNEE|1|Offerte|Information
+DORMI|1|Fait dodo|Bien ___ ?
+ECRITE|1|Rédigée|Épreuve sur papier
+FAITE|1|Réalisée|Chose ___
+FINIE|1|Terminée|Achevée
+GAGNE|1|Remporte|Le ___-pain
+LAVE|1|Nettoie|Coule du volcan
+MANGE|1|Se nourrit|Il ___ comme quatre
+MONTE|1|Grimpe|___ en l'air
+OUVERTE|1|Pas fermée|Porte ___
+PARTI|1|Pas resté|Formation politique
+PASSEE|1|Révolue|Mode ___
+PERDU|1|Égaré|Temps ___, chez Proust
+PERDUE|1|Égarée|Cause ___
+PRISES|1|Saisies|Aux ___ avec, en lutte
+RENDU|1|Restitué|Compte ___
+SORTI|1|Dehors|Tout juste ___ de l'œuf
+TENU|1|Gardé|Pari ___
+TROUVE|1|Découvert|Enfant ___
+VENU|1|Arrivé|Le premier ___
+VENUE|1|Arrivée|Allée et ___
+VOULU|1|Désiré|Fait exprès
+VECUE|1|Expérimentée|Histoire ___
+CONNU|1|Célèbre|Ni vu ni ___
+CONNUE|1|Célèbre|Bien ___ des services de police
+CRUE|1|Montée des eaux|Pas cuite
+PLU|1|A séduit|Il a ___ toute la nuit
+MISES|1|Enjeux|Sur le tapis vert
+CUIT|1|Pas cru|C'est ___, fichu
+CUITE|1|Pas crue|Prendre une ___, s'enivrer
+FRIT|1|Cuit dans l'huile|Poisson ___
+ADORE|1|Aime passionnément|Vénère
+BOIT|1|Se désaltère|Qui a ___ boira
+CROIT|1|A foi|Il ___ au père Noël
+ENTEND|1|Perçoit les sons|Comprend
+MET|1|Pose|Il ___ la table
+MEURT|2|Disparaît|Il ___ de rire
+NAIT|2|Vient au monde|Il ___ une étoile
+PERD|1|Égare|Qui ___ gagne
+PLAIT|1|Séduit|S'il vous ___
+PREND|1|Saisit|Il ___ son temps
+SENT|1|Flaire|Ça ___ bon
+TIENT|1|Garde en main|Qui ___ à quelque chose
+VAUT|1|Coûte|Ça en ___ la peine
+VIENT|1|Arrive|Tout ___ à point
+CRIE|1|Hurle|Il ___ victoire
+PLEURE|1|Verse des larmes|Il ___ comme une madeleine
+RIENT|1|S'amusent|Ils ___ aux éclats
+DISENT|1|Racontent|Ils ___ oui
+FONT|1|Réalisent|Les petits ruisseaux ___ les grandes rivières
+AVAIT|1|Possédait|Il y ___ une fois
+ETAIT|1|Existait|Il ___ une fois
+SERAS|1|Existeras|Tu ___ un homme, mon fils
+AURAS|1|Posséderas|Tu l'___ voulu
+IRAS|1|Te rendras|Tu ___ loin
+IRAI|1|Me rendrai|J'___ revoir ma Normandie
+IRONS|1|Nous rendrons|Nous ___ tous au paradis
+IRONT|1|Se rendront|Ils ___ loin
+ALLONS|1|Nous rendons|___ enfants de la patrie
+ALLEZ|1|Vous rendez|___ les Bleus !
+AVONS|1|Possédons|Nous ___ gagné !
+AVEZ|1|Possédez|Vous ___ un message
+AIES|1|Que tu ___ raison|Subjonctif d'avoir
+SOIS|1|___ sage !|Subjonctif d'être
+SOIT|1|Ainsi ___-il|D'accord
+SOYEZ|1|___ les bienvenus|Impératif d'être
+ETES|1|Vous ___ ici|Existez
+SOMMES|1|Nous ___ là|Totaux
+EUT|2|Posséda|Il ___ raison
+EURENT|2|Possédèrent|Ils ___ beaucoup d'enfants
+FURENT|2|Existèrent|Ils ___ heureux
+FIRENT|2|Réalisèrent|Ils ___ fortune
+DIRENT|2|Prononcèrent|Ils se ___ oui
+VIRENT|2|Aperçurent|Ils ___ la mer
+MIRENT|2|Posèrent|Ils ___ les voiles
+PRIRENT|2|Saisirent|Ils ___ la fuite
+VINRENT|2|Arrivèrent|Ils ___ en paix
+BOIRE|1|Se désaltérer|À ___ et à manger
+AVOIR|1|Posséder|___ la pêche
+PRENDRE|1|Saisir|À ___ ou à laisser
+METTRE|1|Poser|___ les voiles
+POUVOIR|1|Être capable|Prendre le ___
+VOULOIR|1|Désirer|___, c'est pouvoir
+PARTIR|1|S'en aller|___, c'est mourir un peu
+MOURIR|1|Décéder|___ de rire
+NAITRE|2|Venir au monde|Faire ___ un sourire
+COURIR|1|Aller vite|Rien ne sert de ___
+OUVRIR|1|Déverrouiller|___ son cœur
+CUIRE|1|Préparer au feu|Laisser ___ dans son jus
+PLAIRE|1|Séduire|Pour vous ___
+TAIRE|2|Cacher|Faire ___ les rumeurs
+OUIR|3|Entendre, jadis|Par ___-dire
+VETIR|3|Habiller|Nourrir et ___
+NUIRE|2|Faire du tort|Ça ne peut pas ___
+LUIRE|2|Briller faiblement|Le soleil fait ___ la mer
+PEINDRE|1|Mettre en couleurs|Brosser un portrait
+TEINDRE|2|Colorer|Les cheveux, chez le coiffeur
+JOINDRE|1|Relier|___ les deux bouts
+RENDRE|1|Restituer|___ la monnaie
+ATTENDRE|1|Patienter|Tout vient à point à qui sait ___
+ENTENDRE|1|Percevoir les sons|Ouïr
+DESCENDRE|1|Aller en bas|___ en flammes
+PENDRE|2|Suspendre|Dire pis que ___
+TONDRE|2|Couper ras|___ un œuf, être avare
+FONDRE|1|Se liquéfier|___ en larmes
+PONDRE|1|Faire un œuf|Écrire vite, familièrement
+CONDUIRE|1|Piloter|Permis de ___
+ECRIRE|1|Rédiger|___ noir sur blanc
+DECRIRE|2|Dépeindre|Raconter en détail
+SUIVRE|1|Venir après|À ___
+MENTIR|1|Ne pas dire vrai|Comme un arracheur de dents
+ACHETER|1|Payer|Pour ___ du temps
+PAYER|1|Régler|Se ___ de mots
+CHANTER|1|Interpréter|Faire ___, rançonner
+DANSER|1|Valser|Ne pas savoir sur quel pied ___
+PLEURER|1|Verser des larmes|Comme une madeleine
+CRIER|1|Hurler|___ sur les toits
+PARLER|1|Discuter|___ pour ne rien dire
+LAISSER|1|Abandonner|___ tomber
+RESTER|1|Demeurer|___ de marbre
+MONTER|1|Grimper|___ sur ses grands chevaux
+PORTER|1|Transporter|___ chance
+COUPER|1|Trancher|___ la parole
+OUBLIER|1|Effacer de sa mémoire|Avoir la tête ailleurs
+REGARDER|1|Observer|Ça ne te ___ pas
+TIRER|1|Tracter|___ les vers du nez
+POSER|1|Déposer|___ un lapin
+SALER|1|Mettre du sel|Corser l'addition
+SUCRER|1|Adoucir|___ les fraises, trembler
+RATER|1|Manquer|Louper
+GELER|1|Se changer en glace|Avoir très froid
+SCIER|1|Couper le bois|Étonner, familièrement
+TAPER|1|Frapper|___ dans l'œil
+BATIR|1|Construire|___ des châteaux en Espagne
+CHOISIR|1|Sélectionner|Il faut ___ son camp
+REMPLIR|1|Combler|___ son verre
+ROUGIR|1|Piquer un fard|De honte
+VIEILLIR|1|Prendre de l'âge|Bien ___
+NOURRIR|1|Alimenter|___ un espoir
+SOUFFRIR|1|Avoir mal|Il faut ___ pour être belle
+SERRER|1|Presser|___ les dents
+FUIR|1|Se sauver|Le robinet le fait
+DOUZE|1|Dix plus deux|Coups de minuit
+QUATRE|1|Deux plus deux|Se mettre en ___
+CINQ|1|Quatre plus un|Autant que de sens
+TRENTE|1|Trois dizaines|Se mettre sur son ___ et un
+SEIZE|1|Dix plus six|Louis, guillotiné
+TREIZE|1|Douze plus un|À la douzaine, chez le boulanger
+QUINZE|1|Dix plus cinq|XV de France
+VINGT|1|Deux dizaines|Note parfaite
+LUNDI|1|Premier jour de la semaine|Jour de reprise
+MARDI|1|Jour après lundi|Gras, avant Carême
+MERCREDI|1|Milieu de semaine|Jour des enfants
+JEUDI|1|Jour avant vendredi|Jour de Jupiter
+VENDREDI|1|Veille du week-end|Ami de Robinson
+SAMEDI|1|Premier jour du week-end|Soir de fête
+DIMANCHE|1|Jour du repos|Peintre du ___, amateur
+JANVIER|1|Premier mois|Mois des soldes d'hiver
+FEVRIER|1|Mois court|Le plus court de l'année
+MARS|1|Troisième mois|Planète rouge
+AVRIL|1|Quatrième mois|Poisson d'___
+JUIN|1|Sixième mois|Mois du bac
+JUILLET|1|Septième mois|Le 14, fête nationale
+AOUT|1|Huitième mois|Mois des vacances
+SEPTEMBRE|1|Mois de la rentrée|Neuvième mois
+OCTOBRE|1|Dixième mois|Révolution russe
+NOVEMBRE|1|Onzième mois|Mois des morts
+DECEMBRE|1|Dernier mois|Mois de Noël
+VIOLET|1|Couleur de l'améthyste|Mauve foncé
+JAUNE|1|Couleur du citron|Rire ___
+BEIGE|1|Couleur sable|Couleur neutre
+MAUVE|1|Violet pâle|Fleur des champs
+BLOUSE|1|Vêtement de travail|Blanche, du médecin
+BOTTE|1|Chaussure haute|Bouquet de radis
+CARRE|1|Quatre côtés égaux|Mètre ___
+COMTE|2|Noble ou fromage|De Monte-Cristo
+ARETE|2|Os de poisson|Ligne de crête
+AMIRAL|2|Chef de flotte|Navire ___

@@ -5,34 +5,34 @@ VISAGE|1|Figure|Pâle, chez les cow-boys
 OEIL|1|Organe de la vue|Mon ___ !
 NEZ|1|Sert à sentir|Mener par le bout du ___
 BOUCHE|1|Pour manger|À ___ que veux-tu
-LEVRE|1|Bord de la bouche|Du bout des ___
+LEVRE|1|Bord de la bouche|Supérieure ou inférieure
 DENT|1|Dans la bouche|Avoir une ___ contre quelqu'un
 LANGUE|1|Dans la bouche|Mauvaise, elle médit
-OREILLE|1|Pour entendre|Tirer les ___
+OREILLE|1|Pour entendre|Avoir l'___ fine
 JOUE|1|Côté du visage|Tendre l'autre ___
 MENTON|1|Bas du visage|Galoche
 FRONT|1|Au-dessus des yeux|Faire ___ commun
-CHEVEU|1|Poil de la tête|Couper les ___ en quatre
-SOURCIL|1|Au-dessus de l'œil|Froncer les ___
-CIL|1|Poil de paupière|Battre des ___
+CHEVEU|1|Poil de la tête|Sur la soupe
+SOURCIL|1|Au-dessus de l'œil|Hausser le ___
+CIL|1|Poil de paupière|Il bat sans bruit
 COU|1|Relie la tête|Se casser le ___
 EPAULE|1|Haut du bras|Donner un coup d'___
 BRAS|1|Membre supérieur|Le ___ droit
-COUDE|1|Pli du bras|Se serrer les ___
+COUDE|1|Pli du bras|Lever le ___, boire
 MAIN|1|Cinq doigts|Coup de ___
 DOIGT|1|Au bout de la main|Mettre le ___ sur le problème
 POUCE|1|Gros doigt|Faire du stop avec lui
-ONGLE|1|Au bout du doigt|Jusqu'au bout des ___
+ONGLE|1|Au bout du doigt|Se ronge par nervosité
 POITRINE|1|Torse|Se frapper la ___
 VENTRE|1|Abdomen|Avoir les yeux plus gros que le ___
 DOS|1|Arrière du corps|En avoir plein le ___
-JAMBE|1|Membre inférieur|Prendre ses ___ à son cou
-GENOU|1|Articulation de la jambe|Être sur les ___
+JAMBE|1|Membre inférieur|Ça me fait une belle ___ !
+GENOU|1|Articulation de la jambe|Ployer le ___
 PIED|1|Au bout de la jambe|Casser les ___
 ORTEIL|1|Doigt de pied|Gros, il souffre dans la chaussure
 TALON|1|Arrière du pied|D'Achille
 CHEVILLE|1|Relie pied et jambe|Ne pas arriver à la ___
-HANCHE|1|Haut de la cuisse|Les poings sur les ___
+HANCHE|1|Haut de la cuisse|Tour de ___
 CUISSE|1|Haut de la jambe|De grenouille
 PEAU|1|Enveloppe du corps|Avoir quelqu'un dans la ___
 OS|1|Pièce du squelette|Tomber sur un ___
@@ -53,11 +53,11 @@ GRIPPE|1|Maladie de l'hiver|Prendre en ___
 FIEVRE|1|Température élevée|Du samedi soir
 TOUX|1|Irritation de la gorge|Sirop contre elle
 MIGRAINE|1|Mal de tête|Excuse classique
-DOULEUR|1|Mal|Sans ___ ni gloire
+DOULEUR|1|Mal|Rage de dent, par exemple
 BLESSURE|1|Plaie|D'amour-propre
 PLAIE|1|Blessure ouverte|Quelle ___ !
 BOBO|1|Petit mal|Bourgeois bohème
-BLEU|1|Ecchymose|Tout ___, bleui de coups
+BLEU|1|Ecchymose|Marque de coup
 BOSSE|1|Enflure du crâne|Avoir la ___ des maths
 CICATRICE|1|Marque de blessure|Celle d'Harry Potter
 PANSEMENT|1|Protège la plaie|Sparadrap
@@ -72,9 +72,9 @@ SIROP|1|Remède liquide|Contre la toux
 VACCIN|1|Protège des maladies|Piqûre de rappel
 PIQURE|1|Injection|De moustique
 ORDONNANCE|1|Prescription|Remise par le médecin
-SOIN|1|Attention|Aux petits ___
+SOIN|1|Attention|Prendre ___ de soi
 REPOS|1|Détente|Au ___ !
-SOMMEIL|1|Dort|Le ___ du juste
+SOMMEIL|1|Temps de dodo|Le ___ du juste
 SIESTE|1|Petit somme|Crapuleuse
 REVE|1|Fait la nuit|Américain
 FATIGUE|1|Épuisement|Coup de ___
@@ -112,3 +112,42 @@ THERMOMETRE|1|Mesure la fièvre|Monte en été
 URGENCES|1|Service d'hôpital|Série médicale
 AMBULANCE|1|Transporte les malades|Tirer sur l'___
 GUERIR|1|Aller mieux|Mieux vaut prévenir
+# Pluriels
+CHEVEUX|1|Chevelure|Couper les ___ en quatre
+DOIGTS|1|Il y en a dix aux mains|Se mordre les ___
+OREILLES|1|Pour entendre|Tirer les ___
+LEVRES|1|Bords de la bouche|Du bout des ___
+JAMBES|1|Membres inférieurs|Prendre ses ___ à son cou
+EPAULES|1|Hauts des bras|Hausser les ___
+POUCES|1|Gros doigts|Se tourner les ___
+ONGLES|1|Bouts des doigts|Jusqu'au bout des ___
+GENOUX|1|Articulations des jambes|À ___, en suppliant
+SOURCILS|1|Au-dessus des yeux|Froncer les ___
+COUDES|1|Plis des bras|Se serrer les ___
+HANCHES|1|Hauts des cuisses|Les poings sur les ___
+JOUES|1|Côtés du visage|Bonnes ___ rondes
+MUSCLES|1|Se contractent|Gonflés à la salle
+NERFS|1|Transmettent les sensations|Taper sur les ___
+POUMONS|1|Pour respirer|Crier à pleins ___
+# Mots d'autres fichiers qui font aussi partie du thème
+CILS
+DENTS
+MAINS
+PIEDS
+TETES
+YEUX
+REIN
+SEIN
+POIL
+PIF
+BILE
+RATE
+MAL
+MAUX
+RIDE
+BLEUS
+COMA
+DORT
+DORMI
+SUE
+SUER

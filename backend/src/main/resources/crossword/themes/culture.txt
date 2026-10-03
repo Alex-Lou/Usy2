@@ -15,7 +15,7 @@ BATTERIE|1|Tambours et cymbales|De cuisine ou de téléphone
 FLUTE|1|Instrument à vent|Enchantée chez Mozart
 TROMPETTE|1|Instrument en cuivre|Nez en ___
 HARPE|2|Grand instrument à cordes|Des anges
-SAXO|1|Saxophone|Jazz en cuivre
+SAXO|1|Instrument de jazz, en bref|Celui de Coltrane, en abrégé
 TAMBOUR|1|Instrument à percussion|Sans ___ ni trompette
 ACCORDEON|1|Piano à bretelles|Plié en ___
 NOTE|1|Do, ré ou mi|Fausse, elle grince
@@ -74,7 +74,7 @@ BD|1|Bande dessinée|Neuvième art
 AUTEUR|1|Écrivain|Droits d'___
 PEINTURE|1|Art des couleurs|Fraîche, ne pas toucher
 TABLEAU|1|Œuvre peinte|Brosser le ___
-PINCEAU|1|Outil du peintre|S'emmêler les ___
+PINCEAU|1|Outil du peintre|Coup de ___
 DESSIN|1|Image au crayon|Faut-il te faire un ___ ?
 SCULPTURE|1|Art du volume|Statue taillée
 MUSEE|1|On y voit des œuvres|Pièce de ___, très ancienne
@@ -94,7 +94,7 @@ MOTSCROISES|2|Grille de définitions|Cousins des mots fléchés
 QUIZ|1|Série de questions|Jeu télévisé
 KARAOKE|1|Chanter sur un écran|Micro du samedi soir
 FETE|1|Célébration|Faire la ___
-SOIREE|1|Fête du soir|Pyjama, entre copines
+SOIREE|1|Fête de nuit|Pyjama, entre copines
 BAL|1|Soirée dansante|Masqué, à Venise
 DISCO|1|Musique des seventies|Boule à facettes
 DJ|1|Mixe les disques|Platines en soirée
@@ -123,3 +123,60 @@ FEE|1|Clochette en est une|Mains de ___
 ELFE|2|Être magique aux oreilles pointues|Lutin de Tolkien
 ROBOT|1|Machine de science-fiction|R2-D2 en est un
 ALIEN|1|Extraterrestre|Le huitième passager
+# Pluriels
+ACTEURS|1|Jouent des rôles|Comédiens
+ACTRICES|1|Comédiennes|Stars de l'écran
+ROMANS|1|Longs récits|De gare
+POEMES|1|Vers en strophes|Recueils
+DISQUES|1|Vinyles|D'or ou de platine
+CONCERTS|1|Spectacles musicaux|En plein air
+TUBES|1|Chansons à succès|Cylindres creux
+SCENES|1|Parties de film|Faire des ___ de ménage
+ROLES|1|Personnages joués|Premiers, en tête d'affiche
+# Mots d'autres fichiers qui font aussi partie du thème
+DO
+RE
+MI
+FA
+SOL
+LA
+SI
+UT
+ART
+ARTS
+ODE
+ALTO
+TUBA
+LYRE
+DIVA
+OPUS
+TUTU
+SAGA
+TOME
+BIDE
+AIR
+AIRS
+GAG
+JEUX
+FILMS
+NOTES
+CHANSONS
+DANSES
+CONTES
+LIVRES
+IMAGES
+VERS
+RIME
+DESSINS
+CRAYONS
+MUSEES
+DUO
+TRIO
+SOLO
+CHANTS
+CHANTE
+CHANTER
+DANSER
+LIRE
+ECRIRE
+PEINDRE

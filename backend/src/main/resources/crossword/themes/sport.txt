@@ -1,6 +1,6 @@
 # Sport & forme
 SPORT|1|Activité physique|C'est pas du ___ !
-FOOT|1|Football|Ballon rond
+FOOT|1|Ballon rond, en bref|Sport du onze
 RUGBY|1|Ballon ovale|Mêlée et essais
 TENNIS|1|Raquette et filet|De table, ping-pong
 GOLF|1|Sport de green|Dix-huit trous
@@ -19,11 +19,11 @@ PISCINE|1|Bassin de nage|Faire ___, passer à côté
 PLONGEON|1|Saut dans l'eau|Faire un ___, chuter
 YOGA|1|Postures et respiration|Salutation au soleil
 DANSE|1|Mouvements en musique|Classique ou hip-hop
-GYM|1|Gymnastique|Salle de ___
-MUSCU|1|Musculation|Haltères et abdos
+GYM|1|Sport des agrès, en bref|Salle de ___
+MUSCU|1|Gonflette, en salle|Haltères et abdos
 FITNESS|1|Sport en salle|Remise en forme
 ESCALADE|1|Grimpe sur la paroi|Montée des tensions
-RANDO|1|Randonnée|Marche en montagne
+RANDO|1|Balade en montagne, en bref|Marche en montagne
 MARCHE|1|Pas à pas|Nordique, avec bâtons
 FOOTING|1|Petite course|Jogging du dimanche
 JOGGING|1|Course lente|Survêtement
@@ -86,7 +86,7 @@ CASQUE|1|Protège la tête|Du cycliste
 MAILLOT|1|Tenue du joueur|Jaune du Tour de France
 SHORT|1|Culotte de sport|Court pantalon
 BASKETS|1|Chaussures de sport|Lâche-moi les ___ !
-SURVET|1|Survêtement|Tenue de jogging
+SURVET|1|Tenue de sport, en bref|Tenue de jogging
 BASKET|1|Panier et ballon|Chaussure ou sport
 HANDBALL|1|Ballon à la main|Sport des Experts
 VOLLEY|1|Ballon par-dessus le filet|Sur la plage
@@ -119,3 +119,44 @@ CHRONO|1|Mesure le temps|Contre la montre
 FINALE|1|Dernier match|Grande ___
 SUPPORTER|1|Fan d'une équipe|Encourage du gradin
 OLA|1|Vague du stade|Bras levés en tribune
+# Pluriels
+MEDAILLES|1|Récompenses en métal|D'or, d'argent, de bronze
+RAQUETTES|1|Frappent la balle|Pour marcher dans la neige
+BUTEUR|1|Marque des buts|Attaquant efficace
+ARBITRES|1|Sifflent les fautes|Juges du match
+COUPES|1|Trophées|De cheveux
+SKIS|1|Planches de neige|De fond
+PATINS|1|Glissent sur la glace|À roulettes
+SPRINTS|1|Courses de vitesse|Finales rapides
+STADES|1|Grandes enceintes sportives|Étapes
+# Mots d'autres fichiers qui font aussi partie du thème
+BUTS
+LOB
+TEE
+PRO
+MATCHS
+COURIR
+NAGER
+SAUTER
+TIR
+TIRS
+ARCS
+EPEES
+CAGES
+BALLES
+BALLONS
+SPORTS
+EQUIPES
+JOUEURS
+GAGNE
+GAGNER
+PERDU
+NUL
+NULS
+SAUTS
+VELOS
+RAID
+DUEL
+ELAN
+CHOC
+COUPS

@@ -1,11 +1,9 @@
 # Mélange (suite) : mots courts et courants, pour bien remplir les grilles.
-ACTE|1|Action|Prendre ___, noter
 ALLER|1|Se rendre|Billet simple
 AMENER|1|Conduire vers|Mener jusqu'ici
 ANNEXE|2|Supplément|Bâtiment voisin
 ANSE|2|Poignée de tasse|Petite baie
 APTE|2|Capable|Bon pour le service
-ARENE|2|Piste du cirque romain|Descendre dans l'___
 ARIA|3|Air d'opéra|Mélodie pour soliste
 ARRET|1|Halte|De bus
 ASSIS|1|Pas debout|Sur une chaise
@@ -20,8 +18,8 @@ BANAL|1|Ordinaire|Sans originalité
 BARBE|1|Poils du menton|Quelle ___ !
 BARON|2|Titre de noblesse|Gros industriel
 BASE|1|Fondement|De données
-BATON|1|Morceau de bois|Mettre des ___ dans les roues
-BENIR|2|Bénédiction|Donner la ___ du prêtre
+BATON|1|Morceau de bois|À ___ rompus
+BENIR|2|Consacrer, pour un prêtre|Le prêtre le fait aux mariés
 BETON|1|Matériau de construction|En ___, solide
 BIAIS|2|Détour|De ___, en diagonale
 BILAN|1|Résultat|Faire le ___
@@ -35,7 +33,6 @@ BREF|1|Court|En ___, pour résumer
 BRISE|1|Vent léger|Marine, sur la côte
 BRUN|1|Couleur châtain|Cheveux foncés
 BUREAU|1|Lieu de travail|Ovale à Washington
-CALE|2|Fond du navire|Coin sous la roue
 CANNE|1|Bâton de marche|À pêche
 CASSER|1|Briser|Les pieds, ennuyer
 CAUSE|1|Raison|À ___ de toi
@@ -45,11 +42,10 @@ CHAMP|1|Terrain cultivé|Laisser le ___ libre
 CHER|1|Coûteux|Mon ___ ami
 CHUTE|1|Tombée|D'eau ou de reins
 CLASSE|1|Salle d'école|Avoir de la ___
-CLE|1|Ouvre la porte|De sol, en musique
 COLLE|1|Fait tenir|Question difficile
 CONTRE|1|Opposé à|Le pour et le ___
 COPIE|1|Reproduction|Rendre sa ___
-CORNE|1|Sur la tête du taureau|Prendre le taureau par les ___
+CORNE|1|Sur la tête du taureau|De brume, elle sonne
 COTON|1|Fibre douce|Élever dans du ___
 COUCHE|1|Strate|D'ozone
 COUPE|1|Trophée ou verre|De cheveux
@@ -58,16 +54,15 @@ COUSIN|1|Fils de l'oncle|Moustique ou parent
 CRAINTE|1|Peur|De ___ que
 CREDIT|1|Prêt bancaire|Faire ___, avoir confiance
 CRISE|1|Moment difficile|De nerfs
-CROIRE|1|Avoir foi|Je n'en crois pas mes yeux
+CROIRE|1|Avoir foi|Y ___ dur comme fer
 CUIR|1|Peau tannée|Blouson de motard
 CYCLE|1|Suite qui revient|De la vie
-DECOR|1|Ornement|Changement de ___
 DEGRE|1|Unité de température|Second ___, ironie
-DELAI|1|Temps accordé|Dans les ___
+DELAI|1|Temps accordé|Sans ___, tout de suite
 DEPOT|1|Entrepôt|De bilan
 DETTE|1|Somme due|Il faut l'honorer
 DIGNE|1|Méritant|___ de confiance
-DISPO|1|Disponible|Libre, en abrégé
+DISPO|1|Libre, en bref|Pas occupé, familièrement
 DIVAN|2|Canapé|Du psychanalyste
 DOIGT|1|Au bout de la main|Se mettre le ___ dans l'œil
 DONNER|1|Offrir|Qui ___ reçoit
@@ -92,8 +87,7 @@ ESSAI|1|Tentative|Coup d'___
 ESTIME|2|Considération|Succès d'___
 ETAGE|1|Niveau d'immeuble|Premier, deuxième…
 ETAL|2|Table de marché|Présentoir du boucher
-ETAPE|1|Partie de trajet|Brûler les ___
-ETE|1|Saison chaude|Indien en octobre
+ETAPE|1|Partie de trajet|Ville-___ du Tour
 ETUDE|1|Travail scolaire|Du notaire
 EVEIL|1|Réveil|En ___, attentif
 EXCES|1|Abus|De vitesse
@@ -106,7 +100,6 @@ FARCE|1|Blague|Garniture de dinde
 FAUX|1|Pas vrai|Outil de la Mort
 FEINTE|2|Ruse|Fausse attaque
 FENTE|1|Ouverture étroite|De la tirelire
-FERME|1|Solide|Exploitation agricole
 FIBRE|1|Filament|Optique
 FICHE|1|Petite carte|De paie
 FIDELE|1|Loyal|Lecteur assidu
@@ -117,14 +110,14 @@ FLOU|1|Pas net|Artistique
 FOIRE|1|Fête foraine|Faire la ___
 FOND|1|Bas|Au ___ du trou
 FONTE|2|Fusion|Des neiges
-FORGE|2|Atelier du forgeron|Battre le fer
+FORGE|2|Atelier du maréchal-ferrant|Battre le fer
 FOSSE|1|Trou creusé|Aux lions
 FOYER|1|Maison|De la cheminée
 FRANC|1|Sincère|Ancienne monnaie
 FUITE|1|Évasion|D'eau
 FUMEE|1|Sort de la cheminée|Pas de ___ sans feu
 FUSEE|1|Engin spatial|Feu d'artifice
-GACHE|2|Gaspillé|Mortier
+GACHE|2|Gaspillé|Pièce de serrure
 GAGNER|1|Remporter|Du temps
 GALA|2|Fête officielle|Soirée de ___
 GAMIN|1|Gosse|Enfant des rues
@@ -141,7 +134,7 @@ GORGE|1|Dans le cou|Profonde, dans les montagnes
 GOSSE|1|Enfant|Beau ___
 GRACE|1|Élégance|Action de ___
 GRADE|1|Rang|Monter en ___
-GRAS|1|Plein de matière grasse|Mardi
+GRAS|1|Riche en lipides|Mardi
 GRILLE|1|Clôture en fer|De mots fléchés
 GROS|1|Pas mince|En ___
 GUIDON|1|Pour diriger le vélo|Avoir le nez dans le ___
@@ -151,7 +144,7 @@ HAIE|1|Rangée d'arbustes|D'honneur
 HALTE|1|Arrêt|___-là !
 HAMEAU|2|Petit village|Écart de campagne
 HERBE|1|Gazon|Mauvaise, elle pousse vite
-HIBOU|1|Rapace nocturne|Chouette cornue
+HIBOU|1|Rapace nocturne|Rapace à aigrettes
 HOTE|1|Qui reçoit|Ou qui est reçu
 HUILE|1|Graisse liquide|Grosse ___, gros bonnet
 IDIOT|1|Bête|Du village
@@ -163,7 +156,6 @@ JADIS|2|Autrefois|Il était une fois…
 JARRE|2|Grand vase|Pour l'huile
 JAUGE|2|Indicateur de niveau|D'essence
 JETON|1|Pièce de jeu|Faux ___, hypocrite
-JOUR|1|Opposé de la nuit|Au grand ___
 JUGE|1|Rend la justice|Et partie
 JURY|1|Groupe de jurés|D'examen
 LACET|1|Lien de chaussure|Virage en épingle
@@ -171,11 +163,9 @@ LAINE|1|Vient du mouton|Pull chaud
 LAISSE|1|Lien du chien|Tenir en ___
 LAMPE|1|Éclaire|De poche
 LANCE|1|Arme pointue|À incendie
-LARGE|1|Ample|Au ___ de la côte
 LAVER|1|Nettoyer|Son linge sale en famille
 LECON|1|Cours|Donner une ___
 LEVER|1|Soulever|Du soleil
-LIBRE|1|Indépendant|Service, au tennis
 LIEU|1|Endroit|Avoir ___
 LIGUE|2|Association|Des champions
 LISSE|1|Sans aspérité|Cheveux raides
@@ -194,7 +184,7 @@ MALLE|1|Gros coffre|Se faire la ___
 MANCHE|1|Partie du vêtement|La ___, entre France et Angleterre
 MANTEAU|1|Vêtement chaud|Sous le ___, en cachette
 MARGE|1|Bord de page|Vivre en ___
-MARRON|1|Couleur châtaigne|Tirer les ___ du feu
+MARRON|1|Couleur châtaigne|Glacé, à Noël
 MATCH|1|Rencontre sportive|Retour
 MATIERE|1|Substance|Grise
 MECHE|1|Partie de bougie|Vendre la ___
@@ -203,7 +193,7 @@ MELER|1|Mélanger|Se ___ de ses affaires
 MENER|1|Conduire|En bateau
 MERITE|1|Valeur|Ordre national
 METRE|1|Cent centimètres|Ruban de couturière
-MEUBLE|1|Table ou armoire|Sauver les ___
+MEUBLE|1|Table ou armoire|Terre ___, facile à creuser
 MIGNON|1|Adorable|Péché ___
 MILLE|1|Dix fois cent|Dans le ___ !
 MINUTE|1|Soixante secondes|___, papillon !
@@ -214,7 +204,6 @@ MOTEUR|1|Fait avancer|Action !
 MOUCHE|1|Insecte|Faire ___, viser juste
 MOULE|1|Récipient de forme|Coquillage
 MOUSSE|1|Écume|Au chocolat
-MOYEN|1|Façon|Les ___ du bord
 MUSEAU|1|Nez d'animal|Truffe
 NAPPE|1|Couvre la table|Phréatique
 NATION|1|Peuple|Unie
@@ -225,7 +214,6 @@ NIVEAU|1|Degré|À bulle
 NOBLE|1|Aristocrate|Généreux
 NOMBRE|1|Chiffre|D'or
 NORD|1|Opposé du sud|Perdre le ___
-NOTE|1|Évaluation|Bonne, sur la copie
 NOUVEAU|1|Récent|Rien de ___ sous le soleil
 NOYAU|1|Cœur du fruit|Dur, de l'équipe
 OBEIR|1|Se soumettre|Au doigt et à l'œil
@@ -235,7 +223,7 @@ OISIF|2|Sans occupation|Désœuvré
 ONCLE|1|Frère du père|D'Amérique
 OPALE|2|Pierre irisée|Côte d'___
 ORGUE|2|Instrument d'église|De Barbarie
-ORTIE|2|Plante qui pique|Jeter son froc aux ___
+ORTIE|2|Plante qui pique|Piquante au jardin
 OUTRE|2|Sac en peau|En ___, de plus
 PACTE|2|Accord|Avec le diable
 PAGNE|2|Bout de tissu|Tarzan en porte un
@@ -247,7 +235,6 @@ PAPI|1|Grand-père|Pépé
 PARC|1|Jardin public|D'attractions
 PART|1|Portion|À ___ entière
 PARTIE|1|Morceau|Remise
-PASSE|1|Temps écoulé|Mot de ___
 PATTE|1|Jambe d'animal|Graisser la ___
 PAUME|1|Creux de la main|Jeu de ___
 PAVE|1|Pierre de rue|Dans la mare
@@ -256,7 +243,6 @@ PECHE|1|Fruit ou loisir|Avoir la ___
 PELLE|1|Pour creuser|Ramasser une ___
 PENTE|1|Descente|Remonter la ___
 PERLE|1|Bijou d'huître|Rare
-PERTE|1|Manque|Et fracas
 PESER|1|Mesurer le poids|Le pour et le contre
 PETALE|1|Morceau de fleur|Effeuillé
 PHASE|1|Étape|De la lune
@@ -274,27 +260,25 @@ PLAINE|1|Terrain plat|Vaste étendue
 PLANCHE|1|Morceau de bois|De salut
 PLAQUE|1|Feuille rigide|D'immatriculation
 PLONGER|1|Sauter dans l'eau|Dans un livre
-POCHE|1|Petit sac cousu|Argent de ___
 POELE|1|Ustensile de cuisine|Chauffage
 POIGNEE|1|Pour ouvrir|De main
 POINTE|1|Bout pointu|Des pieds
 POLICE|1|Forces de l'ordre|De caractère
 POMPE|1|Machine à aspirer|Funèbre
-PONT|1|Enjambe le fleuve|Couper les ___
+PONT|1|Enjambe le fleuve|Faire le ___, entre deux fériés
 PORC|1|Cochon|Viande blanche
 POSTE|1|Emploi|Bureau des lettres
-POUCE|1|Gros doigt|Se tourner les ___
+POUCE|1|Gros doigt|Il fait du stop
 POUDRE|1|Fine poussière|Aux yeux
 POULE|1|Pond|Mouillée, peureuse
 POUPEE|1|Jouet|Barbie en est une
-PRESSE|1|Journaux|Agrume ___
+PRESSE|1|Journaux|Quatrième pouvoir
 PRETE|1|Disposée|Fin ___ pour le départ
 PRIERE|1|Supplication|D'insérer
 PRISE|1|Capture|De courant
 PROFIL|1|Vu de côté|Bas, discret
 PROIE|1|Victime|Lâcher la ___ pour l'ombre
 PROMO|1|Réduction|Année d'école
-PROPRE|1|Net|Nom ___
 PRUNE|1|Fruit violet|Contravention
 PUCE|1|Insecte sauteur|Électronique
 PUITS|1|Trou à eau|De science
@@ -315,12 +299,11 @@ RENNE|1|Tire le traîneau|Animal du Nord
 RESEAU|1|Maillage|Social
 RESTE|1|Ce qui demeure|Du ___
 REVUE|1|Magazine|Passer en ___
-RIDE|1|Pli de la peau|Sans une ___
 RIVAL|1|Concurrent|Sans ___
 ROCHE|1|Pierre|Eau de ___
 RONDE|1|Danse en cercle|De nuit
 ROSEE|1|Gouttes du matin|Perles de l'aube
-ROUET|3|Machine à filer|Belle au bois dormant
+ROUET|3|Machine à filer|La Belle s'y piqua
 RUCHE|1|Maison d'abeilles|Bourdonnante
 RUINE|1|Décombres|Courir à sa ___
 RUSE|1|Astuce|De Sioux
@@ -328,15 +311,15 @@ SABLE|1|Sur la plage|Biscuit breton
 SABOT|1|Pied de cheval|Chaussure en bois
 SALIR|1|Tacher|Sa réputation
 SALLE|1|Pièce|De bains
-SAUCE|1|Assaisonnement|Mettre à toutes les ___
+SAUCE|1|Assaisonnement|Allonger la ___
 SAUTER|1|Bondir|Du coq à l'âne
 SAVANT|1|Érudit|Fou, dans les films
 SCEAU|2|Cachet officiel|Sous le ___ du secret
-SEAU|1|Récipient à anse|Il pleut à ___
+SEAU|1|Récipient à anse|De plage, avec la pelle
 SECTEUR|1|Zone|Privé
 SEMER|1|Planter|La zizanie
 SERRE|1|Abri vitré pour plantes|Griffe d'aigle
-SERVIR|1|Être utile|À quoi ça sert ?
+SERVIR|1|Être utile|Le tennisman le fait en premier
 SIEGE|1|Chaise|Social
 SIROP|1|Boisson sucrée|D'érable
 SOCLE|1|Base|Piédestal
@@ -346,7 +329,7 @@ SONDE|2|Instrument de mesure|Spatiale
 SORTIE|1|Issue|De secours
 SOUCI|1|Inquiétude|Fleur jaune
 SOUPE|1|Potage|Cheveu dedans
-SOURD|1|N'entend pas|Dialogue de ___
+SOURD|1|N'entend pas|___ comme un pot
 STADE|1|Terrain de sport|Étape
 STAGE|1|Formation|En entreprise
 STYLE|1|Manière|Avoir du ___
@@ -365,7 +348,6 @@ TEMPE|1|Côté du front|Battements
 TENIR|1|Garder en main|Le coup
 TENUE|1|Habillement|Correcte exigée
 TERME|1|Fin|Mot
-TERRE|1|Sol|Ferme
 TEXTE|1|Écrit|À trous
 TIGE|1|Porte la fleur|De botte
 TIMBRE|1|Sur l'enveloppe|De voix
@@ -374,7 +356,7 @@ TISSU|1|Étoffe|De mensonges
 TITRE|1|Nom d'œuvre|À ___ gracieux
 TOILE|1|Tissu|D'araignée
 TOMBE|1|Sépulture|Muet comme une ___
-TONNE|1|Mille kilos|En faire des ___
+TONNE|1|Mille kilos|Grosse barrique
 TORCHE|1|Lampe portative|Humaine
 TORT|1|Erreur|Avoir ___
 TOUCHE|1|De clavier|Sur la ___, mis de côté
@@ -395,7 +377,6 @@ URNE|1|Boîte à bulletins|Funéraire
 USAGE|1|Utilisation|D'___, habituel
 UTILE|1|Pratique|Joindre l'___ à l'agréable
 VAGUE|1|Imprécis|Nouvelle, au cinéma
-VALEUR|1|Prix|Sûre
 VAPEUR|1|Gaz d'eau|À toute ___
 VEDETTE|1|Star|Bateau rapide
 VEILLE|1|Jour d'avant|Mise en ___
@@ -405,14 +386,12 @@ VENTE|1|Cession|Aux enchères
 VERBE|1|Mot d'action|Avoir le ___ haut
 VERSO|1|Dos de la page|Recto ___
 VESTE|1|Veston|Retourner sa ___
-VIEUX|1|Âgé|Comme Hérode
-VIGNE|1|Donne le raisin|Dans les ___ du Seigneur
+VIGNE|1|Donne le raisin|Pied de ___
 VIRAGE|1|Courbe|En épingle
 VISITE|1|Venue|Guidée
-VITRE|1|Carreau|Casser les ___
+VITRE|1|Carreau|De la fenêtre
 VIVRE|1|Exister|Savoir-___
 VOGUE|2|Mode|En ___
-VOILE|1|Toile du bateau|De la mariée
 VOLER|1|Planer|Dérober
 VOTE|1|Suffrage|À main levée
 VOUTE|2|Plafond courbe|Céleste
@@ -430,7 +409,7 @@ ALLEE|1|Chemin de jardin|Et venue
 ALLUMER|1|Éclairer|Le feu
 AMENDE|1|Contravention|Faire ___ honorable
 AMPLEUR|2|Importance|Prendre de l'___
-ANGLE|1|Coin|Arrondir les ___
+ANGLE|1|Coin|Droit, à 90°
 ANIMAL|1|Bête|De compagnie
 APPUI|1|Soutien|Point d'___
 ARGUMENT|1|Raison avancée|Massue, imparable
@@ -438,7 +417,7 @@ ARMEE|1|Troupes|De l'air
 ARRIVER|1|Venir|À ses fins
 ASPECT|1|Apparence|Sous cet ___
 ATTENTE|1|Patience|Salle d'___
-AVANCE|1|Avancée|En ___, pas en retard
+AVANCE|1|Acompte|En ___, pas en retard
 AVOCAT|1|Défend au tribunal|Fruit vert
 BAISSE|1|Diminution|Des prix
 BALAYER|1|Nettoyer le sol|Devant sa porte
@@ -465,7 +444,7 @@ CHANGER|1|Modifier|D'avis
 CHARGE|1|Poids|Revenir à la ___
 CHASSE|1|Traque|Au trésor
 CHEMISE|1|Vêtement à col|Changer d'avis comme de ___
-CHERCHER|1|Rechercher|Midi à quatorze heures
+CHERCHER|1|Être en quête de|Midi à quatorze heures
 CHIFFRE|1|Nombre|D'affaires
 CITOYEN|1|Habitant d'un pays|Du monde
 CLIENT|1|Acheteur|Roi, dit-on
@@ -489,7 +468,7 @@ CUILLER|1|Ustensile|À café
 DANGER|1|Péril|Public
 DECISION|1|Choix|Prendre une ___
 DEFENDRE|1|Protéger|Interdire
-DEGAT|1|Dommage|Faire des ___
+DEGAT|1|Dommage|Constat de ___ des eaux
 DEPENSE|1|Frais|Folle
 DETAIL|1|Petit élément|Vente au ___
 DIRECTION|1|Sens|Assistée
@@ -517,16 +496,16 @@ FUMER|1|Tirer sur la cigarette|Nuit gravement
 GALERIE|1|Passage couvert|D'art
 GARCON|1|Jeune homme|De café
 GAZETTE|2|Journal|Bavard
-GLISSER|1|Patiner|Un mot
+GLISSER|1|Patiner|___ un mot à l'oreille
 GOURDE|1|Bouteille de rando|Idiote
 GRANDIR|1|Pousser|Mûrir
 GRATTER|1|Racler|Les fonds de tiroir
 HABITER|1|Résider|Chez soi
 HERITAGE|1|Legs|Culturel
-HISTOIRE|1|Récit|Sans ___
+HISTOIRE|1|Récit|Il était une fois…
 HONNEUR|1|Dignité|Parole d'___
 HUMAIN|1|Homme|Trop ___
-ILLUSION|1|Mirage|Se faire des ___
+ILLUSION|1|Mirage|D'optique
 INVITER|1|Convier|À dîner
 JOUEUSE|1|Qui joue|Taquine
 JUMEAU|1|Né en même temps|Frère ___
@@ -549,7 +528,7 @@ PARAPLUIE|1|Abri contre la pluie|Ouvrir le ___, se couvrir
 PARTAGE|1|Division|Des tâches
 PATRON|1|Chef|Modèle de couture
 PAYSAGE|1|Panorama|Audiovisuel
-PECHEUR|1|Attrape des poissons|Qui commet un péché
+PECHEUR|1|Attrape des poissons|Pas un saint
 PENSER|1|Réfléchir|À toi
 PERDRE|1|Égarer|Le nord
 PERSONNE|1|Individu|Nul ne vient
@@ -590,7 +569,7 @@ VAINQUEUR|1|Gagnant|Par KO
 VENDRE|1|Céder contre argent|La mèche
 VETEMENT|1|Habit|Seconde main
 VIOLETTE|1|Fleur mauve|Timide
-VISITEUR|1|Qui visite|Du soir
+VISITEUR|1|Hôte de passage|Du soir
 VITRINE|1|Devanture|Lèche-___
 VOITURE|1|Automobile|En ___ !
 VOLONTE|1|Détermination|Bonne
