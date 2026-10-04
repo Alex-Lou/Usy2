@@ -14,7 +14,9 @@ services:
       POSTGRES_USER: memocat
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manque dans deploy/.env}
     volumes:
-      - db:/var/lib/postgresql/data
+      # Le dossier parent : PostgreSQL 18 y range ses données dans un sous-dossier par version
+      # (17 et avant : data/), il refuse de démarrer si on monte data/ directement.
+      - db:/var/lib/postgresql
     shm_size: 256m
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U memocat -d memocat"]
