@@ -270,3 +270,11 @@
     color: dimgray !important;
   }
 }
+
+/* A game played full screen on a phone (mots fléchés): no tab bar, the page fits the screen. */
+:root[data-immersive] {
+  --tabbar-h: env(safe-area-inset-bottom, 0px);
+}
+:root[data-immersive] [data-tabbar] {
+  display: none;
+}

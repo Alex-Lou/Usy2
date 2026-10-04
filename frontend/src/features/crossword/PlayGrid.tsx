@@ -10,6 +10,7 @@ import { getGame, levelLabel, onCrossword, play, starsFor, themeOf, type Change,
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { BLOCK, cellsOf, cluesByCell, keyToLetter, readingOrder, wordsByCell } from "./logic";
+import { nextZoom, useZoom, zoomLabel, ZoomView } from "./ZoomView";
 
 const SIZE_LABEL = { petite: "Petite grille", moyenne: "Grille moyenne", grande: "Grande grille" } as const;
 const FLUSH_MS = 250;
@@ -68,6 +69,17 @@ export function PlayGrid({ id }: { id: number }) {
     return (w?.[cursor.dir] ?? w?.right ?? w?.down ?? null) as Clue | null;
   }, [words, cursor]);
   const wordCells = useMemo(() => new Set(activeClue ? cellsOf(activeClue, width) : []), [activeClue, width]);
+  const [zoom, chooseZoom, defaultZoom] = useZoom(game?.size ?? "petite");
+  // What the grid keeps in view when zoomed: the clue, then its word.
+  const focus = useMemo(() => (activeClue ? [activeClue.cell, ...cellsOf(activeClue, width)] : []), [activeClue, width]);
+
+  // Full screen while playing: no tab bar under the keyboard (the ‹ goes back to the grids).
+  useEffect(() => {
+    document.documentElement.dataset.immersive = "";
+    return () => {
+      delete document.documentElement.dataset.immersive;
+    };
+  }, []);
 
   // Sending: changes wait a moment and leave together.
   const pending = useRef(new Map<number, Change>());
@@ -270,8 +282,12 @@ export function PlayGrid({ id }: { id: number }) {
   const title = game.daily ? "📅 Grille du jour" : `${themeOf(game.theme).emoji} ${SIZE_LABEL[game.size]}`;
 
   return (
-    <div className="flex flex-col gap-3" data-no-pull>
-      <header className="flex items-center gap-2">
+    // One screen high: the grid takes what the header and the keyboard leave (it zooms inside).
+    <div
+      className="flex h-[calc(100dvh-var(--topbar-h)-var(--tabbar-h)-2rem)] flex-col gap-2 lg:h-[calc(100dvh-var(--desk-topbar-h)-5rem)]"
+      data-no-pull
+    >
+      <header className="flex shrink-0 items-center gap-2">
         <Link to="/jeux/mots-fleches" aria-label="Retour aux grilles" className="grid h-9 w-9 place-items-center rounded-full text-text-muted press hover:text-text">
           <Icon name="chevronLeft" size={20} />
         </Link>
@@ -283,19 +299,40 @@ export function PlayGrid({ id }: { id: number }) {
             {themeOf(game.theme).label} · {levelLabel(game.level)} · {game.shared ? "à deux 💞" : "seul"} · {Math.round((filled * 100) / letterCells)} %
           </p>
         </div>
+        <div className="flex shrink-0 gap-1">
+          <button
+            type="button"
+            onClick={() => chooseZoom(nextZoom(zoom ?? 1))}
+            aria-label={`Zoom de la grille : ${zoomLabel(zoom ?? 1)}, toucher pour changer (ou pincer la grille)`}
+            title="Zoom (ou pincez la grille)"
+            className="chip press tabular-nums hover:border-primary/50"
+          >
+            🔍{(zoom ?? 1) > 1.05 && <span className="text-xs"> {zoomLabel(zoom ?? 1)}</span>}
+          </button>
         {!done && (
-          <div className="flex gap-1">
+          <>
             <button type="button" onClick={check} aria-label="Vérifier le mot" title="Vérifier le mot" className="chip press hover:border-primary/50">
-              ✓ Mot
+              ✓<span className="hidden sm:inline"> Mot</span>
             </button>
             <button type="button" onClick={reveal} aria-label="Révéler la lettre" title="Révéler la lettre" className="chip press hover:border-primary/50">
-              💡 Lettre
+              💡<span className="hidden sm:inline"> Lettre</span>
             </button>
-          </div>
+          </>
         )}
+        </div>
       </header>
 
-      <Grid
+      <ZoomView
+        cols={width}
+        rows={game.height}
+        size={game.size}
+        zoom={zoom}
+        onZoom={chooseZoom}
+        onDefaultZoom={defaultZoom}
+        focus={done ? [] : focus}
+        cursor={done ? -1 : cursor.cell}
+      >
+        <Grid
         width={width}
         solution={game.solution}
         letters={letters}
@@ -308,10 +345,11 @@ export function PlayGrid({ id }: { id: number }) {
         wrong={wrong}
         flash={flash}
         onCell={tapCell}
-      />
+        />
+      </ZoomView>
 
       {done ? (
-        <div className="card relative overflow-hidden p-5 text-center animate-pop">
+        <div className="card relative shrink-0 overflow-hidden p-4 text-center animate-pop">
           <Confetti />
           <p className="font-display text-2xl font-bold">Bravo ! 🎉</p>
           <p className="mt-1 text-2xl" aria-label={`${stars} étoile${stars > 1 ? "s" : ""} sur 3`}>
@@ -333,19 +371,22 @@ export function PlayGrid({ id }: { id: number }) {
           </div>
         </div>
       ) : (
-        <div className="sticky bottom-[calc(var(--tabbar-h)+0.25rem)] z-10 flex flex-col gap-2 rounded-token border border-border bg-surface p-2 shadow-card lg:bottom-3">
+        <div className="flex shrink-0 flex-col gap-2 rounded-token border border-border bg-surface p-2 shadow-card">
           <div className="flex items-center gap-1">
             <button type="button" onClick={() => goWord(-1)} aria-label="Mot précédent" className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">
               <Icon name="chevronLeft" size={18} />
             </button>
-            <p className="min-w-0 flex-1 text-center text-sm font-semibold" aria-live="polite">
+            <p className="line-clamp-2 min-h-[2.5rem] min-w-0 flex-1 content-center text-center text-[15px] font-semibold leading-tight" aria-live="polite">
               {message ?? (activeClue ? `${activeClue.dir === "right" ? "→" : "↓"} ${activeClue.text} (${activeClue.length})` : "")}
             </p>
             <button type="button" onClick={() => goWord(1)} aria-label="Mot suivant" className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">
               <Icon name="chevronLeft" size={18} className="rotate-180" />
             </button>
           </div>
-          <Keyboard dir={cursor.dir} onLetter={typeLetter} onErase={erase} onToggleDir={toggleDir} />
+          {/* A computer with a mouse types on its own keyboard: the grid gets the room. */}
+          <div className="lg:[@media(pointer:fine)]:hidden">
+            <Keyboard dir={cursor.dir} onLetter={typeLetter} onErase={erase} onToggleDir={toggleDir} />
+          </div>
         </div>
       )}
     </div>
