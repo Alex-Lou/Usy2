@@ -1,0 +1,7 @@
+# Le domaine vient de deploy/.env (DOMAIN). Caddy obtient et renouvelle seul le certificat HTTPS,
+# et redirige le http vers le https. Les WebSockets (messagerie, jeux en direct) passent tels quels.
+{$DOMAIN} {
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy app:8080
+}

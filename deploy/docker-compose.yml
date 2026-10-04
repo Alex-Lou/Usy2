@@ -1,0 +1,97 @@
+# MemoCat auto-hébergé : l'app, sa base, le HTTPS et les sauvegardes, sur un seul serveur.
+# Guide complet : deploy/README.md. Toutes les commandes se lancent depuis la racine du dépôt :
+#   docker compose -f deploy/docker-compose.yml up -d
+# Les réglages (domaine, mots de passe…) sont dans deploy/.env (modèle : deploy/.env.example).
+name: memocat
+
+services:
+  # PostgreSQL : toutes les données, photos comprises (table asset_content).
+  db:
+    image: postgres:${POSTGRES_VERSION:-17}-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: memocat
+      POSTGRES_USER: memocat
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manque dans deploy/.env}
+    volumes:
+      - db:/var/lib/postgresql/data
+    shm_size: 256m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U memocat -d memocat"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    # Pas de port ouvert : seule l'app (et les scripts, via docker) y accèdent.
+
+  # L'app : le même Dockerfile qu'avant (le front buildé + l'API, sur le port 8080 interne).
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: memocat-app:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MEMOCAT_DB_HOST: db
+      MEMOCAT_DB_PORT: "5432"
+      MEMOCAT_DB_NAME: memocat
+      MEMOCAT_DB_USER: memocat
+      MEMOCAT_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      MEMOCAT_JWT_SECRET: ${MEMOCAT_JWT_SECRET:?MEMOCAT_JWT_SECRET manque dans deploy/.env}
+      MEMOCAT_CORS_ORIGINS: ${MEMOCAT_CORS_ORIGINS:-*}
+      MEMOCAT_PUSH_SUBJECT: https://${DOMAIN}
+      MEMOCAT_STORAGE_QUOTA_MB: ${MEMOCAT_STORAGE_QUOTA_MB:-10000}
+      MEMOCAT_TIMEZONE: ${MEMOCAT_TIMEZONE:-Atlantic/Canary}
+      # Vides après une migration : les comptes existent déjà (avec leurs mots de passe).
+      MEMOCAT_USER1_USERNAME: ${MEMOCAT_USER1_USERNAME:-}
+      MEMOCAT_USER1_PASSWORD: ${MEMOCAT_USER1_PASSWORD:-}
+      MEMOCAT_USER1_DISPLAY_NAME: ${MEMOCAT_USER1_DISPLAY_NAME:-}
+      MEMOCAT_USER2_USERNAME: ${MEMOCAT_USER2_USERNAME:-}
+      MEMOCAT_USER2_PASSWORD: ${MEMOCAT_USER2_PASSWORD:-}
+      MEMOCAT_USER2_DISPLAY_NAME: ${MEMOCAT_USER2_DISPLAY_NAME:-}
+    # Le Dockerfile règle Java sur 40 % de cette limite (~400 Mo de mémoire Java).
+    mem_limit: 1g
+
+  # Caddy : le HTTPS (certificat Let's Encrypt obtenu et renouvelé tout seul) devant l'app.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN manque dans deploy/.env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  # Sauvegarde de la base chaque nuit dans deploy/backups/ (voir scripts/backup-loop.sh).
+  backup:
+    image: postgres:${POSTGRES_VERSION:-17}-alpine
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGUSER: memocat
+      PGDATABASE: memocat
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_HOUR_UTC: ${BACKUP_HOUR_UTC:-2}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-7}
+      BACKUP_KEEP_MONTHS: ${BACKUP_KEEP_MONTHS:-6}
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup-loop.sh:/backup-loop.sh:ro
+    entrypoint: ["sh", "/backup-loop.sh"]
+
+volumes:
+  db:
+  caddy_data:
+  caddy_config:
