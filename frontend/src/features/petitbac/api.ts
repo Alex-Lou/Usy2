@@ -52,6 +52,10 @@ export const SUGGESTED_CATEGORIES = [
   "Excuse pour être en retard",
   "Destination de rêve",
   "Truc qui fait peur",
+  "Un souvenir à nous",
+  "Un cadeau pour l'autre",
+  "Une activité à deux",
+  "Ce que j'aime chez toi",
 ];
 
 export const MIN_CATEGORIES = 3;

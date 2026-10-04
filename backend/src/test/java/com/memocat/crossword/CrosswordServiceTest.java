@@ -22,6 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -196,5 +197,66 @@ class CrosswordServiceTest {
         assertThat(game.clues()).map(c -> ArrowGeneratorTest.answer(grid, c))
                 .filteredOn(a -> a.length() > CrosswordService.THEME_GLUE_LENGTH)
                 .isNotEmpty().allMatch(cuisine::contains);
+    }
+
+    @Test
+    void theGridOfTheDayIsMadeOnceSharedAndTold() {
+        LocalDate today = LocalDate.parse("2026-10-01"); // a Thursday, Paris time
+        when(games.findByDailyDate(today)).thenReturn(Optional.empty());
+        when(games.saveAndFlush(any())).thenAnswer(i -> {
+            CrosswordGame g = i.getArgument(0);
+            ReflectionTestUtils.setField(g, "id", 11L);
+            return g;
+        });
+        assertThat(service.daily("sam").gameId()).as("looking creates nothing").isNull();
+
+        var game = service.playDaily("lou");
+        assertThat(game.daily()).isEqualTo(today);
+        assertThat(game.shared()).isTrue();
+        assertThat(game.size()).isEqualTo("moyenne");
+        assertThat(game.level()).isEqualTo("moyen");
+        ArgumentCaptor<CoupleActivity> sent = ArgumentCaptor.forClass(CoupleActivity.class);
+        verify(events).publishEvent(sent.capture());
+        assertThat(sent.getValue().detail()).isEqualTo("du jour");
+
+        // Sam opens it next: the same grid, nothing new.
+        CrosswordGame made = new CrosswordGame(lou, "moyenne", "melange", "moyen", true, 3, 2, "[]", "#AB#C#", Instant.now());
+        ReflectionTestUtils.setField(made, "id", 11L);
+        made.markDaily(today);
+        when(games.findByDailyDate(today)).thenReturn(Optional.of(made));
+        assertThat(service.playDaily("sam").id()).isEqualTo(11L);
+        verify(games).saveAndFlush(any());
+    }
+
+    @Test
+    void easyEarlyInTheWeekHardAtTheWeekend() {
+        assertThat(CrosswordService.dailyLevel(LocalDate.parse("2026-09-28"))).isEqualTo(CrosswordService.Level.FACILE); // Monday
+        assertThat(CrosswordService.dailyLevel(LocalDate.parse("2026-09-30"))).isEqualTo(CrosswordService.Level.MOYEN);
+        assertThat(CrosswordService.dailyLevel(LocalDate.parse("2026-10-03"))).isEqualTo(CrosswordService.Level.DIFFICILE);
+    }
+
+    @Test
+    void theStreakCountsDaysInARowUpToTodayOrYesterday() {
+        LocalDate today = LocalDate.parse("2026-10-01");
+        when(games.findByDailyDate(today)).thenReturn(Optional.empty());
+        // Yesterday and the day before done, then a gap.
+        when(games.findFinishedDays(any())).thenReturn(List.of(today.minusDays(1), today.minusDays(2), today.minusDays(4)));
+        var daily = service.daily("lou");
+        assertThat(daily.streak()).as("today's not done yet: the streak still holds").isEqualTo(2);
+        assertThat(daily.finished()).isFalse();
+
+        CrosswordGame done = tiny(true);
+        done.markDaily(today);
+        done.write("#AB#C#", ".aa.a.", Instant.now());
+        when(games.findByDailyDate(today)).thenReturn(Optional.of(done));
+        when(games.findFinishedDays(any())).thenReturn(List.of(today, today.minusDays(1), today.minusDays(2), today.minusDays(4)));
+        daily = service.daily("lou");
+        assertThat(daily.finished()).isTrue();
+        assertThat(daily.progress()).isEqualTo(100);
+        assertThat(daily.streak()).isEqualTo(3);
+
+        when(games.findFinishedDays(any())).thenReturn(List.of(today.minusDays(2)));
+        when(games.findByDailyDate(today)).thenReturn(Optional.empty());
+        assertThat(service.daily("lou").streak()).as("yesterday missed: back to zero").isZero();
     }
 }

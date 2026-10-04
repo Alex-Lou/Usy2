@@ -6,6 +6,7 @@ import { feel } from "../../lib/feel";
 import { useOnRefresh } from "../../lib/refresh";
 import { useAuth } from "../auth/useAuth";
 import { Confetti } from "../games/Confetti";
+import { ShareScore } from "../games/ShareScore";
 import {
   getGame,
   handIn,
@@ -19,6 +20,35 @@ import {
 } from "./api";
 
 const SAVE_MS = 600;
+/** How long a round lasts from its start (to know it has just begun): see PetitBacRules. */
+const ROUND_MS = { direct: 5 * 60_000, rythme: 3 * 60_000 } as const;
+const DRAW_MS = 900;
+const LETTERS = "ABCDEFGHIJLMNOPRSTUV";
+
+/** Rounds whose points were already revealed on this device (the reveal plays once). */
+const SEEN_KEY = "memocat.petitbac.seen";
+
+function seen(gameId: number, round: number): boolean {
+  try {
+    const all: unknown = JSON.parse(localStorage.getItem(SEEN_KEY) ?? "[]");
+    return Array.isArray(all) && all.includes(`${gameId}:${round}`);
+  } catch {
+    return true; // no storage: no reveal rather than one at every visit
+  }
+}
+
+function markSeen(gameId: number, round: number): void {
+  try {
+    const all: unknown = JSON.parse(localStorage.getItem(SEEN_KEY) ?? "[]");
+    const list = Array.isArray(all)
+      ? all.filter((x) => typeof x === "string")
+      : [];
+    if (!list.includes(`${gameId}:${round}`)) list.push(`${gameId}:${round}`);
+    localStorage.setItem(SEEN_KEY, JSON.stringify(list.slice(-50)));
+  } catch {
+    // private window: nothing remembered
+  }
+}
 
 function clock(ms: number): string {
   const s = Math.max(0, Math.ceil(ms / 1000));
@@ -37,6 +67,8 @@ export function PlayGame({ id }: { id: number }) {
   const [error, setError] = useState<string | null>(null);
   const [offset, setOffset] = useState(0); // server clock − this device's clock
   const [busy, setBusy] = useState(false);
+  const [, setRevealed] = useState(0); // a round's reveal ended: the totals show it
+  const revealed = useCallback(() => setRevealed((k) => k + 1), []);
 
   const show = useCallback((g: Game) => {
     setGame(g);
@@ -88,6 +120,10 @@ export function PlayGame({ id }: { id: number }) {
 
   const round = game.rounds[game.rounds.length - 1];
   const past = game.rounds.slice(0, -1).reverse();
+  // While this round's points are being revealed, the totals wait for the end of it.
+  const hold = round.phase === "fini" && !seen(game.id, round.number);
+  const myTotal = game.myTotal - (hold ? (round.myScore ?? 0) : 0);
+  const theirTotal = game.theirTotal - (hold ? (round.theirScore ?? 0) : 0);
 
   return (
     <div className="flex flex-col gap-3" data-no-pull>
@@ -111,10 +147,10 @@ export function PlayGame({ id }: { id: number }) {
         </div>
         <p
           className="shrink-0 text-right text-sm font-semibold tabular-nums"
-          aria-label={`Toi ${game.myTotal} points, ${game.themName} ${game.theirTotal} points`}
+          aria-label={`Toi ${myTotal} points, ${game.themName} ${theirTotal} points`}
         >
-          Toi {game.myTotal} <span className="text-text-muted">–</span>{" "}
-          {game.theirTotal} {game.themName}
+          Toi {myTotal} <span className="text-text-muted">–</span> {theirTotal}{" "}
+          {game.themName}
         </p>
       </header>
 
@@ -128,6 +164,7 @@ export function PlayGame({ id }: { id: number }) {
         busy={busy}
         act={act}
         reload={load}
+        onRevealed={revealed}
       />
 
       {past.length > 0 && (
@@ -166,6 +203,7 @@ interface RoundProps {
   busy: boolean;
   act: (call: () => Promise<Game>) => Promise<void>;
   reload: () => void;
+  onRevealed: () => void;
 }
 
 /** The time left until `deadline`, ticking (server clock). */
@@ -179,7 +217,15 @@ function useCountdown(deadline: string | null, offset: number): number | null {
   return deadline ? Date.parse(deadline) - (now + offset) : null;
 }
 
-function RoundView({ game, round, offset, busy, act, reload }: RoundProps) {
+function RoundView({
+  game,
+  round,
+  offset,
+  busy,
+  act,
+  reload,
+  onRevealed,
+}: RoundProps) {
   const left = useCountdown(round.deadline, offset);
   // Time up while waiting for the other: ask the server where things stand (once).
   const asked = useRef(false);
@@ -225,17 +271,46 @@ function RoundView({ game, round, offset, busy, act, reload }: RoundProps) {
     case "validation":
       return <Checking game={game} round={round} busy={busy} act={act} />;
     default:
-      return <Points game={game} round={round} busy={busy} act={act} />;
+      return (
+        <Points
+          game={game}
+          round={round}
+          busy={busy}
+          act={act}
+          onRevealed={onRevealed}
+        />
+      );
   }
 }
 
-function Letter({ letter }: { letter: string | null }) {
+/** The round's letter; `spinning`: letters roll by before it lands (the draw). */
+function Letter({
+  letter,
+  spinning = false,
+}: {
+  letter: string | null;
+  spinning?: boolean;
+}) {
+  const [rolling, setRolling] = useState("?");
+  useEffect(() => {
+    if (!spinning) return;
+    const t = window.setInterval(
+      () => setRolling(LETTERS[Math.floor(Math.random() * LETTERS.length)]),
+      70,
+    );
+    return () => window.clearInterval(t);
+  }, [spinning]);
   return (
     <span
-      className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-primary/15 font-display text-5xl font-bold text-text animate-fade-up"
-      aria-label={`Lettre ${letter ?? "secrète"}`}
+      className={
+        "mx-auto grid h-20 w-20 shrink-0 place-items-center rounded-full bg-primary/15 font-display text-5xl font-bold " +
+        (spinning ? "text-text-muted" : "text-text animate-pop")
+      }
+      aria-label={
+        spinning ? "Tirage de la lettre" : `Lettre ${letter ?? "secrète"}`
+      }
     >
-      {letter ?? "?"}
+      {spinning ? rolling : (letter ?? "?")}
     </span>
   );
 }
@@ -245,7 +320,7 @@ function Ready({
   round,
   busy,
   act,
-}: Omit<RoundProps, "offset" | "reload">) {
+}: Omit<RoundProps, "offset" | "reload" | "onRevealed">) {
   const direct = game.mode === "direct";
   return (
     <section className="card flex flex-col gap-3 p-5 text-center">
@@ -315,23 +390,51 @@ function Writing({
   reload: () => void;
 }) {
   const [answers, setAnswers] = useState<string[]>(round.mine);
+  const [saved, setSaved] = useState<"oui" | "en-cours" | "non">("oui");
   const latest = useRef(answers);
   latest.current = answers;
   const timer = useRef<number>();
+  const edits = useRef(0); // the save answering the last edit says « Enregistré »
   const handedIn = useRef(false);
+  const inputs = useRef<(HTMLInputElement | null)[]>([]);
   const direct = game.mode === "direct";
+  // The round has just begun: the letter is drawn before your eyes.
+  const [drawing, setDrawing] = useState(
+    () => left !== null && left > ROUND_MS[game.mode] - 2_500,
+  );
+  useEffect(() => {
+    if (!drawing) return;
+    const t = window.setTimeout(() => {
+      setDrawing(false);
+      feel.tap();
+      inputs.current[0]?.focus();
+    }, DRAW_MS);
+    return () => window.clearTimeout(t);
+  }, [drawing]);
 
   const save = useCallback(() => {
     window.clearTimeout(timer.current);
     if (handedIn.current) return;
-    saveAnswers(game.id, round.number, latest.current).catch((e) => {
-      if (e instanceof ApiError && e.status === 409) reload(); // time up: the server has the last word
-    });
+    const edit = edits.current;
+    saveAnswers(game.id, round.number, latest.current)
+      .then(() => {
+        if (edits.current === edit) setSaved("oui");
+      })
+      .catch((e) => {
+        if (e instanceof ApiError && e.status === 409) {
+          reload(); // time up: the server has the last word
+          return;
+        }
+        setSaved("non");
+        timer.current = window.setTimeout(save, 3_000); // the network: try again
+      });
   }, [game.id, round.number, reload]);
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
   const type = (i: number, v: string) => {
     setAnswers((a) => a.map((x, k) => (k === i ? v : x)));
+    setSaved("en-cours");
+    edits.current += 1;
     window.clearTimeout(timer.current);
     timer.current = window.setTimeout(save, SAVE_MS);
   };
@@ -354,7 +457,7 @@ function Writing({
   return (
     <section className="card flex flex-col gap-3 p-4">
       <div className="flex items-center gap-3">
-        <Letter letter={round.letter} />
+        <Letter letter={round.letter} spinning={drawing} />
         <div className="flex-1">
           {left !== null && (
             <p
@@ -388,19 +491,42 @@ function Writing({
                 {c}
               </span>
               <input
+                ref={(el) => {
+                  inputs.current[i] = el;
+                }}
                 value={answers[i] ?? ""}
                 onChange={(e) => type(i, e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key !== "Enter") return;
+                  e.preventDefault();
+                  const next = inputs.current[i + 1];
+                  if (next) next.focus();
+                  else e.currentTarget.blur();
+                }}
                 maxLength={40}
                 autoComplete="off"
                 autoCapitalize="sentences"
                 enterKeyHint={i + 1 < game.categories.length ? "next" : "done"}
-                placeholder={`${round.letter ?? ""}…`}
+                placeholder={drawing ? "…" : `${round.letter ?? ""}…`}
                 className="w-full rounded-token border border-border bg-surface-2 px-3 py-2 text-text placeholder:text-text-muted focus:border-primary focus:outline-none"
               />
             </label>
           </li>
         ))}
       </ol>
+      <p
+        className={
+          "text-center text-xs " +
+          (saved === "non" ? "text-danger" : "text-text-muted")
+        }
+        aria-live="polite"
+      >
+        {saved === "oui"
+          ? "✓ Enregistré"
+          : saved === "en-cours"
+            ? "Enregistrement…"
+            : "Pas enregistré, nouvel essai dans un instant…"}
+      </p>
       <button
         type="button"
         onClick={() => {
@@ -439,7 +565,7 @@ function Checking({
   round,
   busy,
   act,
-}: Omit<RoundProps, "offset" | "reload">) {
+}: Omit<RoundProps, "offset" | "reload" | "onRevealed">) {
   const [refused, setRefused] = useState<Set<number>>(
     () => new Set(round.iRefused),
   );
@@ -541,9 +667,18 @@ function Checking({
   );
 }
 
-/** Both sheets side by side with the points (a finished round). */
-function Sheet({ game, round }: { game: Game; round: Round }) {
+/** Both sheets side by side with the points (a finished round); `shown`: rows revealed so far. */
+function Sheet({
+  game,
+  round,
+  shown,
+}: {
+  game: Game;
+  round: Round;
+  shown?: number;
+}) {
   const theirs = round.theirs ?? [];
+  const hidden = (i: number) => shown !== undefined && i >= shown;
   return (
     <table className="mt-2 w-full table-fixed text-sm">
       <thead>
@@ -554,39 +689,56 @@ function Sheet({ game, round }: { game: Game; round: Round }) {
         </tr>
       </thead>
       <tbody>
-        {game.categories.map((c, i) => (
-          <tr key={c} className="border-t border-border/60 align-top">
-            <td className="py-1 pr-2 text-text-muted">{c}</td>
-            <td className="py-1 pr-2">
-              <span
-                className={
-                  round.myPoints?.[i]
-                    ? "font-semibold"
-                    : "text-text-muted line-through"
-                }
-              >
-                {round.mine[i] || "—"}
-              </span>{" "}
-              <span className="text-xs text-primary">
-                {round.myPoints?.[i] ? `+${round.myPoints[i]}` : ""}
-              </span>
-            </td>
-            <td className="py-1">
-              <span
-                className={
-                  round.theirPoints?.[i]
-                    ? "font-semibold"
-                    : "text-text-muted line-through"
-                }
-              >
-                {theirs[i] || "—"}
-              </span>{" "}
-              <span className="text-xs text-primary">
-                {round.theirPoints?.[i] ? `+${round.theirPoints[i]}` : ""}
-              </span>
-            </td>
-          </tr>
-        ))}
+        {game.categories.map((c, i) =>
+          hidden(i) ? (
+            <tr
+              key={c}
+              className="border-t border-border/60 align-top text-text-muted"
+            >
+              <td className="py-1 pr-2">{c}</td>
+              <td className="py-1 pr-2">…</td>
+              <td className="py-1">…</td>
+            </tr>
+          ) : (
+            <tr
+              key={c}
+              className={
+                "border-t border-border/60 align-top" +
+                (shown !== undefined ? " animate-fade-up" : "")
+              }
+            >
+              <td className="py-1 pr-2 text-text-muted">{c}</td>
+              <td className="py-1 pr-2">
+                <span
+                  className={
+                    round.myPoints?.[i]
+                      ? "font-semibold"
+                      : "text-text-muted line-through"
+                  }
+                >
+                  {round.mine[i] || "—"}
+                </span>{" "}
+                <span className="text-xs text-primary">
+                  {round.myPoints?.[i] ? `+${round.myPoints[i]}` : ""}
+                </span>
+              </td>
+              <td className="py-1">
+                <span
+                  className={
+                    round.theirPoints?.[i]
+                      ? "font-semibold"
+                      : "text-text-muted line-through"
+                  }
+                >
+                  {theirs[i] || "—"}
+                </span>{" "}
+                <span className="text-xs text-primary">
+                  {round.theirPoints?.[i] ? `+${round.theirPoints[i]}` : ""}
+                </span>
+              </td>
+            </tr>
+          ),
+        )}
       </tbody>
     </table>
   );
@@ -597,27 +749,66 @@ function Points({
   round,
   busy,
   act,
+  onRevealed,
 }: Omit<RoundProps, "offset" | "reload">) {
-  const mine = round.myScore ?? 0;
-  const theirs = round.theirScore ?? 0;
+  const n = game.categories.length;
+  // First time on this device: the answers come out one category at a time, the points with them.
+  const [shown, setShown] = useState(() =>
+    seen(game.id, round.number) ? n : 0,
+  );
+  const revealing = shown < n;
+  useEffect(() => {
+    if (!revealing) {
+      if (!seen(game.id, round.number)) {
+        markSeen(game.id, round.number);
+        onRevealed();
+      }
+      return;
+    }
+    const t = window.setTimeout(
+      () => {
+        setShown((k) => k + 1);
+        feel.tap();
+      },
+      shown === 0 ? 400 : 700,
+    );
+    return () => window.clearTimeout(t);
+  }, [revealing, shown, game.id, round.number, onRevealed]);
+
+  const upTo = (points: number[] | null) =>
+    (points ?? []).slice(0, shown).reduce((a, b) => a + b, 0);
+  const mine = revealing ? upTo(round.myPoints) : (round.myScore ?? 0);
+  const theirs = revealing ? upTo(round.theirPoints) : (round.theirScore ?? 0);
   const verdict =
     mine > theirs
       ? "Manche gagnée ! 🏆"
       : mine < theirs
         ? `Manche pour ${game.themName} 👏`
         : "Égalité 🤝";
+  const share =
+    `🎲 Petit Bac, lettre ${round.letter} : ` +
+    (mine > theirs
+      ? `manche gagnée ${mine} à ${theirs} contre ${game.themName} 🏆`
+      : mine < theirs
+        ? `${game.themName} gagne la manche ${theirs} à ${mine} 👏`
+        : `égalité ${mine} partout avec ${game.themName} 🤝`) +
+    (game.rounds.length > 1
+      ? ` · au total ${game.myTotal} – ${game.theirTotal}`
+      : "");
   return (
     <section className="card relative flex flex-col gap-3 overflow-hidden p-4">
-      {mine > theirs && <Confetti />}
+      {!revealing && mine > theirs && <Confetti />}
       <div className="flex items-center gap-3">
         <Letter letter={round.letter} />
         <div className="flex-1">
-          <p className="font-display text-lg font-bold">{verdict}</p>
-          <p className="text-sm tabular-nums">
+          <p className="font-display text-lg font-bold">
+            {revealing ? "Les réponses tombent…" : verdict}
+          </p>
+          <p className="text-sm tabular-nums" aria-live="polite">
             Toi <span className="font-bold">{mine}</span> –{" "}
             <span className="font-bold">{theirs}</span> {game.themName}
           </p>
-          {(round.theyRefused?.length ?? 0) > 0 && (
+          {!revealing && (round.theyRefused?.length ?? 0) > 0 && (
             <p className="text-xs text-text-muted">
               {game.themName} a refusé {round.theyRefused!.length} de tes
               réponses.
@@ -625,15 +816,28 @@ function Points({
           )}
         </div>
       </div>
-      <Sheet game={game} round={round} />
-      <button
-        type="button"
-        disabled={busy}
-        onClick={() => act(() => nextRound(game.id))}
-        className="rounded-full btn-brand px-5 py-2.5 font-semibold press disabled:opacity-60"
-      >
-        Manche suivante
-      </button>
+      <Sheet game={game} round={round} shown={revealing ? shown : undefined} />
+      {revealing ? (
+        <button
+          type="button"
+          onClick={() => setShown(n)}
+          className="chip mx-auto press text-sm"
+        >
+          Tout voir
+        </button>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => act(() => nextRound(game.id))}
+            className="rounded-full btn-brand px-5 py-2.5 font-semibold press disabled:opacity-60"
+          >
+            Manche suivante
+          </button>
+          <ShareScore text={share} className="mx-auto" />
+        </div>
+      )}
     </section>
   );
 }

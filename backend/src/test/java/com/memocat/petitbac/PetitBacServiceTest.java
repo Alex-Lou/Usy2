@@ -125,6 +125,11 @@ class PetitBacServiceTest {
             return savedEntries.stream().filter(e -> ids.contains(e.getRound().getId())).toList();
         });
         lenient().when(games.findVisibleTo(anyLong(), any())).thenAnswer(i -> savedGames);
+        lenient().when(entries.findOpenStarted()).thenAnswer(i -> savedEntries.stream()
+                .filter(e -> e.getDoneAt() == null && e.getRound().getFinishedAt() == null
+                        && (e.getStartedAt() != null || e.getRound().getStartedAt() != null)).toList());
+        lenient().when(users.findById(anyLong())).thenAnswer(i -> Optional.ofNullable(
+                i.getArgument(0).equals(1L) ? lou : i.getArgument(0).equals(2L) ? sam : null));
     }
 
     private static <T> T keep(T entity, List<T> store) {
@@ -274,6 +279,46 @@ class PetitBacServiceTest {
         GameDto g = service.create("lou", "direct", CATEGORIES);
         assertThatThrownBy(() -> service.answers("lou", g.id(), 1, on("a", "b", "c"))).isInstanceOf(ConflictException.class);
         assertThatThrownBy(() -> service.done("lou", g.id(), 1, null)).isInstanceOf(ConflictException.class);
+    }
+
+    @Test
+    void aSheetLeftOpenAppClosedIsHandedInAndTheOtherIsTold() {
+        GameDto g = service.create("lou", "rythme", CATEGORIES);
+        String l = letter();
+        service.ready("sam", g.id(), 1);
+        service.done("sam", g.id(), 1, on(l + "a", "", ""));
+        service.ready("lou", g.id(), 1);
+        service.answers("lou", g.id(), 1, on(l + "lou", "", ""));
+        assertThat(service.expiredRounds()).isEmpty();
+
+        clock.pass(PetitBacRules.OWN_PACE); // Lou's time is up: still within the network grace
+        assertThat(service.expiredRounds()).isEmpty();
+        clock.pass(PetitBacRules.NETWORK_GRACE); // Lou closed the app: nobody hands the sheet in
+        assertThat(service.expiredRounds()).containsExactly(new PetitBacService.RoundKey(g.id(), 1));
+
+        org.mockito.Mockito.clearInvocations(events);
+        assertThat(service.closeExpired(g.id(), 1)).isTrue();
+        ArgumentCaptor<CoupleActivity> sent = ArgumentCaptor.forClass(CoupleActivity.class);
+        verify(events).publishEvent(sent.capture());
+        assertThat(sent.getValue().kind()).isEqualTo(CoupleActivity.PETIT_BAC_REVIEW);
+        assertThat(sent.getValue().actorId()).as("Sam is told Lou's sheet is in").isEqualTo(lou.getId());
+
+        assertThat(service.closeExpired(g.id(), 1)).as("only once").isFalse();
+        assertThat(service.expiredRounds()).isEmpty();
+        RoundDto samView = last(service.get("sam", g.id()));
+        assertThat(samView.phase()).isEqualTo("validation");
+        assertThat(samView.theirs()).as("what Lou had saved").containsExactly(l + "lou", "", "");
+    }
+
+    @Test
+    void aSheetRunningOutWhileTheOtherHasNotPlayedTellsNobody() {
+        GameDto g = service.create("lou", "rythme", CATEGORIES);
+        service.ready("lou", g.id(), 1);
+        clock.pass(PetitBacRules.OWN_PACE.plus(PetitBacRules.NETWORK_GRACE));
+        org.mockito.Mockito.clearInvocations(events);
+        assertThat(service.closeExpired(g.id(), 1)).isTrue();
+        org.mockito.Mockito.verifyNoInteractions(events);
+        assertThat(last(service.get("sam", g.id())).phase()).isEqualTo("pret");
     }
 
     private GameDto started(String mode) {
