@@ -160,17 +160,17 @@ OIGNONS|1|Font pleurer|Aux petits ___
 EPINARDS|1|Légumes de Popeye|Mettre du beurre dans les ___
 NAVETS|1|Légumes blancs|Mauvais films
 CHOUX|1|Légumes ronds|Bouts de ___, enfants
-CHAMPIGNONS|1|Poussent après la pluie|De Paris
-BISCUITS|1|Gâteaux secs|Pour le goûter
-CROISSANTS|1|Viennoiseries|Du dimanche matin
+CHAMPIGNONS|1|Poussent après la pluie|Ceux de Paris sont blancs
+BISCUITS|1|Gâteaux secs|Trempés dans le lait au goûter
+CROISSANTS|1|Viennoiseries|Ceux du dimanche matin
 MACARONS|1|Petits gâteaux colorés|Sucrés et ronds
 GLACONS|1|Eau gelée en cubes|Dans le pastis
-COUTEAUX|1|Pour couper|Être à ___ tirés
-CUILLERES|1|Pour la soupe|À café
+COUTEAUX|1|Ils servent à couper|Être à ___ tirés
+CUILLERES|1|Elles servent à la soupe|Petites, pour le café
 CASSEROLES|1|Ustensiles à manche|Traîner des ___
 DESSERTS|1|Fins de repas sucrées|Chariot des ___
 FROMAGES|1|Brie et camembert|Plateau de ___
-SAUCISSES|1|Charcuteries grillées|De Strasbourg
+SAUCISSES|1|Charcuteries grillées|Celles de Strasbourg
 EPICES|1|Poivre et cannelle|Pain d'___
 CITRONS|1|Agrumes acides|Pressés au comptoir
 ORANGES|1|Agrumes|Cadeaux de Noël d'antan
@@ -190,13 +190,13 @@ PRUNES|1|Fruits violets|Pour des ___, pour rien
 TOMATES|1|Fruits rouges du potager|Lancées sur les mauvais acteurs
 OLIVES|1|Fruits de l'olivier|Noires ou vertes, à l'apéro
 OEUFS|1|Pondus par la poule|Marcher sur des ___
-PATES|1|Spaghetti et coquillettes|Al dente, en Italie
+PATES|1|Spaghetti et coquillettes|Cuites al dente
 FRITES|1|Bâtonnets de pomme de terre|Moules-___
 CREPES|1|Desserts de la Chandeleur|Fines galettes
 GATEAUX|1|Desserts|Petits ___ secs
 TARTES|1|Desserts à pâte|Gifles
-VERRES|1|Pour boire|Lunettes
-TASSES|1|Pour le café|À thé, en porcelaine
+VERRES|1|Ils servent à boire|Lunettes
+TASSES|1|Elles servent le café|Service en porcelaine
 ASSIETTES|1|Plats individuels|Creuses ou plates
 LEGUMES|1|Carottes et poireaux|Grosses ___, gens importants
 # Mots d'autres fichiers qui font aussi partie du thème

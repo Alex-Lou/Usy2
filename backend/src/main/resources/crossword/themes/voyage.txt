@@ -128,12 +128,12 @@ GONDOLE|2|Barque vénitienne|Tête de rayon
 PYRAMIDE|1|Tombeau de pharaon|Du Louvre
 # Pluriels
 BILLETS|1|Titres de transport|Doux, amoureux
-HOTELS|1|Pour dormir en voyage|De luxe
+HOTELS|1|On y dort en voyage|Palaces et auberges
 TOURISTES|1|Voyageurs en visite|En short et sandales
 VISAS|1|Permis d'entrer|Tampons sur le passeport
-QUAIS|1|Bords de voie|De Seine
+QUAIS|1|Bords de voie|Ceux de Seine
 PONTS|1|Enjambent la rivière|Couper les ___
-CHATEAUX|1|Demeures de seigneurs|De la Loire
+CHATEAUX|1|Demeures de seigneurs|Ceux de la Loire
 # Mots d'autres fichiers qui font aussi partie du thème
 VOLS
 CAR

@@ -11,7 +11,7 @@ SINGE|1|Grimpe aux arbres|Faire le ___
 ELEPHANT|1|Trompe et défenses|Mémoire infaillible
 RENARD|1|Rusé de la forêt|Celui de la fable flatte le corbeau
 LAPIN|1|Aime les carottes|Poser un ___, ne pas venir
-LIEVRE|1|Court plus vite que la tortue|Lever un ___, soulever un problème
+LIEVRE|1|Perd la course contre la tortue|Lever un ___, soulever un problème
 CERF|1|Porte des bois|Il brame en automne
 BICHE|1|Femelle du cerf|Ma ___, terme tendre
 SANGLIER|1|Cochon sauvage|Obélix en raffole
@@ -92,7 +92,7 @@ FORET|1|Bois étendu|L'arbre la cache
 BOIS|1|Petite forêt|Toucher du ___
 JARDIN|1|Potager ou parterre|Cultiver son ___
 PRAIRIE|1|Grand pré|Petite maison dans la ___
-MONTAGNE|1|Sommets enneigés|Faire une ___ d'un rien
+MONTAGNE|1|Massif enneigé|Faire une ___ d'un rien
 COLLINE|1|Petite hauteur|Butte arrondie
 VALLEE|1|Entre deux montagnes|De larmes
 RIVIERE|1|Cours d'eau|Les petits ruisseaux font les grandes
@@ -154,7 +154,7 @@ LOUTRE|2|Nage sur le dos|Joueuse des rivières
 # Pluriels
 LAPINS|1|Aiment les carottes|Poser des ___
 RENARDS|1|Rusés de la forêt|Fourrures rousses
-TIGRES|1|Félins rayés|De papier
+TIGRES|1|Félins rayés|Ceux de papier ne font pas peur
 SINGES|1|Grimpent aux arbres|Grands, comme le gorille
 SERPENTS|1|Rampent sans pattes|Charmeurs de ___
 OISEAUX|1|Volatiles|Drôles d'___
@@ -169,7 +169,7 @@ CANARDS|1|Font coin-coin|Journaux, familièrement
 ABEILLES|1|Font le miel|Butineuses
 FOURMIS|1|Petites travailleuses|Avoir des ___ dans les jambes
 MOUCHES|1|Insectes agaçants|Pattes de ___, écriture
-FEUILLES|1|Tombent en automne|De papier
+FEUILLES|1|Tombent en automne|Celles de papier
 BRANCHES|1|Bras d'arbre|Ramures
 RACINES|1|Sous l'arbre|Origines
 GRAINES|1|Semences|Semées au jardin

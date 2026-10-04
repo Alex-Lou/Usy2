@@ -115,7 +115,7 @@ GUERIR|1|Aller mieux|Mieux vaut prévenir
 # Pluriels
 CHEVEUX|1|Chevelure|Couper les ___ en quatre
 DOIGTS|1|Il y en a dix aux mains|Se mordre les ___
-OREILLES|1|Pour entendre|Tirer les ___
+OREILLES|1|Elles servent à entendre|Tirer les ___
 LEVRES|1|Bords de la bouche|Du bout des ___
 JAMBES|1|Membres inférieurs|Prendre ses ___ à son cou
 EPAULES|1|Hauts des bras|Hausser les ___
@@ -128,7 +128,7 @@ HANCHES|1|Hauts des cuisses|Les poings sur les ___
 JOUES|1|Côtés du visage|Bonnes ___ rondes
 MUSCLES|1|Se contractent|Gonflés à la salle
 NERFS|1|Transmettent les sensations|Taper sur les ___
-POUMONS|1|Pour respirer|Crier à pleins ___
+POUMONS|1|Ils servent à respirer|Crier à pleins ___
 # Mots d'autres fichiers qui font aussi partie du thème
 CILS
 DENTS

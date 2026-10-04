@@ -22,13 +22,13 @@ EPOUX|1|Mari|Conjoint
 EPOUSE|1|Femme mariée|Conjointe
 MARI|1|Époux|Le ___ de la dame
 LUNEDEMIEL|1|Voyage des jeunes mariés|Premiers temps heureux
-ROMANTIQUE|1|Sentimental|Dîner aux chandelles
+ROMANTIQUE|1|Sentimental|Comme un dîner aux chandelles
 CHANDELLE|1|Petite bougie|Tenir la ___
 DINER|1|Repas du soir|En tête-à-tête
 RENDEZVOUS|1|Rencontre prévue|Galant
 SOIREE|1|Moment du soir|En amoureux
 ROSE|1|Fleur des amoureux|Rouge, elle déclare sa flamme
-FLEURS|1|Bouquet offert|Couvrir de ___
+FLEURS|1|Roses ou tulipes|Couvrir de ___
 BOUQUET|1|Fleurs assemblées|C'est le ___ !
 CADEAU|1|Présent|Surprise emballée
 SURPRISE|1|Chose inattendue|Fête-___
@@ -58,7 +58,7 @@ JALOUSIE|1|Peur de perdre l'autre|Volet à lamelles
 DISPUTE|1|Querelle|Suivie de réconciliation
 PARDON|1|Excuse|Demander ___
 MANQUE|1|Absence de l'autre|En ___ d'amour
-ABSENCE|1|Quand l'autre est loin|Rend le cœur plus tendre
+ABSENCE|1|Quand l'autre est loin|Un seul être vous manque…
 DISTANCE|1|Éloignement|Amour à ___
 SOUVENIR|1|Moment gardé|Album photo
 PHOTO|1|Cliché de nous|Dans le portefeuille
@@ -119,9 +119,9 @@ CALINS|1|Tendres étreintes|Moments de tendresse
 CARESSES|1|Gestes doux|Effleurements tendres
 MARIES|1|Jeunes époux|Vive les ___ !
 FIANCES|1|Promis|Futurs époux
-COEURS|1|Symboles d'amour|Couleur rouge du jeu de cartes
+COEURS|1|Symboles d'amour|Rouges, aux cartes, avec les carreaux
 PROMESSES|1|Engagements|Elles n'engagent que ceux qui y croient
-SERMENTS|1|Promesses solennelles|D'amour éternel
+SERMENTS|1|Promesses solennelles|Ceux d'amour éternel
 # Mots d'autres fichiers qui font aussi partie du thème
 AME
 AMI

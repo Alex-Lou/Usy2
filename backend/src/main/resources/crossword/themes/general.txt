@@ -25,11 +25,11 @@ OS|1|Pièce du squelette|Le chien le ronge
 OU|1|Conjonction de choix|Pose une alternative
 RE|1|Note de musique|Deuxième marche de la gamme
 RI|1|S'est esclaffé|A trouvé ça drôle
-SA|1|Possessif féminin|La sienne
+SA|1|Possessif féminin|À lui ou à elle, au féminin
 SE|1|Pronom réfléchi|Réfléchi, chez le pronom
 SI|1|Note ou condition|Avec des « ___ », on mettrait Paris en bouteille
 SU|1|Connu|Appris par cœur
-TA|1|Possessif féminin|La tienne
+TA|1|Possessif féminin|À toi, au féminin
 TE|1|Pronom personnel|Toi, en complément
 TU|1|Pronom de l'intime|Tutoiement en deux lettres
 UN|1|Unité|Le premier de tous
@@ -56,7 +56,7 @@ BAC|1|Examen de fin de lycée|Passeport pour la fac
 BAL|1|Soirée dansante|Cendrillon y perdit sa pantoufle
 BAS|1|Pas haut|Porté sous la jupe
 BEC|1|Bouche d'oiseau|Cloué, il se tait
-BIO|1|Sans pesticides|Étiquette verte au marché
+BIO|1|Écologique, en bref|Étiquette verte au marché
 BLE|1|Céréale dorée|Argent, en argot
 BOA|2|Serpent ou écharpe|Il serre fort, à plumes ou à écailles
 BOB|2|Chapeau d'été|Couvre-chef de pêcheur
@@ -107,12 +107,12 @@ LIS|2|Fleur royale|Emblème des rois de France
 LIT|1|Meuble pour dormir|On le fait chaque matin
 LOI|1|Règle votée|Nul n'est censé l'ignorer
 LOT|1|Gain de tombola|Rivière ou gain de tombola
-LUE|2|Parcourue des yeux|Lettre déjà ouverte
+LUE|2|Parcourue des yeux|Comme une lettre parcourue
 LUI|1|Pronom masculin|Pas elle
 MAI|1|Mois du muguet|Fais ce qu'il te plaît, dit le dicton
 MAL|1|Douleur|Il y en a de mer
 MER|1|Grande bleue|Méditerranée ou Manche
-MES|1|Possessif pluriel|Les miens
+MES|1|Possessif pluriel|À moi, au pluriel
 MIE|1|Intérieur du pain|Le contraire de la croûte
 MIS|1|Posé|Bien habillé
 MOI|1|Ego|Je, en insistant
@@ -125,11 +125,11 @@ NEZ|1|Sert à sentir|Celui de Pinocchio s'allonge
 NID|1|Maison d'oiseau|Douillet, pour un couple
 NIE|1|Dément|Dit que non
 NOM|1|Prénom et ___|Il se porte et se donne
-NOS|1|Possessif pluriel|Les nôtres
+NOS|1|Possessif pluriel|À nous, au pluriel
 NUE|2|Sans vêtement|Le ciel, en poésie
 NUL|1|Zéro pointé|Match sans vainqueur
 OIE|1|Oiseau de basse-cour|Son jeu a soixante-trois cases
-ONU|2|Nations unies|Siège à New York
+ONU|2|Nations unies, en sigle|Siège à New York
 OSA|2|Se risqua|Prit son courage à deux mains
 OSE|2|Audacieux|Un peu leste
 OTE|2|Enlève|Retire son chapeau
@@ -157,7 +157,7 @@ SAC|1|Fourre-tout|Vider le sien, c'est tout dire
 SAS|2|Petite pièce étanche|Passage entre deux mondes
 SEC|1|Pas mouillé|Vin peu sucré
 SEL|1|Cristaux de la mer|Il en faut une pincée
-SES|1|Possessif pluriel|Les siens
+SES|1|Possessif pluriel|À lui, au pluriel
 SKI|1|Glisse sur la neige|Planche de montagne
 SOI|1|Chez ___|Le moi profond
 SOL|1|Plancher ou note|Il est sous nos pieds
@@ -168,7 +168,7 @@ TAC|3|Bruit sec|Du « tic » au « ___ » de l'horloge
 TAG|2|Graffiti signé|Signature sur un mur
 TAS|1|Pile|Dans le ___, au hasard
 TEL|1|Pareil|___ père, ___ fils
-TES|1|Possessif pluriel|Les tiens
+TES|1|Possessif pluriel|À toi, au pluriel
 THE|1|Infusion|Servi à cinq heures
 TIC|2|Petite manie|Geste qui revient tout seul
 TIR|1|Coup de feu|Au but, il est réussi
@@ -188,7 +188,7 @@ VIE|1|Existence|C'est la ___ !
 VIN|1|Rouge ou blanc|Il vieillit en cave
 VIS|1|Se serre au tournevis|Serrer la ___, être sévère
 VOL|1|Larcin ou trajet aérien|Il décolle ou il dérobe
-VOS|1|Possessif pluriel|Les vôtres
+VOS|1|Possessif pluriel|À vous, au pluriel
 VUE|1|Panorama|Perdre de ___, c'est oublier
 ZEN|1|Calme et serein|Restons-le en toutes circonstances
 ZOO|1|Parc aux animaux|Où l'on va voir les fauves
@@ -247,7 +247,7 @@ ETRE|1|Exister|Ou ne pas ___
 EURO|1|Monnaie de Bruxelles à Rome|Il a remplacé le franc
 FACE|1|Côté de la pièce|Pile ou ___ ?
 FAIM|1|Envie de manger|Une ___ de loup
-FETE|1|Célébration|Celle des mères est en mai
+FETE|1|Célébration|Celle de la musique, le 21 juin
 FIER|1|Orgueilleux|___ comme un paon
 FILS|1|Garçon des parents|Tel père, tel ___
 FOIN|1|Herbe séchée|Aiguille introuvable dans sa botte
@@ -307,7 +307,7 @@ PILE|1|Batterie ou tas|Ou face
 PLAT|1|Mets ou sans relief|Pays sans montagne
 POLE|1|Nord ou sud|Position de départ en course
 PORT|1|Abri des bateaux|Arriver à bon ___
-RAIL|1|Voie ferrée|Le ___, c'est le train
+RAIL|1|Barre de la voie ferrée|Le ___, c'est le train
 RANG|1|File, alignement|Se mettre en ___ d'oignons
 RARE|1|Peu commun|Steak à peine cuit, en anglais
 REVE|1|Fait la nuit|Américain ou éveillé
@@ -320,7 +320,7 @@ ROUE|1|Tourne sous la voiture|La cinquième ne sert à rien
 SAGE|1|Raisonnable|Comme une image
 SALE|1|Pas propre|Un ___ quart d'heure
 SENS|1|Direction|Il y en a cinq
-SEPT|1|Jours de la semaine|Les merveilles du monde
+SEPT|1|Nombre de jours de la semaine|Les merveilles du monde
 SEUL|1|Sans personne|___ au monde
 SOIF|1|Envie de boire|Garder une poire pour elle
 SOIR|1|Fin de journée|Le grand, c'est la révolution
@@ -343,7 +343,7 @@ AIMER|1|Chérir|À la folie, passionnément
 ANNEE|1|Douze mois|Bonne ___ !
 APPEL|1|Coup de fil|Faire l'___, compter les élèves
 ATOUT|1|Carte maîtresse|Avantage décisif
-AUTRE|1|Différent|L'___, c'est toi
+AUTRE|1|Différent|Ni l'un ni l'___
 BALLE|1|Se lance|Renvoyer la ___
 BLANC|1|Couleur de la neige|Chèque en ___
 CALME|1|Tranquille|Plat, pour la mer
