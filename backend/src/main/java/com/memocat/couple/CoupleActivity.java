@@ -48,6 +48,13 @@ public record CoupleActivity(String kind, Long actorId, String actorName, String
     /** ✏️ A shared "mots fléchés" grid is complete (detail: its size, refId: the game). */
     public static final String CROSSWORD_DONE = "crossword-done";
 
+    /** 🎲 A Petit Bac game or round was started (detail: the invitation, refId: the game). */
+    public static final String PETIT_BAC = "petit-bac";
+    /** 🎲 My sheet was the last one in: the other can check my answers (detail: the letter, refId: the game). */
+    public static final String PETIT_BAC_REVIEW = "petit-bac-review";
+    /** 🎲 Both checked: the round's points are counted (detail: the letter, refId: the game). */
+    public static final String PETIT_BAC_DONE = "petit-bac-done";
+
     public static CoupleActivity of(String kind, User actor, String detail, Long refId) {
         return new CoupleActivity(kind, actor.getId(), actor.getDisplayName(), detail, refId);
     }

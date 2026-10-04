@@ -6,6 +6,7 @@ import type { CommentReactionsChange, FeedActivity } from "../feed/activity";
 import type { LiveView } from "../live/api";
 import type { Ping as CrosswordPing } from "../crossword/api";
 import type { NavalPing } from "../naval/api";
+import type { Ping as PetitBacPing } from "../petitbac/api";
 import type { NotificationEntry } from "./api";
 
 interface Handlers {
@@ -16,13 +17,14 @@ interface Handlers {
   onLive: (g: LiveView) => void;
   onNaval: (p: NavalPing) => void;
   onCrossword: (p: CrosswordPing) => void;
+  onPetitBac: (p: PetitBacPing) => void;
 }
 
 /**
  * One app-wide STOMP connection: my new bell entries (/user/queue/notifications,
  * written by the server, sent to me only) and the shared activity the open pages follow live
  * (/topic/feed, /topic/couple, /topic/comment-reactions, /topic/live,
- * /topic/naval, /topic/crossword). Auto-reconnects like the other clients.
+ * /topic/naval, /topic/crossword, /topic/petit-bac). Auto-reconnects like the other clients.
  */
 export function createNotifClient(h: Handlers): Client {
   const token = getToken();
@@ -40,6 +42,7 @@ export function createNotifClient(h: Handlers): Client {
       on("/topic/live", h.onLive);
       on("/topic/naval", h.onNaval);
       on("/topic/crossword", h.onCrossword);
+      on("/topic/petit-bac", h.onPetitBac);
       reportPresence(client);
     },
   });

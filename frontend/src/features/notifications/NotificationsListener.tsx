@@ -7,6 +7,7 @@ import { emitCoupleActivity } from "../couple/activity";
 import { emitCommentReactions, emitFeedActivity } from "../feed/activity";
 import { emitLive } from "../live/api";
 import { emitNaval } from "../naval/api";
+import { emitPetitBac } from "../petitbac/api";
 import { feel } from "../../lib/feel";
 import type { NotificationEntry } from "./api";
 import { emitToast } from "./liveToast";
@@ -75,6 +76,7 @@ export function NotificationsListener() {
       onLive: emitLive,
       onNaval: emitNaval,
       onCrossword: emitCrossword,
+      onPetitBac: emitPetitBac,
     });
     const onVisibility = () => {
       if (document.visibilityState === "visible") markActive();

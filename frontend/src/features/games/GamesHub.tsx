@@ -69,6 +69,13 @@ const GAMES: GameCard[] = [
     emoji: "✏️",
   },
   {
+    to: "/jeux/petit-bac",
+    title: "Petit Bac",
+    tagline: "Une lettre, vos catégories : le premier qui crie « Stop ! »… et chacun valide les réponses de l'autre.",
+    mode: "À deux · direct ou à son rythme",
+    emoji: "🎲",
+  },
+  {
     to: "/jeux/sudoku",
     title: "Sudoku",
     tagline: "Quatre niveaux, de Facile à Expert : une nouvelle grille à chaque partie.",
