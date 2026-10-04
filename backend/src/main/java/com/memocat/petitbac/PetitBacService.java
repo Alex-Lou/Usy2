@@ -41,7 +41,8 @@ import java.util.stream.Collectors;
  * 🎲 Petit Bac between the two of us. The server keeps the clock: the letter is told only once a
  * round starts for a player, answers are saved as they are typed and refused after the end, and
  * the other's answers show only when both sheets are in. Rounds end by themselves when their time
- * is up (worked out when read, no scheduler).
+ * is up (worked out when read); a sheet left open with the app closed is handed in by
+ * {@link PetitBacTimeoutJob}, so that the other is told to check it.
  */
 @Service
 public class PetitBacService {
@@ -240,6 +241,54 @@ public class PetitBacService {
         }
         game.touch(now);
         return toDto(game, me);
+    }
+
+    /** A round with a sheet whose time is up but not handed in yet. */
+    record RoundKey(long gameId, int number) {
+    }
+
+    /** The rounds where a sheet's time ran out (and its grace) with nobody handing it in. */
+    @Transactional(readOnly = true)
+    public List<RoundKey> expiredRounds() {
+        Instant now = clock.instant();
+        return entries.findOpenStarted().stream()
+                .filter(e -> {
+                    Instant end = deadline(e.getRound().getGame(), e.getRound(), e);
+                    return end != null && !now.isBefore(end.plus(PetitBacRules.NETWORK_GRACE));
+                })
+                .map(e -> new RoundKey(e.getRound().getGame().getId(), e.getRound().getNumber()))
+                .distinct()
+                .toList();
+    }
+
+    /**
+     * Hands in the sheets of this round whose time is up, as the app would have (with what was saved,
+     * at the time it ended). If the other's sheet is in, they are told they can check it.
+     * Its own transaction, the round locked first: sheets are read fresh, after any « Stop ! » in flight.
+     *
+     * @return whether a sheet was handed in
+     */
+    @Transactional
+    public boolean closeExpired(long gameId, int number) {
+        PetitBacRound round = rounds.findForUpdate(gameId, number).orElse(null);
+        if (round == null || round.getFinishedAt() != null) return false;
+        PetitBacGame game = round.getGame();
+        List<PetitBacEntry> both = entries.findByRoundId(round.getId());
+        Instant now = clock.instant();
+        boolean changed = false;
+        for (PetitBacEntry e : both) {
+            Instant end = deadline(game, round, e);
+            if (e.getDoneAt() != null || end == null || now.isBefore(end.plus(PetitBacRules.NETWORK_GRACE))) continue;
+            e.done(end);
+            changed = true;
+            PetitBacEntry other = both.stream().filter(x -> x != e).findFirst().orElseThrow();
+            if (played(game, round, other, now)) {
+                users.findById(e.getPlayerId()).ifPresent(player -> events.publishEvent(
+                        CoupleActivity.of(CoupleActivity.PETIT_BAC_REVIEW, player, "Lettre " + round.getLetter(), game.getId())));
+            }
+        }
+        if (changed) game.touch(now);
+        return changed;
     }
 
     @Transactional

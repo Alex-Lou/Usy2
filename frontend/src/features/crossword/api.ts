@@ -61,6 +61,8 @@ export interface Game {
   createdAt: string;
   updatedAt: string;
   finishedAt: string | null;
+  /** The grid of the day (YYYY-MM-DD), or null for one started by hand. */
+  daily: string | null;
 }
 
 export interface Summary {
@@ -75,6 +77,17 @@ export interface Summary {
   createdAt: string;
   updatedAt: string;
   finishedAt: string | null;
+  daily: string | null;
+}
+
+/** Today's grid (gameId once one of us opened it) and the days in a row it was finished. */
+export interface Daily {
+  date: string;
+  level: Level;
+  gameId: number | null;
+  progress: number;
+  finished: boolean;
+  streak: number;
 }
 
 export interface Change {
@@ -104,6 +117,20 @@ export function listGames(): Promise<Summary[]> {
 
 export function createGame(size: Size, shared: boolean, theme: Theme, level: Level): Promise<Game> {
   return apiRequest<Game>("/api/crossword", { method: "POST", body: { size, shared, theme, level } });
+}
+
+export function getDaily(): Promise<Daily> {
+  return apiRequest<Daily>("/api/crossword/daily");
+}
+
+/** Opens today's grid (made, shared, by the first of us to open it). */
+export function playDaily(): Promise<Game> {
+  return apiRequest<Game>("/api/crossword/daily", { method: "POST" });
+}
+
+/** Stars for a finished grid: 3 without help, 2 with a few letters revealed, 1 beyond. */
+export function starsFor(revealed: number): number {
+  return revealed === 0 ? 3 : revealed <= 3 ? 2 : 1;
 }
 
 export function getGame(id: number): Promise<Game> {

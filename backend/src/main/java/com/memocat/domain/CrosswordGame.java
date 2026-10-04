@@ -13,6 +13,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 /** A "mots fléchés" grid being played, alone or together ({@code shared}). See V45 for the cell strings. */
 @Entity
@@ -67,6 +68,10 @@ public class CrosswordGame {
     @Column(name = "finished_at")
     private Instant finishedAt;
 
+    /** The grid of the day (one a day, the same for both of us); null for one started by hand. See V48. */
+    @Column(name = "daily_date")
+    private LocalDate dailyDate;
+
     protected CrosswordGame() {
         // for JPA
     }
@@ -86,6 +91,10 @@ public class CrosswordGame {
         this.authors = ".".repeat(solution.length());
         this.createdAt = at;
         this.updatedAt = at;
+    }
+
+    public void markDaily(LocalDate day) {
+        this.dailyDate = day;
     }
 
     /** Writes the cells (already checked) and finishes the grid when it is all right. */
@@ -154,5 +163,9 @@ public class CrosswordGame {
 
     public Instant getFinishedAt() {
         return finishedAt;
+    }
+
+    public LocalDate getDailyDate() {
+        return dailyDate;
     }
 }

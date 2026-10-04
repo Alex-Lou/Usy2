@@ -1,10 +1,12 @@
 package com.memocat.crossword;
 
 import com.memocat.crossword.CrosswordDtos.CreateRequest;
+import com.memocat.crossword.CrosswordDtos.DailyDto;
 import com.memocat.crossword.CrosswordDtos.GameDto;
 import com.memocat.crossword.CrosswordDtos.PingDto;
 import com.memocat.crossword.CrosswordDtos.PlayRequest;
 import com.memocat.crossword.CrosswordDtos.SummaryDto;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,6 +49,22 @@ public class CrosswordController {
     @ResponseStatus(HttpStatus.CREATED)
     public GameDto create(Principal principal, @RequestBody CreateRequest request) {
         return crosswords.create(principal.getName(), request.size(), request.shared(), request.theme(), request.level());
+    }
+
+    /** Today's grid (whether one of us opened it) and our streak. */
+    @GetMapping("/daily")
+    public DailyDto daily(Principal principal) {
+        return crosswords.daily(principal.getName());
+    }
+
+    /** Opens today's grid, creating it (shared) for the first one of us. */
+    @PostMapping("/daily")
+    public GameDto playDaily(Principal principal) {
+        try {
+            return crosswords.playDaily(principal.getName());
+        } catch (DataIntegrityViolationException e) {
+            return crosswords.playDaily(principal.getName()); // the other one created it at the same second
+        }
     }
 
     @GetMapping("/{id}")

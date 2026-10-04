@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.couple.CoupleActivity;
 import com.memocat.crossword.CrosswordDtos.CellDto;
 import com.memocat.crossword.CrosswordDtos.Change;
+import com.memocat.crossword.CrosswordDtos.DailyDto;
 import com.memocat.crossword.CrosswordDtos.GameDto;
 import com.memocat.crossword.CrosswordDtos.PingDto;
 import com.memocat.crossword.CrosswordDtos.SummaryDto;
@@ -25,9 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.Normalizer;
 import java.time.Clock;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Random;
 
 /** ✏️ Mots fléchés: a new grid from the word list, played alone or together, saved as you type. */
@@ -69,6 +74,11 @@ public class CrosswordService {
 
     /** In a theme grid the words longer than this all come from the theme; shorter ones hold the grid together. */
     static final int THEME_GLUE_LENGTH = 4;
+
+    /** The grid of the day changes at midnight, Paris time. */
+    static final ZoneId HOME = ZoneId.of("Europe/Paris");
+    /** The grid of the day: medium, every theme; easy early in the week, hard at the weekend. */
+    static final Size DAILY_SIZE = Size.MOYENNE;
 
     static final int MAX_CHANGES = 60;
     static final int LIST_SIZE = 30;
@@ -114,6 +124,62 @@ public class CrosswordService {
         return toDto(game);
     }
 
+    /** Today's grid and our streak (nothing is created by looking). */
+    @Transactional(readOnly = true)
+    public DailyDto daily(String username) {
+        requireUser(username);
+        LocalDate today = today();
+        CrosswordGame game = games.findByDailyDate(today).orElse(null);
+        boolean finished = game != null && game.getFinishedAt() != null;
+        return new DailyDto(today, dailyLevel(today).name().toLowerCase(Locale.ROOT), game == null ? null : game.getId(),
+                game == null ? 0 : progress(game), finished, streak(today, finished));
+    }
+
+    /**
+     * Opens today's grid: the one already there, or a new one shared with the other (who is told).
+     * Both at the same second: the unique day makes the second insert fail; see the controller.
+     */
+    @Transactional
+    public GameDto playDaily(String username) {
+        User me = requireUser(username);
+        LocalDate today = today();
+        Optional<CrosswordGame> existing = games.findByDailyDate(today);
+        if (existing.isPresent()) return toDto(existing.get());
+        Level l = dailyLevel(today);
+        ArrowGrid grid = new ArrowGenerator(entries("melange", l)).generate(DAILY_SIZE.width, DAILY_SIZE.height, random,
+                DAILY_SIZE.attempts);
+        CrosswordGame game = new CrosswordGame(me, DAILY_SIZE.name().toLowerCase(Locale.ROOT), "melange",
+                l.name().toLowerCase(Locale.ROOT), true, grid.width(), grid.height(), toJson(grid.clues()), grid.solution(),
+                clock.instant());
+        game.markDaily(today);
+        game = games.saveAndFlush(game);
+        events.publishEvent(CoupleActivity.of(CoupleActivity.CROSSWORD, me, "du jour", game.getId()));
+        return toDto(game);
+    }
+
+    static Level dailyLevel(LocalDate day) {
+        DayOfWeek d = day.getDayOfWeek();
+        if (d == DayOfWeek.SATURDAY || d == DayOfWeek.SUNDAY) return Level.DIFFICILE;
+        return d == DayOfWeek.MONDAY || d == DayOfWeek.TUESDAY ? Level.FACILE : Level.MOYEN;
+    }
+
+    /** Days in a row with the grid of the day finished, up to today (or yesterday while today's is not done). */
+    private int streak(LocalDate today, boolean todayDone) {
+        LocalDate day = todayDone ? today : today.minusDays(1);
+        int streak = 0;
+        for (LocalDate done : games.findFinishedDays(today.minusDays(366))) {
+            if (done.isAfter(day)) continue;
+            if (!done.equals(day)) break;
+            streak++;
+            day = day.minusDays(1);
+        }
+        return streak;
+    }
+
+    private LocalDate today() {
+        return LocalDate.now(clock.withZone(HOME));
+    }
+
     /** The words a grid may use, with the clue it shows; in a theme grid, every long word is a theme word. */
     List<ArrowGenerator.Entry> entries(String theme, Level level) {
         boolean anyTheme = theme.equals("melange");
@@ -132,7 +198,7 @@ public class CrosswordService {
         return games.findVisibleTo(me.getId(), PageRequest.of(0, LIST_SIZE)).stream()
                 .map(g -> new SummaryDto(g.getId(), g.getSize(), g.getTheme(), g.getLevel(), g.isShared(), g.getOwner().getDisplayName(),
                         g.getOwner().getId().equals(me.getId()), progress(g), g.getCreatedAt(), g.getUpdatedAt(),
-                        g.getFinishedAt()))
+                        g.getFinishedAt(), g.getDailyDate()))
                 .toList();
     }
 
@@ -247,7 +313,7 @@ public class CrosswordService {
     private GameDto toDto(CrosswordGame g) {
         return new GameDto(g.getId(), g.getSize(), g.getTheme(), g.getLevel(), g.isShared(), g.getOwner().getId(), g.getOwner().getDisplayName(),
                 g.getWidth(), g.getHeight(), fromJson(g.getClues()), g.getSolution(), g.getLetters(), g.getAuthors(),
-                g.getCreatedAt(), g.getUpdatedAt(), g.getFinishedAt());
+                g.getCreatedAt(), g.getUpdatedAt(), g.getFinishedAt(), g.getDailyDate());
     }
 
     private String toJson(List<ArrowGrid.Clue> clues) {

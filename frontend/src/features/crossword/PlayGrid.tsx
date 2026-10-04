@@ -5,7 +5,8 @@ import { feel } from "../../lib/feel";
 import { useOnRefresh } from "../../lib/refresh";
 import { useAuth } from "../auth/useAuth";
 import { Confetti } from "../games/Confetti";
-import { getGame, levelLabel, onCrossword, play, themeOf, type Change, type Clue, type Dir, type Game } from "./api";
+import { ShareScore } from "../games/ShareScore";
+import { getGame, levelLabel, onCrossword, play, starsFor, themeOf, type Change, type Clue, type Dir, type Game } from "./api";
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { BLOCK, cellsOf, cluesByCell, keyToLetter, readingOrder, wordsByCell } from "./logic";
@@ -263,6 +264,10 @@ export function PlayGrid({ id }: { id: number }) {
 
   const letterCells = [...game.solution].filter((c) => c !== BLOCK).length;
   const filled = [...letters].filter((c) => c !== BLOCK && c !== ".").length;
+  const revealed = [...authors].filter((c) => c === "*").length;
+  const stars = starsFor(revealed);
+  const took = finishedAt ? minutesBetween(game.createdAt, finishedAt) : null;
+  const title = game.daily ? "📅 Grille du jour" : `${themeOf(game.theme).emoji} ${SIZE_LABEL[game.size]}`;
 
   return (
     <div className="flex flex-col gap-3" data-no-pull>
@@ -272,7 +277,7 @@ export function PlayGrid({ id }: { id: number }) {
         </Link>
         <div className="min-w-0 flex-1">
           <h1 className="truncate font-display text-lg font-bold leading-tight">
-            {themeOf(game.theme).emoji} {SIZE_LABEL[game.size]}
+            {title}
           </h1>
           <p className="truncate text-xs text-text-muted">
             {themeOf(game.theme).label} · {levelLabel(game.level)} · {game.shared ? "à deux 💞" : "seul"} · {Math.round((filled * 100) / letterCells)} %
@@ -309,13 +314,23 @@ export function PlayGrid({ id }: { id: number }) {
         <div className="card relative overflow-hidden p-5 text-center animate-pop">
           <Confetti />
           <p className="font-display text-2xl font-bold">Bravo ! 🎉</p>
-          <p className="mt-1 text-text-muted">
-            Grille terminée{finishedAt ? ` en ${minutesBetween(game.createdAt, finishedAt)}` : ""}
-            {game.shared ? ", à deux" : ""}.
+          <p className="mt-1 text-2xl" aria-label={`${stars} étoile${stars > 1 ? "s" : ""} sur 3`}>
+            {"⭐".repeat(stars)}
+            <span className="opacity-25">{"⭐".repeat(3 - stars)}</span>
           </p>
-          <Link to="/jeux/mots-fleches" className="mt-3 inline-block rounded-full btn-brand px-5 py-2 text-sm font-semibold press">
-            Une autre grille
-          </Link>
+          <p className="mt-1 text-text-muted">
+            Grille terminée{took ? ` en ${took}` : ""}
+            {game.shared ? ", à deux" : ""}
+            {revealed === 0 ? ", sans aide !" : `, ${revealed} lettre${revealed > 1 ? "s" : ""} révélée${revealed > 1 ? "s" : ""}.`}
+          </p>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            <ShareScore
+              text={`✏️ ${game.daily ? "Grille du jour" : `Mots fléchés · ${SIZE_LABEL[game.size].toLowerCase()}`} (${levelLabel(game.level).toLowerCase()}) terminée${took ? ` en ${took}` : ""}${game.shared ? " à deux 💞" : ""} ${"⭐".repeat(stars)}${revealed === 0 ? " · sans aide !" : ""}`}
+            />
+            <Link to="/jeux/mots-fleches" className="inline-block rounded-full btn-brand px-5 py-2 text-sm font-semibold press">
+              Une autre grille
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="sticky bottom-[calc(var(--tabbar-h)+0.25rem)] z-10 flex flex-col gap-2 rounded-token border border-border bg-surface p-2 shadow-card lg:bottom-3">

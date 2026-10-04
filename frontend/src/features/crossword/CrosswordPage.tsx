@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Icon } from "../../components/ui/Icon";
 import { PageHeader } from "../../components/ui/PageHeader";
-import { createGame, deleteGame, LEVELS, levelLabel, listGames, THEMES, themeOf, type Level, type Size, type Summary, type Theme } from "./api";
+import { useOnRefresh } from "../../lib/refresh";
+import { createGame, deleteGame, getDaily, LEVELS, levelLabel, listGames, playDaily, THEMES, themeOf, type Daily, type Level, type Size, type Summary, type Theme } from "./api";
 import { PlayGrid } from "./PlayGrid";
 
 const SIZES: { id: Size; label: string; hint: string }[] = [
@@ -13,7 +14,8 @@ const SIZES: { id: Size; label: string; hint: string }[] = [
 const SIZE_LABEL = { petite: "Petite grille", moyenne: "Grille moyenne", grande: "Grande grille" } as const;
 
 function day(iso: string): string {
-  return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+  // A bare date (YYYY-MM-DD) read at noon: the same day in any time zone.
+  return new Date(iso.length === 10 ? `${iso}T12:00:00` : iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
 }
 
 /** ✏️ Mots fléchés: the grids (alone or together), and a new one in two taps; ?partie=… opens one. */
@@ -33,12 +35,30 @@ function Lobby() {
   const [games, setGames] = useState<Summary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const [daily, setDaily] = useState<Daily | null>(null);
+
   const load = useCallback(() => {
     listGames()
       .then(setGames)
       .catch(() => setGames([]));
+    getDaily()
+      .then(setDaily)
+      .catch(() => setDaily(null));
   }, []);
   useEffect(load, [load]);
+  useOnRefresh(load);
+
+  async function openDaily() {
+    setBusy(true);
+    setError(null);
+    try {
+      const g = await playDaily();
+      navigate(`/jeux/mots-fleches?partie=${g.id}`);
+    } catch {
+      setError("La grille du jour n'a pas pu s'ouvrir.");
+      setBusy(false);
+    }
+  }
 
   async function start() {
     setBusy(true);
@@ -66,7 +86,7 @@ function Lobby() {
     <li key={g.id} className="flex items-center gap-3 px-3 py-2.5">
       <Link to={`/jeux/mots-fleches?partie=${g.id}`} className="min-w-0 flex-1 press">
         <p className="truncate font-semibold">
-          {themeOf(g.theme).emoji} {SIZE_LABEL[g.size]} · {levelLabel(g.level)} {g.shared ? "· à deux 💞" : ""}
+          {g.daily ? `📅 Grille du ${day(g.daily)}` : `${themeOf(g.theme).emoji} ${SIZE_LABEL[g.size]}`} · {levelLabel(g.level)} {g.shared ? "· à deux 💞" : ""}
         </p>
         <p className="text-xs text-text-muted">
           {g.mine ? "Lancée par toi" : `Lancée par ${g.ownerName}`} · {g.finishedAt ? `terminée le ${day(g.finishedAt)}` : day(g.updatedAt)}
@@ -88,6 +108,8 @@ function Lobby() {
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title="✏️ Mots fléchés" subtitle="Une nouvelle grille à chaque partie." />
+
+      {daily && <DailyCard daily={daily} busy={busy} onOpen={openDaily} />}
 
       <section className="card flex flex-col gap-3 p-4">
         <div className="flex gap-1 rounded-full border border-border bg-surface p-1" role="radiogroup" aria-label="Taille">
@@ -159,5 +181,32 @@ function Lobby() {
         </>
       )}
     </div>
+  );
+}
+
+/** 📅 The grid of the day: the same for both of us, and the streak of days we finished it. */
+function DailyCard({ daily, busy, onOpen }: { daily: Daily; busy: boolean; onOpen: () => void }) {
+  const action = daily.finished ? "Revoir" : daily.gameId ? `Continuer · ${daily.progress} %` : "Jouer";
+  return (
+    <section className="card flex items-center gap-3 p-4 animate-fade-up">
+      <span className="text-4xl" aria-hidden="true">
+        {daily.finished ? "✅" : "📅"}
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="font-display text-lg font-bold leading-tight">Grille du jour</p>
+        <p className="text-xs text-text-muted">
+          {levelLabel(daily.level)} · {daily.finished ? "terminée, à demain !" : "la même pour vous deux"}
+          {daily.streak > 0 && (
+            <span className="font-semibold text-text">
+              {" "}
+              · 🔥 {daily.streak} jour{daily.streak > 1 ? "s" : ""} de suite
+            </span>
+          )}
+        </p>
+      </div>
+      <button type="button" onClick={onOpen} disabled={busy} className={(daily.finished ? "chip" : "btn-brand rounded-full px-4 py-2 font-semibold") + " shrink-0 text-sm press disabled:opacity-60"}>
+        {action}
+      </button>
+    </section>
   );
 }
