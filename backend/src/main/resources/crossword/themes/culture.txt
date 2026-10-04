@@ -40,7 +40,7 @@ CINEMA|1|Septième art|Se faire du ___, s'inventer des histoires
 FILM|1|Long métrage|Fais-moi pas ton ___
 ACTEUR|1|Joue un rôle|Comédien
 ACTRICE|1|Comédienne|Star de l'écran
-STAR|1|Vedette|Étoile filante d'Hollywood
+STAR|1|Vedette|Étoile d'Hollywood
 ROLE|1|Personnage joué|À tour de ___
 SCENE|1|Partie de film|Faire une ___ de ménage
 ECRAN|1|Toile de cinéma|Crever l'___
@@ -70,7 +70,7 @@ LIVRE|1|Se lit|De poche
 ROMAN|1|Long récit|Photo, ou d'amour
 POEME|1|Vers en strophes|C'est tout un ___
 CONTE|1|Histoire pour enfants|De fées
-BD|1|Bande dessinée|Neuvième art
+BD|1|Bande dessinée, en bref|Neuvième art
 AUTEUR|1|Écrivain|Droits d'___
 PEINTURE|1|Art des couleurs|Fraîche, ne pas toucher
 TABLEAU|1|Œuvre peinte|Brosser le ___
@@ -126,10 +126,10 @@ ALIEN|1|Extraterrestre|Le huitième passager
 # Pluriels
 ACTEURS|1|Jouent des rôles|Comédiens
 ACTRICES|1|Comédiennes|Stars de l'écran
-ROMANS|1|Longs récits|De gare
+ROMANS|1|Longs récits|Ceux de gare
 POEMES|1|Vers en strophes|Recueils
-DISQUES|1|Vinyles|D'or ou de platine
-CONCERTS|1|Spectacles musicaux|En plein air
+DISQUES|1|Vinyles|Ceux d'or récompensent les ventes
+CONCERTS|1|Spectacles musicaux|Ceux en plein air
 TUBES|1|Chansons à succès|Cylindres creux
 SCENES|1|Parties de film|Faire des ___ de ménage
 ROLES|1|Personnages joués|Premiers, en tête d'affiche

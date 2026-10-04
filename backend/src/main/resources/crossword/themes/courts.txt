@@ -52,7 +52,7 @@ FOI|1|Croyance|Ma ___ !
 FUT|1|Exista|Ce qui ___ n'est plus
 GAG|1|Effet comique|Blague de cinéma
 GIN|2|Alcool de genièvre|Il se mêle au tonic
-GUE|2|Passage dans la rivière|On y passe à pied sec
+GUE|2|Passage dans la rivière|On y traverse la rivière à pied
 HAI|2|Détesté|Pas aimé du tout
 HEP|1|Interjection pour héler|___ ! Taxi !
 HIC|1|Difficulté|Voilà le ___ !
@@ -154,7 +154,7 @@ MAUX|1|Douleurs|De tête, au pluriel
 MERS|1|Étendues salées|Les sept ___
 MOTS|1|Groupes de lettres|Fléchés ou croisés
 MURS|1|Cloisons|Entre quatre ___
-NIDS|1|Maisons d'oiseaux|À poule, sur la route
+NIDS|1|Maisons d'oiseaux|Trous de la chaussée, à poule
 NOMS|1|Appellations|Petits, entre amoureux
 OIES|1|Oiseaux de basse-cour|Blanches, sans malice
 PINS|1|Arbres à aiguilles|Des Landes
@@ -164,9 +164,9 @@ POUX|1|Parasites des cheveux|Chercher des ___, chicaner
 RATS|1|Rongeurs|Petits, de l'Opéra
 ROIS|1|Souverains|Galette des ___
 RUES|1|Voies de ville|Courir les ___
-SACS|1|Fourre-tout|À main
-SONS|1|Bruits|Et lumière
-TIRS|1|Coups de feu|Au but
+SACS|1|Fourre-tout|À dos, pour les randonneurs
+SONS|1|Bruits|Notes et bruits
+TIRS|1|Coups de feu|Au but, ils font marquer
 TONS|1|Nuances|Sur tous les ___
 VINS|1|Rouges ou blancs|Grands crus
 VOLS|1|Larcins|Long-courriers
@@ -279,7 +279,7 @@ MIEN|2|Le ___, à moi|Possessif de la première personne
 MORS|2|Frein du cheval|Prendre le ___ aux dents
 MORT|1|Décédé|Nature ___
 MOUE|2|Grimace boudeuse|Faire la ___
-NAIF|1|Candide|Peintre du Douanier Rousseau
+NAIF|1|Candide|Comme la peinture du Douanier Rousseau
 NAIN|1|Tout petit|Ils sont sept chez Blanche-Neige
 NAGE|1|Natation|En ___, en sueur
 NEON|2|Tube lumineux|Éclairage de bureau

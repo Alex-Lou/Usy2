@@ -121,12 +121,12 @@ SUPPORTER|1|Fan d'une équipe|Encourage du gradin
 OLA|1|Vague du stade|Bras levés en tribune
 # Pluriels
 MEDAILLES|1|Récompenses en métal|D'or, d'argent, de bronze
-RAQUETTES|1|Frappent la balle|Pour marcher dans la neige
+RAQUETTES|1|Frappent la balle|On les chausse pour marcher dans la neige
 BUTEUR|1|Marque des buts|Attaquant efficace
 ARBITRES|1|Sifflent les fautes|Juges du match
-COUPES|1|Trophées|De cheveux
-SKIS|1|Planches de neige|De fond
-PATINS|1|Glissent sur la glace|À roulettes
+COUPES|1|Trophées|Celles de cheveux
+SKIS|1|Planches de neige|Ceux de fond
+PATINS|1|Glissent sur la glace|Ceux à roulettes
 SPRINTS|1|Courses de vitesse|Finales rapides
 STADES|1|Grandes enceintes sportives|Étapes
 # Mots d'autres fichiers qui font aussi partie du thème

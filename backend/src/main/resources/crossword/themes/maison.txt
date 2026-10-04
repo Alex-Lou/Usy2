@@ -126,17 +126,17 @@ RIDEAUX|1|Devant les fenêtres|Doubles, épais
 TIROIRS|1|Rangements de commode|Fonds de ___
 COUSSINS|1|Petits oreillers du canapé|Moelleux
 DRAPS|1|Linge de lit|Dans de beaux ___
-OREILLERS|1|Pour la tête|Batailles d'___
+OREILLERS|1|Ils soutiennent la tête|Batailles d'___
 OUTILS|1|Marteaux et scies|Boîte à ___
-MARCHES|1|D'escalier|Militaires ou nuptiales
+MARCHES|1|Celles de l'escalier|Militaires ou nuptiales
 PLACARDS|1|Armoires murales|Publicitaires, dans le journal
 CARTONS|1|Boîtes de déménagement|Rouges, expulsions
-BALAIS|1|Pour balayer|Ans, en argot
+BALAIS|1|Ils servent à balayer|Ans, en argot
 EPONGES|1|Absorbent l'eau|Animaux marins
-VASES|1|Pour les fleurs|Boues des étangs
-FOURS|1|Pour cuire|Petits, en pâtisserie
-LAVABOS|1|Pour se laver les mains|Éviers de salle de bain
-SAVONS|1|Font des bulles|De Marseille
+VASES|1|Ils accueillent les bouquets|Boues des étangs
+FOURS|1|Ils servent à cuire|Petits, en pâtisserie
+LAVABOS|1|On s'y lave les mains|Éviers de salle de bain
+SAVONS|1|Font des bulles|Ceux de Marseille
 # Mots d'autres fichiers qui font aussi partie du thème
 LITS
 MURS

@@ -11,7 +11,7 @@ BLEUS|1|Ecchymoses|Les ___, l'équipe de France
 BOUTS|1|Extrémités|Joindre les deux ___
 CAGES|1|Prisons d'oiseaux|Buts de foot
 CAPES|1|Grands manteaux|Agitées par le torero
-CLOUS|1|Se plantent au marteau|Passage piéton d'antan
+CLOUS|1|Se plantent au marteau|Passages piétons d'antan
 CODES|1|Mots de passe|Phares baissés
 COTES|1|Bords de mer|Flancs de la cage thoracique
 COUPS|1|Chocs|Les trois ___ du théâtre
@@ -24,15 +24,15 @@ ECHOS|1|Sons répétés|Rumeurs du journal
 EPEES|1|Armes de duel|Croisées par les mousquetaires
 ETATS|1|Nations|Unis, en Amérique
 FACES|1|Côtés des pièces|Visages
-FETES|1|Célébrations|De fin d'année
+FETES|1|Célébrations|Celles de fin d'année
 FILLES|1|Pas garçons|Jeunes ___ en fleurs
 GARES|1|Arrêts de train|Du Nord et de l'Est
 GOUTS|1|Saveurs|Des ___ et des couleurs
 IDEES|1|Pensées|Avoir des ___ noires
-JOURS|1|Dates|Les beaux ___
+JOURS|1|Unités du calendrier|Les beaux ___
 JUPES|1|Vêtements féminins|Accroché aux ___ de maman
-LAMES|1|Tranchants|De fond, en mer
-LIENS|1|Attaches|Du sang
+LAMES|1|Tranchants|Vagues de fond
+LIENS|1|Attaches|Ceux du sang
 LUNES|1|Astres de nuit|Vieilles ___, idées dépassées
 MAINS|1|Ont cinq doigts chacune|En de bonnes ___
 MERES|1|Mamans|Fête des ___
@@ -67,8 +67,8 @@ BALLES|1|Projectiles|Francs, en argot
 CHOSES|1|Objets|Les ___ de la vie
 ECOLES|1|Lieux des élèves|Grandes, pour l'élite
 FORETS|1|Bois étendus|Vierges, en Amazonie
-HEURES|1|Soixantaines de minutes|De pointe, dans le métro
-IMAGES|1|Illustrations|D'Épinal
+HEURES|1|Soixantaines de minutes|Celles de pointe saturent le métro
+IMAGES|1|Illustrations|Celles d'Épinal
 LETTRES|1|Missives|Belles-___
 LIGNES|1|Traits|Lire entre les ___
 LIVRES|1|Romans|Tenir les ___ de comptes
@@ -92,16 +92,16 @@ TANTE|1|Sœur de la mère|Ma ___, le mont-de-piété
 NIECE|1|Fille du frère|Fille de la sœur
 ADULTE|1|Grande personne|Majeur
 REPAS|1|Moment où l'on mange|Festin ou casse-croûte
-CHAMBRES|1|Pièces pour dormir|D'hôte
-SALONS|1|Pièces à vivre|De l'auto
-MAISONS|1|Foyers|De campagne
+CHAMBRES|1|Pièces pour dormir|Celles d'hôtes accueillent les voyageurs
+SALONS|1|Pièces à vivre|Ceux de l'auto et de l'agriculture
+MAISONS|1|Foyers|Résidences secondaires
 JARDINS|1|Potagers ou parterres|Suspendus de Babylone
 FENETRES|1|Ouvertures vitrées|Jeter l'argent par les ___
 LAMPES|1|Éclairages|Halogènes ou LED
 CHAISES|1|Sièges à dossier|Musicales, au jeu
-TABLES|1|Meubles à manger|De multiplication
-JOUETS|1|Pour s'amuser|Coffre à ___
-STYLOS|1|Pour écrire|À bille
+TABLES|1|Meubles à manger|Celles de multiplication
+JOUETS|1|Objets pour s'amuser|Coffre à ___
+STYLOS|1|Ils servent à écrire|Bics et plumes
 VOITURES|1|Automobiles|Garées au parking
 ROUTES|1|Voies|Nationales ou départementales
 TRAINS|1|Roulent sur des rails|Fantômes, à la foire
@@ -116,16 +116,16 @@ FILMS|1|Longs métrages|Se faire des ___
 CHANSONS|1|Paroles et musiques|Tubes de l'été
 DANSES|1|Valses et tangos|Folkloriques
 MATCHS|1|Rencontres sportives|Aller et retour
-BALLONS|1|Ronds ou ovales|De baudruche
-SPORTS|1|Activités physiques|D'hiver
-EQUIPES|1|Groupes de joueurs|De nuit, à l'usine
+BALLONS|1|Ronds ou ovales|Ceux de baudruche éclatent
+SPORTS|1|Activités physiques|Ceux d'hiver se pratiquent sur la neige
+EQUIPES|1|Groupes de joueurs|Elles se relaient à l'usine
 JOUEURS|1|Membres d'équipe|Ils tiennent les cartes
 COULEURS|1|Teintes|Défendre les ___ de son club
 PHRASES|1|Suites de mots|Faire des ___, parler pompeusement
 LANGUES|1|Parlées dans le monde|Mauvaises, médisantes
 HISTOIRES|1|Récits|Raconter des ___, mentir
-CONTES|1|Histoires pour enfants|De Perrault
-SECRETS|1|Confidences|De famille
+CONTES|1|Histoires pour enfants|Ceux de Perrault
+SECRETS|1|Confidences|Ceux de famille sont bien gardés
 REGARDS|1|Coups d'œil|Croiser les ___
 CADEAUX|1|Présents|Sous le sapin
 LARMES|1|Coulent en pleurant|De crocodile
@@ -135,30 +135,30 @@ PIERRES|1|Cailloux|Précieuses
 ROCHERS|1|Gros cailloux|Chocolats pralinés
 MONTAGNES|1|Sommets|Russes, à la fête foraine
 COLLINES|1|Petites hauteurs|Rome en a sept
-RIVIERES|1|Cours d'eau|De diamants
+RIVIERES|1|Cours d'eau|Les petits ruisseaux les font grandes
 FLEUVES|1|Se jettent dans la mer|Seine et Loire
 SAISONS|1|Été, automne…|Les Quatre ___, de Vivaldi
-SEMAINES|1|Sept jours chacune|De quatre jeudis
+SEMAINES|1|Sept jours chacune|Il y en a cinquante-deux par an
 ANNEES|1|Douze mois chacune|Folles, les 1920
 MINUTES|1|Soixante secondes chacune|Comptées
 SECONDES|1|Instants|Fractions de minute
 AMOURS|1|Idylles|Les premières ___
 BAGUES|1|Anneaux|Bijoux de doigts
-BOUGIES|1|Petites flammes|Sur le gâteau d'anniversaire
+BOUGIES|1|Petites flammes|Soufflées sur le gâteau
 CADRES|1|Entourent les tableaux|Supérieurs, en entreprise
-CHAINES|1|Suites d'anneaux|De télé
-CHANTS|1|Mélodies|De Noël
+CHAINES|1|Suites d'anneaux|Canaux de télé
+CHANTS|1|Mélodies|Ceux de Noël
 CLOCHES|1|Sonnent à l'église|De Pâques, chargées d'œufs
 CORDES|1|Gros fils|Il pleut des ___
-CRAYONS|1|Pour dessiner|De couleur
+CRAYONS|1|Ils servent à dessiner|Il en faut de toutes les couleurs
 DESSINS|1|Images au crayon|Animés
 DRAPEAUX|1|Emblèmes nationaux|Hissés au mât
 EGLISES|1|Lieux de culte|Clochers des villages
-FLECHES|1|Traits d'arc|De Cupidon
+FLECHES|1|Traits d'arc|Celles de Cupidon
 FORMES|1|Silhouettes|Mettre les ___
 GANTS|1|Habillent les mains|Prendre des ___
 GLACES|1|Sorbets|Miroirs
-GRAINS|1|De sable ou de café|Petites quantités
+GRAINS|1|Ceux de sable ou de café|Petites quantités
 GUIDES|1|Montrent le chemin|Scoutes
 JOURNAUX|1|Quotidiens|Télévisés
 LUMIERES|1|Clartés|Siècle des ___
@@ -186,8 +186,8 @@ GRANDES|1|Pas petites|Vacances d'été
 PETITES|1|Pas grandes|Les ___ annonces
 BONNES|1|Pas mauvaises|Les ___ affaires
 JOLIES|1|Mignonnes|Charmantes
-NOIRES|1|Couleur de nuit|Idées sombres
-BLANCHES|1|Couleur de neige|Nuits sans sommeil
+NOIRES|1|Sombres comme la nuit|Idées sombres
+BLANCHES|1|Comme la neige|Nuits sans sommeil
 ROUGES|1|Comme des coquelicots|Feux qui arrêtent
 VERTES|1|Comme les prés au printemps|En dire des ___ et des pas mûres
 BLEUES|1|Comme le ciel et la mer|Peurs intenses
@@ -245,7 +245,7 @@ PERDU|1|Égaré|Temps ___, chez Proust
 PERDUE|1|Égarée|Cause ___
 PRISES|1|Saisies|Aux ___ avec, en lutte
 RENDU|1|Restitué|Compte ___
-SORTI|1|Dehors|Tout juste ___ de l'œuf
+SORTI|1|Parti dehors|Tout juste ___ de l'œuf
 TENU|1|Gardé|Pari ___
 TROUVE|1|Découvert|Enfant ___
 VENU|1|Arrivé|Le premier ___
@@ -394,7 +394,7 @@ JUIN|1|Sixième mois|Mois du bac
 JUILLET|1|Septième mois|Le 14, fête nationale
 AOUT|1|Huitième mois|Mois des vacances
 SEPTEMBRE|1|Mois de la rentrée|Neuvième mois
-OCTOBRE|1|Dixième mois|Révolution russe
+OCTOBRE|1|Dixième mois|Rose, contre le cancer du sein
 NOVEMBRE|1|Onzième mois|Mois des morts
 DECEMBRE|1|Dernier mois|Mois de Noël
 VIOLET|1|Couleur de l'améthyste|Mauve foncé

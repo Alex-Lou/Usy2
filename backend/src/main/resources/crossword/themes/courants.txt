@@ -123,7 +123,7 @@ GALA|2|Fête officielle|Soirée de ___
 GAMIN|1|Gosse|Enfant des rues
 GARDE|1|Surveillance|Montante, à Buckingham
 GAUCHE|1|Pas droite|Maladroit
-GELEE|1|Confiture|Royale, des abeilles
+GELEE|1|Confiture sans morceaux|Royale, des abeilles
 GENRE|1|Sorte|Faire du ___
 GESTE|1|Mouvement|Joindre le ___ à la parole
 GIBIER|2|Animaux chassés|De potence
@@ -244,7 +244,7 @@ PELLE|1|Pour creuser|Ramasser une ___
 PENTE|1|Descente|Remonter la ___
 PERLE|1|Bijou d'huître|Rare
 PESER|1|Mesurer le poids|Le pour et le contre
-PETALE|1|Morceau de fleur|Effeuillé
+PETALE|1|Morceau de fleur|On l'arrache en effeuillant
 PHASE|1|Étape|De la lune
 PIANO|1|Instrument à touches|Doucement, en musique
 PIEGE|1|Traquenard|À loup
@@ -302,7 +302,7 @@ REVUE|1|Magazine|Passer en ___
 RIVAL|1|Concurrent|Sans ___
 ROCHE|1|Pierre|Eau de ___
 RONDE|1|Danse en cercle|De nuit
-ROSEE|1|Gouttes du matin|Perles de l'aube
+ROSEE|1|Humidité du petit matin|Perles de l'aube
 ROUET|3|Machine à filer|La Belle s'y piqua
 RUCHE|1|Maison d'abeilles|Bourdonnante
 RUINE|1|Décombres|Courir à sa ___
@@ -344,7 +344,7 @@ TARIF|1|Prix|Réduit
 TAUPE|1|Creuse sous terre|Myope comme elle
 TAXE|1|Impôt|Hors ___
 TEINT|1|Couleur de peau|De pêche
-TEMPE|1|Côté du front|Battements
+TEMPE|1|Côté du front|On s'y masse en cas de migraine
 TENIR|1|Garder en main|Le coup
 TENUE|1|Habillement|Correcte exigée
 TERME|1|Fin|Mot
