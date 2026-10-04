@@ -1,0 +1,3 @@
+# Secrets et sauvegardes : restent sur le serveur, jamais dans git.
+.env
+backups/

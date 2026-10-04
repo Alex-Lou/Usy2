@@ -1,0 +1,42 @@
+# Met le serveur auto-hébergé à jour après chaque merge sur main, une fois la CI verte.
+# Inactif tant que la variable DEPLOY_HOST n'existe pas : rien ne change pour Render d'ici là.
+# Mise en route (une fois, voir deploy/README.md, « Déploiement automatique ») :
+#   Settings → Secrets and variables → Actions
+#     Variables : DEPLOY_HOST = ton domaine (ou l'IP du serveur)
+#     Secrets   : DEPLOY_SSH_KEY = la clé privée dédiée au déploiement
+#                 DEPLOY_KNOWN_HOSTS = la ligne de « ssh-keyscan ton-domaine » (l'empreinte du serveur)
+name: Déploiement
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Serveur
+    if: vars.DEPLOY_HOST != '' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Clé SSH
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Mise à jour du serveur
+        env:
+          HOST: ${{ vars.DEPLOY_HOST }}
+        run: ssh -i ~/.ssh/deploy -o StrictHostKeyChecking=yes "root@$HOST" 'cd /opt/memocat && ./deploy/scripts/deploy.sh'

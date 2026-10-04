@@ -82,6 +82,9 @@ npm run tauri dev      # génère d'abord les icônes : npm run tauri icon <sour
 
 ## Déploiement en ligne (Render, depuis un téléphone)
 
+> **Auto-hébergement** (un serveur à soi, sans Render ni Neon, migration des données comprise) :
+> voir [`deploy/README.md`](deploy/README.md).
+
 Le repo contient un `Dockerfile` (service unique : Spring Boot sert le front buildé
 + l'API, même origine → pas de CORS/WebSocket cross-origin) et un `render.yaml`
 (blueprint : 1 service web Docker + 1 PostgreSQL managé).
