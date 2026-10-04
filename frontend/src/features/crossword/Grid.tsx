@@ -68,7 +68,7 @@ function ClueText({ clue, half, active }: { clue: Clue; half: boolean; active: b
 
 /**
  * The grid: clue cells (with their arrows), letter cells, and the empty ones.
- * Sizes follow the grid's width (--cell), from a phone to a computer.
+ * Sizes follow the grid's width (--cell), set by the window around it (ZoomView).
  */
 export const Grid = memo(function Grid({
   width,
@@ -85,7 +85,7 @@ export const Grid = memo(function Grid({
   onCell,
 }: Props) {
   return (
-    <div className="mx-auto w-full" style={{ maxWidth: `${width * 52}px`, containerType: "inline-size" }}>
+    <div className="w-full" style={{ containerType: "inline-size" }}>
       <div
         className="grid select-none gap-px overflow-hidden rounded-token border border-border bg-border"
         style={{ gridTemplateColumns: `repeat(${width}, minmax(0, 1fr))`, ["--cell" as string]: `calc(100cqw / ${width})` }}
