@@ -6,7 +6,7 @@ import { useOnRefresh } from "../../lib/refresh";
 import { useAuth } from "../auth/useAuth";
 import { Confetti } from "../games/Confetti";
 import { ShareScore } from "../games/ShareScore";
-import { getGame, levelLabel, onCrossword, play, starsFor, themeOf, type Change, type Clue, type Dir, type Game } from "./api";
+import { getGame, levelLabel, onCrossword, play, restartGame, starsFor, themeOf, type Change, type Clue, type Dir, type Game } from "./api";
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { BLOCK, cellsOf, cluesByCell, keyToLetter, readingOrder, wordsByCell } from "./logic";
@@ -241,6 +241,20 @@ export function PlayGrid({ id }: { id: number }) {
     setMessage(bad.length > 0 ? `${bad.length} lettre${bad.length > 1 ? "s" : ""} à revoir` : empty ? "Rien de faux pour l'instant" : "✓ Mot juste !");
   }, [game, activeClue, width, letters]);
 
+  // Starting over: whatever was waiting to be sent goes, the empty grid comes back from the server.
+  const restart = useCallback(() => {
+    const ask = game?.shared ? "Recommencer la grille ? Toutes les lettres seront effacées, pour vous deux." : "Recommencer la grille ? Toutes les lettres seront effacées.";
+    if (!window.confirm(ask)) return;
+    window.clearTimeout(timer.current);
+    pending.current.clear();
+    restartGame(id)
+      .then(() => {
+        setCursor({ cell: -1, dir: "right" }); // back to the first word
+        load();
+      })
+      .catch(() => setMessage("La grille n'a pas pu être recommencée."));
+  }, [game?.shared, id, load]);
+
   useEffect(() => {
     if (!message) return;
     const t = window.setTimeout(() => setMessage(null), 2200);
@@ -327,10 +341,15 @@ export function PlayGrid({ id }: { id: number }) {
             title="Zoom (ou pincez la grille)"
             className="chip press tabular-nums hover:border-primary/50"
           >
-            🔍{(zoom ?? 1) > 1.05 && <span className="text-xs"> {zoomLabel(zoom ?? 1)}</span>}
+            🔍{(zoom ?? 1) > 1.05 && <span className="hidden text-xs sm:inline"> {zoomLabel(zoom ?? 1)}</span>}
           </button>
         {!done && (
           <>
+            {filled > 0 && (
+              <button type="button" onClick={restart} aria-label="Recommencer la grille" title="Recommencer la grille" className="chip press hover:border-primary/50">
+                ↺
+              </button>
+            )}
             <button type="button" onClick={check} aria-label="Vérifier le mot" title="Vérifier le mot" className="chip press hover:border-primary/50">
               ✓<span className="hidden sm:inline"> Mot</span>
             </button>

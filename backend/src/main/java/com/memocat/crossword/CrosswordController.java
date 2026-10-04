@@ -80,6 +80,14 @@ public class CrosswordController {
         return ping;
     }
 
+    /** Starts the grid over (for both of us when shared). */
+    @PostMapping("/{id}/restart")
+    public PingDto restart(Principal principal, @PathVariable Long id) {
+        PingDto ping = crosswords.restart(principal.getName(), id);
+        if (ping.shared() && !ping.cells().isEmpty()) messaging.convertAndSend(TOPIC, ping);
+        return ping;
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(Principal principal, @PathVariable Long id) {

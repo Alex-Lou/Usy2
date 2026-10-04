@@ -141,6 +141,11 @@ export function play(id: number, changes: Change[]): Promise<Ping> {
   return apiRequest<Ping>(`/api/crossword/${id}/cells`, { method: "PUT", body: { changes } });
 }
 
+/** Empties the grid (for both of us when shared); the cells cleared come back, as for a play. */
+export function restartGame(id: number): Promise<Ping> {
+  return apiRequest<Ping>(`/api/crossword/${id}/restart`, { method: "POST" });
+}
+
 export function deleteGame(id: number): Promise<void> {
   return apiRequest<void>(`/api/crossword/${id}`, { method: "DELETE" });
 }

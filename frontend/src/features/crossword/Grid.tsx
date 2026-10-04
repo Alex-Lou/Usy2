@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useLayoutEffect, useRef, useState } from "react";
 import type { Clue } from "./api";
 import { arrowOf, BLOCK, type Arrow } from "./logic";
 
@@ -42,18 +42,81 @@ const ARROWS: Record<Arrow, { at: string; shape: JSX.Element }> = {
   },
 };
 
+/** The smallest clue text, in pixels: below, it cannot be read. */
+const MIN_PX = 6;
+
+/** The height a clue has, as a share of the cell's width (borders aside). */
+const roomOf = (half: boolean) => (half ? 0.44 : 0.9);
+const lineCount = (half: boolean, size: number) => Math.max(1, Math.floor(roomOf(half) / (size * 1.1)));
+
+/** How many lines {@code text} takes, words wrapped at {@code perLine} letters (0: a word does not fit). */
+function linesFor(text: string, perLine: number): number {
+  let lines = 1;
+  let used = 0;
+  for (const word of text.split(" ")) {
+    if (word.length > perLine) return 0;
+    if (used === 0) used = word.length;
+    else if (used + 1 + word.length <= perLine) used += 1 + word.length;
+    else {
+      lines++;
+      used = word.length;
+    }
+  }
+  return lines;
+}
+
+/**
+ * The biggest size (a share of the cell's width) at which a clue fits whole in its cell, or its half
+ * when the cell holds two, and on how many lines: short clues big, long ones smaller, none cut off.
+ * A letter is taken as 0.6 size wide (a wide one counts), a line as 1.1 sizes high.
+ */
+export function clueFit(text: string, half: boolean): { size: number; lines: number } {
+  let size = 0.2;
+  for (; size > 0.1; size -= 0.005) {
+    const lines = lineCount(half, size);
+    const needed = linesFor(text, Math.floor(0.86 / (size * 0.6)));
+    if (needed > 0 && needed <= lines) return { size, lines };
+  }
+  return { size, lines: lineCount(half, size) };
+}
+
 /** A clue as printed in its cell, with the arrow showing where its word goes (bent on the edges). */
-function ClueText({ clue, half, active }: { clue: Clue; half: boolean; active: boolean }) {
+/** {@code cell}: the cell's size on screen, in pixels (the fit is checked again when it changes, a zoom). */
+function ClueText({ clue, half, active, cell }: { clue: Clue; half: boolean; active: boolean; cell: number }) {
   const arrow = ARROWS[arrowOf(clue)];
+  const fit = clueFit(clue.text, half);
+  const box = useRef<HTMLSpanElement>(null);
+  const text = useRef<HTMLSpanElement>(null);
+  // The estimate is checked on the real letters: too long or a word too wide (words are never cut),
+  // a little smaller until it fits.
+  useLayoutEffect(() => {
+    const b = box.current;
+    const t = text.current;
+    if (!b || !t) return;
+    const apply = (size: number) => {
+      b.style.fontSize = `max(${MIN_PX}px, var(--cell) * ${size.toFixed(3)})`;
+      t.style.webkitLineClamp = String(lineCount(half, size));
+    };
+    let size = fit.size;
+    apply(size);
+    // Below the smallest readable size, shrinking more changes nothing: the zoom is there for that.
+    for (let k = 0; k < 8 && size * cell > MIN_PX && (t.scrollHeight > t.clientHeight + 1 || t.scrollWidth > t.clientWidth + 1); k++) {
+      size *= 0.92;
+      apply(size);
+    }
+  }, [fit.size, half, cell]);
   return (
     <span
+      ref={box}
       className={
-        "relative flex flex-1 items-center justify-center overflow-hidden px-[2px] text-center font-semibold leading-[1.05] " +
+        "relative flex flex-1 items-center justify-center overflow-hidden px-[2px] text-center font-semibold leading-[1.1] " +
         (active ? "bg-primary/30 text-text" : "text-text-muted")
       }
-      style={{ fontSize: "max(6.5px, var(--cell) * 0.17)" }}
+      style={{ fontSize: `max(${MIN_PX}px, var(--cell) * ${fit.size.toFixed(3)})` }}
     >
-      <span className={half ? "line-clamp-2" : "line-clamp-4"}>{clue.text}</span>
+      <span ref={text} className="overflow-hidden" style={{ display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: fit.lines }}>
+        {clue.text}
+      </span>
       <svg
         viewBox="0 0 10 10"
         className={"absolute fill-current text-primary " + arrow.at}
@@ -84,8 +147,20 @@ export const Grid = memo(function Grid({
   flash,
   onCell,
 }: Props) {
+  // The cells' size on screen, for the clues to fit their text again after a zoom.
+  const box = useRef<HTMLDivElement>(null);
+  const [cellPx, setCellPx] = useState(0);
+  useLayoutEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const measure = () => setCellPx(Math.round(el.clientWidth / width));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [width]);
   return (
-    <div className="w-full" style={{ containerType: "inline-size" }}>
+    <div ref={box} className="w-full" style={{ containerType: "inline-size" }}>
       <div
         className="grid select-none gap-px overflow-hidden rounded-token border border-border bg-border"
         style={{ gridTemplateColumns: `repeat(${width}, minmax(0, 1fr))`, ["--cell" as string]: `calc(100cqw / ${width})` }}
@@ -106,7 +181,7 @@ export const Grid = memo(function Grid({
                 aria-label={clues.map((c) => `${c.dir === "right" ? "→" : "↓"} ${c.text}`).join(" ; ")}
               >
                 {clues.map((c) => (
-                  <ClueText key={c.start} clue={c} half={clues.length > 1} active={activeClue === c} />
+                  <ClueText key={c.start} clue={c} half={clues.length > 1} active={activeClue === c} cell={cellPx} />
                 ))}
               </button>
             );
