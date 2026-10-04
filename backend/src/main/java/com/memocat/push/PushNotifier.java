@@ -169,6 +169,12 @@ public class PushNotifier {
                     "Grille " + a.detail() + ", à remplir à deux", "/jeux/mots-fleches?partie=" + a.refId(), "crossword-" + a.refId());
             case CoupleActivity.CROSSWORD_DONE -> alert(a.actorName() + " a posé la dernière lettre : grille terminée 🎉",
                     "/jeux/mots-fleches?partie=" + a.refId(), "crossword-" + a.refId());
+            case CoupleActivity.PETIT_BAC -> alert(a.actorName() + " te lance un Petit Bac 🎲", a.detail(),
+                    "/jeux/petit-bac?partie=" + a.refId(), "petitbac-" + a.refId());
+            case CoupleActivity.PETIT_BAC_REVIEW -> alert(a.actorName() + " a rendu sa feuille ✓ À toi de valider ses réponses",
+                    a.detail(), "/jeux/petit-bac?partie=" + a.refId(), "petitbac-" + a.refId());
+            case CoupleActivity.PETIT_BAC_DONE -> alert(a.actorName() + " a validé : les points de la manche sont tombés 🏁",
+                    a.detail(), "/jeux/petit-bac?partie=" + a.refId(), "petitbac-" + a.refId());
             case CoupleActivity.HIDDEN_FOUND -> alert(a.actorName() + " a trouvé ton mot caché 🐾", a.detail(), "hidden-" + a.refId());
             // The photo stays secret until the other one posts theirs: only the theme is told.
             case CoupleActivity.CHALLENGE_POSTED -> alert(a.actorName() + " a relevé le défi photo 📸 À toi !",

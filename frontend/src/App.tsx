@@ -28,6 +28,7 @@ const OurProfilePage = lazy(() => import("./features/couple/OurProfilePage").the
 const JournalPage = lazy(() => import("./features/journal/JournalPage").then((m) => ({ default: m.JournalPage })));
 const ChallengePage = lazy(() => import("./features/challenge/ChallengePage").then((m) => ({ default: m.ChallengePage })));
 const CrosswordPage = lazy(() => import("./features/crossword/CrosswordPage").then((m) => ({ default: m.CrosswordPage })));
+const PetitBacPage = lazy(() => import("./features/petitbac/PetitBacPage").then((m) => ({ default: m.PetitBacPage })));
 const DatesPage = lazy(() => import("./features/couple/DatesPage").then((m) => ({ default: m.DatesPage })));
 const SearchPage = lazy(() => import("./features/search/SearchPage").then((m) => ({ default: m.SearchPage })));
 
@@ -52,6 +53,7 @@ export function App() {
         <Route path="/jeux/snake" element={<SnakePage />} />
         <Route path="/jeux/sudoku" element={<SudokuPage />} />
         <Route path="/jeux/mots-fleches" element={<CrosswordPage />} />
+        <Route path="/jeux/petit-bac" element={<PetitBacPage />} />
         <Route path="/jeux/quiz" element={<QuizPage />} />
         <Route path="/jeux/nous" element={<NousPage />} />
         <Route path="/jeux/direct" element={<LivePage />} />
