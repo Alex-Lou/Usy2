@@ -115,7 +115,7 @@ DEPART|1|Commencement du voyage|Prendre un nouveau ___
 ARRIVEE|1|Fin du trajet|Ligne d'___
 RETARD|1|Attente imprévue|En ___, comme le lapin blanc
 QUAI|1|Bord de voie|Au ___ des Orfèvres
-WAGON|1|Voiture de train|Raccrocher les ___
+WAGON|1|Voiture de train|___-lit, pour dormir en train
 TICKET|1|Petit billet|Avoir un ___, plaire
 MUSEE|1|On y voit des œuvres|Le Louvre en est un
 CHATEAU|1|Demeure de seigneur|En Espagne, il est imaginaire

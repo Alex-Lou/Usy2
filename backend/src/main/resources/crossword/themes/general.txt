@@ -32,7 +32,7 @@ SU|1|Connu|Appris par cœur
 TA|1|Possessif féminin|La tienne
 TE|1|Pronom personnel|Toi, en complément
 TU|1|Pronom de l'intime|Tutoiement en deux lettres
-UN|1|Premier nombre|Le premier de tous
+UN|1|Unité|Le premier de tous
 VA|1|Se déplace|Ça ___ ? Ça ___ !
 VU|1|Aperçu|Ni ___ ni connu
 OH|1|Exclamation|Cri d'étonnement
@@ -65,12 +65,12 @@ BUS|1|Transport en commun|Il a sa voie réservée
 BUT|1|Objectif|Le gardien veut l'empêcher
 CAP|1|Pointe de terre|On le garde dans la tempête
 CAR|1|Grand bus|Parce que, ou véhicule
-CEP|2|Pied de vigne|Champignon ou souche
+CEP|2|Pied de vigne|Le vigneron le taille
 CIL|1|Poil de paupière|Il bat sans faire de bruit
 CLE|1|Ouvre la porte|Elle est sous le paillasson
 COU|1|Relie la tête au corps|Celui de la girafe est long
 CRI|1|Éclat de voix|Dernier, à la mode
-CRU|1|Pas cuit|Grand vin ou poisson japonais
+CRU|1|Pas cuit|Grand vin de Bourgogne
 DES|1|Petits cubes à jouer|On les jette, le sort est fait
 DIX|1|Deux fois cinq|Autant que de doigts
 DON|1|Cadeau|Talent ou générosité
@@ -131,7 +131,7 @@ NUL|1|Zéro pointé|Match sans vainqueur
 OIE|1|Oiseau de basse-cour|Son jeu a soixante-trois cases
 ONU|2|Nations unies|Siège à New York
 OSA|2|Se risqua|Prit son courage à deux mains
-OSE|2|Téméraire|Qui ne recule devant rien
+OSE|2|Audacieux|Un peu leste
 OTE|2|Enlève|Retire son chapeau
 OUF|1|Soupir de soulagement|Enfin tiré d'affaire !
 OUI|1|Accord|Mot du mariage
@@ -298,7 +298,7 @@ OUIE|1|Sens des sons|Tout ___, très attentif
 PAGE|1|Feuille de livre|Tourner la ___, c'est passer à autre chose
 PAIN|1|Baguette|Gagner son ___
 PAIX|1|Contraire de guerre|Fiche-moi la ___ !
-PARI|1|Mise|Tenu, il est gagné
+PARI|1|Mise|Celui de Pascal porte sur Dieu
 PEAU|1|Enveloppe du corps|Celle de l'ours ne se vend pas trop tôt
 PERE|1|Papa|Noël, il passe par la cheminée
 PEUR|1|Frousse|Bleue, elle est intense
@@ -323,7 +323,7 @@ SENS|1|Direction|Il y en a cinq
 SEPT|1|Jours de la semaine|Les merveilles du monde
 SEUL|1|Sans personne|___ au monde
 SOIF|1|Envie de boire|Garder une poire pour elle
-SOIR|1|Fin de journée|Le grand, c'est la première
+SOIR|1|Fin de journée|Le grand, c'est la révolution
 SOLO|1|Seul en scène|Han, chez Star Wars
 SORT|1|Destin|Jeter un ___, c'est ensorceler
 SOUS|1|En dessous de|Argent de poche
@@ -391,7 +391,7 @@ VILLE|1|Agglomération|En ___, pas à la campagne
 ARGENT|1|Monnaie ou métal|Il ne fait pas le bonheur
 BALADE|1|Promenade|Petit tour à pied
 CHEMIN|1|Sentier|Le ___ des écoliers
-MAISON|1|Foyer|___ mère, faite à la main
+MAISON|1|Foyer|Fait ___, cuisiné soi-même
 MIROIR|1|Reflète l'image|Le ___ magique de la reine
 PAPIER|1|Feuille blanche|___ mâché
 SAISON|1|Été ou hiver|Il y en a quatre
@@ -433,7 +433,7 @@ LOURD|1|Pesant|Poids ___ du ring
 MIEUX|1|En meilleur état|Tant ___ !
 MOINS|1|Pas plus|Signe de la soustraction
 NOUS|1|Toi et moi|Pronom du couple
-OUVERT|1|Pas fermé|Esprit sans préjugés
+OUVERT|1|Pas fermé|Comme un esprit sans préjugés
 PARCE|1|___ que|Début de justification
 PARFOIS|1|De temps en temps|Pas toujours
 PETIT|1|Pas grand|Le ___ dernier de la famille
@@ -443,7 +443,7 @@ POUR|1|En faveur de|Le ___ et le contre
 PRES|1|Pas loin|À peu ___
 PUIS|1|Ensuite|Et ___ quoi encore ?
 QUAND|1|À quel moment|___ on veut, on peut
-SANS|1|Privé de|___ dessus dessous
+SANS|1|Privé de|___ queue ni tête
 SOUVENT|1|Fréquemment|Pas rarement
 TOUJOURS|1|Éternellement|Pour ___, comme dans les contes
 TOUT|1|L'ensemble|___ est bien qui finit bien
@@ -538,7 +538,7 @@ LENT|1|Pas rapide|Comme un escargot
 LIBRE|1|Indépendant|Comme l'air
 LIMITE|1|Frontière|Date ___
 LOISIR|1|Temps libre|À ___, autant qu'on veut
-LUXE|1|Faste|Ordre et beauté, chez Baudelaire
+LUXE|1|Faste|Calme et volupté, chez Baudelaire
 MAGIE|1|Sorcellerie|Tour de ___
 MALIN|1|Rusé|Le ___ plaisir
 MARCHE|1|Pas à pas|D'escalier, ou du samedi
@@ -597,7 +597,7 @@ VICTOIRE|1|Triomphe|Le V des doigts
 VIEUX|1|Âgé|Mon ___ !
 VISAGE|1|Figure|À ___ découvert
 VIVANT|1|En vie|Bon ___
-VOISIN|1|Habite à côté|Le pré du ___
+VOISIN|1|Habite à côté|Son herbe semble plus verte
 ACIER|2|Fer allié|Nerfs d'___
 AGNEAU|1|Petit du mouton|Doux comme lui
 AIGLE|1|Oiseau royal|Pas un ___, pas très malin
@@ -638,7 +638,7 @@ CHARME|1|Séduction|Arbre ou attrait
 CHEF|1|Patron|Grand cuisinier
 CHOIX|1|Option|L'embarras du ___
 CLOCHE|1|Sonne à l'église|Couvre le fromage
-COCON|1|Abri douillet|Chrysalide du ver à soie
+COCON|1|Abri douillet|Enveloppe du ver à soie
 COFFRE|1|Malle|À jouets ou de voiture
 COLLINE|1|Petite hauteur|Rome en compte sept
 COMPTE|1|Calcul|En banque
@@ -677,7 +677,7 @@ HAMAC|2|Lit suspendu|Sieste entre deux arbres
 HORIZON|1|Ligne du ciel|À l'___
 ICONE|2|Image sainte|Petit dessin d'écran
 INDICE|1|Piste|Le détective le cherche
-JOUEUR|1|Membre de l'équipe|Mauvais, il triche
+JOUEUR|1|Membre de l'équipe|Mauvais, il ne sait pas perdre
 LANTERNE|2|Lampe portative|La ___ rouge, le dernier
 LEGENDE|1|Récit fabuleux|Sous la photo
 LUCARNE|3|Fenêtre de toit|Le ballon y entre, au foot

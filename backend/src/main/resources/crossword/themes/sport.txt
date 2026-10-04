@@ -15,7 +15,7 @@ COURSE|1|Compétition de vitesse|Contre la montre
 MARATHON|1|42 kilomètres|Très longue séance
 SPRINT|1|Course de vitesse|Final rapide
 NATATION|1|Sport de nageur|Piscine olympique
-PISCINE|1|Bassin de nage|Faire ___, passer à côté
+PISCINE|1|Bassin de nage|Grand bain ou petit bain
 PLONGEON|1|Saut dans l'eau|Faire un ___, chuter
 YOGA|1|Postures et respiration|Salutation au soleil
 DANSE|1|Mouvements en musique|Classique ou hip-hop
@@ -41,7 +41,7 @@ JOUEUR|1|Membre de l'équipe|Mauvais ___
 ARBITRE|1|Siffle les fautes|Libre ___
 SIFFLET|1|Outil de l'arbitre|Couper le ___
 CARTON|1|Jaune ou rouge|Faire un ___, réussir
-PENALTY|1|Tir au but|Sur la ligne des onze mètres
+PENALTY|1|Tir au but|Tiré à onze mètres
 CORNER|1|Coup de pied de coin|Coin du terrain
 GARDIEN|1|Protège le but|De la paix
 ATTAQUANT|1|Marque des buts|Avant-centre
@@ -112,7 +112,7 @@ SKATE|1|Planche à roulettes|Rampe de ___
 ROLLER|1|Patin à roulettes|Sur la piste
 OLYMPIQUE|1|Des Jeux|Forme ___
 TOUR|1|De France, à vélo|Grande boucle
-ETAPE|1|Partie du Tour|Brûler les ___
+ETAPE|1|Partie du Tour|Ville-___ du Tour
 PELOTON|1|Groupe de cyclistes|D'exécution
 SPRINTER|1|Coureur rapide|Il finit en trombe
 CHRONO|1|Mesure le temps|Contre la montre

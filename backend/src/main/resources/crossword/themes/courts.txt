@@ -29,7 +29,7 @@ BON|1|Pas mauvais|___ appétit !
 BOT|3|Pied ___|Pied déformé
 BOX|2|Stalle de cheval|Garage fermé
 BRU|3|Belle-fille|Épouse du fils
-BUE|2|Avalée|L'eau est ___
+BUE|2|Avalée|La coupe fut ___ jusqu'à la lie
 CAS|1|Situation|En tout ___
 CES|1|Démonstratif pluriel|___ gens-là
 CET|1|Démonstratif masculin|___ été
@@ -37,12 +37,12 @@ COL|1|Passage de montagne|Blanc ou bleu, au travail
 COR|2|Instrument de chasse|Durillon du pied
 DIT|1|Prononcé|Aussitôt ___, aussitôt fait
 DOC|2|Toubib, en bref|Film du réel, en bref
-DOT|2|Apport de la mariée|Richesse du trousseau
-DUC|2|Noble au-dessus du comte|Grand hibou
+DOT|2|Apport de la mariée|Le coureur de ___ la convoite
+DUC|2|Noble au-dessus du comte|Grand ou petit, c'est un hibou
 DUE|1|Que l'on doit|Somme ___
 EGO|2|Le moi|Il est surdimensionné chez le vaniteux
 ETA|3|Lettre grecque|Entre zêta et thêta
-EUE|2|Possédée|Bien ___, bien dupée
+EUE|2|Possédée|Dupée, familièrement
 EUS|2|Possédés|Ils ont été bien ___
 EUX|1|Pronom pluriel|Entre ___, entre soi
 EVE|1|Première femme|Elle croqua la pomme
@@ -93,7 +93,7 @@ PUE|2|Sent mauvais|Ça ___ !
 PUS|3|Liquide d'abcès|Infection jaunâtre
 PUT|2|Fut capable|Il fit ce qu'il ___
 RIA|3|Vallée envahie par la mer|Aber breton
-RIE|1|Qui s'amuse|Elle ___ de bon cœur
+RIE|1|Subjonctif de rire|Qu'elle ___ de bon cœur
 RIS|2|De veau, en cuisine|Pris dans la voile
 RIT|1|S'amuse|Qui ___ le dernier…
 ROC|2|Gros caillou|Solide comme un ___
@@ -176,7 +176,7 @@ ROCS|2|Rochers|Blocs de pierre
 PICS|1|Sommets pointus|Coups de bec d'oiseau
 SOTS|1|Idiots|Ni ___ ni malins
 AIMA|1|Chérit, au passé|Il l'___ toute sa vie
-ALLE|2|Parti, au participe|Elle est ___ vite
+ALLE|2|Parti, au participe|Il est ___ trop loin
 AURA|1|Possédera|Halo mystérieux
 DIRA|1|Exprimera|On ___ ce qu'on voudra
 DOIT|1|Est redevable|Il ___ y aller
@@ -298,7 +298,7 @@ PALE|1|Sans couleur|Blanc comme un linge
 PAPA|1|Père|À la ___, tranquillement
 PAPE|1|Chef de l'Église|Sérieux comme un ___
 PIRE|1|Plus mauvais|Le ___ est à venir
-PNEU|1|Roue gonflée|Crevé sur le bord de la route
+PNEU|1|Enveloppe de roue|Crevé sur le bord de la route
 POIL|1|Petit cheveu du corps|À ___, tout nu
 POIS|1|Petit légume vert|Robe à ___
 POLI|1|Courtois|Lisse et brillant
@@ -308,7 +308,7 @@ PROF|1|Enseignant, en bref|Maître d'école
 PUMA|2|Félin d'Amérique|Cougar
 PURE|1|Sans mélange|___ laine
 RADE|2|Bassin de port|Laisser en ___, abandonner
-RAGE|1|Colère|Dent qui fait mal
+RAGE|1|Colère|De dents, elle fait mal
 RAID|2|Attaque éclair|Rallye d'aventure
 RAMI|2|Jeu de cartes|Il se joue avec des combinaisons
 RAPT|2|Enlèvement|Kidnapping
@@ -318,7 +318,7 @@ RECU|1|Admis à l'examen|Ticket de caisse
 REIN|1|Filtre le sang|Tour de ___
 RIME|2|Fait écho en fin de vers|Sans ___ ni raison
 RITE|2|Cérémonie|Habitude immuable
-ROUX|1|Poil de carotte|Sauce liée au beurre
+ROUX|1|Poil de carotte|Beurre et farine cuits ensemble
 RUDE|1|Rugueux|L'hiver est ___
 SAGA|2|Longue épopée|Récit familial
 SAIN|1|En bonne santé|___ et sauf

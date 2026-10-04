@@ -2,7 +2,7 @@
 CHAT|1|Miaule|Il retombe sur ses pattes
 CHIEN|1|Aboie|Meilleur ami de l'homme
 LION|1|Roi des animaux|Crinière de la savane
-LOUP|1|Hurle à la lune|Il faut hurler avec eux
+LOUP|1|Hurle à la lune|Crier au ___, alerter
 OURS|1|Gros plantigrade|En peluche dans le lit
 TIGRE|1|Félin rayé|Jaloux comme un ___
 ZEBRE|1|Cheval rayé|Drôle de ___, drôle de type
@@ -88,7 +88,7 @@ HERBE|1|Pousse dans le pré|Couper l'___ sous le pied
 MOUSSE|1|Tapis vert|Écume ou jeune marin
 FOUGERE|2|Plante des sous-bois|Feuilles en crosse
 CHAMPIGNON|1|Pousse après la pluie|Appuyer dessus, accélérer
-FORET|1|Bois étendu|Cache l'arbre
+FORET|1|Bois étendu|L'arbre la cache
 BOIS|1|Petite forêt|Toucher du ___
 JARDIN|1|Potager ou parterre|Cultiver son ___
 PRAIRIE|1|Grand pré|Petite maison dans la ___
@@ -104,7 +104,7 @@ LAC|1|Étendue d'eau douce|Léman ou d'Annecy
 ETANG|1|Plan d'eau|Les grenouilles y chantent
 MER|1|Grande bleue|Ce n'est pas la ___ à boire
 OCEAN|1|Vaste mer|Atlantique ou Pacifique
-PLAGE|1|Sable et mer|Ses pavés, sous Mai 68
+PLAGE|1|Sable et mer|Sous les pavés, en Mai 68
 VAGUE|1|Ondulation de la mer|Nouvelle, au cinéma
 ROCHER|1|Gros caillou|Chocolat praliné
 GROTTE|1|Caverne|Celle de Lascaux
