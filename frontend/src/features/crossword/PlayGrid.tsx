@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "../../components/ui/Icon";
 import { feel } from "../../lib/feel";
 import { useOnRefresh } from "../../lib/refresh";
 import { useAuth } from "../auth/useAuth";
 import { Confetti } from "../games/Confetti";
 import { ShareScore } from "../games/ShareScore";
-import { getGame, levelLabel, onCrossword, play, restartGame, starsFor, themeOf, type Change, type Clue, type Dir, type Game } from "./api";
+import { createGame, getDaily, getGame, levelLabel, onCrossword, play, restartGame, starsFor, themeOf, type Change, type Clue, type Dir, type Game, type Level, type Size, type Theme } from "./api";
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { BLOCK, cellsOf, cluesByCell, keyToLetter, readingOrder, wordsByCell } from "./logic";
@@ -155,18 +155,31 @@ export function PlayGrid({ id }: { id: number }) {
     [activeClue, width, cursor.cell, order],
   );
 
+  // A cell shown wrong stops being red once it is typed again.
+  const unmark = useCallback(
+    (cell: number) =>
+      setWrong((w) => {
+        if (!w.has(cell)) return w;
+        const next = new Set(w);
+        next.delete(cell);
+        return next;
+      }),
+    [],
+  );
+
   const typeLetter = useCallback(
     (l: string) => {
       if (!game || done || cursor.cell < 0) return;
       feel.tap();
       if (authors[cursor.cell] !== "*") {
+        unmark(cursor.cell);
         setLetters((s) => setAt(s, cursor.cell, l));
         setAuthors((s) => setAt(s, cursor.cell, myMark));
         send({ cell: cursor.cell, letter: l });
       }
       advance(authors[cursor.cell] === "*" ? letters : setAt(letters, cursor.cell, l), letters[cursor.cell] !== ".");
     },
-    [game, done, cursor.cell, authors, letters, myMark, send, advance],
+    [game, done, cursor.cell, authors, letters, myMark, send, advance, unmark],
   );
 
   const erase = useCallback(() => {
@@ -241,6 +254,40 @@ export function PlayGrid({ id }: { id: number }) {
     setMessage(bad.length > 0 ? `${bad.length} lettre${bad.length > 1 ? "s" : ""} à revoir` : empty ? "Rien de faux pour l'instant" : "✓ Mot juste !");
   }, [game, activeClue, width, letters]);
 
+  // The grid full but not right: its wrong letters in red (until typed again), the cursor on the first.
+  const showErrors = useCallback(() => {
+    if (!game) return;
+    const bad = [...game.solution].flatMap((c, i) => (c !== BLOCK && letters[i] !== c ? [i] : []));
+    setWrong(new Set(bad));
+    const first = bad[0];
+    if (first === undefined) return;
+    const w = words.get(first);
+    setCursor({ cell: first, dir: w?.[cursor.dir] ? cursor.dir : w?.right ? "right" : "down" });
+  }, [game, letters, words, cursor.dir]);
+
+  // A finished grid: the next one, as it was set (same size, theme, level, alone or together), in one tap.
+  const navigate = useNavigate();
+  const [starting, setStarting] = useState(false);
+  const another = useCallback(() => {
+    if (!game || starting) return;
+    setStarting(true);
+    createGame(game.size as Size, game.shared, game.theme as Theme, game.level as Level)
+      .then((g) => navigate(`/jeux/mots-fleches?partie=${g.id}`))
+      .catch(() => {
+        setStarting(false);
+        setMessage("La nouvelle grille n'a pas pu se créer.");
+      });
+  }, [game, starting, navigate]);
+
+  // The grid of the day done: how many days in a row now.
+  const [streak, setStreak] = useState<number | null>(null);
+  useEffect(() => {
+    if (!done || !game?.daily) return;
+    getDaily()
+      .then((d) => setStreak(d.streak))
+      .catch(() => setStreak(null));
+  }, [done, game?.daily]);
+
   // Starting over: whatever was waiting to be sent goes, the empty grid comes back from the server.
   const restart = useCallback(() => {
     const ask = game?.shared ? "Recommencer la grille ? Toutes les lettres seront effacées, pour vous deux." : "Recommencer la grille ? Toutes les lettres seront effacées.";
@@ -310,6 +357,8 @@ export function PlayGrid({ id }: { id: number }) {
 
   const letterCells = [...game.solution].filter((c) => c !== BLOCK).length;
   const filled = [...letters].filter((c) => c !== BLOCK && c !== ".").length;
+  // Every cell written but the grid not right: nothing would happen without telling how many are wrong.
+  const errors = !done && filled === letterCells ? [...game.solution].filter((c, i) => c !== BLOCK && letters[i] !== c).length : 0;
   const revealed = [...authors].filter((c) => c === "*").length;
   const stars = starsFor(revealed);
   const took = finishedAt ? minutesBetween(game.createdAt, finishedAt) : null;
@@ -400,17 +449,43 @@ export function PlayGrid({ id }: { id: number }) {
             {game.shared ? ", à deux" : ""}
             {revealed === 0 ? ", sans aide !" : `, ${revealed} lettre${revealed > 1 ? "s" : ""} révélée${revealed > 1 ? "s" : ""}.`}
           </p>
+          {game.daily && (
+            <p className="mt-1 text-sm font-semibold">
+              {streak && streak > 1 ? `🔥 ${streak} jours d'affilée !` : "🔥 Première grille du jour de la série !"} La prochaine, demain.
+            </p>
+          )}
           <div className="mt-3 flex flex-wrap justify-center gap-2">
             <ShareScore
               text={`✏️ ${game.daily ? "Grille du jour" : `Mots fléchés · ${SIZE_LABEL[game.size].toLowerCase()}`} (${levelLabel(game.level).toLowerCase()}) terminée${took ? ` en ${took}` : ""}${game.shared ? " à deux 💞" : ""} ${"⭐".repeat(stars)}${revealed === 0 ? " · sans aide !" : ""}`}
             />
-            <Link to="/jeux/mots-fleches" className="inline-block rounded-full btn-brand px-5 py-2 text-sm font-semibold press">
-              Une autre grille
-            </Link>
+            {game.daily ? (
+              <Link to="/jeux/mots-fleches" className="inline-block rounded-full btn-brand px-5 py-2 text-sm font-semibold press">
+                Une autre grille
+              </Link>
+            ) : (
+              <>
+                <button type="button" onClick={another} disabled={starting} className="rounded-full btn-brand px-5 py-2 text-sm font-semibold press disabled:opacity-60">
+                  {starting ? "Création…" : "Nouvelle grille"}
+                </button>
+                <Link to="/jeux/mots-fleches" className="chip press self-center">
+                  Toutes les grilles
+                </Link>
+              </>
+            )}
           </div>
         </div>
       ) : (
         <div className="flex shrink-0 flex-col gap-2 rounded-token border border-border bg-surface p-2 shadow-card">
+          {errors > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-token bg-danger/10 px-2 py-1.5 text-center text-sm animate-pop" role="status">
+              <span>
+                🧐 Grille pleine, mais {errors} lettre{errors > 1 ? "s" : ""} fausse{errors > 1 ? "s" : ""}
+              </span>
+              <button type="button" onClick={showErrors} className="chip press text-xs font-semibold">
+                {errors > 1 ? "Les montrer" : "La montrer"}
+              </button>
+            </div>
+          )}
           <div className="flex items-center gap-1">
             <button type="button" onClick={() => goWord(-1)} aria-label="Mot précédent" className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">
               <Icon name="chevronLeft" size={18} />
