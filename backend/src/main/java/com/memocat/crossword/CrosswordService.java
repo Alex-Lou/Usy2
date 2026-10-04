@@ -30,10 +30,15 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /** ✏️ Mots fléchés: a new grid from the word list, played alone or together, saved as you type. */
 @Service
@@ -80,6 +85,13 @@ public class CrosswordService {
     /** The grid of the day: medium, every theme; easy early in the week, hard at the weekend. */
     static final Size DAILY_SIZE = Size.MOYENNE;
 
+    /**
+     * A mixed grid (and the grid of the day) leaves out the long words of the last grids made, so that
+     * day after day the grids do not keep bringing back the same ones; short words hold every grid
+     * together and stay. The last grids: see {@link CrosswordGameRepository#findTop12ByOrderByCreatedAtDesc}.
+     */
+    static final int FRESH_LENGTH = 5;
+
     static final int MAX_CHANGES = 60;
     static final int LIST_SIZE = 30;
 
@@ -90,6 +102,8 @@ public class CrosswordService {
     private final ApplicationEventPublisher events;
     private final Clock clock;
     private final Random random;
+    /** The dictionary by word, to show each grid's clues as they are worded today. */
+    private final Map<String, ArrowWords.Word> byWord;
 
     @Autowired
     public CrosswordService(CrosswordGameRepository games, UserRepository users, ArrowWords words, ObjectMapper json,
@@ -106,6 +120,7 @@ public class CrosswordService {
         this.events = events;
         this.clock = clock;
         this.random = random;
+        this.byWord = words.words().stream().collect(Collectors.toMap(ArrowWords.Word::word, Function.identity()));
     }
 
     @Transactional
@@ -114,7 +129,7 @@ public class CrosswordService {
         Size s = parseSize(size);
         String t = parseTheme(theme);
         Level l = parseLevel(level);
-        ArrowGrid grid = new ArrowGenerator(entries(t, l)).generate(s.width, s.height, random, s.attempts);
+        ArrowGrid grid = new ArrowGenerator(entries(t, l, recentWords())).generate(s.width, s.height, random, s.attempts);
         CrosswordGame game = games.save(new CrosswordGame(me, s.name().toLowerCase(Locale.ROOT), t,
                 l.name().toLowerCase(Locale.ROOT), shared, grid.width(), grid.height(), toJson(grid.clues()),
                 grid.solution(), clock.instant()));
@@ -146,7 +161,7 @@ public class CrosswordService {
         Optional<CrosswordGame> existing = games.findByDailyDate(today);
         if (existing.isPresent()) return toDto(existing.get());
         Level l = dailyLevel(today);
-        ArrowGrid grid = new ArrowGenerator(entries("melange", l)).generate(DAILY_SIZE.width, DAILY_SIZE.height, random,
+        ArrowGrid grid = new ArrowGenerator(entries("melange", l, recentWords())).generate(DAILY_SIZE.width, DAILY_SIZE.height, random,
                 DAILY_SIZE.attempts);
         CrosswordGame game = new CrosswordGame(me, DAILY_SIZE.name().toLowerCase(Locale.ROOT), "melange",
                 l.name().toLowerCase(Locale.ROOT), true, grid.width(), grid.height(), toJson(grid.clues()), grid.solution(),
@@ -180,16 +195,41 @@ public class CrosswordService {
         return LocalDate.now(clock.withZone(HOME));
     }
 
-    /** The words a grid may use, with the clue it shows; in a theme grid, every long word is a theme word. */
     List<ArrowGenerator.Entry> entries(String theme, Level level) {
+        return entries(theme, level, Set.of());
+    }
+
+    /**
+     * The words a grid may use, with the clue it shows; in a theme grid, every long word is a theme word.
+     * {@code recent}: words of the last grids, left out of a mixed grid when long (a theme has too few
+     * words to spare any).
+     */
+    List<ArrowGenerator.Entry> entries(String theme, Level level, Set<String> recent) {
         boolean anyTheme = theme.equals("melange");
         return words.words().stream()
                 .filter(w -> w.level() <= level.maxWordLevel)
+                .filter(w -> !anyTheme || w.word().length() < FRESH_LENGTH || !recent.contains(w.word()))
                 .filter(w -> anyTheme || w.word().length() <= THEME_GLUE_LENGTH || w.themes().contains(theme))
                 .map(w -> new ArrowGenerator.Entry(w.word(),
                         random.nextDouble() < level.hardClues ? w.hard() : w.easy(),
                         !anyTheme && w.themes().contains(theme)))
                 .toList();
+    }
+
+    /** The words of the last grids made (by either of us). */
+    private Set<String> recentWords() {
+        Set<String> out = new HashSet<>();
+        for (CrosswordGame g : games.findTop12ByOrderByCreatedAtDesc()) {
+            for (ArrowGrid.Clue c : fromJson(g.getClues())) out.add(answer(g.getSolution(), g.getWidth(), c));
+        }
+        return out;
+    }
+
+    static String answer(String solution, int width, ArrowGrid.Clue c) {
+        int step = c.dir().equals("down") ? width : 1;
+        StringBuilder sb = new StringBuilder(c.length());
+        for (int k = 0; k < c.length(); k++) sb.append(solution.charAt(c.start() + k * step));
+        return sb.toString();
     }
 
     @Transactional(readOnly = true)
@@ -244,6 +284,27 @@ public class CrosswordService {
             events.publishEvent(CoupleActivity.of(CoupleActivity.CROSSWORD_DONE, me, game.getSize(), game.getId()));
         }
         return new PingDto(id, game.isShared(), me.getId(), applied, game.getFinishedAt());
+    }
+
+    /**
+     * Starts the grid over: every letter goes, revealed ones too (a shared grid restarts for both of
+     * us; the other one sees it live). A finished grid stays as it is: its time and stars are kept.
+     */
+    @Transactional
+    public PingDto restart(String username, Long id) {
+        User me = requireUser(username);
+        CrosswordGame game = visible(games.findForUpdate(id), me);
+        if (game.getFinishedAt() != null) throw new ConflictException("Cette grille est déjà terminée");
+        String solution = game.getSolution();
+        StringBuilder empty = new StringBuilder(solution.length());
+        List<CellDto> cleared = new ArrayList<>();
+        for (int cell = 0; cell < solution.length(); cell++) {
+            boolean letter = solution.charAt(cell) != ArrowGrid.BLOCK;
+            empty.append(letter ? '.' : ArrowGrid.BLOCK);
+            if (letter && game.getLetters().charAt(cell) != '.') cleared.add(new CellDto(cell, "", '.'));
+        }
+        game.write(empty.toString(), empty.toString(), clock.instant());
+        return new PingDto(id, game.isShared(), me.getId(), cleared, null);
     }
 
     @Transactional
@@ -312,8 +373,35 @@ public class CrosswordService {
 
     private GameDto toDto(CrosswordGame g) {
         return new GameDto(g.getId(), g.getSize(), g.getTheme(), g.getLevel(), g.isShared(), g.getOwner().getId(), g.getOwner().getDisplayName(),
-                g.getWidth(), g.getHeight(), fromJson(g.getClues()), g.getSolution(), g.getLetters(), g.getAuthors(),
+                g.getWidth(), g.getHeight(), freshClues(g), g.getSolution(), g.getLetters(), g.getAuthors(),
                 g.getCreatedAt(), g.getUpdatedAt(), g.getFinishedAt(), g.getDailyDate());
+    }
+
+    /**
+     * The grid's clues, as the dictionary words them today: a clue corrected since the grid was made
+     * shows corrected (the easy or the tricky one, as the grid's level goes), so no grid keeps an error.
+     */
+    List<ArrowGrid.Clue> freshClues(CrosswordGame g) {
+        List<ArrowGrid.Clue> stored = fromJson(g.getClues());
+        Set<String> texts = stored.stream().map(ArrowGrid.Clue::text).collect(Collectors.toCollection(HashSet::new));
+        List<ArrowGrid.Clue> out = new ArrayList<>(stored.size());
+        for (ArrowGrid.Clue c : stored) {
+            ArrowWords.Word w = byWord.get(answer(g.getSolution(), g.getWidth(), c));
+            if (w == null || c.text().equals(w.easy()) || c.text().equals(w.hard())) {
+                out.add(c);
+                continue;
+            }
+            boolean tricky = switch (g.getLevel()) {
+                case "difficile" -> true;
+                case "moyen" -> (c.cell() + c.start()) % 3 == 0;
+                default -> false;
+            };
+            String text = tricky ? w.hard() : w.easy();
+            if (texts.contains(text)) text = tricky ? w.easy() : w.hard(); // never two clues alike in a grid
+            texts.add(text);
+            out.add(new ArrowGrid.Clue(c.cell(), c.dir(), c.start(), c.length(), text));
+        }
+        return out;
     }
 
     private String toJson(List<ArrowGrid.Clue> clues) {

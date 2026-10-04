@@ -259,4 +259,48 @@ class CrosswordServiceTest {
         when(games.findByDailyDate(today)).thenReturn(Optional.empty());
         assertThat(service.daily("lou").streak()).as("yesterday missed: back to zero").isZero();
     }
+
+    /** A clue corrected in the dictionary shows corrected in a grid made before; the others stay as made. */
+    @Test
+    void aGridShowsItsCluesAsWordedToday() {
+        // "#SA" / "#NE": SA across (clue in cell 0), NE across (clue in cell 3).
+        String clues = "[{\"cell\":0,\"dir\":\"right\",\"start\":1,\"length\":2,\"text\":\"La sienne\"},"
+                + "{\"cell\":3,\"dir\":\"right\",\"start\":4,\"length\":2,\"text\":\"Particule négative\"}]";
+        CrosswordGame g = new CrosswordGame(lou, "petite", "melange", "difficile", false, 3, 2, clues, "#SA#NE", Instant.now());
+        ReflectionTestUtils.setField(g, "id", 6L);
+        when(games.findById(6L)).thenReturn(Optional.of(g));
+
+        var shown = service.get("lou", 6L).clues();
+        var sa = new ArrowWords().words().stream().filter(w -> w.word().equals("SA")).findFirst().orElseThrow();
+        assertThat(shown.get(0).text()).isEqualTo(sa.hard()).isNotEqualTo("La sienne"); // a hard grid: the tricky clue
+        assertThat(shown.get(1).text()).isEqualTo("Particule négative"); // still right: kept
+    }
+
+    /** A mixed grid does not bring back the long words of the last grids; short ones and theme grids keep theirs. */
+    @Test
+    void aMixedGridLeavesOutTheLongWordsOfTheLastGrids() {
+        var recent = java.util.Set.of("AVENIR", "ECUREUIL", "SU", "CUISINE");
+        assertThat(service.entries("melange", CrosswordService.Level.FACILE, recent)).map(ArrowGenerator.Entry::word)
+                .doesNotContain("AVENIR", "ECUREUIL").contains("SU");
+        assertThat(service.entries("cuisine", CrosswordService.Level.FACILE, recent)).map(ArrowGenerator.Entry::word)
+                .contains("CUISINE");
+    }
+
+    /** Starting over empties every letter, revealed ones too, and says which cells to clear for the other one. */
+    @Test
+    void aGridCanStartOver() {
+        CrosswordGame g = tiny(true);
+        service.play("lou", 5L, List.of(new Change(1, "A", false), new Change(4, null, true)));
+        var ping = service.restart("sam", 5L);
+        assertThat(g.getLetters()).isEqualTo("#..#.#");
+        assertThat(g.getAuthors()).isEqualTo("#..#.#");
+        assertThat(ping.cells()).extracting(CrosswordDtos.CellDto::cell).containsExactly(1, 4);
+    }
+
+    @Test
+    void aFinishedGridDoesNotStartOver() {
+        tiny(false);
+        service.play("lou", 5L, List.of(new Change(1, "A", false), new Change(2, "B", false), new Change(4, "C", false)));
+        assertThatThrownBy(() -> service.restart("lou", 5L)).isInstanceOf(ConflictException.class);
+    }
 }

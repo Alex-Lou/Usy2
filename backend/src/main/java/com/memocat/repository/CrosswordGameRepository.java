@@ -19,6 +19,9 @@ public interface CrosswordGameRepository extends JpaRepository<CrosswordGame, Lo
 
     Optional<CrosswordGame> findByDailyDate(LocalDate day);
 
+    /** The last grids made (their words are not brought back right away in the next mixed grid). */
+    List<CrosswordGame> findTop12ByOrderByCreatedAtDesc();
+
     /** The days whose grid was finished, since {@code from}, most recent first. */
     @Query("select g.dailyDate from CrosswordGame g where g.dailyDate >= :from and g.finishedAt is not null order by g.dailyDate desc")
     List<LocalDate> findFinishedDays(LocalDate from);
