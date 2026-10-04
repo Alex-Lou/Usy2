@@ -74,10 +74,19 @@ export function PlayGrid({ id }: { id: number }) {
   const focus = useMemo(() => (activeClue ? [activeClue.cell, ...cellsOf(activeClue, width)] : []), [activeClue, width]);
 
   // Full screen while playing: no tab bar under the keyboard (the ‹ goes back to the grids).
+  // The page itself does not zoom either (only the grid does, see ZoomView): a page zoomed with
+  // the fingers would leave the keyboard out of the screen. Android: the viewport; iPhone: its gesture.
   useEffect(() => {
     document.documentElement.dataset.immersive = "";
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+    const before = meta?.content;
+    if (meta) meta.content = `${before}, maximum-scale=1, user-scalable=no`;
+    const noPageZoom = (e: Event) => e.preventDefault();
+    document.addEventListener("gesturestart", noPageZoom);
     return () => {
       delete document.documentElement.dataset.immersive;
+      if (meta && before !== undefined) meta.content = before;
+      document.removeEventListener("gesturestart", noPageZoom);
     };
   }, []);
 
@@ -124,15 +133,26 @@ export function PlayGrid({ id }: { id: number }) {
 
   const done = Boolean(finishedAt) || (game !== null && letters === game.solution);
 
-  const moveInWord = useCallback(
-    (delta: 1 | -1) => {
+  // After a letter: the next empty cell of the word (the next cell when correcting one already
+  // written); the word full, the next one still to fill (no letter written over the last one, no
+  // cell to pick again).
+  const advance = useCallback(
+    (now: string, correcting: boolean) => {
       if (!activeClue) return;
       const cells = cellsOf(activeClue, width);
       const at = cells.indexOf(cursor.cell);
-      const next = cells[at + delta];
-      if (next !== undefined) setCursor({ cell: next, dir: activeClue.dir });
+      const empty = (c: number) => now[c] === ".";
+      const inWord = cells.slice(at + 1).find(empty) ?? cells.slice(0, at).find(empty);
+      if (correcting && at + 1 < cells.length) return setCursor({ cell: cells[at + 1], dir: activeClue.dir });
+      if (inWord !== undefined) return setCursor({ cell: inWord, dir: activeClue.dir });
+      const i = order.indexOf(activeClue);
+      for (let k = 1; k < order.length; k++) {
+        const next = order[(i + k) % order.length];
+        const first = cellsOf(next, width).find(empty);
+        if (first !== undefined) return setCursor({ cell: first, dir: next.dir });
+      }
     },
-    [activeClue, width, cursor.cell],
+    [activeClue, width, cursor.cell, order],
   );
 
   const typeLetter = useCallback(
@@ -144,9 +164,9 @@ export function PlayGrid({ id }: { id: number }) {
         setAuthors((s) => setAt(s, cursor.cell, myMark));
         send({ cell: cursor.cell, letter: l });
       }
-      moveInWord(1);
+      advance(authors[cursor.cell] === "*" ? letters : setAt(letters, cursor.cell, l), letters[cursor.cell] !== ".");
     },
-    [game, done, cursor.cell, authors, myMark, send, moveInWord],
+    [game, done, cursor.cell, authors, letters, myMark, send, advance],
   );
 
   const erase = useCallback(() => {
@@ -208,8 +228,8 @@ export function PlayGrid({ id }: { id: number }) {
     setLetters((s) => setAt(s, cell, game.solution[cell]));
     setAuthors((s) => setAt(s, cell, "*"));
     send({ cell, reveal: true });
-    moveInWord(1);
-  }, [game, done, cursor.cell, authors, send, moveInWord]);
+    advance(setAt(letters, cell, game.solution[cell]), letters[cell] !== ".");
+  }, [game, done, cursor.cell, authors, letters, send, advance]);
 
   const check = useCallback(() => {
     if (!game || !activeClue) return;
@@ -284,7 +304,7 @@ export function PlayGrid({ id }: { id: number }) {
   return (
     // One screen high: the grid takes what the header and the keyboard leave (it zooms inside).
     <div
-      className="flex h-[calc(100dvh-var(--topbar-h)-var(--tabbar-h)-2rem)] flex-col gap-2 lg:h-[calc(100dvh-var(--desk-topbar-h)-5rem)]"
+      className="flex h-[calc(100dvh-var(--topbar-h)-var(--tabbar-h)-2rem)] touch-manipulation flex-col gap-2 lg:h-[calc(100dvh-var(--desk-topbar-h)-5rem)]"
       data-no-pull
     >
       <header className="flex shrink-0 items-center gap-2">

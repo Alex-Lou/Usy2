@@ -31,7 +31,7 @@ ROSE|1|Fleur des amoureux|Rouge, elle déclare sa flamme
 FLEURS|1|Bouquet offert|Couvrir de ___
 BOUQUET|1|Fleurs assemblées|C'est le ___ !
 CADEAU|1|Présent|Surprise emballée
-SURPRISE|1|Inattendu|Fête-___
+SURPRISE|1|Chose inattendue|Fête-___
 LETTRE|1|Mot d'amour écrit|Missive enflammée
 POEME|1|Déclaration en vers|Pour sa dulcinée
 DECLARATION|1|Aveu d'amour|D'impôts, moins romantique
@@ -47,7 +47,7 @@ SOURIRE|1|Air joyeux|Ravageur
 REGARD|1|Coup d'œil|Langoureux
 YEUX|1|Organes de la vue|Faire les ___ doux
 MAIN|1|Se tient en marchant|Demander la ___
-ETREINTE|1|Bras autour de l'autre|Serrés fort
+ETREINTE|1|Bras autour de l'autre|On s'y serre fort
 ENLACER|1|Serrer dans ses bras|Embrasser
 CARESSE|1|Geste doux|Effleurement tendre
 FLIRT|1|Amourette|Badinage
@@ -57,13 +57,13 @@ DESIR|1|Envie|Objet du ___
 JALOUSIE|1|Peur de perdre l'autre|Volet à lamelles
 DISPUTE|1|Querelle|Suivie de réconciliation
 PARDON|1|Excuse|Demander ___
-MANQUE|1|Absence de l'autre|Tu me ___
+MANQUE|1|Absence de l'autre|En ___ d'amour
 ABSENCE|1|Quand l'autre est loin|Rend le cœur plus tendre
 DISTANCE|1|Éloignement|Amour à ___
 SOUVENIR|1|Moment gardé|Album photo
 PHOTO|1|Cliché de nous|Dans le portefeuille
 ALBUM|1|Recueil de photos|De mariage
-ANNIVERSAIRE|1|Fête annuelle|Des premières rencontres
+ANNIVERSAIRE|1|Fête annuelle|De mariage, chaque année
 DATE|1|Jour important|À ne pas oublier
 ENSEMBLE|1|L'un avec l'autre|Tout ___, pour toujours
 TOUJOURS|1|Pour l'éternité|À ___
@@ -76,7 +76,7 @@ CHARME|1|Séduction|Sous le ___
 COMPLIMENT|1|Mot gentil|Flatterie sincère
 BEAUTE|1|Charme physique|Grain de ___
 BELLE|1|Jolie|Et la Bête
-BEAU|1|Joli|Prince charmant
+BEAU|1|Joli|Il fait ___, sortons !
 PRINCE|1|Charmant, il réveille|Héritier royal
 PRINCESSE|1|Fille de roi|Au petit pois
 CONTEDEFEES|2|Histoire qui finit bien|Ils vécurent heureux
@@ -90,7 +90,7 @@ ENFANT|1|Fruit de l'amour|Prodige
 BEBE|1|Nourrisson|Fruit de l'amour, en couches
 CHAT|1|Moka en est un|Câlin à poils
 MOKA|1|Notre chat|Café ou félin chéri
-CANAPE|1|Soirée cocooning|Film et plaid
+CANAPE|1|Sofa du salon|Pour un film à deux, sous le plaid
 PLAID|1|Couverture douillette|Soirée canapé
 COCON|1|Abri douillet|Bulle à deux
 CAFE|1|Partagé au réveil|Petit noir à deux

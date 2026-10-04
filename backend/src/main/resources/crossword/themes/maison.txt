@@ -19,7 +19,7 @@ COULOIR|1|Passage intérieur|Bruit de ___, rumeur
 PLAFOND|1|Au-dessus de nos têtes|Crever le ___
 PLANCHER|1|Sol en bois|Débarrasser le ___
 CHEMINEE|1|Foyer à bois|Le père Noël y descend
-LIT|1|Meuble pour dormir|Se lever du pied gauche
+LIT|1|Meuble pour dormir|Faire ___ à part
 OREILLER|1|Pour la tête|Confidences sur l'___
 COUETTE|1|Grosse couverture|Queue de cheval double
 DRAP|1|Linge de lit|Blanc comme un ___
@@ -70,7 +70,7 @@ REPASSAGE|1|Fer sur le linge|Corvée du dimanche
 CINTRE|1|Porte-manteau|Arc de voûte
 PLACARD|1|Armoire murale|Mettre au ___, écarter
 CARTON|1|Boîte de déménagement|Rouge, expulsion
-DEMENAGEMENT|1|Changer de maison|Cartons partout
+DEMENAGEMENT|1|Changement de maison|Cartons partout
 LOYER|1|Prix du logement|Payé chaque mois
 CLOTURE|2|Barrière du jardin|Fin de séance
 PORTAIL|1|Grande porte d'entrée|Site d'accueil web

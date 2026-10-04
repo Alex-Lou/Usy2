@@ -54,7 +54,7 @@ POULET|1|Rôti du dimanche|Policier, en argot
 CANARD|1|Magret ou confit|Journal enchaîné
 SAUMON|1|Poisson rose|Fumé à Noël
 THON|1|Poisson en boîte|À l'huile ou au naturel
-MOULE|1|Coquillage frites|Récipient de pâtissier
+MOULE|1|Coquillage noir de bouchot|Récipient de pâtissier
 HUITRE|1|Coquillage à perle|Fermée comme elle
 CREVETTE|1|Petit crustacé|Rose au cocktail
 DINER|1|Repas du soir|Presque parfait à la télé
@@ -63,7 +63,7 @@ GOUTER|1|Collation de quatre heures|Essayer un plat
 MENU|1|Carte du jour|Liste d'options à l'écran
 CHEF|1|Patron des cuisines|Toque blanche
 TOQUE|2|Chapeau de cuisinier|Haute, chez le chef
-FOUET|2|Pour monter les blancs|De l'écuyer
+FOUET|2|Pour monter les blancs|Coup de ___, regain d'énergie
 LOUCHE|2|Grande cuillère|Suspect
 SPATULE|2|Ustensile plat|Retourne la crêpe
 CUILLERE|1|Pour la soupe|En argent, dans la bouche des riches
@@ -72,7 +72,7 @@ COUTEAU|1|Pour couper|Entre les dents, il est menaçant
 ASSIETTE|1|Plat individuel|Ne pas être dans son ___
 NAPPE|1|Couvre la table|D'eau souterraine
 TARTE|1|Dessert à pâte|Gifle ou aux pommes
-TARTINE|1|Pain beurré|En mettre une, en faire trop
+TARTINE|1|Pain beurré|Long texte, familièrement
 CONFITURE|1|Fruits cuits au sucre|De fraise sur la tartine
 CROISSANT|1|Viennoiserie|Lune à demi
 BRIOCHE|1|Pain sucré moelleux|Petit ventre rond
@@ -190,7 +190,7 @@ PRUNES|1|Fruits violets|Pour des ___, pour rien
 TOMATES|1|Fruits rouges du potager|Lancées sur les mauvais acteurs
 OLIVES|1|Fruits de l'olivier|Noires ou vertes, à l'apéro
 OEUFS|1|Pondus par la poule|Marcher sur des ___
-PATES|1|Spaghetti et coquillettes|Les ___ à l'eau
+PATES|1|Spaghetti et coquillettes|Al dente, en Italie
 FRITES|1|Bâtonnets de pomme de terre|Moules-___
 CREPES|1|Desserts de la Chandeleur|Fines galettes
 GATEAUX|1|Desserts|Petits ___ secs

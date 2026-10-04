@@ -11,7 +11,7 @@ ATRE|2|Foyer de cheminée|Où crépite le feu
 AUNE|3|Ancienne mesure|À l'___ de, en comparaison
 AVAL|2|En bas du courant|Donner son ___, approuver
 AVENUE|1|Grande rue|Des Champs-Élysées
-AXE|1|Ligne centrale|Du monde
+AXE|1|Ligne centrale|De symétrie
 BAGAGE|1|Valise|Plier ___, partir
 BAIL|2|Contrat de location|Ça fait un ___ !
 BANAL|1|Ordinaire|Sans originalité
@@ -65,7 +65,7 @@ DIGNE|1|Méritant|___ de confiance
 DISPO|1|Libre, en bref|Pas occupé, familièrement
 DIVAN|2|Canapé|Du psychanalyste
 DOIGT|1|Au bout de la main|Se mettre le ___ dans l'œil
-DONNER|1|Offrir|Qui ___ reçoit
+DONNER|1|Offrir|Sa langue au chat
 DORMIR|1|Faire dodo|Sur ses deux oreilles
 DOUBLE|1|Deux fois|Sosie
 DOUCHE|1|Jet d'eau|Écossaise, chaude et froide
@@ -188,7 +188,7 @@ MARRON|1|Couleur châtaigne|Glacé, à Noël
 MATCH|1|Rencontre sportive|Retour
 MATIERE|1|Substance|Grise
 MECHE|1|Partie de bougie|Vendre la ___
-MEILLEUR|1|Le plus bon|Pour le ___ et pour le pire
+MEILLEUR|1|Supérieur à tous|Pour le ___ et pour le pire
 MELER|1|Mélanger|Se ___ de ses affaires
 MENER|1|Conduire|En bateau
 MERITE|1|Valeur|Ordre national
@@ -206,10 +206,10 @@ MOULE|1|Récipient de forme|Coquillage
 MOUSSE|1|Écume|Au chocolat
 MUSEAU|1|Nez d'animal|Truffe
 NAPPE|1|Couvre la table|Phréatique
-NATION|1|Peuple|Unie
+NATION|1|Peuple|Unies, à New York
 NAVETTE|1|Aller-retour|Spatiale
 NEANT|2|Rien|Être et ___
-NEVEU|1|Fils du frère|Du roi
+NEVEU|1|Fils du frère|De Rameau, chez Diderot
 NIVEAU|1|Degré|À bulle
 NOBLE|1|Aristocrate|Généreux
 NOMBRE|1|Chiffre|D'or
@@ -333,7 +333,7 @@ SOURD|1|N'entend pas|___ comme un pot
 STADE|1|Terrain de sport|Étape
 STAGE|1|Formation|En entreprise
 STYLE|1|Manière|Avoir du ___
-SUCER|1|Téter|Glace à ___
+SUCER|1|Téter|Son pouce, pour bébé
 SUITE|1|Continuation|Tout de ___
 SUJET|1|Thème|Brûlant
 SUPER|1|Formidable|Carburant
@@ -404,7 +404,7 @@ AFFAIRE|1|Commerce|Classée, terminée
 AGENT|1|Policier|Secret, 007
 AIMANT|1|Attire le fer|Affectueux
 ALARME|1|Signal de danger|Sonner l'___
-ALIGNER|2|Mettre en ligne|Les points
+ALIGNER|2|Mettre en ligne|Ranger en file
 ALLEE|1|Chemin de jardin|Et venue
 ALLUMER|1|Éclairer|Le feu
 AMENDE|1|Contravention|Faire ___ honorable
@@ -490,7 +490,7 @@ EVITER|1|Esquiver|Le pire
 EXEMPLE|1|Modèle|Par ___
 FERMER|1|Clore|Les yeux
 FINIR|1|Terminer|En beauté
-FLOCON|1|Neige|D'avoine
+FLOCON|1|Cristal de neige|D'avoine
 FONTAINE|1|Jet d'eau|De jouvence
 FUMER|1|Tirer sur la cigarette|Nuit gravement
 GALERIE|1|Passage couvert|D'art

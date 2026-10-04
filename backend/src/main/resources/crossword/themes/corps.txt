@@ -28,7 +28,7 @@ VENTRE|1|Abdomen|Avoir les yeux plus gros que le ___
 DOS|1|Arrière du corps|En avoir plein le ___
 JAMBE|1|Membre inférieur|Ça me fait une belle ___ !
 GENOU|1|Articulation de la jambe|Ployer le ___
-PIED|1|Au bout de la jambe|Casser les ___
+PIED|1|Au bout de la jambe|Avoir le ___ marin
 ORTEIL|1|Doigt de pied|Gros, il souffre dans la chaussure
 TALON|1|Arrière du pied|D'Achille
 CHEVILLE|1|Relie pied et jambe|Ne pas arriver à la ___
@@ -36,7 +36,7 @@ HANCHE|1|Haut de la cuisse|Tour de ___
 CUISSE|1|Haut de la jambe|De grenouille
 PEAU|1|Enveloppe du corps|Avoir quelqu'un dans la ___
 OS|1|Pièce du squelette|Tomber sur un ___
-SQUELETTE|1|Charpente osseuse|Placard aux secrets
+SQUELETTE|1|Charpente osseuse|Il y en a dans les placards
 MUSCLE|1|Se contracte|Gonflé à la salle
 COEUR|1|Bat dans la poitrine|Par ___
 POUMON|1|Pour respirer|Vert, le parc

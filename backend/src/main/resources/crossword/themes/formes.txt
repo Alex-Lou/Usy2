@@ -17,7 +17,7 @@ COTES|1|Bords de mer|Flancs de la cage thoracique
 COUPS|1|Chocs|Les trois ___ du théâtre
 CUBES|1|Six faces chacun|Glaçons
 DATES|1|Jours précis|Fruits du palmier
-DENTS|1|Mâchoire garnie|Avoir les ___ longues
+DENTS|1|Garnissent la mâchoire|Avoir les ___ longues
 DOSES|1|Quantités prescrites|Mesures
 DUNES|1|Collines de sable|Paysages du Sahara
 ECHOS|1|Sons répétés|Rumeurs du journal
@@ -34,7 +34,7 @@ JUPES|1|Vêtements féminins|Accroché aux ___ de maman
 LAMES|1|Tranchants|De fond, en mer
 LIENS|1|Attaches|Du sang
 LUNES|1|Astres de nuit|Vieilles ___, idées dépassées
-MAINS|1|Paires de cinq doigts|En de bonnes ___
+MAINS|1|Ont cinq doigts chacune|En de bonnes ___
 MERES|1|Mamans|Fête des ___
 MINES|1|Airs du visage|Faire des ___, minauder
 MODES|1|Tendances|Manières, en grammaire
@@ -55,7 +55,7 @@ RIVES|1|Bords de rivière|Gauche et droite, à Paris
 ROBES|1|Tenues de soirée|Des juges et des avocats
 ROSES|1|Fleurs à épines|Envoyer sur les ___
 ROUES|1|Tournent sous la voiture|Mettre des bâtons dans les ___
-SOIRS|1|Fins de journée|Grands ___, premières
+SOIRS|1|Fins de journée|Tombées de la nuit
 TETES|1|Sommets du corps|Coups de ___, au foot
 TOITS|1|Couvrent les maisons|Crier sur les ___
 TOURS|1|Châteaux ou périples|Jouer des ___
@@ -167,7 +167,7 @@ MIROIRS|1|Reflètent|Aux alouettes
 MOULINS|1|Écrasent le grain|À vent, contre Don Quichotte
 NUANCES|1|Légères différences|Cinquante, de Grey
 OBJETS|1|Choses|Trouvés, au service des ___
-PANIERS|1|Corbeilles|Percés, distraits
+PANIERS|1|Corbeilles|Percés, dépensiers
 PARFUMS|1|Odeurs agréables|Glaces aux mille ___
 PIRATES|1|Corsaires|Des Caraïbes
 PLANETES|1|Mars et Vénus|Alignement des ___
@@ -224,7 +224,7 @@ MORTS|1|Décédés|Jour des ___, le 2 novembre
 MORTES|1|Décédées|Feuilles d'automne
 CHERS|1|Coûteux|Mes ___ amis
 AIMEE|1|Chérie|Bien-___
-AIMES|1|Chéris|Tendrement chéris
+AIMES|1|Chéris|Tu l'___ ? Dis-le-lui !
 ASSISE|1|Pas debout|Bien ___, stable
 CACHEE|1|Dissimulée|Face ___ de la lune
 CHANTE|1|Interprète en musique|Il ___ sous la douche
@@ -266,12 +266,12 @@ CROIT|1|A foi|Il ___ au père Noël
 ENTEND|1|Perçoit les sons|Comprend
 MET|1|Pose|Il ___ la table
 MEURT|2|Disparaît|Il ___ de rire
-NAIT|2|Vient au monde|Il ___ une étoile
+NAIT|2|Vient au monde|___ sous une bonne étoile
 PERD|1|Égare|Qui ___ gagne
 PLAIT|1|Séduit|S'il vous ___
 PREND|1|Saisit|Il ___ son temps
 SENT|1|Flaire|Ça ___ bon
-TIENT|1|Garde en main|Qui ___ à quelque chose
+TIENT|1|Garde en main|Il ___ parole
 VAUT|1|Coûte|Ça en ___ la peine
 VIENT|1|Arrive|Tout ___ à point
 CRIE|1|Hurle|Il ___ victoire
@@ -340,7 +340,7 @@ ECRIRE|1|Rédiger|___ noir sur blanc
 DECRIRE|2|Dépeindre|Raconter en détail
 SUIVRE|1|Venir après|À ___
 MENTIR|1|Ne pas dire vrai|Comme un arracheur de dents
-ACHETER|1|Payer|Pour ___ du temps
+ACHETER|1|Payer|___ la paix
 PAYER|1|Régler|Se ___ de mots
 CHANTER|1|Interpréter|Faire ___, rançonner
 DANSER|1|Valser|Ne pas savoir sur quel pied ___
@@ -387,7 +387,7 @@ VENDREDI|1|Veille du week-end|Ami de Robinson
 SAMEDI|1|Premier jour du week-end|Soir de fête
 DIMANCHE|1|Jour du repos|Peintre du ___, amateur
 JANVIER|1|Premier mois|Mois des soldes d'hiver
-FEVRIER|1|Mois court|Le plus court de l'année
+FEVRIER|1|Deuxième mois|Le plus court de l'année
 MARS|1|Troisième mois|Planète rouge
 AVRIL|1|Quatrième mois|Poisson d'___
 JUIN|1|Sixième mois|Mois du bac
