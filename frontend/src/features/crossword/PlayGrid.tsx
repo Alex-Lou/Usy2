@@ -164,17 +164,17 @@ export function PlayGrid({ id }: { id: number }) {
     feel.found();
   }, [game, letters, width, done, light]);
 
-  // After a letter: the next empty cell of the word (the next cell when correcting one already
-  // written); the word full, the next one still to fill (no letter written over the last one, no
-  // cell to pick again).
+  // After a letter: always the next cell of the word, filled or not, so a word typed whole from its
+  // start lands letter on letter (a letter already there is written over, never skipped: no shift).
+  // At the word's end: a cell of it still empty, else the next word still to fill.
   const advance = useCallback(
-    (now: string, correcting: boolean) => {
+    (now: string) => {
       if (!activeClue) return;
       const cells = cellsOf(activeClue, width);
       const at = cells.indexOf(cursor.cell);
       const empty = (c: number) => now[c] === ".";
-      const inWord = cells.slice(at + 1).find(empty) ?? cells.slice(0, at).find(empty);
-      if (correcting && at + 1 < cells.length) return setCursor({ cell: cells[at + 1], dir: activeClue.dir });
+      if (at + 1 < cells.length) return setCursor({ cell: cells[at + 1], dir: activeClue.dir });
+      const inWord = cells.find(empty);
       if (inWord !== undefined) return setCursor({ cell: inWord, dir: activeClue.dir });
       const i = order.indexOf(activeClue);
       for (let k = 1; k < order.length; k++) {
@@ -208,7 +208,7 @@ export function PlayGrid({ id }: { id: number }) {
         setAuthors((s) => setAt(s, cursor.cell, myMark));
         send({ cell: cursor.cell, letter: l });
       }
-      advance(authors[cursor.cell] === "*" ? letters : setAt(letters, cursor.cell, l), letters[cursor.cell] !== ".");
+      advance(authors[cursor.cell] === "*" ? letters : setAt(letters, cursor.cell, l));
     },
     [game, done, cursor.cell, authors, letters, myMark, send, advance, unmark],
   );
@@ -272,7 +272,7 @@ export function PlayGrid({ id }: { id: number }) {
     setLetters((s) => setAt(s, cell, game.solution[cell]));
     setAuthors((s) => setAt(s, cell, "*"));
     send({ cell, reveal: true });
-    advance(setAt(letters, cell, game.solution[cell]), letters[cell] !== ".");
+    advance(setAt(letters, cell, game.solution[cell]));
   }, [game, done, cursor.cell, authors, letters, send, advance]);
 
   const check = useCallback(() => {
