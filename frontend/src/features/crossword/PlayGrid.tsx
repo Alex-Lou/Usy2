@@ -10,7 +10,7 @@ import { createGame, getDaily, getGame, levelLabel, onCrossword, play, restartGa
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { BLOCK, cellsOf, cluesByCell, keyToLetter, readingOrder, wordsByCell } from "./logic";
-import { nextZoom, useZoom, zoomLabel, ZoomView } from "./ZoomView";
+import { nextZoom, useSideways, useZoom, zoomLabel, ZoomView } from "./ZoomView";
 
 const SIZE_LABEL = { petite: "Petite grille", moyenne: "Grille moyenne", grande: "Grande grille" } as const;
 const FLUSH_MS = 250;
@@ -70,7 +70,7 @@ export function PlayGrid({ id }: { id: number }) {
     return (w?.[cursor.dir] ?? w?.right ?? w?.down ?? null) as Clue | null;
   }, [words, cursor]);
   const wordCells = useMemo(() => new Set(activeClue ? cellsOf(activeClue, width) : []), [activeClue, width]);
-  const [zoom, chooseZoom, defaultZoom] = useZoom(game?.size ?? "petite");
+  const [zoom, chooseZoom, defaultZoom] = useZoom(game?.size ?? "petite", useSideways());
   // What the grid keeps in view when zoomed: the clue, then its word.
   const focus = useMemo(() => (activeClue ? [activeClue.cell, ...cellsOf(activeClue, width)] : []), [activeClue, width]);
 

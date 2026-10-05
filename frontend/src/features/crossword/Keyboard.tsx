@@ -81,7 +81,7 @@ export function Keyboard({
     </button>
   );
   return (
-    <div className="grid grid-cols-10 gap-1 md:mx-auto md:w-full md:max-w-2xl md:gap-1.5" aria-label="Clavier">
+    <div className="mf-keys grid grid-cols-10 gap-1 md:mx-auto md:w-full md:max-w-2xl md:gap-1.5" aria-label="Clavier">
       {ROWS[0].split("").map(letterKey)}
       {ROWS[1].split("").map(letterKey)}
       <button

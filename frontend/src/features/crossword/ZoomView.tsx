@@ -15,6 +15,12 @@ const STEPS = [1, 1.6, 2.2];
 /** A medium or big grid opens zoomed for cells about this big, if they are under SMALL_CELL at 1× (a phone; a tablet's fit). */
 const COMFORT_CELL = 58;
 const SMALL_CELL = 46;
+/**
+ * A touch screen held sideways: the grid (taller than wide) would sit small in the middle, the
+ * height its limit; it opens wider, cells about this big as far as the width goes, and scrolls
+ * down with the word.
+ */
+const SIDEWAYS_CELL = 88;
 const MAX = 3;
 /** Cells never grow past this at 1×: on a computer screen, and on a touch one (a tablet: big, for the fingers). */
 const MAX_CELL = 52;
@@ -22,9 +28,11 @@ const MAX_TOUCH_CELL = 110;
 /** Room kept around the word in view when the grid follows it. */
 const MARGIN = 12;
 
-const storeKey = (size: Size) => `memocat.crossword.zoom.${size}`;
+/** The zoom is kept per size, and per way the screen is held (upright, sideways). */
+type ZoomKey = Size | `${Size}.couche`;
+const storeKey = (key: ZoomKey) => `memocat.crossword.zoom.${key}`;
 
-function savedZoom(size: Size): number | null {
+function savedZoom(size: ZoomKey): number | null {
   try {
     const z = Number(localStorage.getItem(storeKey(size)));
     return z >= 1 && z <= MAX ? z : null;
@@ -33,7 +41,7 @@ function savedZoom(size: Size): number | null {
   }
 }
 
-function saveZoom(size: Size, zoom: number): void {
+function saveZoom(size: ZoomKey, zoom: number): void {
   try {
     localStorage.setItem(storeKey(size), String(Math.round(zoom * 100) / 100));
   } catch {
@@ -50,13 +58,29 @@ export const nextZoom = (z: number) => STEPS.find((s) => s > z + 0.15) ?? 1;
 export const zoomLabel = (z: number) =>
   `${(Math.round(z * 10) / 10).toLocaleString("fr-FR")}×`;
 
+/** The screen held sideways (wider than tall), followed as it turns. */
+export function useSideways(): boolean {
+  const query = "(orientation: landscape)";
+  const [sideways, setSideways] = useState(() => window.matchMedia?.(query).matches ?? false);
+  useEffect(() => {
+    const mq = window.matchMedia?.(query);
+    if (!mq) return;
+    const change = () => setSideways(mq.matches);
+    mq.addEventListener("change", change);
+    return () => mq.removeEventListener("change", change);
+  }, []);
+  return sideways;
+}
+
 /**
- * The grid's zoom, remembered per size on this device once chosen; null until the grid's
- * window is measured (it then picks one, not remembered).
+ * The grid's zoom, remembered per size and way the screen is held on this device once chosen;
+ * null until the grid's window is measured (it then picks one, not remembered).
  */
 export function useZoom(
-  size: Size,
+  gridSize: Size,
+  sideways: boolean,
 ): [number | null, (z: number) => void, (z: number) => void] {
+  const size: ZoomKey = sideways ? `${gridSize}.couche` : gridSize;
   const [state, setState] = useState(() => ({ size, zoom: savedZoom(size) }));
   // The grid's size known (or changed): its own zoom.
   if (state.size !== size) setState({ size, zoom: savedZoom(size) });
@@ -118,18 +142,24 @@ export function ZoomView({
   }, []);
 
   const touch = window.matchMedia?.("(pointer: coarse)").matches ?? false;
+  const sideways = useSideways();
   const fit = box ? Math.min(box.w, (box.h * cols) / rows, cols * (touch ? MAX_TOUCH_CELL : MAX_CELL)) : 0;
   // No zoom chosen yet for this size: a medium or big grid too small to read opens zoomed.
   useEffect(() => {
     if (zoom !== null || fit <= 0) return;
     const cell = fit / cols;
     // A mouse scrolls and zooms as it likes: only a touch screen opens zoomed.
+    if (touch && sideways && box) {
+      const wide = Math.min(box.w / fit, SIDEWAYS_CELL / cell);
+      onDefaultZoom(wide < 1.1 ? 1 : clamp(Math.floor(wide * 10) / 10));
+      return;
+    }
     onDefaultZoom(
       !touch || size === "petite" || cell >= SMALL_CELL
         ? 1
         : clamp(Math.round((COMFORT_CELL / cell) * 10) / 10),
     );
-  }, [zoom, fit, cols, size, onDefaultZoom, touch]);
+  }, [zoom, fit, cols, size, onDefaultZoom, touch, sideways, box]);
   const z = zoom ?? 1;
 
   // Keeps the word in view (the cursor's cell if the word is wider than the window).

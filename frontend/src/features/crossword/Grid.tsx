@@ -170,6 +170,13 @@ export const Grid = memo(function Grid({
   useEffect(() => {
     opened.current = true;
   }, []);
+  // On opening, the cells come in as a wave from the top left corner.
+  const [entering, setEntering] = useState(true);
+  useEffect(() => {
+    const t = window.setTimeout(() => setEntering(false), 1500);
+    return () => window.clearTimeout(t);
+  }, []);
+  const enter = (cell: number) => (entering ? { animationDelay: `${(Math.floor(cell / width) + (cell % width)) * 35}ms` } : undefined);
   // The cells' size on screen, for the clues to fit their text again after a zoom.
   const box = useRef<HTMLDivElement>(null);
   const [cellPx, setCellPx] = useState(0);
@@ -194,13 +201,14 @@ export const Grid = memo(function Grid({
           const clues = clueCells.get(cell);
           if (expected === BLOCK) {
             // A cell with no clue only happens in grids made before every cell was used.
-            if (!clues) return <div key={cell} className="aspect-square bg-bg" aria-hidden="true" />;
+            if (!clues) return <div key={cell} className={"aspect-square bg-bg" + (entering ? " mf-enter" : "")} style={enter(cell)} aria-hidden="true" />;
             return (
               <button
                 key={cell}
                 type="button"
                 onClick={() => onCell(cell)}
-                className="flex aspect-square touch-manipulation flex-col divide-y divide-border bg-primary/15"
+                className={"mf-clue-cell flex aspect-square touch-manipulation flex-col divide-y divide-border" + (entering ? " mf-enter" : "")}
+                style={enter(cell)}
                 aria-label={clues.map((c) => `${c.dir === "right" ? "→" : "↓"} ${c.text}`).join(" ; ")}
               >
                 {clues.map((c) => (
@@ -216,14 +224,14 @@ export const Grid = memo(function Grid({
           const bg = wrong.has(cell)
             ? "bg-danger/20"
             : isCursor
-              ? "bg-primary/35"
+              ? "bg-primary/50"
               : flash.has(cell)
                 ? "bg-accent/30"
                 : inWord
-                  ? "bg-primary/20"
+                  ? "mf-word"
                   : "bg-surface-2";
           const delay = sweep.get(cell);
-          const fx = delay !== undefined ? " mf-sweep" : wrong.has(cell) ? " mf-wrong" : isCursor ? " mf-cursor" : "";
+          const fx = delay !== undefined ? " mf-sweep" : wrong.has(cell) ? " mf-wrong" : entering ? " mf-enter" : isCursor ? " mf-cursor" : "";
           const color = wrong.has(cell)
             ? "text-danger"
             : author === "*"
@@ -238,7 +246,7 @@ export const Grid = memo(function Grid({
               onClick={() => onCell(cell)}
               aria-label={`Case ${Math.floor(cell / width) + 1}-${(cell % width) + 1}${letter ? ` : ${letter}` : ""}`}
               className={"grid aspect-square touch-manipulation place-items-center font-display font-bold leading-none transition-colors " + bg + " " + color + fx}
-              style={{ fontSize: "calc(var(--cell) * 0.56)", animationDelay: delay !== undefined ? `${delay}ms` : undefined }}
+              style={{ fontSize: "calc(var(--cell) * 0.56)", animationDelay: delay !== undefined ? `${delay}ms` : enter(cell)?.animationDelay }}
             >
               {letter && <Letter key={letter + author} letter={letter} revealed={author === "*"} animate={opened.current} />}
             </button>
