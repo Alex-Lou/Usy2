@@ -472,7 +472,6 @@ export function PlayGrid({ id }: { id: number }) {
       <ZoomView
         cols={width}
         rows={game.height}
-        size={game.size}
         zoom={zoom}
         onZoom={chooseZoom}
         onDefaultZoom={defaultZoom}
