@@ -1,4 +1,4 @@
-import { memo, useLayoutEffect, useRef, useState } from "react";
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Clue } from "./api";
 import { arrowOf, BLOCK, type Arrow } from "./logic";
 
@@ -15,7 +15,18 @@ interface Props {
   activeClue: Clue | null;
   wrong: Set<number>;
   flash: Set<number>;
+  /** Cells lighting up in turn (a word found, the grid won): cell → delay in ms. */
+  sweep: Map<number, number>;
   onCell: (cell: number) => void;
+}
+
+/**
+ * A cell's letter: it pops in when written (it is keyed by its letter and author, so a new one is a
+ * new element), a revealed one sparkles; the letters there when the grid opens just show.
+ */
+function Letter({ letter, revealed, animate }: { letter: string; revealed: boolean; animate: boolean }) {
+  const [play] = useState(animate); // decided once, when it appears
+  return <span className={play ? (revealed ? "mf-reveal" : "mf-pop") : undefined}>{letter}</span>;
 }
 
 /** Where each arrow sits in its clue (the side its word is on) and how it is drawn. */
@@ -145,8 +156,14 @@ export const Grid = memo(function Grid({
   activeClue,
   wrong,
   flash,
+  sweep,
   onCell,
 }: Props) {
+  // The letters there on opening do not pop; from then on, each new one does.
+  const opened = useRef(false);
+  useEffect(() => {
+    opened.current = true;
+  }, []);
   // The cells' size on screen, for the clues to fit their text again after a zoom.
   const box = useRef<HTMLDivElement>(null);
   const [cellPx, setCellPx] = useState(0);
@@ -199,6 +216,8 @@ export const Grid = memo(function Grid({
                 : inWord
                   ? "bg-primary/20"
                   : "bg-surface-2";
+          const delay = sweep.get(cell);
+          const fx = delay !== undefined ? " mf-sweep" : wrong.has(cell) ? " mf-wrong" : isCursor ? " mf-cursor" : "";
           const color = wrong.has(cell)
             ? "text-danger"
             : author === "*"
@@ -212,10 +231,10 @@ export const Grid = memo(function Grid({
               type="button"
               onClick={() => onCell(cell)}
               aria-label={`Case ${Math.floor(cell / width) + 1}-${(cell % width) + 1}${letter ? ` : ${letter}` : ""}`}
-              className={"grid aspect-square touch-manipulation place-items-center font-display font-bold leading-none transition-colors " + bg + " " + color}
-              style={{ fontSize: "calc(var(--cell) * 0.56)" }}
+              className={"grid aspect-square touch-manipulation place-items-center font-display font-bold leading-none transition-colors " + bg + " " + color + fx}
+              style={{ fontSize: "calc(var(--cell) * 0.56)", animationDelay: delay !== undefined ? `${delay}ms` : undefined }}
             >
-              {letter}
+              {letter && <Letter key={letter + author} letter={letter} revealed={author === "*"} animate={opened.current} />}
             </button>
           );
         })}

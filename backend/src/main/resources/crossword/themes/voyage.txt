@@ -18,7 +18,7 @@ BILLET|1|Titre de transport|Doux, il est amoureux
 PASSEPORT|1|Papiers du voyageur|Visa pour ailleurs
 VISA|1|Permis d'entrer|Carte bancaire
 CARTE|1|Plan routier|Postale, envoyée de vacances
-PLAN|1|Carte de ville|Laisser en ___, abandonner
+PLAN|1|Carte de ville|Gros ___, au cinéma
 GUIDE|1|Montre le chemin|Du routard
 HOTEL|1|Pour une nuit en voyage|De ville, la mairie
 CAMPING|1|Vacances sous la tente|Les Flots bleus, au cinéma
@@ -105,16 +105,16 @@ CHAMBRE|1|Pièce pour dormir|Avec vue sur mer
 CLE|1|Ouvre la porte|De la chambre d'hôtel
 BOUSSOLE|1|Indique le nord|Aiguille aimantée
 CARNET|1|Petit cahier|De voyage
-AVENTURE|1|Expérience risquée|Partir à l'___
+AVENTURE|1|Expérience risquée|Dire la bonne ___
 EXPLORATEUR|2|Découvre le monde|Christophe Colomb en fut un
 EXOTIQUE|1|D'ailleurs|Fruit lointain
-ETRANGER|1|D'un autre pays|Partir à l'___
+ETRANGER|1|D'un autre pays|Roman d'Albert Camus
 LANGUE|1|Parlée dans un pays|Donner sa ___ au chat
 ACCENT|1|Manière de parler|Du Sud, il chante
 DEPART|1|Commencement du voyage|Prendre un nouveau ___
 ARRIVEE|1|Fin du trajet|Ligne d'___
 RETARD|1|Attente imprévue|En ___, comme le lapin blanc
-QUAI|1|Bord de voie|Au ___ des Orfèvres
+QUAI|1|Bord de voie|___ des Orfèvres
 WAGON|1|Voiture de train|___-lit, pour dormir en train
 TICKET|1|Petit billet|Avoir un ___, plaire
 MUSEE|1|On y voit des œuvres|Le Louvre en est un

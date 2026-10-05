@@ -4,18 +4,18 @@ AN|1|Douze mois|Le Nouvel ___ se fête au champagne
 AS|1|Carte maîtresse|Champion ou carte
 AU|1|Contraction de « à le »|Petit article contracté
 CE|1|Démonstratif|Désigne sans montrer du doigt
-DE|1|Préposition|Lie les mots ou se lance
-DO|1|Note de musique|Ouvre la gamme
+DE|1|Préposition d'origine|Lie les mots ou se lance
+DO|1|Note avant ré|Ouvre la gamme
 DU|1|Article partitif|___ coq à l'âne
 EN|1|Pronom adverbial|___ avant, marche !
-ET|1|Conjonction de coordination|Il relie Roméo à Juliette
+ET|1|Conjonction qui ajoute|Il relie Roméo à Juliette
 EU|1|Participe d'avoir|Possédé, ou dupé
-IL|1|Pronom masculin|Lui, sujet
-LA|1|Note de musique|Note du diapason
-LE|1|Article défini|Masculin bien défini
+IL|1|Pronom sujet masculin|Lui, sujet
+LA|1|Note entre sol et si|Note du diapason
+LE|1|Article défini masculin|Masculin bien défini
 LU|1|Parcouru des yeux|Dévoré, pour un roman
-MA|1|Possessif féminin|À moi, au féminin
-MI|1|Note de musique|À moitié
+MA|1|La mienne, devant un nom|À moi, au féminin
+MI|1|Note entre ré et fa|À moitié
 NE|1|Particule négative|Accompagne souvent « pas »
 NI|1|Conjonction négative|Refuse deux fois
 NU|1|Sans vêtement|Comme un ver
@@ -23,20 +23,20 @@ ON|1|Pronom indéfini|Nous, familièrement
 OR|1|Métal ou conjonction|Conjonction précieuse
 OS|1|Pièce du squelette|Le chien le ronge
 OU|1|Conjonction de choix|Pose une alternative
-RE|1|Note de musique|Deuxième marche de la gamme
+RE|1|Note entre do et mi|Deuxième marche de la gamme
 RI|1|S'est esclaffé|A trouvé ça drôle
-SA|1|Possessif féminin|À lui ou à elle, au féminin
-SE|1|Pronom réfléchi|Réfléchi, chez le pronom
+SA|1|La sienne, devant un nom|À lui ou à elle, au féminin
+SE|1|Pronom réfléchi de la 3e personne|Il ___ lave les mains
 SI|1|Note ou condition|Avec des « ___ », on mettrait Paris en bouteille
 SU|1|Connu|Appris par cœur
-TA|1|Possessif féminin|À toi, au féminin
-TE|1|Pronom personnel|Toi, en complément
+TA|1|La tienne, devant un nom|À toi, au féminin
+TE|1|Toi, en complément|Je ___ tutoie
 TU|1|Pronom de l'intime|Tutoiement en deux lettres
 UN|1|Unité|Le premier de tous
 VA|1|Se déplace|Ça ___ ? Ça ___ !
 VU|1|Aperçu|Ni ___ ni connu
-OH|1|Exclamation|Cri d'étonnement
-AH|1|Cri de surprise|Ça alors, en deux lettres
+OH|1|HO à l'envers|___ ! La belle bleue !, au feu d'artifice
+AH|1|___ bon ?|HA à l'envers
 ES|1|Tu ___ là ?|Existes
 ADO|1|Jeune de quinze ans|Jeune en pleine crise, en abrégé
 AGE|1|Années vécues|Il n'a pas d'importance, dit-on
@@ -101,7 +101,7 @@ JUS|1|Boisson de fruits|Café, en argot
 KIT|2|Prêt à monter|Meuble en pièces détachées
 LAC|1|Étendue d'eau douce|Celui des cygnes est un ballet
 LAS|2|Fatigué|À bout de forces
-LES|1|Article pluriel|Pluriel défini
+LES|1|Article défini pluriel|Pluriel défini
 LIE|2|Dépôt du vin|Fond de bouteille
 LIS|2|Fleur royale|Emblème des rois de France
 LIT|1|Meuble pour dormir|On le fait chaque matin
@@ -112,7 +112,7 @@ LUI|1|Pronom masculin|Pas elle
 MAI|1|Mois du muguet|Fais ce qu'il te plaît, dit le dicton
 MAL|1|Douleur|Il y en a de mer
 MER|1|Grande bleue|Méditerranée ou Manche
-MES|1|Possessif pluriel|À moi, au pluriel
+MES|1|Les miens, devant un nom|À moi, au pluriel
 MIE|1|Intérieur du pain|Le contraire de la croûte
 MIS|1|Posé|Bien habillé
 MOI|1|Ego|Je, en insistant
@@ -125,8 +125,8 @@ NEZ|1|Sert à sentir|Celui de Pinocchio s'allonge
 NID|1|Maison d'oiseau|Douillet, pour un couple
 NIE|1|Dément|Dit que non
 NOM|1|Prénom et ___|Il se porte et se donne
-NOS|1|Possessif pluriel|À nous, au pluriel
-NUE|2|Sans vêtement|Le ciel, en poésie
+NOS|1|Les nôtres, devant un nom|À nous, au pluriel
+NUE|2|Sans vêtement, au féminin|Le ciel, en poésie
 NUL|1|Zéro pointé|Match sans vainqueur
 OIE|1|Oiseau de basse-cour|Son jeu a soixante-trois cases
 ONU|2|Nations unies, en sigle|Siège à New York
@@ -147,7 +147,7 @@ POU|1|Parasite des cheveux|Laid comme lui
 PRE|1|Champ d'herbe|Les vaches y broutent
 PUB|1|Réclame|Bar irlandais
 PUR|1|Sans mélange|___ et dur, sans compromis
-QUI|1|Pronom interrogatif|Question de personne
+QUI|1|Pronom interrogatif pour une personne|Question de personne
 RAS|2|Au ___ des pâquerettes|En avoir ___ le bol
 RAT|1|Gros rongeur|Celui de bibliothèque lit beaucoup
 RIZ|1|Céréale d'Asie|Se jette sur les mariés
@@ -157,7 +157,7 @@ SAC|1|Fourre-tout|Vider le sien, c'est tout dire
 SAS|2|Petite pièce étanche|Passage entre deux mondes
 SEC|1|Pas mouillé|Vin peu sucré
 SEL|1|Cristaux de la mer|Il en faut une pincée
-SES|1|Possessif pluriel|À lui, au pluriel
+SES|1|Les siens, devant un nom|À lui, au pluriel
 SKI|1|Glisse sur la neige|Planche de montagne
 SOI|1|Chez ___|Le moi profond
 SOL|1|Plancher ou note|Il est sous nos pieds
@@ -168,7 +168,7 @@ TAC|3|Bruit sec|Du « tic » au « ___ » de l'horloge
 TAG|2|Graffiti signé|Signature sur un mur
 TAS|1|Pile|Dans le ___, au hasard
 TEL|1|Pareil|___ père, ___ fils
-TES|1|Possessif pluriel|À toi, au pluriel
+TES|1|Les tiens, devant un nom|À toi, au pluriel
 THE|1|Infusion|Servi à cinq heures
 TIC|2|Petite manie|Geste qui revient tout seul
 TIR|1|Coup de feu|Au but, il est réussi
@@ -188,7 +188,7 @@ VIE|1|Existence|C'est la ___ !
 VIN|1|Rouge ou blanc|Il vieillit en cave
 VIS|1|Se serre au tournevis|Serrer la ___, être sévère
 VOL|1|Larcin ou trajet aérien|Il décolle ou il dérobe
-VOS|1|Possessif pluriel|À vous, au pluriel
+VOS|1|Les vôtres, devant un nom|À vous, au pluriel
 VUE|1|Panorama|Perdre de ___, c'est oublier
 ZEN|1|Calme et serein|Restons-le en toutes circonstances
 ZOO|1|Parc aux animaux|Où l'on va voir les fauves
@@ -242,7 +242,7 @@ EGAL|1|Pareil|Ça m'est ___, je m'en fiche
 ELAN|1|Impulsion|Cerf du Nord ou enthousiasme
 ELLE|1|Pronom féminin|Pas lui
 EPEE|1|Arme de duel|De Damoclès, elle menace
-ETAT|1|Nation|Coup d'___, prise de pouvoir
+ETAT|1|Situation, condition|Coup d'___, prise de pouvoir
 ETRE|1|Exister|Ou ne pas ___
 EURO|1|Monnaie de Bruxelles à Rome|Il a remplacé le franc
 FACE|1|Côté de la pièce|Pile ou ___ ?
@@ -279,7 +279,7 @@ MINE|1|Air du visage|De crayon ou de charbon
 MODE|1|Tendance|Elle se démode
 MOIS|1|Trente jours environ|Le ___ du blanc, c'est janvier
 MOKA|1|Café… ou notre chat|Gâteau, café ou félin chéri
-MONT|1|Sommet|Le ___ Blanc
+MONT|1|Le ___ Saint-Michel|Le ___ Blanc
 MUET|1|Sans voix|Cinéma d'avant le parlant
 MUSE|2|Inspire l'artiste|Elles sont neuf, filles de Zeus
 NEUF|1|Tout nouveau|Huit plus un
@@ -289,7 +289,7 @@ NOIR|1|Couleur de la nuit|Petit, on le boit au comptoir
 NOTE|1|Do, ré ou mi|Salée, c'est l'addition
 NUIT|1|Opposé du jour|Blanche, elle est sans sommeil
 OEIL|1|Organe de la vue|À l'___, c'est gratuit
-ONDE|2|Vague|De choc ou radio
+ONDE|2|Vague, en physique|De choc ou radio
 ONZE|1|Dix plus un|Une équipe de foot
 ORAL|1|Examen parlé|Pas écrit
 OSER|1|Se risquer|Qui ne tente rien…
@@ -460,7 +460,7 @@ ANCRE|1|Retient le bateau|Jeter l'___, s'installer
 APRE|3|Rude|Avide, quand il s'agit de gain
 ARENE|2|Sable du cirque|Lieu des gladiateurs
 ARGILE|2|Terre du potier|Colosse aux pieds d'___
-AROME|2|Parfum|Celui du café le matin
+AROME|2|Parfum d'un plat|Celui du café le matin
 ASTRE|1|Corps céleste|Le soleil en est un
 ATLAS|2|Recueil de cartes|Titan qui porte le ciel
 AUDACE|2|Hardiesse|Quelle ___ !
@@ -482,14 +482,14 @@ CALE|2|Fond du navire|Coincé, bloqué
 CASE|1|Petite maison|Celle de l'oncle Tom
 CHANCE|1|Hasard heureux|Bonne ___ !
 CHAUD|1|Brûlant|Ni ___ ni froid
-CIME|2|Sommet|Haut de l'arbre
+CIME|2|Sommet d'une montagne|Haut de l'arbre
 CLAIR|1|Lumineux|Au ___ de lune
 COIN|1|Angle|Le petit ___, c'est les toilettes
 COLERE|1|Rage|Tout rouge de ___
 CONTE|1|Histoire pour enfants|De fées
 CORDE|1|Gros fil|Sensible, elle émeut
-COUR|1|Espace devant la maison|Faire la ___
-COURSE|1|Compétition de vitesse|Contre la montre
+COUR|1|Espace devant la maison|Faire la ___, séduire
+COURSE|1|Compétition de vitesse|En fin de ___, épuisé
 CREUX|1|Vide à l'intérieur|Avoir un petit ___
 CROIX|1|Signe +|Mettre une ___ dessus
 DEFI|1|Challenge|Relever le ___
@@ -547,7 +547,7 @@ MEMOIRE|1|Souvenir|D'éléphant, elle n'oublie rien
 METIER|1|Profession|Avoir du ___
 MIETTE|1|Petit morceau de pain|Ne pas en perdre une
 MILIEU|1|Centre|Le juste ___
-MINCE|1|Fin|Zut, en plus poli
+MINCE|1|Fin, élancé|Zut, en plus poli
 MOYEN|1|Ni bon ni mauvais|Le ___ Âge
 NATURE|1|Environnement|Seconde ___, habitude
 NUANCE|1|Légère différence|Tout est dans la ___
@@ -558,11 +558,11 @@ PARFUM|1|Odeur agréable|Être au ___, savoir
 PAROLE|1|Mot|Donner sa ___
 PASSE|1|Temps écoulé|Simple, en grammaire
 PATIENCE|1|Calme pour attendre|Mère de toutes les vertus
-PAUSE|1|Arrêt|___ café
+PAUSE|1|Arrêt momentané|___ café
 PENSEE|1|Réflexion|Fleur ou idée
 PERTE|1|Manque|À ___ de vue
 PIECE|1|Salle|Montée au théâtre
-PLAISIR|1|Joie|Faire ___
+PLAISIR|1|Joie|Faire ___, réjouir
 PLUIE|1|Tombe des nuages|Après elle, le beau temps
 POIDS|1|Masse|Lourd, à la boxe
 POINT|1|Petit rond|Final, il clôt la phrase
@@ -606,7 +606,7 @@ ALIBI|2|Excuse de suspect|Il était ailleurs, prouve-t-il
 ALPHA|2|Première lettre grecque|Et l'oméga, du début à la fin
 AMPLE|2|Large|Vêtement ___, pas serré
 ANNEAU|1|Bague|Celui de Sauron
-ANTAN|3|Autrefois|Les neiges d'___
+ANTAN|3|D'___, d'autrefois|Les neiges d'___
 APPAT|2|Leurre|Ver au bout de l'hameçon
 ARCHE|2|Voûte|Celle de Noé
 ARDENT|2|Brûlant|Désir ou soleil
@@ -648,7 +648,7 @@ COULEUR|1|Teinte|Annoncer la ___
 COURAGE|1|Bravoure|Bon ___ !
 CRAYON|1|Pour dessiner|Mine de ___
 CRISTAL|2|Verre fin|Noces de quinze ans
-CULTURE|1|Savoir|Ce qui reste quand on a tout oublié
+CULTURE|1|Connaissances acquises|Ce qui reste quand on a tout oublié
 DEBUT|1|Commencement|Le ___ de la fin
 DECOR|1|Ornement|Envers du ___
 DENTELLE|2|Tissu ajouré|Ne pas faire dans la ___
@@ -666,7 +666,7 @@ FANTOME|1|Revenant|Il hante le château
 FENETRE|1|Ouverture vitrée|Jeter l'argent par la ___
 FICELLE|1|Petite corde|Pain plus fin que la baguette
 FLECHE|1|Trait d'arc|Partir comme une ___
-FORTUNE|1|Richesse|Faire ___
+FORTUNE|1|Richesse|Faire ___, s'enrichir
 FRISSON|1|Tremblement|D'horreur ou de plaisir
 GALET|2|Caillou poli|Sur la plage d'Étretat
 GENIE|1|Grand talent|Celui de la lampe

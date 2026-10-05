@@ -15,14 +15,14 @@ AXE|1|Ligne centrale|De symétrie
 BAGAGE|1|Valise|Plier ___, partir
 BAIL|2|Contrat de location|Ça fait un ___ !
 BANAL|1|Ordinaire|Sans originalité
-BARBE|1|Poils du menton|Quelle ___ !
+BARBE|1|Poils du menton|Quelle ___ !, quel ennui
 BARON|2|Titre de noblesse|Gros industriel
 BASE|1|Fondement|De données
 BATON|1|Morceau de bois|À ___ rompus
 BENIR|2|Consacrer, pour un prêtre|Le prêtre le fait aux mariés
 BETON|1|Matériau de construction|En ___, solide
 BIAIS|2|Détour|De ___, en diagonale
-BILAN|1|Résultat|Faire le ___
+BILAN|1|Résultat|Faire le ___, récapituler
 BLAME|2|Reproche|Sanction écrite
 BOLIDE|2|Voiture rapide|Météorite
 BONNE|1|Pas mauvaise|À la ___ heure !
@@ -79,11 +79,11 @@ ELEVE|1|Écolier|Haut placé
 EMOI|2|Trouble|En ___, troublé
 ENJEU|1|Ce qu'on risque|Le prix du pari
 ENNUI|1|Lassitude|Souci ou mélancolie
-ENVOI|1|Expédition|Coup d'___
+ENVOI|1|Expédition|Coup d'___, début du match
 EPAVE|2|Bateau échoué|Personne déchue
 EPOPEE|2|Récit héroïque|Aventure grandiose
 ERREUR|1|Faute|Judiciaire, irréparable
-ESSAI|1|Tentative|Coup d'___
+ESSAI|1|Tentative|Coup d'___, première tentative
 ESTIME|2|Considération|Succès d'___
 ETAGE|1|Niveau d'immeuble|Premier, deuxième…
 ETAL|2|Table de marché|Présentoir du boucher
@@ -92,10 +92,10 @@ ETUDE|1|Travail scolaire|Du notaire
 EVEIL|1|Réveil|En ___, attentif
 EXCES|1|Abus|De vitesse
 EXIL|2|Bannissement|Loin de sa patrie
-FACON|1|Manière|De toute ___
+FACON|1|Manière de faire|De toute ___
 FADE|1|Sans goût|Plat insipide
-FAIRE|1|Agir|Savoir-___
-FAMEUX|1|Célèbre|Pas ___, pas terrible
+FAIRE|1|Agir|___ la tête, bouder
+FAMEUX|1|Célèbre, au masculin|Pas ___, pas terrible
 FARCE|1|Blague|Garniture de dinde
 FAUX|1|Pas vrai|Outil de la Mort
 FEINTE|2|Ruse|Fausse attaque
@@ -107,7 +107,7 @@ FIGURE|1|Visage|De style
 FILET|1|Mailles|À provisions
 FLAQUE|1|Eau au sol|Sauter dedans
 FLOU|1|Pas net|Artistique
-FOIRE|1|Fête foraine|Faire la ___
+FOIRE|1|Fête foraine|Faire la ___, s'amuser
 FOND|1|Bas|Au ___ du trou
 FONTE|2|Fusion|Des neiges
 FORGE|2|Atelier du maréchal-ferrant|Battre le fer
@@ -118,7 +118,7 @@ FUITE|1|Évasion|D'eau
 FUMEE|1|Sort de la cheminée|Pas de ___ sans feu
 FUSEE|1|Engin spatial|Feu d'artifice
 GACHE|2|Gaspillé|Pièce de serrure
-GAGNER|1|Remporter|Du temps
+GAGNER|1|Remporter|___ du temps, ou sa vie
 GALA|2|Fête officielle|Soirée de ___
 GAMIN|1|Gosse|Enfant des rues
 GARDE|1|Surveillance|Montante, à Buckingham
@@ -141,7 +141,7 @@ GUIDON|1|Pour diriger le vélo|Avoir le nez dans le ___
 HABIT|1|Vêtement|Ne fait pas le moine
 HACHE|1|Coupe le bois|Enterrer la ___ de guerre
 HAIE|1|Rangée d'arbustes|D'honneur
-HALTE|1|Arrêt|___-là !
+HALTE|1|Arrêt en chemin|___-là !
 HAMEAU|2|Petit village|Écart de campagne
 HERBE|1|Gazon|Mauvaise, elle pousse vite
 HIBOU|1|Rapace nocturne|Rapace à aigrettes
@@ -166,12 +166,12 @@ LANCE|1|Arme pointue|À incendie
 LAVER|1|Nettoyer|Son linge sale en famille
 LECON|1|Cours|Donner une ___
 LEVER|1|Soulever|Du soleil
-LIEU|1|Endroit|Avoir ___
+LIEU|1|Endroit|Avoir ___, se dérouler
 LIGUE|2|Association|Des champions
 LISSE|1|Sans aspérité|Cheveux raides
 LISTE|1|Énumération|De courses
 LOCAL|1|Du coin|Salle de réunion
-LOGIS|2|Maison|Fée du ___
+LOGIS|2|Habitation, demeure|Fée du ___
 LOTO|1|Jeu de hasard|Gagner au ___
 LOUER|1|Prendre en location|Faire l'éloge
 LUCIDE|2|Clairvoyant|Bien éveillé
@@ -212,12 +212,12 @@ NEANT|2|Rien|Être et ___
 NEVEU|1|Fils du frère|De Rameau, chez Diderot
 NIVEAU|1|Degré|À bulle
 NOBLE|1|Aristocrate|Généreux
-NOMBRE|1|Chiffre|D'or
+NOMBRE|1|Quantité|D'or
 NORD|1|Opposé du sud|Perdre le ___
 NOUVEAU|1|Récent|Rien de ___ sous le soleil
 NOYAU|1|Cœur du fruit|Dur, de l'équipe
 OBEIR|1|Se soumettre|Au doigt et à l'œil
-ODEUR|1|Parfum|En ___ de sainteté
+ODEUR|1|Ce que sent le nez|En ___ de sainteté
 OFFRIR|1|Donner|Un verre
 OISIF|2|Sans occupation|Désœuvré
 ONCLE|1|Frère du père|D'Amérique
@@ -282,9 +282,9 @@ PROMO|1|Réduction|Année d'école
 PRUNE|1|Fruit violet|Contravention
 PUCE|1|Insecte sauteur|Électronique
 PUITS|1|Trou à eau|De science
-QUAI|1|Bord de voie|De gare
+QUAI|1|Bord de voie|___ des Orfèvres
 QUART|1|Un sur quatre|D'heure
-QUEUE|1|Arrière de l'animal|Faire la ___
+QUEUE|1|Arrière de l'animal|Faire la ___, attendre
 RACE|1|Lignée|Chien de ___
 RADEAU|1|Embarcation de fortune|De la Méduse
 RAFALE|1|Coup de vent|Tir en ___
@@ -292,7 +292,7 @@ RAMPE|1|Garde-corps|Feux de la ___
 RAYON|1|Trait de lumière|De soleil
 REBUT|2|Déchet|Mettre au ___
 RECOLTE|1|Moisson|Des fruits
-REGLE|1|Instrument de mesure|En ___ générale
+REGLE|1|Instrument pour tracer droit|En ___ générale
 REINE|1|Épouse du roi|Des abeilles
 RELAIS|1|Course en équipe|Prendre le ___
 RENNE|1|Tire le traîneau|Animal du Nord
@@ -325,17 +325,17 @@ SIROP|1|Boisson sucrée|D'érable
 SOCLE|1|Base|Piédestal
 SOMME|1|Total|Petit, sieste
 SOMMET|1|Cime|Réunion de chefs d'État
-SONDE|2|Instrument de mesure|Spatiale
+SONDE|2|Mesure la profondeur|Spatiale
 SORTIE|1|Issue|De secours
 SOUCI|1|Inquiétude|Fleur jaune
 SOUPE|1|Potage|Cheveu dedans
 SOURD|1|N'entend pas|___ comme un pot
-STADE|1|Terrain de sport|Étape
+STADE|1|Terrain de sport|Le ___ Vélodrome
 STAGE|1|Formation|En entreprise
-STYLE|1|Manière|Avoir du ___
+STYLE|1|Manière d'écrire|Avoir du ___
 SUCER|1|Téter|Son pouce, pour bébé
 SUITE|1|Continuation|Tout de ___
-SUJET|1|Thème|Brûlant
+SUJET|1|Thème|Il peut être brûlant
 SUPER|1|Formidable|Carburant
 TACHE|1|Salissure|D'huile
 TAILLE|1|Hauteur|Fine, mannequin
@@ -347,7 +347,7 @@ TEINT|1|Couleur de peau|De pêche
 TEMPE|1|Côté du front|On s'y masse en cas de migraine
 TENIR|1|Garder en main|Le coup
 TENUE|1|Habillement|Correcte exigée
-TERME|1|Fin|Mot
+TERME|1|Fin, échéance|Mot
 TEXTE|1|Écrit|À trous
 TIGE|1|Porte la fleur|De botte
 TIMBRE|1|Sur l'enveloppe|De voix
@@ -358,7 +358,7 @@ TOILE|1|Tissu|D'araignée
 TOMBE|1|Sépulture|Muet comme une ___
 TONNE|1|Mille kilos|Grosse barrique
 TORCHE|1|Lampe portative|Humaine
-TORT|1|Erreur|Avoir ___
+TORT|1|Erreur|Avoir ___, se tromper
 TOUCHE|1|De clavier|Sur la ___, mis de côté
 TRACE|1|Empreinte|Suivre à la ___
 TRAIT|1|Ligne|D'union
@@ -390,7 +390,7 @@ VIGNE|1|Donne le raisin|Pied de ___
 VIRAGE|1|Courbe|En épingle
 VISITE|1|Venue|Guidée
 VITRE|1|Carreau|De la fenêtre
-VIVRE|1|Exister|Savoir-___
+VIVRE|1|Exister|Savoir-___, politesse
 VOGUE|2|Mode|En ___
 VOLER|1|Planer|Dérober
 VOTE|1|Suffrage|À main levée
@@ -449,7 +449,7 @@ CHIFFRE|1|Nombre|D'affaires
 CITOYEN|1|Habitant d'un pays|Du monde
 CLIENT|1|Acheteur|Roi, dit-on
 CLIMAT|1|Météo d'un lieu|Ambiance
-COLLIER|1|Bijou du cou|Coup de ___
+COLLIER|1|Bijou du cou|Coup de ___, gros effort
 COMMERCE|1|Boutique|De proximité
 CONCOURS|1|Compétition|De circonstances
 CONFORT|1|Bien-être|Douillet
@@ -462,9 +462,9 @@ COUSINE|1|Fille de l'oncle|Parente
 COUTUME|1|Tradition|Une fois n'est pas ___
 CRAQUER|1|Céder|Pour quelqu'un
 CREER|1|Inventer|Faire naître
-CRIME|1|Grave délit|Parfait
+CRIME|1|Grave délit|Il peut être parfait
 CROISER|1|Rencontrer|Les doigts
-CUILLER|1|Ustensile|À café
+CUILLER|1|Ustensile|Petite ___, à café
 DANGER|1|Péril|Public
 DECISION|1|Choix|Prendre une ___
 DEFENDRE|1|Protéger|Interdire
@@ -479,7 +479,7 @@ ECLAIRER|1|Illuminer|Expliquer
 ECOUTER|1|Entendre|Aux portes
 EFFACER|1|Gommer|L'ardoise
 ELEGANT|1|Chic|Raffiné
-EMPLOI|1|Travail|Du temps
+EMPLOI|1|Travail|___ du temps, planning
 ENTRER|1|Pénétrer|En scène
 ENVOYER|1|Expédier|Promener
 EPICERIE|1|Petit commerce|Fine
@@ -522,7 +522,7 @@ MONTRE|1|Donne l'heure|Contre la ___
 MOUCHOIR|1|Pour le nez|Grand comme un ___ de poche
 NAGER|1|Se déplacer dans l'eau|En plein bonheur
 NATUREL|1|Spontané|Chassez-le, il revient
-NUMERO|1|Chiffre|Un sacré ___
+NUMERO|1|Chiffre d'une maison|Un sacré ___
 OCCASION|1|Chance|D'___, pas neuf
 PARAPLUIE|1|Abri contre la pluie|Ouvrir le ___, se couvrir
 PARTAGE|1|Division|Des tâches
@@ -548,7 +548,7 @@ REPONSE|1|Réplique|À tout
 REUSSIR|1|Gagner|Son coup
 ROUGE|1|Couleur du sang|Tapis ___
 SAUVAGE|1|Pas domestique|Camping ___
-SCIENCE|1|Savoir|Fiction
+SCIENCE|1|Savoir rigoureux|Fiction
 SEMBLANT|1|Apparence|Faire ___
 SENTIR|1|Flairer|Bon
 SERIEUX|1|Grave|Garder son ___

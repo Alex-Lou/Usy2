@@ -7,7 +7,7 @@ OURS|1|Gros plantigrade|En peluche dans le lit
 TIGRE|1|Félin rayé|Jaloux comme un ___
 ZEBRE|1|Cheval rayé|Drôle de ___, drôle de type
 GIRAFE|1|Long cou|Peigner la ___, ne rien faire
-SINGE|1|Grimpe aux arbres|Faire le ___
+SINGE|1|Grimpe aux arbres|Faire le ___, faire l'idiot
 ELEPHANT|1|Trompe et défenses|Mémoire infaillible
 RENARD|1|Rusé de la forêt|Celui de la fable flatte le corbeau
 LAPIN|1|Aime les carottes|Poser un ___, ne pas venir

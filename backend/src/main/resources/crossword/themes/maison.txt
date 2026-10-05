@@ -100,7 +100,7 @@ FRIGO|1|Garde au frais|Mettre au ___
 CONGELATEUR|1|Garde le surgelé|Très froid, à -18
 FOUR|1|Pour cuire|Faire un ___, échouer
 MICROONDES|1|Réchauffe vite|Ding !
-MACHINE|1|À laver|À café
+MACHINE|1|Appareil mécanique|___ à laver
 CAFETIERE|1|Fait le café|Tête, en argot
 BOUILLOIRE|1|Chauffe l'eau|Elle siffle
 GRILLEPAIN|1|Dore les tartines|Toaster

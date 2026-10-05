@@ -155,7 +155,7 @@ DESSINS|1|Images au crayon|Animés
 DRAPEAUX|1|Emblèmes nationaux|Hissés au mât
 EGLISES|1|Lieux de culte|Clochers des villages
 FLECHES|1|Traits d'arc|Celles de Cupidon
-FORMES|1|Silhouettes|Mettre les ___
+FORMES|1|Silhouettes|Mettre les ___, y aller avec tact
 GANTS|1|Habillent les mains|Prendre des ___
 GLACES|1|Sorbets|Miroirs
 GRAINS|1|Ceux de sable ou de café|Petites quantités
@@ -179,7 +179,7 @@ RUBANS|1|Bandes de tissu|Dans les cheveux
 TRESORS|1|Richesses cachées|Mes petits ___
 TUNNELS|1|Passages souterrains|Sous la Manche
 VALISES|1|Bagages|Avoir des ___ sous les yeux
-VOILES|1|Font avancer le voilier|Mettre les ___
+VOILES|1|Font avancer le voilier|Mettre les ___, s'enfuir
 TABLEAUX|1|Peintures|Jouer sur tous les ___
 BELLES|1|Jolies|De ___ histoires
 GRANDES|1|Pas petites|Vacances d'été
@@ -253,7 +253,7 @@ VENUE|1|Arrivée|Allée et ___
 VOULU|1|Désiré|Fait exprès
 VECUE|1|Expérimentée|Histoire ___
 CONNU|1|Célèbre|Ni vu ni ___
-CONNUE|1|Célèbre|Bien ___ des services de police
+CONNUE|1|Célèbre, au féminin|Bien ___ des services de police
 CRUE|1|Montée des eaux|Pas cuite
 PLU|1|A séduit|Il a ___ toute la nuit
 MISES|1|Enjeux|Sur le tapis vert

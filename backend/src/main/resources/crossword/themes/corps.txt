@@ -55,7 +55,7 @@ TOUX|1|Irritation de la gorge|Sirop contre elle
 MIGRAINE|1|Mal de tête|Excuse classique
 DOULEUR|1|Mal|Rage de dent, par exemple
 BLESSURE|1|Plaie|D'amour-propre
-PLAIE|1|Blessure ouverte|Quelle ___ !
+PLAIE|1|Blessure ouverte|Mettre le doigt sur la ___
 BOBO|1|Petit mal|Bourgeois bohème
 BLEU|1|Ecchymose|Marque de coup
 BOSSE|1|Enflure du crâne|Avoir la ___ des maths
@@ -77,7 +77,7 @@ REPOS|1|Détente|Au ___ !
 SOMMEIL|1|Temps de dodo|Le ___ du juste
 SIESTE|1|Petit somme|Crapuleuse
 REVE|1|Fait la nuit|Américain
-FATIGUE|1|Épuisement|Coup de ___
+FATIGUE|1|Épuisement|Coup de ___, coup de barre
 ENERGIE|1|Vitalité|Plein d'___
 FORME|1|Bonne condition|En pleine ___
 REGIME|1|Diète|Sec, sans alcool

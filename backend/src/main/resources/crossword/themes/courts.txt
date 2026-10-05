@@ -4,14 +4,14 @@ AI|1|J'___ faim|Paresseux d'Amazonie
 BU|1|Avalé, pour un verre|Qui a trop ___ titube
 CA|1|Cela, familièrement|___ va ?
 CI|1|Ici, en abrégé|Comme ___ comme ça
-EH|1|Interjection d'appel|___ bien, voilà !
+EH|1|___ bien !|Interjection : ___ bien, voilà !
 FA|1|Note après mi|Clé de ___
-HA|1|Cri de surprise|Rire en deux lettres
-HO|1|Cri d'appel|___ hisse !
-JE|1|Pronom de la première personne|Le moi qui parle
+HA|1|Rire franc, redoublé|AH à l'envers
+HO|1|___ hisse !|OH à l'envers
+JE|1|Moi, sujet|Le moi qui parle
 ME|1|Moi, en complément|Il ___ regarde
-MU|1|Lettre grecque|Déplacé, ou poussé
-PI|1|Lettre grecque|Environ 3,14
+MU|1|Lettre grecque, le m|Déplacé, ou poussé
+PI|1|Lettre grecque du cercle|Environ 3,14
 PU|1|Participe de pouvoir|Si j'avais ___…
 US|2|___ et coutumes|Usages anciens
 UT|2|Ancien do|Note d'autrefois
@@ -41,10 +41,10 @@ DOT|2|Apport de la mariée|Le coureur de ___ la convoite
 DUC|2|Noble au-dessus du comte|Grand ou petit, c'est un hibou
 DUE|1|Que l'on doit|Somme ___
 EGO|2|Le moi|Il est surdimensionné chez le vaniteux
-ETA|3|Lettre grecque|Entre zêta et thêta
+ETA|3|Septième lettre grecque|Entre zêta et thêta
 EUE|2|Possédée|Dupée, familièrement
 EUS|2|Possédés|Ils ont été bien ___
-EUX|1|Pronom pluriel|Entre ___, entre soi
+EUX|1|Pronom tonique masculin pluriel|Entre ___, entre soi
 EVE|1|Première femme|Elle croqua la pomme
 FAC|1|Université, en bref|Amphithéâtre et partiels
 FIT|1|Exécuta|Il ___ ce qu'il put
@@ -58,7 +58,7 @@ HEP|1|Interjection pour héler|___ ! Taxi !
 HIC|1|Difficulté|Voilà le ___ !
 HUE|2|Cri du charretier|___ et dia
 HUM|1|Marque le doute|Mouais…
-ILS|1|Pronom pluriel|Eux, sujets
+ILS|1|Pronom sujet pluriel|Eux, sujets
 ION|3|Atome chargé|Particule chargée
 JET|1|Projection|D'eau ou d'avion
 KIR|2|Blanc cassis|Royal, au champagne
@@ -72,7 +72,7 @@ MAT|2|Sans éclat|Échec et ___
 MAX|1|Le plus possible, en bref|À fond, en bref
 MEC|1|Type, familièrement|Gars
 MIL|3|Céréale africaine|L'an ___
-MON|1|Possessif masculin|À ___ avis
+MON|1|Le mien, devant un nom|À ___ avis
 NEF|2|Partie de l'église|Vaisseau ancien
 NEE|1|Venue au monde|Elle est ___ pour ça
 NES|2|Venus au monde|Ils sont ___ un 14 juillet
@@ -185,7 +185,7 @@ DITE|1|Prononcée|Chose ___, chose due
 DITS|1|Prononcés|Lieux-___
 FAIT|1|Réalisé|Tout ___ !
 FERA|1|Réalisera|Il ___ beau demain
-FINI|1|Terminé|C'est ___ !
+FINI|1|Terminé|Qui a une fin
 LIRA|1|Parcourra des yeux|Ancienne monnaie italienne
 MENT|1|Ne dit pas vrai|Il ___ comme il respire
 MISE|1|Enjeu|En scène
@@ -204,7 +204,7 @@ VINT|1|Arriva|Il ___, il vit, il vainquit
 VOIT|1|Aperçoit|Qui ___ loin
 VECU|1|Passé, pour une vie|Expérience personnelle
 LUES|1|Parcourues des yeux|Lettres déjà ___
-NOUE|2|Attache|Fait un nœud
+NOUE|2|Serré par un nœud|Fait un nœud
 ALTO|2|Voix grave de femme|Grand violon
 AMAS|2|Tas|Accumulation d'étoiles
 ANIS|2|Plante du pastis|Graine parfumée
@@ -240,7 +240,7 @@ FIEF|3|Domaine du seigneur|Bastion électoral
 FIGE|2|Immobile|Sauce qui a refroidi
 FISC|2|Administration des impôts|Il prélève sa part
 FLAN|1|Dessert aux œufs|C'est du ___, c'est bidon
-FLOT|1|Vague|À ___, renfloué
+FLOT|1|Grande quantité qui coule|À ___, renfloué
 FOIS|1|Occasion|Il était une ___
 FRIC|1|Argent, familièrement|Pognon
 GAGE|2|Garantie|Jeu à ___
@@ -250,7 +250,7 @@ GLAS|2|Cloche funèbre|Sonner le ___
 GRES|3|Roche de sable|Poterie dure
 GRUE|1|Engin de levage|Échassier migrateur
 GUET|2|Surveillance|Faire le ___
-HALL|1|Grand vestibule|De gare
+HALL|1|Grand vestibule|___ de gare ou d'hôtel
 HARO|3|Crier ___ sur le baudet|Cri de réprobation
 HUER|2|Siffler|Conspuer
 HUIS|3|À ___ clos|Porte d'autrefois
@@ -278,7 +278,7 @@ METS|1|Plat|Servi à table
 MIEN|2|Le ___, à moi|Possessif de la première personne
 MORS|2|Frein du cheval|Prendre le ___ aux dents
 MORT|1|Décédé|Nature ___
-MOUE|2|Grimace boudeuse|Faire la ___
+MOUE|2|Grimace boudeuse|Faire la ___, bouder
 NAIF|1|Candide|Comme la peinture du Douanier Rousseau
 NAIN|1|Tout petit|Ils sont sept chez Blanche-Neige
 NAGE|1|Natation|En ___, en sueur
@@ -307,7 +307,7 @@ POUF|1|Petit siège bas|Bruit de chute
 PROF|1|Enseignant, en bref|Maître d'école
 PUMA|2|Félin d'Amérique|Cougar
 PURE|1|Sans mélange|___ laine
-RADE|2|Bassin de port|Laisser en ___, abandonner
+RADE|2|Bassin de port|Toulon en a une célèbre
 RAGE|1|Colère|De dents, elle fait mal
 RAID|2|Attaque éclair|Rallye d'aventure
 RAMI|2|Jeu de cartes|Il se joue avec des combinaisons
@@ -336,7 +336,7 @@ TIPI|2|Tente d'Indien|Cône de peau
 TOGE|2|Robe romaine|Robe de juge
 TOME|1|Volume|Premier ___
 TRIO|1|Groupe de trois|Infernal, chez les gangsters
-TROP|1|Excessivement|C'est ___ !
+TROP|1|Excessivement|Être de ___, en excès
 TSAR|2|Empereur russe|Nicolas II en fut le dernier
 TUBA|2|Gros cuivre|Pour respirer sous l'eau
 TUER|1|Ôter la vie|Le temps, en s'ennuyant
@@ -353,5 +353,5 @@ VOIR|1|Regarder|___ Naples et mourir
 ZELE|2|Ardeur|Faire du ___
 ZOOM|1|Objectif de photo|Gros plan
 MITE|2|Mange la laine|Elle troue les pulls
-MECS|1|Gars|Types, familièrement
+MECS|1|Gars, au pluriel|Types, familièrement
 NOIRE|1|Note de musique|Couleur de deuil

@@ -11,7 +11,7 @@ KARATE|1|Art martial à coups|Kid, au cinéma
 BOXE|1|Combat aux poings|Noble art
 VOILE|1|Sport à bateau|Faire de la ___
 VELO|1|Bicyclette|Tour de France
-COURSE|1|Compétition de vitesse|Contre la montre
+COURSE|1|Compétition de vitesse|En fin de ___, épuisé
 MARATHON|1|42 kilomètres|Très longue séance
 SPRINT|1|Course de vitesse|Final rapide
 NATATION|1|Sport de nageur|Piscine olympique
@@ -46,7 +46,7 @@ CORNER|1|Coup de pied de coin|Coin du terrain
 GARDIEN|1|Protège le but|De la paix
 ATTAQUANT|1|Marque des buts|Avant-centre
 DEFENSE|1|Protège le camp|Légitime, elle excuse
-ESSAI|1|Point au rugby|Coup d'___
+ESSAI|1|Point au rugby|Coup d'___, première tentative
 MELEE|1|Poussée au rugby|Se jeter dans la ___
 SET|1|Manche au tennis|Jeu, ___ et match
 ACE|2|Service gagnant|As, en anglais
@@ -115,7 +115,7 @@ TOUR|1|De France, à vélo|Grande boucle
 ETAPE|1|Partie du Tour|Ville-___ du Tour
 PELOTON|1|Groupe de cyclistes|D'exécution
 SPRINTER|1|Coureur rapide|Il finit en trombe
-CHRONO|1|Mesure le temps|Contre la montre
+CHRONO|1|Mesure le temps|Montre de sportif
 FINALE|1|Dernier match|Grande ___
 SUPPORTER|1|Fan d'une équipe|Encourage du gradin
 OLA|1|Vague du stade|Bras levés en tribune

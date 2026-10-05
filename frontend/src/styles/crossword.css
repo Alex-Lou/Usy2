@@ -1,0 +1,170 @@
+/* Mots fléchés (features/crossword): a letter popping in, a revealed one sparkling, a word found
+   lighting up cell after cell, the grid won in a wave, a wrong grid shaking; the keyboard's
+   bubble; the grid beside the keyboard on a wide touch screen held sideways. */
+.mf-pop {
+  display: inline-block;
+  animation: mf-pop 0.22s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+.mf-reveal {
+  display: inline-block;
+  animation: mf-reveal 0.7s ease-out both;
+}
+.mf-cursor {
+  animation: mf-cursor 1.8s ease-in-out infinite;
+}
+/* A word found, or the whole grid won: each cell lights up in turn (its delay set inline). */
+.mf-sweep {
+  position: relative;
+  z-index: 1;
+  animation: mf-sweep 0.6s ease-out both;
+}
+.mf-wrong {
+  animation: mf-wrong 0.4s ease-in-out both;
+}
+.mf-shake {
+  animation: mf-shake 0.45s ease-in-out both;
+}
+.mf-bubble {
+  animation: mf-bubble 0.12s ease-out both;
+}
+
+@keyframes mf-pop {
+  from {
+    transform: scale(0.4);
+    opacity: 0.2;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes mf-reveal {
+  0% {
+    transform: scale(0.3) rotate(-25deg);
+    opacity: 0;
+    text-shadow: 0 0 0 transparent;
+  }
+  50% {
+    transform: scale(1.25) rotate(6deg);
+    opacity: 1;
+    text-shadow: 0 0 12px var(--color-accent);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    text-shadow: 0 0 0 transparent;
+  }
+}
+@keyframes mf-cursor {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+  }
+  50% {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-primary) 35%, transparent);
+  }
+}
+@keyframes mf-sweep {
+  0% {
+    transform: scale(1);
+    box-shadow: inset 0 0 0 999px transparent;
+  }
+  40% {
+    transform: scale(1.12);
+    box-shadow:
+      inset 0 0 0 999px color-mix(in srgb, var(--color-accent) 45%, transparent),
+      0 0 14px color-mix(in srgb, var(--color-accent) 70%, transparent);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: inset 0 0 0 999px transparent;
+  }
+}
+@keyframes mf-wrong {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+}
+@keyframes mf-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(7px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+@keyframes mf-bubble {
+  from {
+    transform: translate(-50%, 6px) scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* The keys: no text selection or callout under a finger held down. */
+.mf-key {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* A grid and its keyboard: one above the other; side by side on a wide touch screen held sideways
+   (a tablet, a phone turned), the keyboard on the right under the thumb. */
+.mf-body {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+@media (min-width: 768px) and (orientation: landscape) and (pointer: coarse) {
+  .mf-body {
+    flex-direction: row;
+  }
+  .mf-side {
+    display: flex;
+    width: min(28rem, 42%);
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow-y: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-pop,
+  .mf-reveal,
+  .mf-cursor,
+  .mf-sweep,
+  .mf-wrong,
+  .mf-shake,
+  .mf-bubble {
+    animation: none;
+  }
+  .mf-cursor {
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+  }
+}

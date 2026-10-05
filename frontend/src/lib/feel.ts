@@ -111,4 +111,16 @@ export const feel = {
     buzz([30, 80, 30, 80, 60]);
     chime("love");
   },
+  /** A game: a word found. */
+  found: () => {
+    buzz([8, 40, 8]);
+    chime("notify");
+  },
+  /** A game won. */
+  win: () => {
+    buzz([20, 60, 20, 60, 50]);
+    chime("love");
+  },
+  /** A game: something is wrong. */
+  miss: () => buzz([40, 50, 40]),
 };
