@@ -191,6 +191,18 @@
     margin-inline: auto;
   }
 }
+/* The clue lists beside the grid: only on a tablet held sideways, where the grid (taller than
+   wide, the keyboard under it) leaves room on both sides. */
+.mf-list {
+  display: none;
+}
+@media (pointer: coarse) and (orientation: landscape) and (min-width: 900px) and (min-height: 600px) {
+  .mf-list {
+    display: flex;
+    width: clamp(12rem, 26vw, 24rem);
+    flex-shrink: 0;
+  }
+}
 @media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
   :root .mf-play {
     gap: 0.25rem;

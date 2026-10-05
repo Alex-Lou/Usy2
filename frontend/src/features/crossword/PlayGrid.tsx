@@ -7,6 +7,7 @@ import { useAuth } from "../auth/useAuth";
 import { Confetti } from "../games/Confetti";
 import { ShareScore } from "../games/ShareScore";
 import { createGame, getDaily, getGame, levelLabel, onCrossword, play, restartGame, starsFor, themeOf, type Change, type Clue, type Dir, type Game, type Level, type Size, type Theme } from "./api";
+import { ClueList } from "./ClueList";
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { BLOCK, cellsOf, cluesByCell, keyToLetter, readingOrder, wordsByCell } from "./logic";
@@ -255,6 +256,14 @@ export function PlayGrid({ id }: { id: number }) {
     [game, clueCells, activeClue, words, cursor, toggleDir],
   );
 
+  // A clue picked in the list beside the grid: its first empty cell (its start when full).
+  const pickClue = useCallback(
+    (c: Clue) => setCursor({ cell: cellsOf(c, width).find((i) => letters[i] === ".") ?? c.start, dir: c.dir }),
+    [width, letters],
+  );
+  const across = useMemo(() => order.filter((c) => c.dir === "right"), [order]);
+  const down = useMemo(() => order.filter((c) => c.dir === "down"), [order]);
+
   const goWord = useCallback(
     (delta: 1 | -1) => {
       if (!activeClue || order.length === 0) return;
@@ -469,6 +478,8 @@ export function PlayGrid({ id }: { id: number }) {
         </div>
       </header>
 
+      <div className="mf-middle flex min-h-0 flex-1 gap-2">
+      <ClueList dir="right" clues={across} width={width} letters={letters} active={done ? null : activeClue} onPick={pickClue} />
       <ZoomView
         cols={width}
         rows={game.height}
@@ -496,6 +507,8 @@ export function PlayGrid({ id }: { id: number }) {
         />
         </div>
       </ZoomView>
+      <ClueList dir="down" clues={down} width={width} letters={letters} active={done ? null : activeClue} onPick={pickClue} />
+      </div>
 
 
       {done ? (
