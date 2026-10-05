@@ -426,7 +426,7 @@ export function PlayGrid({ id }: { id: number }) {
   return (
     // One screen high: the grid takes what the header and the keyboard leave (it zooms inside).
     <div
-      className="flex h-[calc(100dvh-var(--topbar-h)-var(--tabbar-h)-2rem)] touch-manipulation flex-col gap-2 lg:h-[calc(100dvh-var(--desk-topbar-h)-5rem)]"
+      className="mf-play flex h-[calc(100dvh-var(--topbar-h)-var(--tabbar-h)-2rem)] touch-manipulation flex-col gap-2 lg:h-[calc(100dvh-var(--desk-topbar-h)-5rem)]"
       data-no-pull
     >
       <header className="flex shrink-0 items-center gap-2">
@@ -437,7 +437,7 @@ export function PlayGrid({ id }: { id: number }) {
           <h1 className="truncate font-display text-lg font-bold leading-tight">
             {title}
           </h1>
-          <p className="truncate text-xs text-text-muted">
+          <p className="mf-sub truncate text-xs text-text-muted">
             {themeOf(game.theme).label} · {levelLabel(game.level)} · {game.shared ? "à deux 💞" : "seul"} · {Math.round((filled * 100) / letterCells)} %
           </p>
         </div>
@@ -469,7 +469,6 @@ export function PlayGrid({ id }: { id: number }) {
         </div>
       </header>
 
-      <div className="mf-body">
       <ZoomView
         cols={width}
         rows={game.height}
@@ -499,7 +498,6 @@ export function PlayGrid({ id }: { id: number }) {
         </div>
       </ZoomView>
 
-      <div className="mf-side flex shrink-0 flex-col">
 
       {done ? (
         <div className="card relative shrink-0 overflow-hidden p-4 text-center animate-pop">
@@ -540,7 +538,7 @@ export function PlayGrid({ id }: { id: number }) {
           </div>
         </div>
       ) : (
-        <div className="flex shrink-0 flex-col gap-2 rounded-token border border-border bg-surface p-2 shadow-card">
+        <div className="mf-panel flex shrink-0 flex-col gap-2 rounded-token border border-border bg-surface p-2 shadow-card">
           {errors > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-token bg-danger/10 px-2 py-1.5 text-center text-sm animate-pop" role="status">
               <span>
@@ -555,7 +553,7 @@ export function PlayGrid({ id }: { id: number }) {
             <button type="button" onClick={() => goWord(-1)} aria-label="Mot précédent" className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">
               <Icon name="chevronLeft" size={18} />
             </button>
-            <p className="line-clamp-2 min-h-[2.5rem] min-w-0 flex-1 content-center text-center text-[15px] font-semibold leading-tight" aria-live="polite">
+            <p className="mf-clue line-clamp-2 min-h-[2.5rem] min-w-0 flex-1 content-center text-center text-[15px] font-semibold leading-tight" aria-live="polite">
               {message ?? (activeClue ? `${activeClue.dir === "right" ? "→" : "↓"} ${activeClue.text} (${activeClue.length})` : "")}
             </p>
             <button type="button" onClick={() => goWord(1)} aria-label="Mot suivant" className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">
@@ -568,8 +566,6 @@ export function PlayGrid({ id }: { id: number }) {
           </div>
         </div>
       )}
-      </div>
-      </div>
     </div>
   );
 }

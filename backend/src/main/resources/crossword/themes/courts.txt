@@ -280,7 +280,7 @@ MORS|2|Frein du cheval|Prendre le ___ aux dents
 MORT|1|Décédé|Nature ___
 MOUE|2|Grimace boudeuse|Faire la ___, bouder
 NAIF|1|Candide|Comme la peinture du Douanier Rousseau
-NAIN|1|Tout petit|Ils sont sept chez Blanche-Neige
+NAIN|1|Tout petit|Ils sont sept dans Blanche-Neige
 NAGE|1|Natation|En ___, en sueur
 NEON|2|Tube lumineux|Éclairage de bureau
 NULS|1|Zéros|Les ___, à la télé

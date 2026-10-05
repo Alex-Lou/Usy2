@@ -81,7 +81,7 @@ EAU|1|H2O|Elle dort, la plus dangereuse
 ECU|3|Bouclier ancien|Vieille pièce du royaume
 ELU|1|Choisi par vote|Député ou maire
 EMU|1|Touché au cœur|Les larmes aux yeux
-EPI|2|Tête de blé|Rebelle chez les cheveux
+EPI|2|Tête de blé|Rebelle, dans les cheveux
 ERE|2|Longue époque|Celle des dinosaures fut longue
 EST|1|Levant|Le soleil s'y lève
 ETE|1|Saison chaude|Indien, il arrive en octobre
@@ -324,7 +324,7 @@ SEPT|1|Nombre de jours de la semaine|Les merveilles du monde
 SEUL|1|Sans personne|___ au monde
 SOIF|1|Envie de boire|Garder une poire pour elle
 SOIR|1|Fin de journée|Le grand, c'est la révolution
-SOLO|1|Seul en scène|Han, chez Star Wars
+SOLO|1|Seul en scène|Han, dans Star Wars
 SORT|1|Destin|Jeter un ___, c'est ensorceler
 SOUS|1|En dessous de|Argent de poche
 TARD|1|Pas tôt|Mieux vaut ___ que jamais
@@ -705,7 +705,7 @@ SABLIER|2|Mesure le temps|Il s'écoule grain à grain
 SIRENE|1|Femme-poisson|Alarme ou Ariel
 SOLEIL|1|Astre du jour|Coup de ___
 SORCIERE|1|Fait des sortilèges|Sur son balai
-TAPIS|1|Couvre le sol|Volant chez Aladdin
+TAPIS|1|Couvre le sol|Volant, dans Aladdin
 TEMPETE|1|Vent violent|Dans un verre d'eau
 TRAJET|1|Parcours|Aller-retour
 TRAVERSE|2|Raccourci|Chemin de ___

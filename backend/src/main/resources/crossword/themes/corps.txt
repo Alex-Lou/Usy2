@@ -1,7 +1,7 @@
 # Corps & santé
 CORPS|1|Organisme|___ et âme
 TETE|1|Sommet du corps|Tenir ___
-VISAGE|1|Figure|Pâle, chez les cow-boys
+VISAGE|1|Figure|Pâle, dans les westerns
 OEIL|1|Organe de la vue|Mon ___ !
 NEZ|1|Sert à sentir|Mener par le bout du ___
 BOUCHE|1|Pour manger|À ___ que veux-tu

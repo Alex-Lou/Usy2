@@ -1,6 +1,6 @@
 /* Mots fléchés (features/crossword): a letter popping in, a revealed one sparkling, a word found
    lighting up cell after cell, the grid won in a wave, a wrong grid shaking; the keyboard's
-   bubble; the grid beside the keyboard on a wide touch screen held sideways. */
+   bubble; the grid full screen on a touch screen. */
 .mf-pop {
   display: inline-block;
   animation: mf-pop 0.22s cubic-bezier(0.2, 1.5, 0.4, 1) both;
@@ -131,26 +131,46 @@
   touch-action: manipulation;
 }
 
-/* A grid and its keyboard: one above the other; side by side on a wide touch screen held sideways
-   (a tablet, a phone turned), the keyboard on the right under the thumb. */
-.mf-body {
-  display: flex;
-  min-height: 0;
-  flex: 1 1 0%;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-@media (min-width: 768px) and (orientation: landscape) and (pointer: coarse) {
-  .mf-body {
-    flex-direction: row;
+/* A grid being played on a touch screen (phone, tablet, upright or sideways): the whole screen,
+   over the app's bars (‹ goes back), the keyboard always under the grid. Sideways, the screen is
+   short: smaller keys, the clue on one line, no subtitle. */
+@media (pointer: coarse) {
+  :root .mf-play {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    height: auto !important;
+    padding: calc(env(safe-area-inset-top, 0px) + 0.5rem) max(0.75rem, env(safe-area-inset-right, 0px))
+      calc(env(safe-area-inset-bottom, 0px) + 0.5rem) max(0.75rem, env(safe-area-inset-left, 0px));
+    background: var(--color-bg);
   }
-  .mf-side {
-    display: flex;
-    width: min(28rem, 42%);
-    flex-shrink: 0;
-    flex-direction: column;
-    justify-content: flex-end;
-    overflow-y: auto;
+}
+@media (pointer: coarse) and (orientation: landscape) {
+  .mf-play .mf-key {
+    height: 2.5rem;
+    font-size: 1.125rem;
+  }
+}
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+  :root .mf-play {
+    gap: 0.25rem;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.25rem);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.25rem);
+  }
+  .mf-play .mf-key {
+    height: 2rem;
+    font-size: 1rem;
+  }
+  .mf-play .mf-sub {
+    display: none;
+  }
+  .mf-play .mf-clue {
+    min-height: 1.5rem;
+    -webkit-line-clamp: 1;
+  }
+  .mf-play .mf-panel {
+    gap: 0.25rem;
+    padding: 0.25rem;
   }
 }
 

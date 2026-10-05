@@ -29,10 +29,14 @@ function Letter({ letter, revealed, animate }: { letter: string; revealed: boole
   return <span className={play ? (revealed ? "mf-reveal" : "mf-pop") : undefined}>{letter}</span>;
 }
 
-/** Where each arrow sits in its clue (the side its word is on) and how it is drawn. */
+/**
+ * Where each arrow sits in its clue and how it is drawn: always in a strip on the clue's right,
+ * kept free of text (ARROW_ROOM), in the middle for a word going right, in the corner for one
+ * going down, so an arrow never sits on a word of the clue.
+ */
 const ARROWS: Record<Arrow, { at: string; shape: JSX.Element }> = {
   right: { at: "right-0 top-1/2 -translate-y-1/2", shape: <polygon points="3,2 8,5 3,8" /> },
-  down: { at: "bottom-0 left-1/2 -translate-x-1/2", shape: <polygon points="2,3 8,3 5,8" /> },
+  down: { at: "bottom-0 right-0", shape: <polygon points="2,3 8,3 5,8" /> },
   rightThenDown: {
     at: "right-0 top-1/2 -translate-y-1/2",
     shape: (
@@ -43,7 +47,7 @@ const ARROWS: Record<Arrow, { at: string; shape: JSX.Element }> = {
     ),
   },
   downThenRight: {
-    at: "bottom-0 left-1/2 -translate-x-1/2",
+    at: "bottom-0 right-0",
     shape: (
       <>
         <path d="M3 1V6H6" fill="none" stroke="currentColor" strokeWidth="1.4" />
@@ -55,6 +59,8 @@ const ARROWS: Record<Arrow, { at: string; shape: JSX.Element }> = {
 
 /** The smallest clue text, in pixels: below, it cannot be read. */
 const MIN_PX = 6;
+/** The arrow's size, and the strip kept for it on the clue's right. */
+const ARROW_SIZE = "max(7px, var(--cell) * 0.2)";
 
 /** The height a clue has, as a share of the cell's width (borders aside). */
 const roomOf = (half: boolean) => (half ? 0.44 : 0.9);
@@ -85,7 +91,7 @@ export function clueFit(text: string, half: boolean): { size: number; lines: num
   let size = 0.2;
   for (; size > 0.1; size -= 0.005) {
     const lines = lineCount(half, size);
-    const needed = linesFor(text, Math.floor(0.86 / (size * 0.6)));
+    const needed = linesFor(text, Math.floor(0.68 / (size * 0.6))); // the arrow's strip aside
     if (needed > 0 && needed <= lines) return { size, lines };
   }
   return { size, lines: lineCount(half, size) };
@@ -120,10 +126,10 @@ function ClueText({ clue, half, active, cell }: { clue: Clue; half: boolean; act
     <span
       ref={box}
       className={
-        "relative flex flex-1 items-center justify-center overflow-hidden px-[2px] text-center font-semibold leading-[1.1] " +
+        "relative flex flex-1 items-center justify-center overflow-hidden pl-[2px] text-center font-semibold leading-[1.1] " +
         (active ? "bg-primary/30 text-text" : "text-text-muted")
       }
-      style={{ fontSize: `max(${MIN_PX}px, var(--cell) * ${fit.size.toFixed(3)})` }}
+      style={{ fontSize: `max(${MIN_PX}px, var(--cell) * ${fit.size.toFixed(3)})`, paddingRight: ARROW_SIZE }}
     >
       <span ref={text} className="overflow-hidden" style={{ display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: fit.lines }}>
         {clue.text}
@@ -131,7 +137,7 @@ function ClueText({ clue, half, active, cell }: { clue: Clue; half: boolean; act
       <svg
         viewBox="0 0 10 10"
         className={"absolute fill-current text-primary " + arrow.at}
-        style={{ width: "max(7px, var(--cell) * 0.2)", height: "max(7px, var(--cell) * 0.2)" }}
+        style={{ width: ARROW_SIZE, height: ARROW_SIZE }}
         aria-hidden="true"
       >
         {arrow.shape}
