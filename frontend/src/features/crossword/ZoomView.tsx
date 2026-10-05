@@ -15,12 +15,8 @@ const STEPS = [1, 1.6, 2.2];
 /** A medium or big grid opens zoomed for cells about this big, if they are under SMALL_CELL at 1× (a phone; a tablet's fit). */
 const COMFORT_CELL = 58;
 const SMALL_CELL = 46;
-/**
- * A touch screen held sideways: the grid (taller than wide) would sit small in the middle, the
- * height its limit; it opens wider, cells about this big as far as the width goes, and scrolls
- * down with the word.
- */
-const SIDEWAYS_CELL = 88;
+/** On a tablet (a screen 600 px or more across its short side), cells this big already play well. */
+const SMALL_TABLET_CELL = 38;
 const MAX = 3;
 /** Cells never grow past this at 1×: on a computer screen, and on a touch one (a tablet: big, for the fingers). */
 const MAX_CELL = 52;
@@ -107,7 +103,6 @@ export function useZoom(
 export function ZoomView({
   cols,
   rows,
-  size,
   zoom,
   onZoom,
   onDefaultZoom,
@@ -117,7 +112,6 @@ export function ZoomView({
 }: {
   cols: number;
   rows: number;
-  size: Size;
   zoom: number | null;
   /** A pinch: the zoom chosen. */
   onZoom: (z: number) => void;
@@ -142,24 +136,20 @@ export function ZoomView({
   }, []);
 
   const touch = window.matchMedia?.("(pointer: coarse)").matches ?? false;
-  const sideways = useSideways();
   const fit = box ? Math.min(box.w, (box.h * cols) / rows, cols * (touch ? MAX_TOUCH_CELL : MAX_CELL)) : 0;
   // No zoom chosen yet for this size: a medium or big grid too small to read opens zoomed.
   useEffect(() => {
     if (zoom !== null || fit <= 0) return;
     const cell = fit / cols;
     // A mouse scrolls and zooms as it likes: only a touch screen opens zoomed.
-    if (touch && sideways && box) {
-      const wide = Math.min(box.w / fit, SIDEWAYS_CELL / cell);
-      onDefaultZoom(wide < 1.1 ? 1 : clamp(Math.floor(wide * 10) / 10));
-      return;
-    }
+    // The whole grid in view whenever its cells are big enough to play (a tablet, upright or
+    // sideways); zoomed only when they are too small (a phone, sideways above all).
     onDefaultZoom(
-      !touch || size === "petite" || cell >= SMALL_CELL
+      !touch || cell >= (Math.min(screen.width, screen.height) >= 600 ? SMALL_TABLET_CELL : SMALL_CELL)
         ? 1
         : clamp(Math.round((COMFORT_CELL / cell) * 10) / 10),
     );
-  }, [zoom, fit, cols, size, onDefaultZoom, touch, sideways, box]);
+  }, [zoom, fit, cols, onDefaultZoom, touch]);
   const z = zoom ?? 1;
 
   // Keeps the word in view (the cursor's cell if the word is wider than the window).

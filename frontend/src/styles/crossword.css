@@ -177,13 +177,18 @@
   }
 }
 @media (pointer: coarse) and (orientation: landscape) {
+  /* Sideways, height is what the grid lacks: lower keys, the keyboard gathered in the middle. */
   .mf-play .mf-key {
-    height: 2.5rem;
+    height: 2.4rem;
     font-size: 1.125rem;
   }
-  /* Sideways, the keyboard takes the whole width. */
   .mf-play .mf-keys {
-    max-width: none;
+    max-width: 44rem;
+  }
+  .mf-play .mf-panel {
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
   }
 }
 @media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
