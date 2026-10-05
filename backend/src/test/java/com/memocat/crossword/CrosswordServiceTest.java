@@ -172,12 +172,23 @@ class CrosswordServiceTest {
         var easy = service.entries("melange", CrosswordService.Level.FACILE);
         var hard = service.entries("melange", CrosswordService.Level.DIFFICILE);
         assertThat(hard.size()).isGreaterThan(easy.size());
-        var easyClue = new java.util.HashMap<String, String>();
+        var plainClues = new java.util.HashMap<String, java.util.List<String>>();
         var hardClue = new java.util.HashMap<String, String>();
-        words.words().forEach(w -> { easyClue.put(w.word(), w.easy()); hardClue.put(w.word(), w.hard()); });
-        assertThat(easy).allMatch(e -> e.clue().equals(easyClue.get(e.word())) && !e.favored());
+        words.words().forEach(w -> { plainClues.put(w.word(), w.plain()); hardClue.put(w.word(), w.hard()); });
+        assertThat(easy).allMatch(e -> plainClues.get(e.word()).contains(e.clue()) && !e.favored());
         assertThat(hard).allMatch(e -> e.clue().equals(hardClue.get(e.word())));
         assertThat(service.entries("sport", CrosswordService.Level.MOYEN)).anyMatch(ArrowGenerator.Entry::favored);
+    }
+
+    /** The short words every grid needs read differently from one grid to the next (variantes.txt). */
+    @Test
+    void aShortWordHasSeveralPlainClues() {
+        var seen = new java.util.HashSet<String>();
+        for (int k = 0; k < 40; k++) {
+            service.entries("melange", CrosswordService.Level.FACILE).stream()
+                    .filter(e -> e.word().equals("ET")).forEach(e -> seen.add(e.clue()));
+        }
+        assertThat(seen).hasSize(3).contains("Conjonction qui ajoute", "Pierre ___ le loup", "Tintin ___ Milou");
     }
 
     /** In a theme grid, the long words all belong to the theme; the short ones hold the grid together. */

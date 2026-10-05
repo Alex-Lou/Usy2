@@ -7,7 +7,7 @@ OURS|1|Gros plantigrade|En peluche dans le lit
 TIGRE|1|Félin rayé|Jaloux comme un ___
 ZEBRE|1|Cheval rayé|Drôle de ___, drôle de type
 GIRAFE|1|Long cou|Peigner la ___, ne rien faire
-SINGE|1|Grimpe aux arbres|Faire le ___
+SINGE|1|Grimpe aux arbres|Faire le ___, faire l'idiot
 ELEPHANT|1|Trompe et défenses|Mémoire infaillible
 RENARD|1|Rusé de la forêt|Celui de la fable flatte le corbeau
 LAPIN|1|Aime les carottes|Poser un ___, ne pas venir
@@ -80,7 +80,7 @@ ROSE|1|Fleur à épines|Pas de ___ sans épines
 TULIPE|1|Fleur de Hollande|Bulbe printanier
 MARGUERITE|1|Fleur qu'on effeuille|Un peu, beaucoup…
 COQUELICOT|1|Fleur rouge des champs|Rouge comme lui
-TOURNESOL|1|Suit le soleil|Professeur chez Tintin
+TOURNESOL|1|Suit le soleil|Professeur, dans Tintin
 MUGUET|1|Fleur du 1er mai|Porte-bonheur en clochettes
 LAVANDE|1|Fleur violette de Provence|Parfume les armoires
 ORCHIDEE|2|Fleur exotique|Fragile et précieuse
@@ -122,7 +122,7 @@ ARCENCIEL|1|Sept couleurs après la pluie|Son pied cache un trésor
 SAISON|1|Été ou hiver|Fruit de ___
 PRINTEMPS|1|Saison des fleurs|Une hirondelle ne le fait pas
 AUTOMNE|1|Saison des feuilles mortes|Il arrive en septembre
-HIVER|1|Saison froide|Il vient, chez Game of Thrones
+HIVER|1|Saison froide|Il vient, dans Game of Thrones
 NID|1|Maison d'oiseau|Fait de brindilles
 PLUME|1|Couvre l'oiseau|Poids léger à la boxe
 TERRIER|1|Abri du lapin|Chien de chasse

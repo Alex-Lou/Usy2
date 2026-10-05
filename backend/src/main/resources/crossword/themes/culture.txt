@@ -60,7 +60,7 @@ EPISODE|1|Partie de série|Le dernier, attendu
 SAISON|1|Ensemble d'épisodes|Huit pour Game of Thrones
 POPCORN|1|Maïs éclaté|Grignoté au cinéma
 TICKET|1|Billet d'entrée|De métro ou de cinéma
-THEATRE|1|Art de la scène|Coup de ___
+THEATRE|1|Art de la scène|Coup de ___, rebondissement
 PIECE|1|Œuvre de théâtre|Montée par une troupe
 RIDEAU|1|Ouvre le spectacle|Tombe à la fin
 CIRQUE|1|Sous un chapiteau|Quel ___ !
@@ -74,7 +74,7 @@ BD|1|Bande dessinée, en bref|Neuvième art
 AUTEUR|1|Écrivain|Droits d'___
 PEINTURE|1|Art des couleurs|Fraîche, ne pas toucher
 TABLEAU|1|Œuvre peinte|Brosser le ___
-PINCEAU|1|Outil du peintre|Coup de ___
+PINCEAU|1|Outil du peintre|Coup de ___ du peintre
 DESSIN|1|Image au crayon|Faut-il te faire un ___ ?
 SCULPTURE|1|Art du volume|Statue taillée
 MUSEE|1|On y voit des œuvres|Pièce de ___, très ancienne

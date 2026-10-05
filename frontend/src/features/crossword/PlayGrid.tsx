@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "../../components/ui/Icon";
 import { feel } from "../../lib/feel";
@@ -37,6 +37,7 @@ export function PlayGrid({ id }: { id: number }) {
   const [cursor, setCursor] = useState<{ cell: number; dir: Dir }>({ cell: -1, dir: "right" });
   const [wrong, setWrong] = useState<Set<number>>(new Set());
   const [flash, setFlash] = useState<Set<number>>(new Set());
+  const [sweep, setSweep] = useState<Map<number, number>>(new Map());
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -132,6 +133,36 @@ export function PlayGrid({ id }: { id: number }) {
   useOnRefresh(load);
 
   const done = Boolean(finishedAt) || (game !== null && letters === game.solution);
+
+  // Cells lighting up in turn, then back to normal (the next sweep can play again).
+  const sweepTimer = useRef<number>();
+  const light = useCallback((delays: Map<number, number>) => {
+    window.clearTimeout(sweepTimer.current);
+    setSweep(delays);
+    sweepTimer.current = window.setTimeout(() => setSweep(new Map()), Math.max(0, ...delays.values()) + 700);
+  }, []);
+  useEffect(() => () => window.clearTimeout(sweepTimer.current), []);
+
+  // A word just found (every letter right, by either of us or a joker) lights up, letter after
+  // letter; the grid won, a wave goes across it. Nothing plays for what was there on opening.
+  const seen = useRef<{ id: number; solved: Set<string>; done: boolean } | null>(null);
+  useEffect(() => {
+    if (!game || letters.length !== game.solution.length) return;
+    const key = (c: Clue) => `${c.dir}${c.start}`;
+    const solved = new Set(game.clues.filter((c) => cellsOf(c, width).every((i) => letters[i] === game.solution[i])).map(key));
+    const before = seen.current?.id === game.id ? seen.current : null;
+    seen.current = { id: game.id, solved, done };
+    if (!before) return;
+    if (done && !before.done) {
+      light(new Map([...game.solution].flatMap((c, i) => (c === BLOCK ? [] : [[i, (Math.floor(i / width) + (i % width)) * 45] as [number, number]]))));
+      feel.win();
+      return;
+    }
+    const found = game.clues.filter((c) => solved.has(key(c)) && !before.solved.has(key(c)));
+    if (found.length === 0 || done) return;
+    light(new Map(found.flatMap((c) => cellsOf(c, width).map((cell, k) => [cell, k * 60] as [number, number]))));
+    feel.found();
+  }, [game, letters, width, done, light]);
 
   // After a letter: the next empty cell of the word (the next cell when correcting one already
   // written); the word full, the next one still to fill (no letter written over the last one, no
@@ -250,6 +281,7 @@ export function PlayGrid({ id }: { id: number }) {
     const bad = cells.filter((c) => letters[c] !== "." && letters[c] !== game.solution[c]);
     const empty = cells.some((c) => letters[c] === ".");
     setWrong(new Set(bad));
+    if (bad.length > 0) feel.miss();
     window.setTimeout(() => setWrong(new Set()), 2200);
     setMessage(bad.length > 0 ? `${bad.length} lettre${bad.length > 1 ? "s" : ""} à revoir` : empty ? "Rien de faux pour l'instant" : "✓ Mot juste !");
   }, [game, activeClue, width, letters]);
@@ -343,6 +375,33 @@ export function PlayGrid({ id }: { id: number }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [typeLetter, erase, toggleDir, goWord, game, cursor, width, words]);
 
+  // The grid just filled, but wrong: it shakes (once; again if it fills wrong again).
+  const shaker = useRef<HTMLDivElement>(null);
+  const fullButWrong = game !== null && !done && letters.length === game.solution.length && !letters.includes(".");
+  useEffect(() => {
+    const el = shaker.current;
+    if (!fullButWrong || !el) return;
+    el.classList.remove("mf-shake");
+    void el.offsetWidth; // restarts the animation
+    el.classList.add("mf-shake");
+    feel.miss();
+  }, [fullButWrong]);
+
+  // A finger sliding across the clue: the next word (to the left) or the previous one (to the right).
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const onSwipeStart = (e: PointerEvent) => {
+    swipe.current = { x: e.clientX, y: e.clientY };
+  };
+  const onSwipeEnd = (e: PointerEvent) => {
+    const from = swipe.current;
+    swipe.current = null;
+    if (!from) return;
+    const dx = e.clientX - from.x;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(e.clientY - from.y) * 1.5) return;
+    feel.tap();
+    goWord(dx < 0 ? 1 : -1);
+  };
+
   if (error) {
     return (
       <div className="card p-6 text-center">
@@ -367,7 +426,7 @@ export function PlayGrid({ id }: { id: number }) {
   return (
     // One screen high: the grid takes what the header and the keyboard leave (it zooms inside).
     <div
-      className="flex h-[calc(100dvh-var(--topbar-h)-var(--tabbar-h)-2rem)] touch-manipulation flex-col gap-2 lg:h-[calc(100dvh-var(--desk-topbar-h)-5rem)]"
+      className="mf-play flex h-[calc(100dvh-var(--topbar-h)-var(--tabbar-h)-2rem)] touch-manipulation flex-col gap-2 lg:h-[calc(100dvh-var(--desk-topbar-h)-5rem)]"
       data-no-pull
     >
       <header className="flex shrink-0 items-center gap-2">
@@ -378,7 +437,7 @@ export function PlayGrid({ id }: { id: number }) {
           <h1 className="truncate font-display text-lg font-bold leading-tight">
             {title}
           </h1>
-          <p className="truncate text-xs text-text-muted">
+          <p className="mf-sub truncate text-xs text-text-muted">
             {themeOf(game.theme).label} · {levelLabel(game.level)} · {game.shared ? "à deux 💞" : "seul"} · {Math.round((filled * 100) / letterCells)} %
           </p>
         </div>
@@ -420,6 +479,7 @@ export function PlayGrid({ id }: { id: number }) {
         focus={done ? [] : focus}
         cursor={done ? -1 : cursor.cell}
       >
+        <div ref={shaker}>
         <Grid
         width={width}
         solution={game.solution}
@@ -432,9 +492,12 @@ export function PlayGrid({ id }: { id: number }) {
         activeClue={done ? null : activeClue}
         wrong={wrong}
         flash={flash}
+        sweep={sweep}
         onCell={tapCell}
         />
+        </div>
       </ZoomView>
+
 
       {done ? (
         <div className="card relative shrink-0 overflow-hidden p-4 text-center animate-pop">
@@ -475,7 +538,7 @@ export function PlayGrid({ id }: { id: number }) {
           </div>
         </div>
       ) : (
-        <div className="flex shrink-0 flex-col gap-2 rounded-token border border-border bg-surface p-2 shadow-card">
+        <div className="mf-panel flex shrink-0 flex-col gap-2 rounded-token border border-border bg-surface p-2 shadow-card">
           {errors > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-token bg-danger/10 px-2 py-1.5 text-center text-sm animate-pop" role="status">
               <span>
@@ -486,11 +549,11 @@ export function PlayGrid({ id }: { id: number }) {
               </button>
             </div>
           )}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1" style={{ touchAction: "pan-y" }} onPointerDown={onSwipeStart} onPointerUp={onSwipeEnd} onPointerCancel={() => (swipe.current = null)}>
             <button type="button" onClick={() => goWord(-1)} aria-label="Mot précédent" className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">
               <Icon name="chevronLeft" size={18} />
             </button>
-            <p className="line-clamp-2 min-h-[2.5rem] min-w-0 flex-1 content-center text-center text-[15px] font-semibold leading-tight" aria-live="polite">
+            <p className="mf-clue line-clamp-2 min-h-[2.5rem] min-w-0 flex-1 content-center text-center text-[15px] font-semibold leading-tight" aria-live="polite">
               {message ?? (activeClue ? `${activeClue.dir === "right" ? "→" : "↓"} ${activeClue.text} (${activeClue.length})` : "")}
             </p>
             <button type="button" onClick={() => goWord(1)} aria-label="Mot suivant" className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-text-muted press hover:text-text">

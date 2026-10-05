@@ -1,0 +1,53 @@
+# Définitions de plus pour les petits mots qui reviennent le plus (ils tiennent les grilles
+# ensemble) : une grille en tire une au hasard parmi la facile et celles-ci, pour ne pas lire
+# toujours la même. Une seule réponse possible par définition, comme partout.
+# MOT|définition
+AN|Par ___, chaque année
+AS|Tu ___ raison
+AS|___ de pique
+AU|___ revoir
+AU|Symbole chimique de l'or
+CA|___ alors !
+DE|___ rien, je vous en prie
+EN|Partir ___ vacances
+EN|Habiter ___ France
+ES|Tu ___ en retard !
+ES|Être, à la deuxième personne
+ET|Pierre ___ le loup
+ET|Tintin ___ Milou
+EU|J'ai ___ peur
+IL|___ était une fois
+JE|« ___ t'aime »
+LA|___ Joconde, au Louvre
+LE|___ Petit Prince
+LU|___ et approuvé
+MI|___-temps
+NE|Je ___ sais pas
+NE|Venu au monde
+NI|___ oui ___ non
+NU|Torse ___
+ON|___ dit que…
+OR|Âge d'___
+OR|Métal jaune précieux
+OS|Tomber sur un ___, une difficulté
+RE|Préfixe qui recommence
+RI|Participe de rire
+SE|___ promener
+SE|Il ___ souvient de tout
+SI|___ seulement…
+SU|Participe de savoir
+US|Les États-Unis, en bref
+VA|Il ___ et vient
+VU|Déjà-___
+ANE|Bonnet d'___
+ERE|Avant notre ___
+EST|Il ___ là
+ETE|Participe passé d'être
+ETE|Saison des vacances
+EUE|La peur qu'on a ___
+ILE|___ de Ré
+ILE|Ré ou Oléron
+IRA|Futur d'aller
+NEE|Madame Martin, ___ Dupont
+USE|Élimé
+ETES|Saisons chaudes

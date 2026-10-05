@@ -41,14 +41,17 @@ class ArrowGeneratorTest {
         assertThat(sel.easy()).isEqualTo("Cristaux de la mer");
     }
 
-    /** A clue never gives its answer away, not even as the start of a longer word (3 letters or more). */
+    /**
+     * A clue never gives its answer away: not even as the start of a longer word (3 letters or
+     * more), nor as a word of its own (2 letters: « Oh là là » for OH).
+     */
     @Test
     void noClueContainsItsAnswer() {
         for (ArrowWords.Word w : DICTIONARY) {
-            if (w.word().length() < 3) continue;
-            for (String clue : List.of(w.easy(), w.hard())) {
+            for (String clue : w.clues()) {
                 for (String token : plain(clue).split("[^A-Z]+")) {
-                    assertThat(token.startsWith(w.word())).as("%s : %s", w.word(), clue).isFalse();
+                    boolean given = w.word().length() < 3 ? token.equals(w.word()) : token.startsWith(w.word());
+                    assertThat(given).as("%s : %s", w.word(), clue).isFalse();
                 }
             }
         }
@@ -59,10 +62,25 @@ class ArrowGeneratorTest {
     void aPluralBlankHasAPluralAnswer() {
         Pattern plural = Pattern.compile("\\b(les|des|ses|mes|tes|nos|vos|leurs|aux)\\s+___", Pattern.CASE_INSENSITIVE);
         for (ArrowWords.Word w : DICTIONARY) {
-            for (String clue : List.of(w.easy(), w.hard())) {
+            for (String clue : w.clues()) {
                 if (plural.matcher(clue).find()) {
                     assertThat(w.word()).as("%s : %s", w.word(), clue).matches(".*[SX]");
                 }
+            }
+        }
+    }
+
+    /**
+     * One clue, one answer: two words of the same length never share a clue (« Note de musique »
+     * for DO and RE), or a right answer would be refused and a revealed letter look wrong.
+     */
+    @Test
+    void noClueFitsTwoWordsOfTheSameLength() {
+        Map<String, String> seen = new HashMap<>();
+        for (ArrowWords.Word w : DICTIONARY) {
+            for (String clue : w.clues()) {
+                String other = seen.putIfAbsent(clue.toLowerCase() + "/" + w.word().length(), w.word());
+                assertThat(other == null || other.equals(w.word())).as("« %s » : %s et %s", clue, other, w.word()).isTrue();
             }
         }
     }

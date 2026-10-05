@@ -210,10 +210,16 @@ public class CrosswordService {
                 .filter(w -> w.level() <= level.maxWordLevel)
                 .filter(w -> !anyTheme || w.word().length() < FRESH_LENGTH || !recent.contains(w.word()))
                 .filter(w -> anyTheme || w.word().length() <= THEME_GLUE_LENGTH || w.themes().contains(theme))
-                .map(w -> new ArrowGenerator.Entry(w.word(),
-                        random.nextDouble() < level.hardClues ? w.hard() : w.easy(),
+                .map(w -> new ArrowGenerator.Entry(w.word(), clue(w, random.nextDouble() < level.hardClues),
                         !anyTheme && w.themes().contains(theme)))
                 .toList();
+    }
+
+    /** The tricky clue, or one of the plain ones drawn at random (a short word has several). */
+    private String clue(ArrowWords.Word w, boolean tricky) {
+        if (tricky) return w.hard();
+        List<String> plain = w.plain();
+        return plain.size() == 1 ? plain.get(0) : plain.get(random.nextInt(plain.size()));
     }
 
     /** The words of the last grids made (by either of us). */
@@ -387,7 +393,7 @@ public class CrosswordService {
         List<ArrowGrid.Clue> out = new ArrayList<>(stored.size());
         for (ArrowGrid.Clue c : stored) {
             ArrowWords.Word w = byWord.get(answer(g.getSolution(), g.getWidth(), c));
-            if (w == null || c.text().equals(w.easy()) || c.text().equals(w.hard())) {
+            if (w == null || w.clues().contains(c.text())) {
                 out.add(c);
                 continue;
             }

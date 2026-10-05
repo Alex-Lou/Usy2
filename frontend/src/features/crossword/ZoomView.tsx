@@ -12,11 +12,13 @@ import type { Size } from "./api";
 
 /** The 🔍 button's steps; a pinch goes anywhere between 1× and MAX. */
 const STEPS = [1, 1.6, 2.2];
-/** A medium or big grid opens zoomed for cells about this big, if they are smaller at 1× (a phone). */
+/** A medium or big grid opens zoomed for cells about this big, if they are under SMALL_CELL at 1× (a phone; a tablet's fit). */
 const COMFORT_CELL = 58;
+const SMALL_CELL = 46;
 const MAX = 3;
-/** Cells never grow past this at 1× (a computer screen). */
+/** Cells never grow past this at 1×: on a computer screen, and on a touch one (a tablet: big, for the fingers). */
 const MAX_CELL = 52;
+const MAX_TOUCH_CELL = 110;
 /** Room kept around the word in view when the grid follows it. */
 const MARGIN = 12;
 
@@ -115,19 +117,19 @@ export function ZoomView({
     return () => ro.disconnect();
   }, []);
 
-  const fit = box ? Math.min(box.w, (box.h * cols) / rows, cols * MAX_CELL) : 0;
+  const touch = window.matchMedia?.("(pointer: coarse)").matches ?? false;
+  const fit = box ? Math.min(box.w, (box.h * cols) / rows, cols * (touch ? MAX_TOUCH_CELL : MAX_CELL)) : 0;
   // No zoom chosen yet for this size: a medium or big grid too small to read opens zoomed.
   useEffect(() => {
     if (zoom !== null || fit <= 0) return;
     const cell = fit / cols;
     // A mouse scrolls and zooms as it likes: only a touch screen opens zoomed.
-    const touch = window.matchMedia?.("(pointer: coarse)").matches ?? false;
     onDefaultZoom(
-      !touch || size === "petite" || cell >= COMFORT_CELL
+      !touch || size === "petite" || cell >= SMALL_CELL
         ? 1
         : clamp(Math.round((COMFORT_CELL / cell) * 10) / 10),
     );
-  }, [zoom, fit, cols, size, onDefaultZoom]);
+  }, [zoom, fit, cols, size, onDefaultZoom, touch]);
   const z = zoom ?? 1;
 
   // Keeps the word in view (the cursor's cell if the word is wider than the window).
@@ -237,7 +239,7 @@ export function ZoomView({
   };
 
   return (
-    <div className="min-h-0 flex-1">
+    <div className="min-h-0 min-w-0 flex-1">
       <div
         ref={viewport}
         className="flex h-full overflow-auto overscroll-contain rounded-token"
