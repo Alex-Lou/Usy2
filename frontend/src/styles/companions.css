@@ -58,6 +58,186 @@
   transform-origin: 0% 50%;
   animation: mc-face-whisk-r 3.4s ease-in-out infinite;
 }
+/* The chibi faces (the cat first): breathing with a hint of squash and stretch, a tilt of the head
+   now and then, eyes that twinkle. Transforms only (the phone's compositor does them for free);
+   still where faces keep still (.mc-still, the avatar badge, fewer animations). */
+.mc-face .mc-face-breathe,
+.mc-face .mc-face-tilt,
+.mc-face .mc-face-glint {
+  transform-box: fill-box;
+}
+.mc-face .mc-face-breathe {
+  transform-origin: 50% 100%;
+  animation: mc-face-breathe 3.6s ease-in-out infinite;
+}
+.mc-face .mc-face-tilt {
+  transform-origin: 50% 90%;
+  animation: mc-face-tilt 11s ease-in-out infinite;
+}
+.mc-face .mc-face-glint {
+  transform-origin: 50% 50%;
+  animation: mc-face-glint 2.8s ease-in-out infinite;
+}
+@keyframes mc-face-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.018, 0.986); }
+}
+@keyframes mc-face-tilt {
+  0%, 70%, 100% { transform: rotate(0); }
+  76% { transform: rotate(-3.5deg); }
+  86% { transform: rotate(-3.5deg); }
+  92% { transform: rotate(1.2deg); }
+  96% { transform: rotate(0); }
+}
+@keyframes mc-face-glint {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(0.88); }
+}
+/* Each face's own life (animals.tsx): the dog's floppy ears swing and it pants, the rabbit's long
+   ears droop and its nose twitches, the lizard's tongue flicks, crests ruffle, beaks chirp, the
+   capybara nods off slowly. Around every face, three little stars twinkle in turn (and bubbles
+   rise around the otter): hidden until they play, so a still face shows none. */
+.mc-face .mc-face-tongue,
+.mc-face .mc-face-crest,
+.mc-face .mc-face-beak,
+.mc-face .mc-face-sparkle,
+.mc-face .mc-face-bubble {
+  transform-box: fill-box;
+}
+.mc-face--dog .mc-face-ear--l,
+.mc-face--dog .mc-face-ear--r {
+  transform-origin: 50% 6%;
+  animation: mc-dog-ear-l 5.2s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+}
+.mc-face--dog .mc-face-ear--r {
+  animation-name: mc-dog-ear-r;
+  animation-delay: -0.35s;
+}
+.mc-face--dog .mc-face-tongue {
+  transform-origin: 50% 0;
+  animation: mc-dog-pant 6.4s ease-in-out infinite;
+}
+.mc-face--rabbit .mc-face-ear--l,
+.mc-face--rabbit .mc-face-ear--r {
+  transform-origin: 50% 100%;
+  animation: mc-rabbit-ear-l 8.6s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+}
+.mc-face--rabbit .mc-face-ear--r {
+  animation: mc-rabbit-ear-r 6.2s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+}
+.mc-face--dog .mc-face-nose,
+.mc-face--raccoon .mc-face-nose,
+.mc-face--capybara .mc-face-nose {
+  transform-origin: 50% 50%;
+  animation: mc-face-sniff 5.2s ease-in-out infinite;
+}
+.mc-face--rabbit .mc-face-nose {
+  transform-origin: 50% 50%;
+  animation: mc-face-sniff 2.2s ease-in-out infinite;
+}
+.mc-face--lizard .mc-face-tongue {
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  animation: mc-lizard-tongue 5.6s ease-out infinite;
+}
+.mc-face .mc-face-crest {
+  transform-origin: 50% 100%;
+  animation: mc-face-crest 6.8s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+}
+.mc-face .mc-face-beak {
+  transform-origin: 50% 0;
+  animation: mc-face-chirp 5.4s ease-in-out infinite;
+}
+.mc-face--capybara .mc-face-tilt {
+  animation-duration: 15s;
+}
+.mc-face .mc-face-sparkle {
+  opacity: 0;
+  transform-origin: 50% 50%;
+  animation: mc-face-sparkle 4.8s ease-in-out infinite;
+}
+.mc-face .mc-face-sparkle--1 {
+  animation-duration: 6.1s;
+  animation-delay: -2.2s;
+}
+.mc-face .mc-face-sparkle--2 {
+  animation-duration: 5.3s;
+  animation-delay: -4s;
+}
+.mc-face .mc-face-bubble {
+  opacity: 0;
+  transform-origin: 50% 50%;
+  animation: mc-face-bubble 4.2s ease-in infinite;
+}
+.mc-face .mc-face-bubble--1 {
+  animation-duration: 5s;
+  animation-delay: -1.6s;
+}
+.mc-face .mc-face-bubble--2 {
+  animation-duration: 3.6s;
+  animation-delay: -2.8s;
+}
+@keyframes mc-dog-ear-l {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(4deg); }
+  62% { transform: rotate(-2.5deg); }
+  80% { transform: rotate(1deg); }
+}
+@keyframes mc-dog-ear-r {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(-4deg); }
+  62% { transform: rotate(2.5deg); }
+  80% { transform: rotate(-1deg); }
+}
+@keyframes mc-dog-pant {
+  0%, 58%, 100% { transform: scaleY(1); }
+  62%, 70%, 78% { transform: scaleY(1.28); }
+  66%, 74%, 82% { transform: scaleY(1); }
+}
+/* One ear flops down and springs back up; the other listens. */
+@keyframes mc-rabbit-ear-l {
+  0%, 52%, 100% { transform: rotate(0); }
+  58%, 70% { transform: rotate(-24deg) scaleY(0.94); }
+  76% { transform: rotate(5deg); }
+  81% { transform: rotate(-2deg); }
+  86% { transform: rotate(0); }
+}
+@keyframes mc-rabbit-ear-r {
+  0%, 64%, 100% { transform: rotate(0); }
+  70% { transform: rotate(9deg); }
+  74% { transform: rotate(2deg); }
+  78% { transform: rotate(7deg); }
+  84% { transform: rotate(0); }
+}
+@keyframes mc-lizard-tongue {
+  0%, 74%, 90%, 100% { transform: scaleY(0); }
+  77%, 83% { transform: scaleY(1); }
+  80% { transform: scaleY(0.4); }
+}
+@keyframes mc-face-crest {
+  0%, 56%, 100% { transform: rotate(0) scaleY(1); }
+  62% { transform: rotate(-6deg) scaleY(1.08); }
+  68% { transform: rotate(5deg) scaleY(0.96); }
+  74% { transform: rotate(-2deg) scaleY(1.03); }
+  80% { transform: rotate(0) scaleY(1); }
+}
+@keyframes mc-face-chirp {
+  0%, 66%, 100% { transform: translateY(0); }
+  69%, 75% { transform: translateY(1.1px); }
+  72%, 78% { transform: translateY(0); }
+}
+@keyframes mc-face-sparkle {
+  0%, 62%, 100% { opacity: 0; transform: scale(0.2) rotate(0); }
+  72% { opacity: 1; transform: scale(1.15) rotate(45deg); }
+  80% { opacity: 0.9; transform: scale(0.9) rotate(70deg); }
+  90% { opacity: 0; transform: scale(0.2) rotate(110deg); }
+}
+@keyframes mc-face-bubble {
+  0% { opacity: 0; transform: translateY(0) scale(0.5); }
+  15% { opacity: 1; }
+  80% { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-16px) scale(1.15); }
+}
 @keyframes mc-face-blink {
   0%, 93%, 100% { transform: scaleY(1); }
   96% { transform: scaleY(0.1); }
@@ -126,7 +306,15 @@
   .mc-face .mc-face-look,
   .mc-face .mc-face-ear,
   .mc-face .mc-face-whiskers,
-  .mc-face .mc-face-nose {
+  .mc-face .mc-face-nose,
+  .mc-face .mc-face-breathe,
+  .mc-face .mc-face-tilt,
+  .mc-face .mc-face-glint,
+  .mc-face .mc-face-tongue,
+  .mc-face .mc-face-crest,
+  .mc-face .mc-face-beak,
+  .mc-face .mc-face-sparkle,
+  .mc-face .mc-face-bubble {
     animation: none;
   }
 }
