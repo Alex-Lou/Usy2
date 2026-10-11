@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { Asset } from "../../lib/api/assets";
+import { uploadImage, type Asset } from "../../lib/api/assets";
 import { findGifs, getGifStatus, saveGif, type Gif } from "../../lib/api/gifs";
 import { Icon } from "../ui/Icon";
 
@@ -45,6 +45,40 @@ export function GifPicker({ onPick, onClose }: { onPick: (asset: Asset) => void;
   const list = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
   const request = useRef(0); // a new search makes the answers still on their way stale
+  const [uploading, setUploading] = useState(false);
+  const keyboardZone = useRef<HTMLDivElement>(null);
+
+  /** A GIF (or photo) of the phone: the gallery, or the keyboard's GIF button. Sent like a photo. */
+  async function fromPhone(file: File | null | undefined) {
+    if (!file || !file.type.startsWith("image/") || file.type === "image/svg+xml" || uploading) return;
+    setUploading(true);
+    setError(null);
+    try {
+      onPick(await uploadImage(file));
+      onClose();
+    } catch {
+      setError("Ce GIF n'a pas pu être envoyé, réessaie.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  // The keyboard's GIF button (Gboard…) only offers its GIFs to a rich text zone (not a plain text
+  // box): it then hands the GIF over as a paste, or as an image put into the zone.
+  async function fromKeyboardZone() {
+    const zone = keyboardZone.current;
+    if (!zone) return;
+    const img = zone.querySelector("img");
+    const src = img?.getAttribute("src");
+    zone.innerHTML = ""; // nothing typed stays there
+    if (!src) return;
+    try {
+      const blob = await (await fetch(src)).blob();
+      await fromPhone(new File([blob], "clavier.gif", { type: blob.type || "image/gif" }));
+    } catch {
+      setError("Ce GIF du clavier n'a pas pu être lu : essaie depuis la galerie.");
+    }
+  }
 
   useEffect(() => {
     getGifStatus()
@@ -150,11 +184,51 @@ export function GifPicker({ onPick, onClose }: { onPick: (asset: Asset) => void;
           </button>
         </div>
 
+        {/* The phone's own GIFs: the keyboard's GIF button, or the gallery. */}
+        <div className="flex shrink-0 gap-2 px-3 pb-2">
+          <div
+            ref={keyboardZone}
+            contentEditable={!uploading}
+            suppressContentEditableWarning
+            role="textbox"
+            aria-label="GIF du clavier : touche ici, puis le bouton GIF de ton clavier"
+            data-placeholder="⌨️ Touche ici puis GIF du clavier"
+            onPaste={(e) => {
+              const items = Array.from(e.clipboardData.items);
+              const file = Array.from(e.clipboardData.files).find((f) => f.type.startsWith("image/"))
+                ?? items.find((i) => i.kind === "file" && i.type.startsWith("image/"))?.getAsFile();
+              if (file) {
+                e.preventDefault();
+                void fromPhone(file);
+              }
+            }}
+            onInput={() => void fromKeyboardZone()}
+            className="min-w-0 flex-1 truncate rounded-full border border-dashed border-primary/60 px-3 py-2 text-sm text-text-muted outline-none focus:border-primary empty:before:text-text-muted empty:before:content-[attr(data-placeholder)]"
+          />
+          <label className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-border px-3 py-2 text-sm font-semibold text-text press hover:border-primary/60">
+            <Icon name="images" size={16} className="text-primary" />
+            Galerie
+            <input
+              type="file"
+              accept="image/gif,image/*"
+              className="hidden"
+              onChange={(e) => {
+                void fromPhone(e.target.files?.[0]);
+                e.target.value = "";
+              }}
+            />
+          </label>
+        </div>
+        {uploading && <p className="px-3 pb-2 text-center text-sm text-text-muted">Envoi du GIF…</p>}
+
         {enabled === false ? (
-          <p className="px-6 py-10 text-center text-sm text-text-muted">
-            La recherche de GIFs n'est pas encore activée sur le serveur. En attendant, les GIFs de ta galerie et de ton clavier
-            fonctionnent avec le bouton photo.
-          </p>
+          <>
+            <p className="px-6 py-8 text-center text-sm text-text-muted">
+              La recherche parmi des milliers de GIFs n'est pas encore activée sur le serveur (il lui faut une clé GIPHY). En
+              attendant, les GIFs de ton clavier et de ta galerie marchent avec les boutons juste au-dessus.
+            </p>
+            {error && <p role="alert" className="px-3 pb-1 text-center text-sm text-danger">{error}</p>}
+          </>
         ) : (
           <>
             <div className="no-scrollbar flex shrink-0 gap-1.5 overflow-x-auto px-3 pb-2">
