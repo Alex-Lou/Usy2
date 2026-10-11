@@ -260,8 +260,8 @@ export function Comments({
             }
           }}
           maxLength={1000}
-          placeholder={replyTo ? `Répondre à ${replyTo.name}…` : "Commenter… (@ pour taguer)"}
-          className="min-h-10 flex-1 resize-none rounded-3xl border border-border bg-bg-2/60 px-4 py-2 text-sm leading-snug outline-none focus:border-primary/70"
+          placeholder={replyTo ? `Répondre à ${replyTo.name}…` : "Commenter…"}
+          className="no-scrollbar min-h-10 min-w-0 flex-1 resize-none rounded-3xl border border-border bg-bg-2/60 px-4 py-2 text-sm leading-snug outline-none focus:border-primary/70"
         />
         <RichPicker onEmoji={insert} onSticker={(token) => void send(token, false)} />
         {gifs && <GifPicker onPick={(asset) => void send("", false, asset)} onClose={() => setGifs(false)} />}

@@ -47,6 +47,8 @@ export function useAutoGrow(ref: RefObject<HTMLTextAreaElement>, text: string, m
     if (!el) return;
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, maxPx)}px`;
+    // It scrolls only once taller than its maximum (no bar on a box that fits its text).
+    el.style.overflowY = el.scrollHeight > maxPx ? "auto" : "hidden";
   }, [text, ref, maxPx]);
 }
 
