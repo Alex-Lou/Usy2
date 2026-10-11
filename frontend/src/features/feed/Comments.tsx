@@ -207,7 +207,7 @@ export function Comments({
           </button>
           {attachMenu && <div className="fixed inset-0 z-10" onClick={() => setAttachMenu(false)} aria-hidden="true" />}
           {attachMenu && (
-            <div className="absolute bottom-12 left-0 z-20 w-56 overflow-hidden rounded-token border border-border bg-surface shadow-card animate-pop">
+            <div className="mc-opaque absolute bottom-12 left-0 z-20 w-56 overflow-hidden rounded-token border border-border bg-surface shadow-card animate-pop">
               <label className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-surface-2">
                 <Icon name="images" size={18} className="text-primary" />
                 <span className="text-sm font-semibold">Photo ou GIF du téléphone</span>

@@ -298,7 +298,7 @@ export function ChatComposer({
             <Icon name="plus" size={22} className={"transition-transform " + (menuOpen ? "rotate-45" : "")} />
           </button>
           {menuOpen && (
-            <div className="absolute bottom-14 left-0 z-20 w-60 overflow-hidden rounded-token border border-border bg-surface shadow-card animate-pop">
+            <div className="mc-opaque absolute bottom-14 left-0 z-20 w-60 overflow-hidden rounded-token border border-border bg-surface shadow-card animate-pop">
               <AttachOption icon="images" label="Photo ou GIF" accept="image/*" onFile={pick} />
               <AttachOption icon="camera" label="Appareil photo" accept="image/*" capture onFile={pick} />
               <button
