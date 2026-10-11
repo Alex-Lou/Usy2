@@ -12,11 +12,11 @@
  * - Share target: Android's "Share" menu POSTs to /share-target; the content is
  *   parked in SHARE_CACHE and the app opens a pre-filled post with it.
  */
-const CACHE = "memocat-v1";
+const CACHE = "memocat-v2"; // v2: the chibi cat icons (new file names, so phones fetch them)
 const MAX_FILES = 120; // oldest first out: files of past releases do not pile up on the phone
 const SHARE_CACHE = "memocat-share";
 const MAX_SHARED_FILE = 15 * 1024 * 1024;
-const SHELL = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
+const SHELL = ["/", "/manifest.webmanifest", "/icons/icon-192-v2.png", "/icons/icon-512-v2.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -104,8 +104,8 @@ self.addEventListener("push", (event) => {
   }
   const options = {
     body: data.body || "Du nouveau sur MemoCat 💕",
-    icon: "/icons/icon-192.png",
-    badge: "/icons/badge-96.png", // Android status bar: white silhouette on transparent
+    icon: "/icons/icon-192-v2.png",
+    badge: "/icons/badge-96-v2.png", // Android status bar: white silhouette on transparent
     data: { url: typeof data.url === "string" && /^\/(?!\/)/.test(data.url) ? data.url : "/" },
     // Makes itself felt: a clear buzz and the time it happened. On recent Android the phone's
     // settings for the app (sound, pop-up on screen) have the last word.
