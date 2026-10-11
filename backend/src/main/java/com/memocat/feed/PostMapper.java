@@ -46,7 +46,9 @@ public class PostMapper {
                 post.getUpdatedAt(),
                 post.isEdited(),
                 summaries,
-                commentRepository.countByPostId(post.getId()));
+                commentRepository.countByPostId(post.getId()),
+                post.getAlbum() == null ? null : post.getAlbum().getId(),
+                post.getAlbum() == null ? null : post.getAlbum().getTitle());
     }
 
     private ReactionSummaryDto summaryFor(String emoji, List<Reaction> reactions, Long currentUserId) {

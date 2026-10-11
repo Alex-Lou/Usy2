@@ -41,6 +41,12 @@ class PostServiceTest {
     private PostMapper postMapper;
     @Mock
     private ApplicationEventPublisher events;
+    @Mock
+    private com.memocat.album.AlbumService albumService;
+    @Mock
+    private com.memocat.album.PhotoService photoService;
+    @Mock
+    private com.memocat.repository.AlbumRepository albumRepository;
 
     @InjectMocks
     private PostService postService;
@@ -81,7 +87,7 @@ class PostServiceTest {
         when(userRepository.findByUsername("lou")).thenReturn(Optional.of(author));
         when(postRepository.save(any(Post.class))).thenAnswer(inv -> inv.getArgument(0));
         when(postMapper.toDto(any(Post.class), anyLong()))
-                .thenReturn(new PostDto(null, null, "hi", null, null, null, null, List.of(), null, null, false, List.of(), 0));
+                .thenReturn(new PostDto(null, null, "hi", null, null, null, null, List.of(), null, null, false, List.of(), 0, null, null));
 
         postService.create("lou", "hi", null, null);
 
@@ -179,5 +185,53 @@ class PostServiceTest {
 
         assertThat(post.getPhotos()).containsExactly(a, b);
         assertThat(post.getText()).isEqualTo("après");
+    }
+
+    /** « Aussi dans un album » (a new one): the album is made, gets the photos in order, the post links to it. */
+    @Test
+    void createPutsThePhotosInANewAlbum() {
+        User author = user(1L, "lou");
+        Asset a = photo(5L, author, "image/jpeg");
+        Asset b = photo(6L, author, "image/jpeg");
+        com.memocat.domain.Album album = org.mockito.Mockito.mock(com.memocat.domain.Album.class);
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(author));
+        when(assetRepository.findById(5L)).thenReturn(Optional.of(a));
+        when(assetRepository.findById(6L)).thenReturn(Optional.of(b));
+        when(albumService.create("lou", "Vacances", null))
+                .thenReturn(new com.memocat.album.dto.AlbumDto(12L, "Vacances", null, null, null, 0, null, null));
+        when(albumRepository.findById(12L)).thenReturn(Optional.of(album));
+        when(postRepository.save(any(Post.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        postService.create("lou", "", null, List.of(5L, 6L), null, "  Vacances ");
+
+        org.mockito.InOrder order = org.mockito.Mockito.inOrder(photoService);
+        order.verify(photoService).add("lou", 12L, 5L, null);
+        order.verify(photoService).add("lou", 12L, 6L, null);
+        org.mockito.ArgumentCaptor<Post> saved = org.mockito.ArgumentCaptor.forClass(Post.class);
+        verify(postRepository).save(saved.capture());
+        assertThat(saved.getValue().getAlbum()).isSameAs(album);
+    }
+
+    /** An existing album: no new one is made, the photos join it. */
+    @Test
+    void createAddsThePhotosToAnExistingAlbum() {
+        User author = user(1L, "lou");
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(author));
+        when(assetRepository.findById(5L)).thenReturn(Optional.of(photo(5L, author, "image/jpeg")));
+        when(albumRepository.findById(3L)).thenReturn(Optional.of(org.mockito.Mockito.mock(com.memocat.domain.Album.class)));
+        when(postRepository.save(any(Post.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        postService.create("lou", "", null, List.of(5L), 3L, null);
+
+        verify(albumService, never()).create(any(), any(), any());
+        verify(photoService).add("lou", 3L, 5L, null);
+    }
+
+    @Test
+    void anAlbumNeedsPhotos() {
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(user(1L, "lou")));
+        assertThatThrownBy(() -> postService.create("lou", "texte", null, List.of(), null, "Vide"))
+                .isInstanceOf(ContentValidationException.class);
+        verify(postRepository, never()).save(any());
     }
 }

@@ -50,7 +50,8 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PostDto create(Principal principal, @RequestBody PostRequests.CreatePost request) {
-        return postService.create(principal.getName(), request.text(), request.imageAssetId(), request.imageAssetIds());
+        return postService.create(principal.getName(), request.text(), request.imageAssetId(), request.imageAssetIds(),
+                request.albumId(), request.newAlbumTitle());
     }
 
     @PutMapping("/{id}")

@@ -46,6 +46,11 @@ public class Post {
     @OrderColumn(name = "position")
     private List<Asset> photos = new ArrayList<>();
 
+    /** The album its photos were also put in (« Voir l'album »), or null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id")
+    private Album album;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -95,6 +100,14 @@ public class Post {
 
     public Asset getImageAsset() {
         return imageAsset;
+    }
+
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(Album album) {
+        this.album = album;
     }
 
     public List<Asset> getPhotos() {

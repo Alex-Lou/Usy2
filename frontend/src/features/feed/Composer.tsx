@@ -11,7 +11,9 @@ import { EffectLayer } from "../../components/photo/EffectLayer";
 import { StudioDraftCard } from "../../components/photo/studio/DraftCard";
 import type { StudioEdit } from "../../components/photo/studio/draft";
 import { PhotoStudio } from "../../components/photo/studio/PhotoStudio";
-import { createPost } from "./api";
+import { listAlbums } from "../albums/api";
+import type { Album } from "../albums/types";
+import { createPost, type AlbumChoice } from "./api";
 import { MentionSuggest, usePeople } from "./mentions";
 import { MomentsGrid, type Moment } from "./MomentsBar";
 
@@ -52,6 +54,23 @@ export function Composer({
   const [studio, setStudio] = useState<number | null>(null); // the photo being retouched (its key)
   const [gifs, setGifs] = useState(false);
   const [progress, setProgress] = useState<string | null>(null); // « 2/5 » while photos go up
+  // « Aussi dans un album »: a new one (its title) or one of ours.
+  const [toAlbum, setToAlbum] = useState(false);
+  const [albums, setAlbums] = useState<Album[] | null>(null);
+  const [albumId, setAlbumId] = useState<number | "new">("new");
+  const [albumTitle, setAlbumTitle] = useState("");
+  useEffect(() => {
+    if (!toAlbum || albums) return;
+    listAlbums(0, 50)
+      .then((p) => setAlbums(p.content))
+      .catch(() => setAlbums([]));
+  }, [toAlbum, albums]);
+  const albumChoice: AlbumChoice | null = !toAlbum
+    ? null
+    : albumId === "new"
+      ? { newAlbumTitle: albumTitle.trim() }
+      : { albumId };
+  const albumReady = !toAlbum || albumId !== "new" || albumTitle.trim().length > 0;
   const [resumed, setResumed] = useState<StudioEdit | undefined>(); // edits of a draft picked up
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +115,7 @@ export function Composer({
   }
 
   // A photo alone is a valid post; text alone too.
-  const canPublish = !busy && (text.trim().length > 0 || items.length > 0);
+  const canPublish = !busy && (text.trim().length > 0 || items.length > 0) && (items.length === 0 || albumReady);
   const retouching = items.find((i) => i.key === studio);
 
   // React to a picked "moment": prefill + focus, optionally open the picker.
@@ -121,10 +140,13 @@ export function Composer({
         if (items.length > 1) setProgress(`${n + 1}/${items.length}`);
         ids.push(item.asset ? item.asset.id : (await uploadImage(item.file!, item.effect)).id);
       }
-      await createPost(text, ids);
+      await createPost(text, ids, items.length > 0 ? albumChoice : null);
       setText("");
       items.forEach((i) => i.preview && URL.revokeObjectURL(i.preview));
       setItems([]);
+      setToAlbum(false);
+      setAlbumTitle("");
+      setAlbums(null); // a new album shows in the list next time
       onCreated();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Publication impossible.");
@@ -246,6 +268,41 @@ export function Composer({
                   )}
                 </div>
               ))}
+            </div>
+          )}
+          {items.length > 0 && (
+            <div className="mt-2 rounded-token border border-border bg-bg-2/40 px-3 py-2">
+              <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold">
+                <input type="checkbox" checked={toAlbum} onChange={(e) => setToAlbum(e.target.checked)} className="h-4 w-4 accent-[var(--color-primary)]" />
+                📁 Aussi dans un album
+              </label>
+              {toAlbum && (
+                <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                  <select
+                    value={albumId}
+                    onChange={(e) => setAlbumId(e.target.value === "new" ? "new" : Number(e.target.value))}
+                    aria-label="Album"
+                    className="rounded-token-sm border border-border bg-surface px-2 py-1.5 text-sm outline-none focus:border-primary/70"
+                  >
+                    <option value="new">➕ Nouvel album</option>
+                    {(albums ?? []).map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.title} ({a.photoCount})
+                      </option>
+                    ))}
+                  </select>
+                  {albumId === "new" && (
+                    <input
+                      value={albumTitle}
+                      onChange={(e) => setAlbumTitle(e.target.value)}
+                      maxLength={150}
+                      placeholder="Titre de l'album"
+                      aria-label="Titre du nouvel album"
+                      className="min-w-0 flex-1 rounded-token-sm border border-border bg-surface px-2 py-1.5 text-sm outline-none focus:border-primary/70"
+                    />
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

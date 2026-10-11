@@ -1,4 +1,5 @@
 import { Fragment, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { Avatar } from "../../components/ui/Avatar";
 import { LinkPreview } from "../../components/rich/LinkPreview";
 import { firstUrl } from "../../components/rich/links";
@@ -193,6 +194,15 @@ export function PostCard({
             )
           }
         />
+      )}
+      {post.albumId && (
+        <Link
+          to={`/albums/${post.albumId}`}
+          className="mt-2 inline-flex max-w-full items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm font-semibold text-primary press hover:border-primary/60"
+        >
+          <span aria-hidden="true">📁</span>
+          <span className="truncate">Voir l'album « {post.albumTitle} »</span>
+        </Link>
       )}
       {viewing !== null && photos[viewing] && (
         <ImageViewer

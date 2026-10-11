@@ -29,6 +29,8 @@ export interface Post {
   imageHeight?: number | null;
   imageEffect?: string | null; // animated effect from the photo studio
   photos?: Photo[]; // all the photos, in order (a carousel); the first one is imageAssetId
+  albumId?: number | null; // the album its photos were also put in (« Voir l'album »)
+  albumTitle?: string | null;
   createdAt: string;
   updatedAt: string;
   edited: boolean;

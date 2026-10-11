@@ -5,11 +5,17 @@ export function listPosts(page = 0, size = 10): Promise<Page<Post>> {
   return apiRequest<Page<Post>>(`/api/posts?page=${page}&size=${size}`);
 }
 
-/** {@code imageAssetIds}: the photos, in order (up to 10). */
-export function createPost(text: string, imageAssetIds: number[]): Promise<Post> {
+/** Where the photos also go: an existing album, or a new one of that title. */
+export type AlbumChoice = { albumId: number } | { newAlbumTitle: string };
+
+/**
+ * {@code imageAssetIds}: the photos, in order (up to 10); {@code album}: they also go into that album
+ * and the post links to it (all done at once by the server).
+ */
+export function createPost(text: string, imageAssetIds: number[], album: AlbumChoice | null = null): Promise<Post> {
   return apiRequest<Post>("/api/posts", {
     method: "POST",
-    body: { text, imageAssetIds },
+    body: { text, imageAssetIds, ...album },
   });
 }
 
