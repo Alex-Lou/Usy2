@@ -165,14 +165,14 @@ const QUAD: Record<
     legs: ["#a88b7e", "#927468", "#7a5e52"],
     far: ["#8a6e62", "#7a6054", "#654c42"],
     belly: "#fdf8f2",
-    head: 0.54,
+    head: 0.56,
     chin: 52,
-    leg: 6.5,
-    body: { w: 19, h: 9.5 },
+    leg: 8.5,
+    body: { w: 17, h: 11.5 },
     tail: "otter",
     back: null,
     chest: null,
-    lie: 4,
+    lie: 6,
   },
 };
 
