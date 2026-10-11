@@ -44,7 +44,7 @@ public class Previews {
 
     @Transactional(readOnly = true)
     public String comment(Long id) {
-        return id == null ? null : comments.findById(id).map(c -> shorten(c.getText())).orElse(null);
+        return id == null ? null : comments.findById(id).map(c -> or(shorten(c.getText()), c.getImageAsset() != null ? "📷 Photo" : null)).orElse(null);
     }
 
     @Transactional(readOnly = true)

@@ -50,13 +50,13 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PostDto create(Principal principal, @RequestBody PostRequests.CreatePost request) {
-        return postService.create(principal.getName(), request.text(), request.imageAssetId());
+        return postService.create(principal.getName(), request.text(), request.imageAssetId(), request.imageAssetIds());
     }
 
     @PutMapping("/{id}")
     public PostDto update(Principal principal, @PathVariable Long id,
                           @RequestBody PostRequests.UpdatePost request) {
-        return postService.update(principal.getName(), id, request.text(), request.imageAssetId());
+        return postService.update(principal.getName(), id, request.text(), request.imageAssetId(), request.imageAssetIds());
     }
 
     @DeleteMapping("/{id}")
@@ -88,6 +88,6 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     public CommentDto addComment(Principal principal, @PathVariable Long id,
                                  @RequestBody PostRequests.CreateComment request) {
-        return commentService.create(principal.getName(), id, request.text(), request.parentId());
+        return commentService.create(principal.getName(), id, request.text(), request.parentId(), request.imageAssetId());
     }
 }

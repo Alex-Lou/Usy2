@@ -7,8 +7,8 @@ import java.util.List;
 
 /**
  * A post comment; {@code reactions}: each person's emoji on it (oldest first);
- * {@code parentId}: the top-level comment it answers, or null.
+ * {@code parentId}: the top-level comment it answers, or null; {@code image}: its photo or GIF, or null.
  */
 public record CommentDto(Long id, UserDto author, String text, Instant createdAt, List<CommentReactionDto> reactions,
-                         Long parentId) {
+                         Long parentId, PhotoDto image) {
 }

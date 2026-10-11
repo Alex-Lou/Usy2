@@ -46,6 +46,8 @@ services:
       MEMOCAT_PUSH_SUBJECT: https://${DOMAIN}
       MEMOCAT_STORAGE_QUOTA_MB: ${MEMOCAT_STORAGE_QUOTA_MB:-10000}
       MEMOCAT_TIMEZONE: ${MEMOCAT_TIMEZONE:-Atlantic/Canary}
+      # Recherche de GIFs (GIPHY) : vide = coupée (seuls les GIFs du téléphone).
+      MEMOCAT_GIPHY_KEY: ${MEMOCAT_GIPHY_KEY:-}
       # Vides après une migration : les comptes existent déjà (avec leurs mots de passe).
       MEMOCAT_USER1_USERNAME: ${MEMOCAT_USER1_USERNAME:-}
       MEMOCAT_USER1_PASSWORD: ${MEMOCAT_USER1_PASSWORD:-}

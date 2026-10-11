@@ -3,6 +3,7 @@ package com.memocat.feed;
 import com.memocat.auth.dto.UserDto;
 import com.memocat.domain.Post;
 import com.memocat.domain.Reaction;
+import com.memocat.feed.dto.PhotoDto;
 import com.memocat.feed.dto.PostDto;
 import com.memocat.feed.dto.ReactionSummaryDto;
 import com.memocat.repository.CommentRepository;
@@ -40,6 +41,7 @@ public class PostMapper {
                 post.getImageAsset() != null ? post.getImageAsset().getEffect() : null,
                 post.getImageAsset() != null ? post.getImageAsset().getWidth() : null,
                 post.getImageAsset() != null ? post.getImageAsset().getHeight() : null,
+                post.getPhotos().stream().map(PhotoDto::from).toList(),
                 post.getCreatedAt(),
                 post.getUpdatedAt(),
                 post.isEdited(),

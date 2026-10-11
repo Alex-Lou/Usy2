@@ -37,6 +37,11 @@ public class Comment {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
+    /** A photo or GIF with (or instead of) the text. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_asset_id")
+    private Asset imageAsset;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -76,6 +81,14 @@ public class Comment {
 
     public String getText() {
         return text;
+    }
+
+    public Asset getImageAsset() {
+        return imageAsset;
+    }
+
+    public void setImageAsset(Asset imageAsset) {
+        this.imageAsset = imageAsset;
     }
 
     public Instant getCreatedAt() {

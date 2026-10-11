@@ -5,17 +5,18 @@ export function listPosts(page = 0, size = 10): Promise<Page<Post>> {
   return apiRequest<Page<Post>>(`/api/posts?page=${page}&size=${size}`);
 }
 
-export function createPost(text: string, imageAssetId: number | null): Promise<Post> {
+/** {@code imageAssetIds}: the photos, in order (up to 10). */
+export function createPost(text: string, imageAssetIds: number[]): Promise<Post> {
   return apiRequest<Post>("/api/posts", {
     method: "POST",
-    body: { text, imageAssetId },
+    body: { text, imageAssetIds },
   });
 }
 
-export function updatePost(id: number, text: string, imageAssetId: number | null): Promise<Post> {
+export function updatePost(id: number, text: string, imageAssetIds: number[]): Promise<Post> {
   return apiRequest<Post>(`/api/posts/${id}`, {
     method: "PUT",
-    body: { text, imageAssetId },
+    body: { text, imageAssetIds },
   });
 }
 
@@ -41,11 +42,14 @@ export function listComments(postId: number, page = 0, size = 20): Promise<Page<
   return apiRequest<Page<Comment>>(`/api/posts/${postId}/comments?page=${page}&size=${size}`);
 }
 
-/** {@code parentId}: the comment it answers (a reply to a reply joins the same thread). */
-export function addComment(postId: number, text: string, parentId: number | null = null): Promise<Comment> {
+/**
+ * {@code parentId}: the comment it answers (a reply to a reply joins the same thread);
+ * {@code imageAssetId}: a photo or GIF sent with it.
+ */
+export function addComment(postId: number, text: string, parentId: number | null = null, imageAssetId: number | null = null): Promise<Comment> {
   return apiRequest<Comment>(`/api/posts/${postId}/comments`, {
     method: "POST",
-    body: { text, parentId },
+    body: { text, parentId, imageAssetId },
   });
 }
 

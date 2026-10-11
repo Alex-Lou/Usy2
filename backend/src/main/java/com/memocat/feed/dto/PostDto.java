@@ -13,6 +13,7 @@ public record PostDto(
         String imageEffect,
         Integer imageWidth,
         Integer imageHeight,
+        List<PhotoDto> photos,
         Instant createdAt,
         Instant updatedAt,
         boolean edited,

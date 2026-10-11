@@ -188,6 +188,13 @@ ls deploy/backups/
 
 Il demande de taper `RESTAURER`, et sauvegarde d'abord l'état actuel : on peut toujours revenir en arrière.
 
+**La recherche de GIFs** (messages, commentaires, publications) passe par GIPHY, avec une clé gratuite :
+1. Crée un compte sur [developers.giphy.com](https://developers.giphy.com), puis *Create an API Key* → *API*.
+2. Sur le serveur, ajoute la clé dans `deploy/.env` : `MEMOCAT_GIPHY_KEY=la-clé` (`nano deploy/.env`).
+3. Relance l'app : `docker compose -f deploy/docker-compose.yml up -d app`.
+
+La clé reste sur le serveur, l'app ne la voit jamais. Un GIF choisi est gardé chez vous comme une photo. Sans clé, seuls les GIFs du téléphone (galerie, clavier) fonctionnent.
+
 **Le système** se met à jour seul pour la sécurité. Si `status.sh` tourne depuis des mois, un redémarrage de temps en temps ne fait pas de mal : `reboot`. Tout repart tout seul.
 
 **Commandes utiles :**
