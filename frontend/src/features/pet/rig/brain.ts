@@ -1,6 +1,6 @@
 import type { CatPose } from "../CatSprite";
 import { restingFrame, type EyeShape, type Frame, type MouthShape, type Prop, type View } from "./frame";
-import { clamp, kick, pick, rand, snap, spring, step, type Spring } from "./spring";
+import { clamp, kick, pick, rand, snap, spring, step, type Spring } from "../../../lib/spring";
 
 /** What the cat knows about its surroundings, updated by the page every frame. */
 export interface CatEnv {
