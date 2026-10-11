@@ -63,6 +63,37 @@
   opacity: 0;
   animation: mc-pingu-blink 4.6s infinite;
 }
+/* Its flippers (cut out of the drawing) give a little flutter now and then on top of what
+   it is doing; each turns around its shoulder (the point its group is moved to). */
+.mc-pingu-flipper {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: mc-pingu-flutter-l 5.2s ease-in-out infinite;
+}
+.mc-pingu-flipper--r {
+  animation-name: mc-pingu-flutter-r;
+}
+.mc-pingu-whoosh {
+  stroke-dasharray: 6 4;
+  animation: mc-pingu-whoosh 0.35s linear infinite;
+}
+@keyframes mc-pingu-flutter-l {
+  0%, 74%, 100% { transform: rotate(0); }
+  78% { transform: rotate(14deg); }
+  82% { transform: rotate(2deg); }
+  86% { transform: rotate(12deg); }
+  91% { transform: rotate(0); }
+}
+@keyframes mc-pingu-flutter-r {
+  0%, 74%, 100% { transform: rotate(0); }
+  78% { transform: rotate(-14deg); }
+  82% { transform: rotate(-2deg); }
+  86% { transform: rotate(-12deg); }
+  91% { transform: rotate(0); }
+}
+@keyframes mc-pingu-whoosh {
+  to { stroke-dashoffset: 10; }
+}
 @keyframes mc-pingu-breathe {
   0%, 100% { transform: scale(1, 1); }
   50% { transform: scale(0.99, 1.025); }
@@ -74,6 +105,8 @@
 @media (prefers-reduced-motion: reduce) {
   .mc-pingu-breathe,
   .mc-pingu-lids,
+  .mc-pingu-flipper,
+  .mc-pingu-whoosh,
   .mc-penguin,
   .mc-penguin-flap,
   .mc-penguin-eyes,

@@ -1,5 +1,5 @@
 /**
- * Tiny spring physics for the cat's motion: every animated value eases toward
+ * Tiny spring physics (the cat, the companions): every animated value eases toward
  * its target with a little life (overshoot when stiff and loosely damped),
  * and never jumps, whatever changes the target at any moment.
  */
