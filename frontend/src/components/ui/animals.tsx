@@ -43,32 +43,8 @@ function Blush() {
   );
 }
 
-function NoseMouth() {
-  return (
-    <>
-      <path d="M30 39 L34 39 L32 41.6 Z" fill={PINK} />
-      <path d="M32 41.6 q-2.6 2.4 -5 1 M32 41.6 q2.6 2.4 5 1" stroke={OUTLINE} strokeWidth="1.7" fill="none" strokeLinecap="round" />
-    </>
-  );
-}
-
 function head(body: string) {
   return <ellipse cx="32" cy="34" rx="24" ry="22" fill={body} stroke={OUTLINE} strokeWidth={S} />;
-}
-
-function pointyEars(outer: string, inner: string) {
-  return (
-    <>
-      <g className="mc-face-ear mc-face-ear--l">
-        <path d="M19 16 L12 2 L32 13 Z" fill={outer} stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
-        <path d="M20 13 L16 5 L28 12 Z" fill={inner} />
-      </g>
-      <g className="mc-face-ear mc-face-ear--r">
-        <path d="M45 16 L52 2 L32 13 Z" fill={outer} stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
-        <path d="M44 13 L48 5 L36 12 Z" fill={inner} />
-      </g>
-    </>
-  );
 }
 
 /**
@@ -211,26 +187,145 @@ function SiameseHead({ eyesClosed = false }: { eyesClosed?: boolean }) {
   );
 }
 
+/**
+ * The cat, chibi finish (same cream cat, same place for the eyes, ears and whiskers as before):
+ * a soft « mochi » head with fluffy cheeks, cream fur in a gentle light, a shine on top and a
+ * shade under the chin; rounded ears with a pink inside and a tuft; big anime eyes (a deep iris
+ * that glows from below, two sparkles); heart nose, « ω » mouth, melting blush. Alive by the same
+ * hooks as the others (blink, gaze, ears, whiskers: styles/companions.css), plus breathing, a
+ * head tilt now and then and twinkling eyes. Gradients get ids of their own (several cats on a page).
+ */
+function ChibiCat({ closed }: { closed: boolean }) {
+  const id = useId().replace(/:/g, "");
+  const fur = `cf-${id}`;
+  const ear = `ce-${id}`;
+  const iris = `ci-${id}`;
+  const blush = `cb-${id}`;
+  const clip = `cc-${id}`;
+  const shade = `cs-${id}`;
+  const LINE = "#6e5242"; // a warm brown line, lighter than black: the soft look of chibi art
+  // The head: a soft « mochi », wider at the cheeks, two fluffy tufts on each cheek and one on top.
+  const HEAD =
+    "M32 13.4 C33 11.6 34.6 10.8 35.4 11.4 C34.6 12.2 34.4 13 34.6 13.6 C46 14.6 54.8 21.6 56.2 31.4 C56.8 36 56.6 39.6 55.2 42.6 L58.2 43.4 L55.6 45 L57.4 46.6 L53.6 47.4 C50.2 53.4 42.4 57 32 57 C21.6 57 13.8 53.4 10.4 47.4 L6.6 46.6 L8.4 45 L5.8 43.4 L8.8 42.6 C7.4 39.6 7.2 36 7.8 31.4 C9.2 21.2 18.6 13.8 32 13.4 Z";
+  const earPath = (m: 1 | -1) => {
+    const x = (v: number) => (m === 1 ? v : 64 - v);
+    return {
+      outer: `M${x(12.6)} 23 C${x(11)} 16 ${x(10.8)} 9.4 ${x(12.4)} 5 C${x(12.8)} 4 ${x(13.8)} 3.8 ${x(14.6)} 4.4 C${x(19.8)} 7.6 ${x(24.6)} 11.4 ${x(28.6)} 15.6 Z`,
+      inner: `M${x(14.8)} 19.6 C${x(14)} 15 ${x(14)} 11 ${x(15)} 8 C${x(18.4)} 10.2 ${x(21.4)} 12.8 ${x(24.2)} 15.8 Z`,
+      tuft: `M${x(16.6)} 18.4 Q${x(17.8)} 14.2 ${x(16.4)} 10.6`,
+    };
+  };
+  const l = earPath(1);
+  const r = earPath(-1);
+  // A big round anime eye: a deep iris glowing from below, a darker pupil, a lash line thin at
+  // the nose and thick at the outer corner with two little lashes, two sparkles and a star.
+  const eye = (cx: number) => {
+    const out = cx < 32 ? -1 : 1; // the outer side
+    const cy = 35.6;
+    return (
+      <g>
+        <ellipse cx={cx} cy={cy} rx="6" ry="6.8" fill={`url(#${iris})`} />
+        <ellipse cx={cx} cy={cy + 0.6} rx="2.9" ry="3.6" fill="#1c1428" opacity="0.55" />
+        <path d={`M${cx - 4.4} ${cy + 3} Q${cx} ${cy + 7.2} ${cx + 4.4} ${cy + 3} Q${cx} ${cy + 5.2} ${cx - 4.4} ${cy + 3} Z`} fill="#c4a6ff" opacity="0.8" />
+        <path
+          d={`M${cx - out * 5.4} ${cy - 3.4} C${cx - out * 3.6} ${cy - 7.6} ${cx + out * 3.8} ${cy - 8.2} ${cx + out * 6.4} ${cy - 3.2}`}
+          stroke={LINE}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          fill="none"
+        />
+        <path d={`M${cx + out * 6.2} ${cy - 3.6} l${out * 1.8} -1.4 M${cx + out * 5.4} ${cy - 5.2} l${out * 1.4} -1.8`} stroke={LINE} strokeWidth="1.3" strokeLinecap="round" />
+        <g className="mc-face-glint">
+          <ellipse cx={cx + 2} cy={cy - 2.6} rx="2.2" ry="2.5" fill="#fff" />
+          <circle cx={cx - 2.4} cy={cy + 2.6} r="1" fill="#fff" opacity="0.9" />
+          <path d={`M${cx + 3.6} ${cy + 1.4} l0.5 1 1 0.5 -1 0.5 -0.5 1 -0.5 -1 -1 -0.5 1 -0.5 z`} fill="#fff" opacity="0.85" />
+        </g>
+      </g>
+    );
+  };
+  return (
+    <g className="mc-face mc-face--cat">
+      <defs>
+        <radialGradient id={fur} cx="40%" cy="28%" r="78%">
+          <stop offset="0" stopColor="#fffdf8" />
+          <stop offset="0.55" stopColor="#fff4e6" />
+          <stop offset="1" stopColor="#f3d9bb" />
+        </radialGradient>
+        <linearGradient id={ear} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ff94c2" />
+          <stop offset="1" stopColor="#ffd0e2" />
+        </linearGradient>
+        <radialGradient id={iris} cx="50%" cy="75%" r="72%">
+          <stop offset="0" stopColor="#8e6ad0" />
+          <stop offset="0.5" stopColor="#4a3470" />
+          <stop offset="1" stopColor="#2a1e40" />
+        </radialGradient>
+        <radialGradient id={blush} cx="50%" cy="50%" r="50%">
+          <stop offset="0" stopColor="#ff8fbf" stopOpacity="0.8" />
+          <stop offset="1" stopColor="#ff8fbf" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id={shade} cx="50%" cy="50%" r="50%">
+          <stop offset="0" stopColor="#e0b48c" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#e0b48c" stopOpacity="0" />
+        </radialGradient>
+        <clipPath id={clip}>
+          <path d={HEAD} />
+        </clipPath>
+      </defs>
+      {/* Breathing, and a tilt of the head now and then (inner groups: still where faces keep still). */}
+      <g className="mc-face-breathe">
+        <g className="mc-face-tilt">
+          <g className="mc-face-ear mc-face-ear--l">
+            <path d={l.outer} fill={`url(#${fur})`} stroke={LINE} strokeWidth="1.9" strokeLinejoin="round" />
+            <path d={l.inner} fill={`url(#${ear})`} />
+            <path d={l.tuft} stroke="#fffaf2" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.9" />
+          </g>
+          <g className="mc-face-ear mc-face-ear--r">
+            <path d={r.outer} fill={`url(#${fur})`} stroke={LINE} strokeWidth="1.9" strokeLinejoin="round" />
+            <path d={r.inner} fill={`url(#${ear})`} />
+            <path d={r.tuft} stroke="#fffaf2" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.9" />
+          </g>
+          <path d={HEAD} fill={`url(#${fur})`} stroke={LINE} strokeWidth="2" strokeLinejoin="round" />
+          <g clipPath={`url(#${clip})`}>
+            <ellipse cx="32" cy="58" rx="21" ry="8.5" fill={`url(#${shade})`} />
+            {/* A rim of light along the top, inside the line. */}
+            <path d="M15 24 Q22 15.6 32 15.4 Q42 15.6 49 24" stroke="#fff" strokeWidth="1.4" opacity="0.6" fill="none" />
+          </g>
+          <path d="M20.6 20.6 Q26 16.6 31 16.4" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" opacity="0.85" fill="none" />
+          {closed ? (
+            <path d="M16.6 36.4 q5 3.8 10 0 M37.4 36.4 q5 3.8 10 0" stroke={LINE} strokeWidth="2.1" fill="none" strokeLinecap="round" />
+          ) : (
+            <g className="mc-face-eyes">
+              <g className="mc-face-look">
+                {eye(21.6)}
+                {eye(42.4)}
+              </g>
+            </g>
+          )}
+          <ellipse cx="13.6" cy="44" rx="5.6" ry="3.4" fill={`url(#${blush})`} />
+          <ellipse cx="50.4" cy="44" rx="5.6" ry="3.4" fill={`url(#${blush})`} />
+          {/* The little blush strokes of chibi drawings. */}
+          <path d="M11.6 44.6 l1.2 -1.8 M13.8 44.6 l1.2 -1.8 M16 44.6 l1.2 -1.8 M48 44.6 l1.2 -1.8 M50.2 44.6 l1.2 -1.8 M52.4 44.6 l1.2 -1.8" stroke="#f47aa8" strokeWidth="0.8" strokeLinecap="round" opacity="0.7" />
+          <path d="M30.6 42.2 C30.6 41.1 31.7 40.8 32 41.7 C32.3 40.8 33.4 41.1 33.4 42.2 C33.4 43.1 32.6 43.7 32 44.1 C31.4 43.7 30.6 43.1 30.6 42.2 Z" fill={PINK} />
+          <path d="M28.9 45.3 Q30.45 47 32 45.3 Q33.55 47 35.1 45.3" stroke={LINE} strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          <g className="mc-face-whiskers mc-face-whiskers--l">
+            <path d="M10.6 40.6 C7 39.8 4 39.8 1.4 40.4 M10.8 43 C7.4 43.4 4.4 44.4 2.2 45.8" stroke={LINE} strokeWidth="1" strokeLinecap="round" opacity="0.75" fill="none" />
+          </g>
+          <g className="mc-face-whiskers mc-face-whiskers--r">
+            <path d="M53.4 40.6 C57 39.8 60 39.8 62.6 40.4 M53.2 43 C56.6 43.4 59.6 44.4 61.8 45.8" stroke={LINE} strokeWidth="1" strokeLinecap="round" opacity="0.75" fill="none" />
+          </g>
+        </g>
+      </g>
+    </g>
+  );
+}
+
 // eslint-disable-next-line react-refresh/only-export-components
 /** `eyesClosed`: asleep (the living companions nap). Cat and wolf blink and twitch (styles/companions.css). */
 export function AnimalFace({ species, eyesClosed = false }: { species: Species; eyesClosed?: boolean }) {
   switch (species) {
     case "cat":
-      return (
-        <g className="mc-face mc-face--cat">
-          {head("#fff4e6")}
-          {pointyEars("#fff4e6", PINK)}
-          <Eyes closed={eyesClosed} />
-          <Blush />
-          <NoseMouth />
-          <g className="mc-face-whiskers mc-face-whiskers--l">
-            <path d="M13 36 L2 34 M13 40 L3 42.5" stroke={OUTLINE} strokeWidth="1.4" strokeLinecap="round" />
-          </g>
-          <g className="mc-face-whiskers mc-face-whiskers--r">
-            <path d="M51 36 L62 34 M51 40 L61 42.5" stroke={OUTLINE} strokeWidth="1.4" strokeLinecap="round" />
-          </g>
-        </g>
-      );
+      return <ChibiCat closed={eyesClosed} />;
 
     case "dog":
       return (
