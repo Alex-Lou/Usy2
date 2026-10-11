@@ -3,7 +3,7 @@ import { decorUrl } from "./decorAssets";
 
 // 🌳 Outside: the house the two of us chose, its garden and the sky of the
 // real time (sun and drifting clouds by day, moon and stars at night). Same
-// 400×300 box as the room, so the companions walk on the grass at y 262.
+// 400×300 box as the room, so the companions walk on the grass at y 292.
 
 const NIGHT_VEIL = "#161a45";
 

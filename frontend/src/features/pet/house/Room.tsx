@@ -101,12 +101,12 @@ export function Room({ night, surfaces = {}, furnished = false }: { night: boole
           <path d="M45 176 C 42 156, 48 140, 52 128" fill="none" />
         </g>
       </g>
-      {/* Basket (right) */}
+      {/* Basket (right), at the front of the floor where Moka lives (LivingCat's HOUSE.ground). */}
       <g>
-        <ellipse cx="330" cy="262" rx="52" ry="14" fill="#000" opacity="0.14" />
-        <path d="M280 236 q50 -14 100 0 l-8 26 q-42 12 -84 0 z" fill="#c98f5f" stroke={OUTLINE} strokeWidth="2.6" strokeLinejoin="round" />
-        <path d="M286 240 q44 -10 88 0" stroke="#a8703f" strokeWidth="2" fill="none" />
-        <ellipse cx="330" cy="238" rx="44" ry="8" fill="#f2b6c9" stroke={OUTLINE} strokeWidth="2" />
+        <ellipse cx="330" cy="286" rx="52" ry="14" fill="#000" opacity="0.14" />
+        <path d="M280 260 q50 -14 100 0 l-8 26 q-42 12 -84 0 z" fill="#c98f5f" stroke={OUTLINE} strokeWidth="2.6" strokeLinejoin="round" />
+        <path d="M286 264 q44 -10 88 0" stroke="#a8703f" strokeWidth="2" fill="none" />
+        <ellipse cx="330" cy="262" rx="44" ry="8" fill="#f2b6c9" stroke={OUTLINE} strokeWidth="2" />
       </g>
     </svg>
   );
@@ -318,6 +318,13 @@ function along(x0: number, x1: number, t: number) {
 }
 const POINTS = SWAGS.flatMap(([a, b]) => [0.14, 0.3, 0.46, 0.62, 0.78, 0.92].map((t) => along(a, b, t)));
 const PASTELS = ["#ff9fbd", "#ffd36e", "#8fd3ff", "#b4ec9c", "#c9a8ff"];
+/** The balloons' colours: light (where the light hits) and deep. */
+const BALLOONS = [
+  ["#ff9ab3", "#e2456b"],
+  ["#ffe08a", "#f0a92c"],
+  ["#a8dcff", "#4f9fe0"],
+  ["#c8b0ff", "#8a63d9"],
+] as const;
 
 function Garland({ id, night }: { id: string; night: boolean }) {
   const url = decorUrl(id);
@@ -332,6 +339,16 @@ function Garland({ id, night }: { id: string; night: boolean }) {
     ));
   return (
     <g>
+      {id === "plafond-ballons" && (
+        <defs>
+          {BALLOONS.map(([light, deep], i) => (
+            <radialGradient key={i} id={`balloon-${i}`} cx="35%" cy="30%" r="75%">
+              <stop offset="0" stopColor={light} />
+              <stop offset="1" stopColor={deep} />
+            </radialGradient>
+          ))}
+        </defs>
+      )}
       {id !== "plafond-ballons" && <path d={string} stroke={OUTLINE} strokeWidth="1.4" fill="none" />}
       {id === "plafond-lumieres" &&
         POINTS.map((p, i) => (
@@ -349,13 +366,19 @@ function Garland({ id, night }: { id: string; night: boolean }) {
       {id === "plafond-coeurs" && hang(14, 6)}
       {id === "plafond-lampions" && hang(20, 3)}
       {id === "plafond-ballons" &&
-        url &&
-        [30, 78, 130, 262, 318, 372].map((x, i) => (
-          <g key={x}>
-            <path d={`M${x} ${22 + (i % 3) * 4} q${i % 2 ? 4 : -4} 18 0 ${34 + (i % 3) * 8}`} stroke={OUTLINE} strokeWidth="0.8" fill="none" />
-            <image href={url} x={x - 13} y={-6 + (i % 3) * 4} width="26" height="30" className="room-swing" style={{ animationDelay: `${i * -0.9}s`, transformOrigin: `${x}px ${24 + (i % 3) * 4}px` }} />
-          </g>
-        ))}
+        [30, 78, 130, 262, 318, 372].map((x, i) => {
+          const y = 12 + (i % 3) * 4; // the balloon's centre, just under the ceiling
+          const c = BALLOONS[i % BALLOONS.length];
+          return (
+            <g key={x} className="room-swing" style={{ animationDelay: `${i * -0.9}s`, transformOrigin: `${x}px ${y - 12}px` }}>
+              {/* The string hangs from the knot, curling a little. */}
+              <path d={`M${x} ${y + 14} q${i % 2 ? 4 : -4} 10 0 ${18 + (i % 3) * 5} q${i % 2 ? -3 : 3} 8 0 ${14 + (i % 2) * 4}`} stroke={OUTLINE} strokeWidth="0.8" fill="none" opacity="0.8" />
+              <path d={`M${x - 2.4} ${y + 15.4} L${x} ${y + 12} L${x + 2.4} ${y + 15.4} Z`} fill={c[1]} stroke={OUTLINE} strokeWidth="0.8" strokeLinejoin="round" />
+              <ellipse cx={x} cy={y} rx="10.5" ry="12.6" fill={`url(#balloon-${i % BALLOONS.length})`} stroke={OUTLINE} strokeWidth="1.1" />
+              <ellipse cx={x - 4} cy={y - 5} rx="2.4" ry="3.8" fill="#fff" opacity="0.75" transform={`rotate(-20 ${x - 4} ${y - 5})`} />
+            </g>
+          );
+        })}
     </g>
   );
 }

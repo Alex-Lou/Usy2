@@ -65,9 +65,21 @@ const LABEL: Record<Kind, string> = { penguin: "le pingouin", wolf: "le loup", c
 
 /** Where a companion lives: the house (same 400×300 box as Room) or a side-menu tile. */
 export const SCENES = {
-  house: { width: 400, height: 300, ground: 262, minX: 60, maxX: 345, scale: 0.8 },
-  tile: { width: 200, height: 96, ground: 88, minX: 40, maxX: 160, scale: 0.85 }, // room for the big chibi heads at the edges
+  // The front of the floor, before the furniture; they walk deeper or nearer (depth) around Moka.
+  // Past x 272 lies Moka's basket: they only walk by in front of it.
+  house: { width: 400, height: 300, ground: 284, minX: 50, maxX: 350, scale: 0.8, depth: [-12, 12], frontFrom: 272 },
+  tile: { width: 200, height: 96, ground: 88, minX: 40, maxX: 160, scale: 0.85, depth: [0, 0], frontFrom: null }, // room for the big chibi heads at the edges
 } as const;
+
+/**
+ * The stacking order of an animal standing at {@code groundY} in the house: nearer ones (lower on
+ * the screen) in front. Moka (LivingCat) and the companions share it; 1…9, under the decor being
+ * edited (z-20) and the overlays (laser, sparkles, hints: z-30).
+ */
+export const depthZ = (groundY: number) => 1 + Math.max(0, Math.min(8, Math.round((groundY - 262) / 4.5)));
+
+/** The companions alive in each scene, to keep out of each other's way. */
+const LIVE: Record<keyof typeof SCENES, Set<CompanionBrain>> = { house: new Set(), tile: new Set() };
 
 /** The companions that can live in the house or a side-menu tile. */
 export const LIVING_KINDS: Kind[] = ["penguin", "wolf", "cat", "otter", "siamese"];
@@ -105,8 +117,20 @@ export function LivingCompanion({
   const box = SCENES[scene];
   const svgRef = useRef<SVGSVGElement>(null);
   const brainRef = useRef<CompanionBrain | null>(null);
-  if (!brainRef.current || brainRef.current.kind !== kind) brainRef.current = new CompanionBrain(kind, box.minX + (box.maxX - box.minX) * start);
+  if (!brainRef.current || brainRef.current.kind !== kind) {
+    brainRef.current = new CompanionBrain(kind, box.minX + (box.maxX - box.minX) * start);
+    brainRef.current.sceneGround = box.ground;
+  }
   const [, redraw] = useState(0);
+
+  useEffect(() => {
+    const me = brainRef.current!;
+    const live = LIVE[scene];
+    live.add(me);
+    return () => {
+      live.delete(me);
+    };
+  }, [scene, kind]);
 
   useEffect(() => {
     const reduced = prefersReducedMotion();
@@ -119,13 +143,17 @@ export function LivingCompanion({
       const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
       last = now;
       const friend = friendRef?.current?.getBBox();
+      const me = brainRef.current!;
       brainRef.current!.update(dt, {
         minX: box.minX,
         maxX: box.maxX,
         night: isNight(),
         reduced,
         scale: box.scale * SIZE[kind],
-        friend: friend && friend.width > 0 ? { left: friend.x, right: friend.x + friend.width } : null,
+        friend: friend && friend.width > 0 ? { left: friend.x, right: friend.x + friend.width, ground: friend.y + friend.height } : null,
+        depth: box.depth,
+        frontFrom: box.frontFrom,
+        others: [...LIVE[scene]].filter((o) => o !== me).map((o) => ({ x: o.x, lane: o.lane })),
       });
       redraw((n) => (n + 1) % 1_000_000);
     };
@@ -156,10 +184,12 @@ export function LivingCompanion({
       io?.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [box, friendRef, kind]);
+  }, [box, friendRef, kind, scene]);
 
   const b = brainRef.current;
-  const s = box.scale * SIZE[kind];
+  // A touch smaller deeper in the room, bigger nearer: a little perspective.
+  const ground = box.ground + b.lane;
+  const s = box.scale * SIZE[kind] * (1 + b.lane / 160);
   const poke = () => b.poke();
 
   return (
@@ -168,6 +198,7 @@ export function LivingCompanion({
       viewBox={`0 0 ${box.width} ${box.height}`}
       preserveAspectRatio={scene === "house" ? "xMidYMax slice" : "xMidYMid meet"}
       className={scene === "house" ? "pointer-events-none absolute inset-0 h-full w-full" : "block h-auto w-full"}
+      style={scene === "house" ? { zIndex: depthZ(ground) } : undefined}
       data-companion={kind}
       data-state={b.state}
     >
@@ -188,14 +219,14 @@ export function LivingCompanion({
       {/* The shadow shrinks and fades as it leaves the ground. */}
       <ellipse
         cx={b.x}
-        cy={box.ground + 1}
+        cy={ground + 1}
         rx={((kind === "penguin" ? 16 : 22) + b.lying * 8) * s * (1 + b.lift / 70)}
         ry={3 * s * (1 + b.lift / 70)}
         fill="#000"
         opacity={0.14 * (1 + b.lift / 50)}
       />
       <g
-        transform={`translate(${b.x} ${box.ground + SINK + b.lift}) scale(${b.facing * s} ${s})`}
+        transform={`translate(${b.x} ${ground + SINK + b.lift}) scale(${b.facing * s} ${s})`}
         onClick={poke}
         role="button"
         tabIndex={0}
@@ -211,7 +242,7 @@ export function LivingCompanion({
         <CompanionBody kind={kind} b={b} />
       </g>
       {b.bubbles.map((bub) => (
-        <BubbleShape key={bub.id} bub={bub} ground={box.ground} head={HEAD_TOP[kind] * s} dir={b.dir} />
+        <BubbleShape key={bub.id} bub={bub} ground={ground} head={HEAD_TOP[kind] * s} dir={b.dir} />
       ))}
     </svg>
   );
