@@ -398,13 +398,13 @@ export function PetHousePage() {
         ))}
 
         {sparkles.map((s) => (
-          <span key={s.id} className="pointer-events-none absolute text-lg animate-sparkle" style={{ left: s.x - 8, top: s.y - 12 }}>
+          <span key={s.id} className="pointer-events-none absolute z-30 text-lg animate-sparkle" style={{ left: s.x - 8, top: s.y - 12 }}>
             ✨
           </span>
         ))}
         {tool === "laser" && dot && (
           <span
-            className="pointer-events-none absolute h-3 w-3 rounded-full"
+            className="pointer-events-none absolute z-30 h-3 w-3 rounded-full"
             style={{
               left: dot.x - 6,
               top: dot.y - 6,
@@ -415,12 +415,12 @@ export function PetHousePage() {
         )}
 
         {(hint || caption) && (
-          <p role="status" className="absolute inset-x-3 top-3 rounded-full border border-border bg-surface px-3 py-1.5 text-center text-xs font-semibold text-text shadow-card">
+          <p role="status" className="absolute inset-x-3 top-3 z-30 rounded-full border border-border bg-surface px-3 py-1.5 text-center text-xs font-semibold text-text shadow-card">
             {caption ?? hint}
           </p>
         )}
         {tool && (
-          <div className="absolute inset-x-6 bottom-3 h-1.5 overflow-hidden rounded-full bg-black/20" aria-hidden="true">
+          <div className="absolute inset-x-6 bottom-3 z-30 h-1.5 overflow-hidden rounded-full bg-black/20" aria-hidden="true">
             <div
               className="h-full rounded-full transition-[width] duration-150"
               style={{

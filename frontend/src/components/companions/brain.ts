@@ -20,9 +20,18 @@ export interface Env {
   reduced: boolean;
   /** Scene units per drawing unit (how big it is drawn), so its feet match the ground. */
   scale: number;
-  /** Moka's extent (house only), to go and stand beside it. */
-  friend: { left: number; right: number } | null;
+  /** Moka's extent and where its feet are (house only), to go and stand beside it, or keep clear. */
+  friend: { left: number; right: number; ground: number } | null;
+  /** How far in front of (+) or behind (-) the scene's ground line it may walk, in scene units. */
+  depth: readonly [number, number];
+  /** Where the other companions are (x, and depth), to keep out of each other's way. */
+  others: readonly { x: number; lane: number }[];
+  /** Past this x (Moka's basket), only the front of the floor is walkable. */
+  frontFrom: number | null;
 }
+
+/** How near the front a companion must be to walk past Moka's basket. */
+const FRONT_LANE = 12;
 
 export interface Bubble {
   id: number;
@@ -56,6 +65,8 @@ const launch = (h: number) => -Math.sqrt(2 * GRAVITY * h);
 
 export class CompanionBrain {
   x: number;
+  /** How far in front of (+) or behind (-) the ground line it walks (depth in the room). */
+  lane = 0;
   /** Where it heads (1 right, -1 left); {@code facing} turns towards it (-1 … 1). */
   dir: 1 | -1 = 1;
   state: State = "idle";
@@ -89,6 +100,7 @@ export class CompanionBrain {
   private stageT = 0;
   private hops = 0;
   private target = 0;
+  private laneTarget = 0;
   private clock = 0;
   private nextBubble = 0;
   private bubbleId = 0;
@@ -248,10 +260,15 @@ export class CompanionBrain {
     let at = 0;
     const chance = (odds: number) => r < (at += odds);
     if (env.friend && chance(12)) {
-      // Stand beside Moka (not on it), then face it.
-      const { left, right } = env.friend;
-      const fromLeft = (left + right) / 2 > this.x;
-      this.target = clamp(fromLeft ? left - 20 : right + 20, env.minX, env.maxX);
+      // Stand beside Moka (not on it), just in front of it, then face it.
+      // The side with fewer others already there; a little further out if one is.
+      const { left, right, ground } = env.friend;
+      const near = (x: number) => env.others.filter((o) => Math.abs(o.x - x) < 26).length;
+      const l = clamp(left - 20, env.minX, env.maxX);
+      const r = clamp(right + 20, env.minX, env.maxX);
+      const side = near(l) === near(r) ? ((left + right) / 2 > this.x ? l : r) : near(l) < near(r) ? l : r;
+      this.target = clamp(side + (side === l ? -1 : 1) * near(side) * 22, env.minX, env.maxX);
+      this.laneTarget = clamp(ground - this.sceneGround + 6, env.depth[0], env.depth[1]);
       this.go("visit", 12);
     } else if (chance(napOdds)) {
       this.nextBubble = 0.8;
@@ -279,15 +296,43 @@ export class CompanionBrain {
     } else if (poses && chance(8)) {
       this.go("sniff", rand(2.4, 3.6));
     } else {
-      this.target = rand(env.minX, env.maxX);
+      this.freeSpot(env);
       this.go("walk", 12);
     }
+  }
+
+  /** The scene's ground line, in scene units (set by the page): Moka's ground is given in the same units. */
+  sceneGround = 0;
+
+  /**
+   * Where to walk to: a spot a fair way off, as far as can be from the other companions and from
+   * Moka (they share the floor at different depths, and keep out of each other's way).
+   */
+  private freeSpot(env: Env) {
+    let best = { x: rand(env.minX, env.maxX), lane: rand(env.depth[0], env.depth[1]), score: -Infinity };
+    for (let i = 0; i < 10; i++) {
+      const x = rand(env.minX, env.maxX);
+      let lane = rand(env.depth[0], env.depth[1]);
+      if (env.frontFrom !== null && x > env.frontFrom) lane = Math.max(lane, FRONT_LANE);
+      let room = Infinity;
+      for (const o of env.others) room = Math.min(room, Math.hypot(x - o.x, (lane - o.lane) * 3));
+      if (env.friend) {
+        const { left, right, ground } = env.friend;
+        const dx = x < left ? left - x : x > right ? x - right : 0;
+        room = Math.min(room, Math.hypot(dx * 0.6, (lane - (ground - this.sceneGround)) * 3)); // Moka needs room
+      }
+      const score = Math.min(room, 80) + (Math.abs(x - this.x) > 50 ? 20 : 0);
+      if (score > best.score) best = { x, lane, score };
+    }
+    this.target = best.x;
+    this.laneTarget = best.lane;
   }
 
   /** Walks to the target, slowing down to arrive; returns the pace wanted. */
   private walkTo(env: Env): number {
     const d = this.target - this.x;
-    if ((Math.abs(d) < 1.5 && Math.abs(this.vx) < 4) || this.t > this.dur) {
+    const dl = this.laneTarget - this.lane;
+    if ((Math.abs(d) < 1.5 && Math.abs(dl) < 1 && Math.abs(this.vx) < 4) || this.t > this.dur) {
       if (this.state === "visit" && env.friend) {
         this.dir = (env.friend.left + env.friend.right) / 2 > this.x ? 1 : -1;
         this.say("heart");
@@ -297,7 +342,7 @@ export class CompanionBrain {
       }
       return 0;
     }
-    this.dir = d > 0 ? 1 : -1;
+    if (Math.abs(d) >= 1.5) this.dir = d > 0 ? 1 : -1;
     // Brakes in time to stop right there.
     return Math.min(this.k.speed, Math.sqrt(2 * ACCEL * 0.8 * Math.abs(d)));
   }
@@ -427,6 +472,18 @@ export class CompanionBrain {
       s.tilt.target += clamp(accel * 0.03, -5, 5);
     }
     this.x = clamp(this.x + this.vx * dt, env.minX, env.maxX);
+    // Deeper or nearer in the room on the way, arriving at its depth as it arrives across (a
+    // diagonal path); a few steps on the spot when only the depth is left to change.
+    let laneV = 0;
+    if (this.state === "walk" || this.state === "visit") {
+      const dl = this.laneTarget - this.lane;
+      const timeLeft = Math.max(0.4, Math.abs(this.target - this.x) / this.k.speed);
+      laneV = clamp(dl / timeLeft, -this.k.speed * 0.5, this.k.speed * 0.5);
+      this.lane += clamp(laneV * dt, -Math.abs(dl), Math.abs(dl));
+    }
+    // Past Moka's basket, only along the front.
+    if (env.frontFrom !== null && (this.x > env.frontFrom - 10 || this.target > env.frontFrom)) this.laneTarget = Math.max(this.laneTarget, FRONT_LANE);
+    this.lane = clamp(this.lane, env.depth[0], env.depth[1]);
 
     // Jumps: real gravity, a squash and a puff of dust on landing.
     if (this.airborne) {
@@ -443,9 +500,9 @@ export class CompanionBrain {
     }
 
     // The stride follows the ground covered, so the feet never skate.
-    const ground = Math.abs(this.vx) * dt;
-    if (!this.airborne && !sliding) this.stride += ground / (this.k.stride * env.scale);
-    s.gait.target = this.airborne || sliding ? 0 : clamp(Math.abs(this.vx) / this.k.speed, 0, 1);
+    const pace = Math.hypot(this.vx, laneV);
+    if (!this.airborne && !sliding) this.stride += (pace * dt) / (this.k.stride * env.scale);
+    s.gait.target = this.airborne || sliding ? 0 : clamp(pace / this.k.speed, 0, 1);
     this.whoosh = sliding && Math.abs(this.vx) > 15;
 
     // A walking body: bobs twice a stride, and the penguin waddles side to side.

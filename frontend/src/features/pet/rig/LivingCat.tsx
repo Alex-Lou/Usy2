@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState, type Ref } from "react";
+import { depthZ } from "../../../components/companions/LivingCompanion";
 import type { CatPose } from "../CatSprite";
 import { CatBrain, type CatEnv, type CatEvent } from "./brain";
 import { CatRig } from "./CatRig";
 import { catSound } from "./sound";
 
 /** The house scene's layout (same 400×300 box as Room.tsx). */
-export const HOUSE = { width: 400, height: 300, ground: 262, minX: 70, maxX: 336, bowlX: 104, bedX: 330, bedLift: 15, scale: 0.8 };
+// Moka lives at the front of the floor (ground 286), in front of the furniture placed in the room,
+// so it never seems to stand inside a sofa; its bowl and basket stand there too (Room.tsx).
+export const HOUSE = { width: 400, height: 300, ground: 286, minX: 70, maxX: 336, bowlX: 104, bedX: 330, bedLift: 15, scale: 0.8 };
 
 function prefersReducedMotion(): boolean {
   return typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -155,12 +158,13 @@ export function LivingCat({
         viewBox={`0 0 ${HOUSE.width} ${HOUSE.height}`}
         preserveAspectRatio="xMidYMax slice"
         className="absolute inset-0 h-full w-full"
+        style={{ zIndex: depthZ(HOUSE.ground) }} // the companions pass in front of or behind it
       >
         <Bowl x={HOUSE.bowlX} ground={HOUSE.ground} />
         {cat}
         {/* In the basket: its front rim passes in front of the cat. */}
         {f.lift < -4 && Math.abs(f.x - HOUSE.bedX) < 30 && (
-          <path d="M283 246 q47 7 94 0 l-6 16 q-41 11 -82 0 z" fill="#c98f5f" stroke="#4a3b33" strokeWidth="2.6" strokeLinejoin="round" />
+          <path d="M283 270 q47 7 94 0 l-6 16 q-41 11 -82 0 z" fill="#c98f5f" stroke="#4a3b33" strokeWidth="2.6" strokeLinejoin="round" />
         )}
       </svg>
     );
