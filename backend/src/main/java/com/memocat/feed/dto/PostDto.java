@@ -18,5 +18,7 @@ public record PostDto(
         Instant updatedAt,
         boolean edited,
         List<ReactionSummaryDto> reactions,
-        long commentCount) {
+        long commentCount,
+        Long albumId,
+        String albumTitle) {
 }

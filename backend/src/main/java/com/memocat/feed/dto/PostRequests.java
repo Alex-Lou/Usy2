@@ -11,7 +11,11 @@ import java.util.List;
  */
 public final class PostRequests {
 
-    public record CreatePost(String text, Long imageAssetId, List<Long> imageAssetIds) {
+    /**
+     * {@code albumId} or {@code newAlbumTitle}: the photos also go into that album (an existing one,
+     * or a new one of that title), and the post links to it; both null: a post only.
+     */
+    public record CreatePost(String text, Long imageAssetId, List<Long> imageAssetIds, Long albumId, String newAlbumTitle) {
     }
 
     public record UpdatePost(String text, Long imageAssetId, List<Long> imageAssetIds) {

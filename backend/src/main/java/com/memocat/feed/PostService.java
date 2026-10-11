@@ -1,9 +1,12 @@
 package com.memocat.feed;
 
+import com.memocat.album.AlbumService;
+import com.memocat.album.PhotoService;
 import com.memocat.domain.Asset;
 import com.memocat.domain.Post;
 import com.memocat.domain.User;
 import com.memocat.feed.dto.PostDto;
+import com.memocat.repository.AlbumRepository;
 import com.memocat.repository.AssetRepository;
 import com.memocat.repository.PostRepository;
 import com.memocat.repository.UserRepository;
@@ -34,17 +37,26 @@ public class PostService {
     private final AssetRepository assetRepository;
     private final PostMapper postMapper;
     private final ApplicationEventPublisher events;
+    private final AlbumService albumService;
+    private final PhotoService photoService;
+    private final AlbumRepository albumRepository;
 
     public PostService(PostRepository postRepository,
                        UserRepository userRepository,
                        AssetRepository assetRepository,
                        PostMapper postMapper,
-                       ApplicationEventPublisher events) {
+                       ApplicationEventPublisher events,
+                       AlbumService albumService,
+                       PhotoService photoService,
+                       AlbumRepository albumRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.assetRepository = assetRepository;
         this.postMapper = postMapper;
         this.events = events;
+        this.albumService = albumService;
+        this.photoService = photoService;
+        this.albumRepository = albumRepository;
     }
 
     /** One post (e.g. opened from a notification); 404 when it was deleted. */
@@ -64,9 +76,33 @@ public class PostService {
 
     @Transactional
     public PostDto create(String username, String text, Long imageAssetId, List<Long> imageAssetIds) {
+        return create(username, text, imageAssetId, imageAssetIds, null, null);
+    }
+
+    /**
+     * A post; with {@code albumId} (an existing album) or {@code newAlbumTitle} (a new one), its photos
+     * also go into that album, in the same order, and the post links to it. All or nothing: one
+     * transaction for the album, its photos and the post.
+     */
+    @Transactional
+    public PostDto create(String username, String text, Long imageAssetId, List<Long> imageAssetIds,
+                          Long albumId, String newAlbumTitle) {
         User author = requireUser(username);
         List<Asset> photos = resolvePhotos(requested(imageAssetId, imageAssetIds), author, List.of());
-        Post post = postRepository.save(new Post(author, validateText(text, !photos.isEmpty()), photos));
+        Post draft = new Post(author, validateText(text, !photos.isEmpty()), photos);
+        boolean intoAlbum = albumId != null || (newAlbumTitle != null && !newAlbumTitle.isBlank());
+        if (intoAlbum) {
+            if (photos.isEmpty()) {
+                throw new ContentValidationException("Il faut au moins une photo pour un album");
+            }
+            Long target = albumId != null ? albumId : albumService.create(username, newAlbumTitle.strip(), null).id();
+            for (Asset photo : photos) {
+                photoService.add(username, target, photo.getId(), null);
+            }
+            draft.setAlbum(albumRepository.findById(target)
+                    .orElseThrow(() -> new ContentValidationException("Cet album n'existe plus")));
+        }
+        Post post = postRepository.save(draft);
         events.publishEvent(FeedActivity.post(author, post, Mentions.in(post.getText(), userRepository.findAll(), author.getId())));
         return postMapper.toDto(post, author.getId());
     }
