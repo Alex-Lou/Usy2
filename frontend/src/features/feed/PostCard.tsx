@@ -1,6 +1,4 @@
 import { Fragment, useRef, useState } from "react";
-import { AssetImage } from "../../components/AssetImage";
-import { EffectLayer } from "../../components/photo/EffectLayer";
 import { Avatar } from "../../components/ui/Avatar";
 import { LinkPreview } from "../../components/rich/LinkPreview";
 import { firstUrl } from "../../components/rich/links";
@@ -11,7 +9,8 @@ import { ReactionBar } from "../chat/MessageReactions";
 import { deletePost, react, unreact, updatePost } from "./api";
 import { Comments } from "./Comments";
 import { usePeople, withMentions } from "./mentions";
-import type { Post } from "./types";
+import { PhotoCarousel } from "./PhotoCarousel";
+import { photoName, type Photo, type Post } from "./types";
 import { feel } from "../../lib/feel";
 
 function timeAgo(iso: string): string {
@@ -49,7 +48,14 @@ export function PostCard({
   const [showComments, setShowComments] = useState(initialShowComments);
   const [commentCount, setCommentCount] = useState(post.commentCount);
   const [busy, setBusy] = useState(false);
-  const [viewing, setViewing] = useState(false);
+  const [viewing, setViewing] = useState<number | null>(null); // the photo enlarged
+  // The photos, in order (a post of before the carousels: its one photo).
+  const photos: Photo[] =
+    post.photos && post.photos.length > 0
+      ? post.photos
+      : post.imageAssetId
+        ? [{ assetId: post.imageAssetId, width: post.imageWidth, height: post.imageHeight, effect: post.imageEffect }]
+        : [];
   const [burst, setBurst] = useState(0); // a heart blooms on the photo (double tap)
   const tapTimer = useRef<number | null>(null);
 
@@ -90,7 +96,7 @@ export function PostCard({
   }
 
   // One tap opens the photo; a quick second tap likes it instead (❤️, never un-likes).
-  function tapPhoto() {
+  function tapPhoto(index: number) {
     if (tapTimer.current !== null) {
       window.clearTimeout(tapTimer.current);
       tapTimer.current = null;
@@ -100,7 +106,7 @@ export function PostCard({
     }
     tapTimer.current = window.setTimeout(() => {
       tapTimer.current = null;
-      setViewing(true);
+      setViewing(index);
     }, 260);
   }
 
@@ -108,7 +114,7 @@ export function PostCard({
     if (!editText.trim()) return;
     setBusy(true);
     try {
-      onChanged(await updatePost(post.id, editText, post.imageAssetId));
+      onChanged(await updatePost(post.id, editText, photos.map((p) => p.assetId)));
       setEditing(false);
     } finally {
       setBusy(false);
@@ -174,29 +180,26 @@ export function PostCard({
 
       {!editing && !post.imageAssetId && firstUrl(post.text) && <LinkPreview url={firstUrl(post.text)!} className="mt-3" />}
 
-      {post.imageAssetId && (
-        <button
-          type="button"
-          onClick={tapPhoto}
-          className="relative -mx-4 mt-3 block w-[calc(100%+2rem)] touch-manipulation"
-          aria-label="Agrandir la photo (deux fois : ❤️)"
-        >
-          {/* Edge to edge in the card, like a photo post should be. */}
-          <EffectLayer effect={post.imageEffect}>
-            <AssetImage assetId={post.imageAssetId} ratio={post.imageWidth && post.imageHeight ? post.imageWidth / post.imageHeight : 4 / 3} className="max-h-[32rem] w-full object-cover" />
-          </EffectLayer>
-          {burst > 0 && (
-            <span key={burst} data-heart-burst="" className="mc-heart-burst pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">
-              <span className="mc-emoji text-7xl drop-shadow-lg">❤️</span>
-            </span>
-          )}
-        </button>
+      {photos.length > 0 && (
+        // Edge to edge in the card, like a photo post should be; several: a carousel.
+        <PhotoCarousel
+          photos={photos}
+          onTap={tapPhoto}
+          overlay={
+            burst > 0 && (
+              <span key={burst} data-heart-burst="" className="mc-heart-burst pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">
+                <span className="mc-emoji text-7xl drop-shadow-lg">❤️</span>
+              </span>
+            )
+          }
+        />
       )}
-      {viewing && post.imageAssetId && (
+      {viewing !== null && photos[viewing] && (
         <ImageViewer
-          asset={{ id: post.imageAssetId, originalFilename: `memocat-${post.id}.jpg` }}
-          onClose={() => setViewing(false)}
+          asset={{ id: photos[viewing].assetId, originalFilename: photoName(`memocat-${post.id}-${viewing + 1}`, photos[viewing]) }}
+          onClose={() => setViewing(null)}
           hiddenNotes
+          gallery={photos.length > 1 ? { index: viewing, count: photos.length, onGo: setViewing } : undefined}
         />
       )}
 

@@ -77,19 +77,32 @@ public class AssetService {
         return new StorageUsageDto(assetRepository.totalSizeBytes(), quotaBytes);
     }
 
+    /** A GIF fetched from the GIF search (see GifService), stored like an uploaded one. */
+    @Transactional
+    public AssetDto storeGif(String username, byte[] bytes, String name) {
+        if (bytes.length < 6 || bytes[0] != 'G' || bytes[1] != 'I' || bytes[2] != 'F') {
+            throw new ContentValidationException("Ce GIF n'a pas pu être récupéré");
+        }
+        return store(username, bytes, name, "gif", "image/gif", null);
+    }
+
     private AssetDto store(String username, MultipartFile file, String originalName, String extension,
                            String contentType, String effect) {
-        User uploader = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (assetRepository.totalSizeBytes() + file.getSize() > quotaBytes) {
-            throw new ContentValidationException("Espace de stockage plein : supprime d'anciens fichiers");
-        }
-
         byte[] bytes;
         try {
             bytes = file.getBytes();
         } catch (IOException e) {
             throw new ContentValidationException("Could not read uploaded file");
+        }
+        return store(username, bytes, originalName, extension, contentType, effect);
+    }
+
+    private AssetDto store(String username, byte[] bytes, String originalName, String extension,
+                           String contentType, String effect) {
+        User uploader = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (assetRepository.totalSizeBytes() + bytes.length > quotaBytes) {
+            throw new ContentValidationException("Espace de stockage plein : supprime d'anciens fichiers");
         }
 
         // Logical key kept unique for the asset row; no longer a filesystem path.

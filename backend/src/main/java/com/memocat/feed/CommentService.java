@@ -1,12 +1,15 @@
 package com.memocat.feed;
 
 import com.memocat.auth.dto.UserDto;
+import com.memocat.domain.Asset;
 import com.memocat.domain.Comment;
 import com.memocat.domain.CommentReaction;
 import com.memocat.domain.Post;
 import com.memocat.domain.User;
 import com.memocat.feed.dto.CommentDto;
 import com.memocat.feed.dto.CommentReactionDto;
+import com.memocat.feed.dto.PhotoDto;
+import com.memocat.repository.AssetRepository;
 import com.memocat.repository.CommentReactionRepository;
 import com.memocat.repository.CommentRepository;
 import com.memocat.repository.PostRepository;
@@ -36,17 +39,20 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentReactionRepository reactionRepository;
+    private final AssetRepository assetRepository;
     private final ApplicationEventPublisher events;
 
     public CommentService(CommentRepository commentRepository,
                           PostRepository postRepository,
                           UserRepository userRepository,
                           CommentReactionRepository reactionRepository,
+                          AssetRepository assetRepository,
                           ApplicationEventPublisher events) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.reactionRepository = reactionRepository;
+        this.assetRepository = assetRepository;
         this.events = events;
     }
 
@@ -64,14 +70,30 @@ public class CommentService {
 
     /** A comment, or a reply to {@code parentId} (a reply to a reply joins that same thread). */
     @Transactional
-    public CommentDto create(String username, Long postId, String text, Long parentId) {
+    public CommentDto create(String username, Long postId, String text, Long parentId, Long imageAssetId) {
         User author = requireUser(username);
         Post post = requirePost(postId);
         Comment parent = parentId == null ? null : threadOf(parentId, post);
-        Comment comment = commentRepository.save(new Comment(post, author, validateText(text), parent));
+        Asset image = imageAssetId == null ? null : imageOf(imageAssetId, author);
+        Comment draft = new Comment(post, author, validateText(text, image != null), parent);
+        draft.setImageAsset(image);
+        Comment comment = commentRepository.save(draft);
         List<Long> mentioned = Mentions.in(comment.getText(), userRepository.findAll(), author.getId());
         events.publishEvent(FeedActivity.comment(author, post, comment, mentioned));
         return toDto(comment, List.of());
+    }
+
+    /** A photo or GIF the author sent (a picture only). */
+    private Asset imageOf(Long assetId, User author) {
+        Asset a = assetRepository.findById(assetId)
+                .orElseThrow(() -> new ContentValidationException("Cette image n'existe plus"));
+        if (!a.getContentType().startsWith("image/")) {
+            throw new ContentValidationException("Seules des photos ou des GIFs vont dans un commentaire");
+        }
+        if (!a.getUploader().getId().equals(author.getId())) {
+            throw new ForbiddenException("Cette image n'est pas la tienne");
+        }
+        return a;
     }
 
     private Comment threadOf(Long parentId, Post post) {
@@ -99,11 +121,16 @@ public class CommentService {
                 comment.getText(),
                 comment.getCreatedAt(),
                 reactions,
-                comment.getParent() == null ? null : comment.getParent().getId());
+                comment.getParent() == null ? null : comment.getParent().getId(),
+                comment.getImageAsset() == null ? null : PhotoDto.from(comment.getImageAsset()));
     }
 
-    private String validateText(String text) {
+    /** Text is optional when the comment carries a photo or GIF. */
+    private String validateText(String text, boolean hasImage) {
         if (text == null || text.isBlank()) {
+            if (hasImage) {
+                return "";
+            }
             throw new ContentValidationException("Comment text is required");
         }
         if (text.length() > MAX_TEXT) {

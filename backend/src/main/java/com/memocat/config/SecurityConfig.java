@@ -35,7 +35,8 @@ public class SecurityConfig {
             "script-src 'self'",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "font-src 'self' https://fonts.gstatic.com data:",
-            "img-src 'self' blob: data:",
+            // GIF search previews come straight from GIPHY (a GIF picked is then kept on our side).
+            "img-src 'self' blob: data: https://*.giphy.com",
             "media-src 'self' blob:",
             "connect-src 'self'",
             "worker-src 'self'",

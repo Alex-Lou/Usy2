@@ -17,10 +17,16 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @Service
 public class PostService {
 
     private static final int MAX_TEXT = 2000;
+    /** Photos in one post (a carousel). */
+    static final int MAX_PHOTOS = 10;
     private static final int MAX_PAGE_SIZE = 50;
 
     private final PostRepository postRepository;
@@ -57,23 +63,27 @@ public class PostService {
     }
 
     @Transactional
-    public PostDto create(String username, String text, Long imageAssetId) {
+    public PostDto create(String username, String text, Long imageAssetId, List<Long> imageAssetIds) {
         User author = requireUser(username);
-        Asset image = resolveAsset(imageAssetId);
-        Post post = postRepository.save(new Post(author, validateText(text, image != null), image));
+        List<Asset> photos = resolvePhotos(requested(imageAssetId, imageAssetIds), author, List.of());
+        Post post = postRepository.save(new Post(author, validateText(text, !photos.isEmpty()), photos));
         events.publishEvent(FeedActivity.post(author, post, Mentions.in(post.getText(), userRepository.findAll(), author.getId())));
         return postMapper.toDto(post, author.getId());
     }
 
     @Transactional
-    public PostDto update(String username, Long postId, String text, Long imageAssetId) {
+    public PostDto update(String username, Long postId, String text, Long imageAssetId, List<Long> imageAssetIds) {
         User user = requireUser(username);
         Post post = requirePost(postId);
         requireOwner(post, user);
 
-        Asset image = resolveAsset(imageAssetId);
-        post.setText(validateText(text, image != null));
-        post.setImageAsset(image);
+        List<Asset> current = post.getPhotos();
+        // An app of before the carousels sends only the first photo: the others stay.
+        boolean legacyKeep = imageAssetIds == null && imageAssetId != null && !current.isEmpty()
+                && current.get(0).getId().equals(imageAssetId);
+        List<Asset> photos = legacyKeep ? current : resolvePhotos(requested(imageAssetId, imageAssetIds), user, current);
+        post.setText(validateText(text, !photos.isEmpty()));
+        post.setPhotos(photos);
         post.setEdited(true);
         return postMapper.toDto(postRepository.save(post), user.getId());
     }
@@ -106,12 +116,36 @@ public class PostService {
         return text;
     }
 
-    private Asset resolveAsset(Long imageAssetId) {
-        if (imageAssetId == null) {
-            return null;
+    /** The photos asked for: the list, or the single one of an app of before the carousels. */
+    private static List<Long> requested(Long imageAssetId, List<Long> imageAssetIds) {
+        if (imageAssetIds != null) return imageAssetIds;
+        return imageAssetId == null ? List.of() : List.of(imageAssetId);
+    }
+
+    /**
+     * The photos, in order: images only, at most {@link #MAX_PHOTOS}, each once, sent by the author
+     * (or already on the post being edited).
+     */
+    private List<Asset> resolvePhotos(List<Long> ids, User author, List<Asset> alreadyThere) {
+        List<Long> distinct = ids.stream().filter(Objects::nonNull).distinct().toList();
+        if (distinct.size() > MAX_PHOTOS) {
+            throw new ContentValidationException("Pas plus de " + MAX_PHOTOS + " photos par publication");
         }
-        return assetRepository.findById(imageAssetId)
-                .orElseThrow(() -> new ContentValidationException("Unknown image asset"));
+        List<Asset> photos = new ArrayList<>(distinct.size());
+        for (Long id : distinct) {
+            Asset a = assetRepository.findById(id)
+                    .orElseThrow(() -> new ContentValidationException("Unknown image asset"));
+            if (!a.getContentType().startsWith("image/")) {
+                throw new ContentValidationException("Seules des photos ou des GIFs peuvent être publiés");
+            }
+            boolean theirs = a.getUploader().getId().equals(author.getId())
+                    || alreadyThere.stream().anyMatch(p -> p.getId().equals(id));
+            if (!theirs) {
+                throw new ForbiddenException("Cette photo n'est pas la tienne");
+            }
+            photos.add(a);
+        }
+        return photos;
     }
 
     private User requireUser(String username) {

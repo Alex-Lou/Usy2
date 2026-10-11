@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { GifPicker } from "../../components/rich/GifPicker";
 import { RichPicker } from "../../components/rich/RichPicker";
 import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useRichInput";
 import { Icon } from "../../components/ui/Icon";
@@ -61,6 +62,7 @@ export function ChatComposer({
   const [usage, setUsage] = useState<StorageUsage | null>(null);
   const [studio, setStudio] = useState(false);
   const [resumed, setResumed] = useState<StudioEdit | undefined>(); // edits of a draft picked up
+  const [gifs, setGifs] = useState(false); // the GIF search is open
   const [options, setOptions] = useState(false); // "Envoyer avec…"
   const press = useRef<{ timer: number; long: boolean } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -299,6 +301,22 @@ export function ChatComposer({
             <div className="absolute bottom-14 left-0 z-20 w-60 overflow-hidden rounded-token border border-border bg-surface shadow-card animate-pop">
               <AttachOption icon="images" label="Photo ou GIF" accept="image/*" onFile={pick} />
               <AttachOption icon="camera" label="Appareil photo" accept="image/*" capture onFile={pick} />
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setGifs(true);
+                }}
+                className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-surface-2"
+              >
+                <span className="grid w-5 place-items-center">
+                  <span className="rounded border-2 border-primary px-0.5 text-[9px] font-bold leading-tight text-primary">GIF</span>
+                </span>
+                <span className="flex flex-col">
+                  <span className="text-sm font-semibold text-text">Chercher un GIF</span>
+                  <span className="text-[11px] text-text-muted">Des milliers, envoyé tout de suite</span>
+                </span>
+              </button>
               <AttachOption icon="file" label="Document" hint="PDF, Word, Excel… 10 Mo" accept={DOCUMENT_ACCEPT} onFile={pick} />
               {usage && (
                 <p className="border-t border-border px-4 py-2 text-[11px] text-text-muted">
@@ -331,6 +349,8 @@ export function ChatComposer({
           className="min-h-12 flex-1 resize-none rounded-3xl border border-border bg-surface px-4 py-3 leading-snug outline-none focus:border-primary/70"
         />
         <RichPicker onEmoji={insert} onSticker={(token) => connected && onSend(token, null)} />
+        {/* A GIF picked goes at once, like a sticker (as a reply, when one is being written). */}
+        {gifs && <GifPicker onPick={(asset) => connected && onSend("", asset)} onClose={() => setGifs(false)} />}
         {showMic ? (
           <button
             type="button"

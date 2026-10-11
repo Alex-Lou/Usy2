@@ -65,7 +65,7 @@ class MemoryServiceTest {
         ReflectionTestUtils.setField(a1, "id", 40L);
         Asset a2 = new Asset("k2", "b.jpg", "image/jpeg", 10, lou);
         ReflectionTestUtils.setField(a2, "id", 41L);
-        Post march = new Post(lou, "Printemps", a1);
+        Post march = new Post(lou, "Printemps", List.of(a1));
         ReflectionTestUtils.setField(march, "id", 5L);
         ReflectionTestUtils.setField(march, "createdAt", Instant.parse("2025-03-01T10:00:00Z"));
         Album album = new Album(lou, "Été", null);

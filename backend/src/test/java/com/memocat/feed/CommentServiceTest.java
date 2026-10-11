@@ -37,6 +37,8 @@ class CommentServiceTest {
     @Mock
     private com.memocat.repository.CommentReactionRepository reactionRepository;
     @Mock
+    private com.memocat.repository.AssetRepository assetRepository;
+    @Mock
     private ApplicationEventPublisher events;
 
     @InjectMocks
@@ -58,7 +60,7 @@ class CommentServiceTest {
         when(postRepository.findById(9L)).thenReturn(Optional.of(post));
         when(commentRepository.save(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        commentService.create("alex", 9L, "trop beau 😍", null);
+        commentService.create("alex", 9L, "trop beau 😍", null, null);
 
         ArgumentCaptor<FeedActivity> event = ArgumentCaptor.forClass(FeedActivity.class);
         verify(events).publishEvent(event.capture());
@@ -75,7 +77,7 @@ class CommentServiceTest {
         when(userRepository.findByUsername("alex")).thenReturn(Optional.of(commenter));
         when(postRepository.findById(9L)).thenReturn(Optional.of(post));
 
-        assertThatThrownBy(() -> commentService.create("alex", 9L, "   ", null))
+        assertThatThrownBy(() -> commentService.create("alex", 9L, "   ", null, null))
                 .isInstanceOf(ContentValidationException.class);
         verify(events, never()).publishEvent(any(Object.class));
     }
@@ -97,7 +99,7 @@ class CommentServiceTest {
         when(commentRepository.findById(31L)).thenReturn(Optional.of(reply));
         when(commentRepository.save(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        var dto = commentService.create("lou", 9L, "@Sam Martin oui, on y retourne !", 31L);
+        var dto = commentService.create("lou", 9L, "@Sam Martin oui, on y retourne !", 31L, null);
 
         assertThat(dto.parentId()).as("a reply to a reply joins the thread").isEqualTo(30L);
         ArgumentCaptor<FeedActivity> event = ArgumentCaptor.forClass(FeedActivity.class);
@@ -117,7 +119,7 @@ class CommentServiceTest {
         when(postRepository.findById(9L)).thenReturn(Optional.of(post));
         when(commentRepository.findById(40L)).thenReturn(Optional.of(new Comment(other, lou, "ailleurs")));
 
-        assertThatThrownBy(() -> commentService.create("lou", 9L, "ici", 40L)).isInstanceOf(ContentValidationException.class);
+        assertThatThrownBy(() -> commentService.create("lou", 9L, "ici", 40L, null)).isInstanceOf(ContentValidationException.class);
         verify(events, never()).publishEvent(any(Object.class));
     }
 
@@ -132,5 +134,28 @@ class CommentServiceTest {
         assertThat(Mentions.in("@Samuel", people, 1L)).isEmpty();
         assertThat(Mentions.in("sam sans arobase", people, 1L)).isEmpty();
         assertThat(Mentions.in("moi @lou", people, 1L)).as("never oneself").isEmpty();
+    }
+
+    /** A GIF or a photo alone is a comment; someone else's upload is not. */
+    @Test
+    void aCommentCanBeJustAPictureOfOnesOwn() {
+        User lou = user(1L, "lou");
+        Post post = new Post(lou, "hi", null);
+        ReflectionTestUtils.setField(post, "id", 9L);
+        com.memocat.domain.Asset gif = new com.memocat.domain.Asset("k", "chat.gif", "image/gif", 10, lou);
+        ReflectionTestUtils.setField(gif, "id", 4L);
+        com.memocat.domain.Asset theirs = new com.memocat.domain.Asset("k2", "x.jpg", "image/jpeg", 10, user(2L, "alex"));
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(lou));
+        when(postRepository.findById(9L)).thenReturn(Optional.of(post));
+        when(assetRepository.findById(4L)).thenReturn(Optional.of(gif));
+        when(assetRepository.findById(5L)).thenReturn(Optional.of(theirs));
+        when(commentRepository.save(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var dto = commentService.create("lou", 9L, "  ", null, 4L);
+
+        assertThat(dto.text()).isEmpty();
+        assertThat(dto.image().assetId()).isEqualTo(4L);
+        assertThatThrownBy(() -> commentService.create("lou", 9L, "", null, 5L))
+                .isInstanceOf(com.memocat.web.ForbiddenException.class);
     }
 }

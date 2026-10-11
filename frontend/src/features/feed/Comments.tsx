@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { AssetImage } from "../../components/AssetImage";
+import { ImageViewer } from "../../components/photo/ImageViewer";
+import { GifPicker } from "../../components/rich/GifPicker";
 import { RichBody } from "../../components/rich/RichBody";
+import { uploadImage, type Asset } from "../../lib/api/assets";
 import { RichPicker } from "../../components/rich/RichPicker";
 import { isSendKey, useAutoGrow, useRichInput } from "../../components/rich/useRichInput";
 import { Avatar } from "../../components/ui/Avatar";
@@ -11,7 +15,7 @@ import { LongPress, ReactionBar, ReactionPills } from "../chat/MessageReactions"
 import { onCommentReactions } from "./activity";
 import { addComment, deleteComment, listComments, reactToComment } from "./api";
 import { MentionSuggest, usePeople, withMentions } from "./mentions";
-import type { Comment, CommentReaction } from "./types";
+import { photoName, type Comment, type CommentReaction } from "./types";
 
 /** Where a new comment goes: at the end, or (a reply) right after the last of its thread. */
 function placed(list: Comment[], c: Comment): Comment[] {
@@ -71,6 +75,21 @@ export function Comments({
   const { text, setText, ref, insert, rememberCaret } = useRichInput<HTMLTextAreaElement>();
   useAutoGrow(ref, text, 120);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // A photo of the phone (a GIF of the gallery or the keyboard too) going with the next comment.
+  const [photo, setPhoto] = useState<{ file: File; preview: string } | null>(null);
+  const [attachMenu, setAttachMenu] = useState(false);
+  const [gifs, setGifs] = useState(false);
+  const [viewing, setViewing] = useState<Comment | null>(null);
+  useEffect(() => () => {
+    if (photo) URL.revokeObjectURL(photo.preview);
+  }, [photo]);
+  function attach(file: File | undefined) {
+    setAttachMenu(false);
+    if (!file || !file.type.startsWith("image/") || file.type === "image/svg+xml") return;
+    setPhoto({ file, preview: URL.createObjectURL(file) });
+    ref.current?.focus();
+  }
   const people = usePeople();
   const [caret, setCaret] = useState(0);
   // Answering a comment: its thread (the top-level comment) and whom.
@@ -113,16 +132,25 @@ export function Comments({
     setTotalPages(p.totalPages);
   }
 
-  // Shared by the text box and the sticker picker (a sticker is sent as-is).
-  async function send(content: string, clearInput: boolean) {
-    if (!content.trim() || busy) return;
+  // Shared by the text box (with the photo waiting, if any), the sticker picker (a sticker is sent
+  // as-is) and the GIF search (a GIF picked goes at once, already kept by the server).
+  async function send(content: string, fromBox: boolean, gif: Asset | null = null) {
+    const withPhoto = fromBox ? photo : null;
+    if ((!content.trim() && !withPhoto && !gif) || busy) return;
     setBusy(true);
+    setError(null);
     try {
-      const c = await addComment(postId, content, replyTo?.id ?? null);
+      const image = gif ?? (withPhoto ? await uploadImage(withPhoto.file) : null);
+      const c = await addComment(postId, content, replyTo?.id ?? null, image?.id ?? null);
       setItems((prev) => placed(prev, c));
       setReplyTo(null);
-      if (clearInput) setText("");
+      if (fromBox) {
+        setText("");
+        setPhoto(null);
+      }
       onCountChange(1);
+    } catch {
+      setError("Le commentaire n'a pas pu partir, réessaie.");
     } finally {
       setBusy(false);
     }
@@ -153,7 +181,60 @@ export function Comments({
           </button>
         </p>
       )}
+      {photo && (
+        <div className="relative mb-2 inline-block">
+          <img src={photo.preview} alt="Photo jointe" className="max-h-32 rounded-token border border-border object-cover" />
+          <button
+            type="button"
+            onClick={() => setPhoto(null)}
+            aria-label="Retirer la photo"
+            className="absolute right-1 top-1 grid h-7 w-7 place-items-center rounded-full bg-black/60 text-white press"
+          >
+            <Icon name="x" size={14} />
+          </button>
+        </div>
+      )}
       <form onSubmit={submit} className="flex items-end gap-1.5">
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setAttachMenu((o) => !o)}
+            aria-label="Joindre une photo ou un GIF"
+            aria-expanded={attachMenu}
+            className={"grid h-10 w-10 shrink-0 place-items-center rounded-full press hover:text-primary " + (attachMenu ? "text-primary" : "text-text-muted")}
+          >
+            <Icon name="images" size={20} />
+          </button>
+          {attachMenu && <div className="fixed inset-0 z-10" onClick={() => setAttachMenu(false)} aria-hidden="true" />}
+          {attachMenu && (
+            <div className="absolute bottom-12 left-0 z-20 w-56 overflow-hidden rounded-token border border-border bg-surface shadow-card animate-pop">
+              <label className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-surface-2">
+                <Icon name="images" size={18} className="text-primary" />
+                <span className="text-sm font-semibold">Photo ou GIF du téléphone</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    attach(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setAttachMenu(false);
+                  setGifs(true);
+                }}
+                className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-surface-2"
+              >
+                <span className="rounded border-2 border-primary px-0.5 text-[9px] font-bold leading-tight text-primary">GIF</span>
+                <span className="text-sm font-semibold">Chercher un GIF</span>
+              </button>
+            </div>
+          )}
+        </div>
         <textarea
           ref={ref}
           rows={1}
@@ -170,15 +251,25 @@ export function Comments({
             }
           }}
           onBlur={rememberCaret}
+          // A photo or GIF pasted (the phone keyboard's GIFs come this way).
+          onPaste={(e) => {
+            const file = Array.from(e.clipboardData.files).find((f) => f.type.startsWith("image/"));
+            if (file) {
+              e.preventDefault();
+              attach(file);
+            }
+          }}
           maxLength={1000}
           placeholder={replyTo ? `Répondre à ${replyTo.name}…` : "Commenter… (@ pour taguer)"}
           className="min-h-10 flex-1 resize-none rounded-3xl border border-border bg-bg-2/60 px-4 py-2 text-sm leading-snug outline-none focus:border-primary/70"
         />
         <RichPicker onEmoji={insert} onSticker={(token) => void send(token, false)} />
-        <button type="submit" disabled={busy || !text.trim()} aria-label="Envoyer" className="grid h-10 w-10 shrink-0 place-items-center rounded-full btn-brand disabled:opacity-50 press">
+        {gifs && <GifPicker onPick={(asset) => void send("", false, asset)} onClose={() => setGifs(false)} />}
+        <button type="submit" disabled={busy || (!text.trim() && !photo)} aria-label="Envoyer" className="grid h-10 w-10 shrink-0 place-items-center rounded-full btn-brand disabled:opacity-50 press">
           <Icon name="send" size={16} />
         </button>
       </form>
+      {error && <p role="alert" className="mt-1.5 text-sm text-danger">{error}</p>}
       <div className="mt-1.5 empty:hidden">
         <MentionSuggest
           text={text}
@@ -212,7 +303,18 @@ export function Comments({
                   </button>
                 )}
               </div>
-              <RichBody text={c.text} className="text-sm" renderText={(t) => withMentions(t, people)} />
+              {c.text && <RichBody text={c.text} className="text-sm" renderText={(t) => withMentions(t, people)} />}
+              {c.image && (
+                <button
+                  type="button"
+                  onClick={() => setViewing(c)}
+                  aria-label="Agrandir l'image"
+                  className="mt-1.5 block overflow-hidden rounded-token"
+                  style={{ width: "min(14rem, 60vw)", aspectRatio: c.image.width && c.image.height ? `${c.image.width} / ${c.image.height}` : "4 / 3" }}
+                >
+                  <AssetImage assetId={c.image.assetId} className="h-full w-full object-cover" />
+                </button>
+              )}
             </div>
             </LongPress>
             <div className="flex items-center gap-2">
@@ -238,6 +340,12 @@ export function Comments({
         )}
       </div>
 
+      {viewing?.image && (
+        <ImageViewer
+          asset={{ id: viewing.image.assetId, originalFilename: photoName(`memocat-commentaire-${viewing.id}`, viewing.image) }}
+          onClose={() => setViewing(null)}
+        />
+      )}
       {menu && (
         <ReactionBar
           anchor={menu.anchor}

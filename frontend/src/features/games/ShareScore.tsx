@@ -25,7 +25,7 @@ export function ShareScore({ text, className = "" }: { text: string; className?:
     setBusy(true);
     setError(null);
     try {
-      const post = await createPost(draft.trim(), null);
+      const post = await createPost(draft.trim(), []);
       setPostId(post.id);
       setOpen(false);
     } catch (e) {

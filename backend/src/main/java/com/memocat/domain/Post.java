@@ -7,12 +7,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -29,9 +34,17 @@ public class Post {
     @Column(nullable = false)
     private String text;
 
+    /** The first photo (see {@link #photos}): kept for previews, memories, search and « Notre année ». */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_asset_id")
     private Asset imageAsset;
+
+    /** The post's photos, in order (a carousel); none for a text post. */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "post_photo", joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "asset_id"))
+    @OrderColumn(name = "position")
+    private List<Asset> photos = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -46,10 +59,10 @@ public class Post {
         // for JPA
     }
 
-    public Post(User author, String text, Asset imageAsset) {
+    public Post(User author, String text, List<Asset> photos) {
         this.author = author;
         this.text = text;
-        this.imageAsset = imageAsset;
+        setPhotos(photos);
     }
 
     @PrePersist
@@ -84,8 +97,14 @@ public class Post {
         return imageAsset;
     }
 
-    public void setImageAsset(Asset imageAsset) {
-        this.imageAsset = imageAsset;
+    public List<Asset> getPhotos() {
+        return photos;
+    }
+
+    /** The photos, in order; the first one is also the post's {@link #getImageAsset() image}. */
+    public void setPhotos(List<Asset> photos) {
+        this.photos = photos == null ? new ArrayList<>() : new ArrayList<>(photos);
+        this.imageAsset = this.photos.isEmpty() ? null : this.photos.get(0);
     }
 
     public Instant getCreatedAt() {
