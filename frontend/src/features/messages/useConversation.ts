@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Client } from "@stomp/stompjs";
 import type { Asset } from "../../lib/api/assets";
+import { useNotifications } from "../../app/notifications";
 import { feel } from "../../lib/feel";
 import { editMessage, getHistory, reactToMessage } from "../chat/api";
 import { createChatClient, sendMessage, sendRead, sendTyping } from "../chat/chatClient";
@@ -33,6 +34,9 @@ export function useConversation(myId: number | undefined) {
   myIdRef.current = myId;
   const typingTimer = useRef<number | null>(null);
   const everConnected = useRef(false);
+  const { reload } = useNotifications();
+  const reloadBell = useRef(reload);
+  reloadBell.current = reload;
 
   const loadLatest = useCallback(() => {
     getHistory(0, PAGE)
@@ -74,6 +78,7 @@ export function useConversation(myId: number | undefined) {
       (r) => {
         if (r.readerId === myIdRef.current) {
           refreshUnread();
+          void reloadBell.current(); // the server marked the conversation's notifications read
           return;
         }
         setMessages((prev) =>

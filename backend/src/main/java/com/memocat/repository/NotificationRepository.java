@@ -17,6 +17,16 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     List<Notification> findByRecipientIdAndTagAndReadFalse(Long recipientId, String tag);
 
+    List<Notification> findByRecipientIdAndTag(Long recipientId, String tag);
+
+    List<Notification> findByRecipientIdAndTagStartingWith(Long recipientId, String prefix);
+
+    /** The conversation's entries (messages, reactions to messages) of one person, read. */
+    @Modifying
+    @Query("update Notification n set n.read = true where n.recipientId = :recipientId and n.read = false"
+            + " and (n.tag = 'chat' or n.tag like 'message-reaction-%')")
+    int markConversationRead(Long recipientId);
+
     @Modifying
     @Query("update Notification n set n.read = true where n.recipientId = :recipientId and n.read = false")
     int markAllRead(Long recipientId);

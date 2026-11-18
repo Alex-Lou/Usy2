@@ -44,15 +44,45 @@ class NotificationServiceTest {
 
     @Test
     void theSameNewsStillUnreadIsReplacedNotPiledUp() {
-        Notification older = new Notification(2L, "Lou t'a envoyé un message 💬", "coucou", "/chat?m=1", "chat");
-        when(repo.findByRecipientIdAndTagAndReadFalse(2L, "chat")).thenReturn(List.of(older));
+        Notification older = new Notification(2L, "Lou a commenté ton post 💬", "joli", "/posts/1", "post-1");
+        when(repo.findByRecipientIdAndTagAndReadFalse(2L, "post-1")).thenReturn(List.of(older));
+
+        var dto = service.record(2L, "Lou a commenté ton post 💬", "trop beau", "/posts/1", "post-1");
+
+        verify(repo).deleteAll(List.of(older));
+        assertThat(dto.excerpt()).isEqualTo("trop beau");
+        assertThat(dto.recipientId()).isEqualTo(2L);
+        assertThat(dto.read()).isFalse();
+    }
+
+    @Test
+    void theConversationKeepsOneEntryReadOrNot() {
+        Notification read = new Notification(2L, "Lou t'a envoyé un message 💬", "coucou", "/chat?m=1", "chat");
+        read.markRead();
+        when(repo.findByRecipientIdAndTag(2L, "chat")).thenReturn(List.of(read));
 
         var dto = service.record(2L, "Lou t'a envoyé un message 💬", "ça va ?", "/chat?m=2", "chat");
 
-        verify(repo).deleteAll(List.of(older));
+        verify(repo).deleteAll(List.of(read)); // even read: the chat itself is the history
+        verify(repo, never()).findByRecipientIdAndTagAndReadFalse(any(), any());
         assertThat(dto.excerpt()).isEqualTo("ça va ?");
-        assertThat(dto.recipientId()).isEqualTo(2L);
-        assertThat(dto.read()).isFalse();
+    }
+
+    @Test
+    void reactionsToMessagesShareOneEntry() {
+        Notification other = new Notification(2L, "Lou a réagi ❤️ à ton message", "coucou", "/chat?m=1", "message-reaction-1");
+        when(repo.findByRecipientIdAndTagStartingWith(2L, "message-reaction-")).thenReturn(List.of(other));
+
+        service.record(2L, "Lou a réagi 😂 à ton message", "ça va ?", "/chat?m=2", "message-reaction-2");
+
+        verify(repo).deleteAll(List.of(other));
+    }
+
+    @Test
+    void readingTheConversationReadsItsEntries() {
+        service.onConversationRead(new com.memocat.chat.ConversationRead(2L));
+
+        verify(repo).markConversationRead(2L);
     }
 
     @Test

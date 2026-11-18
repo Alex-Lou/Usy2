@@ -18,12 +18,16 @@ import { showSystemNotification } from "./systemNotify";
 
 /**
  * Already seen: the page it points to is the one on screen (a message while
- * reading the chat), or it is a new post while on the feed (shown there live).
+ * reading the chat, or Messages, the app apart), or it is a new post while on
+ * the feed (shown there live).
  */
 function alreadyThere(n: NotificationEntry): boolean {
   if (document.visibilityState !== "visible") return false;
   const here = window.location.pathname;
-  return new URL(n.url, window.location.origin).pathname === here || (here === "/" && /^post-\d+$/.test(n.tag));
+  const conversation = n.tag === "chat" || n.tag.startsWith("message-reaction-");
+  return new URL(n.url, window.location.origin).pathname === here
+    || (here === "/messages" && conversation)
+    || (here === "/" && /^post-\d+$/.test(n.tag));
 }
 
 /**
