@@ -114,7 +114,7 @@ export function Thread({ messages, myId, partnerName, emojis, onOpenImage, onRea
                   </span>
                 )}
                 {m.reactions.length > 0 && (
-                  <div className="-mt-1 self-start px-2">
+                  <div className="mt-0.5 self-start px-1">
                     <ReactionPills
                       reactions={m.reactions}
                       myId={myId}
