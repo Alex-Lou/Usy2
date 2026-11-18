@@ -13,6 +13,7 @@
 @import "./glass.css";
 @import "./chat-fx.css";
 @import "./crossword.css";
+@import "./messages.css";
 
 @tailwind base;
 @tailwind components;

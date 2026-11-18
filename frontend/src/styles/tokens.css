@@ -61,6 +61,18 @@
   --pal-red-500: #e2534f;
   --pal-red-400: #ef4444;
 
+  /* Messages app: graphite & amber */
+  --pal-graphite-950: #111214;
+  --pal-graphite-900: #17181b;
+  --pal-graphite-850: #1f2024;
+  --pal-graphite-800: #2a2b30;
+  --pal-mist-50: #ececee;
+  --pal-mist-400: #8b8d94;
+  --pal-amber-300: #d6a46c;
+  --pal-umber-50: #f4ebe1;
+  --pal-umber-800: #30271f;
+  --pal-umber-950: #1a140e;
+
   /* Shapes & type */
   --radius: 18px;
   --radius-sm: 12px;
@@ -208,4 +220,20 @@
   /* Photo studio: the shine on a slider */
   --photo-shine: var(--pal-white);
   --photo-shine-from: rgba(255, 255, 255, 0);
+
+  /* 💬 Messages, the app apart (features/messages): sober and dark, one warm accent */
+  --msg-bg: var(--pal-graphite-950);
+  --msg-surface: var(--pal-graphite-900);
+  --msg-elev: var(--pal-graphite-850);
+  --msg-line: var(--pal-graphite-800);
+  --msg-text: var(--pal-mist-50);
+  --msg-muted: var(--pal-mist-400);
+  --msg-in: var(--pal-graphite-850);
+  --msg-out: var(--pal-umber-800);
+  --msg-out-text: var(--pal-umber-50);
+  --msg-accent: var(--pal-amber-300);
+  --msg-on-accent: var(--pal-umber-950);
+  --msg-danger: var(--pal-coral-500);
+  --msg-veil: rgba(0, 0, 0, 0.6);
+  --msg-font: "Manrope", "Inter", system-ui, sans-serif;
 }

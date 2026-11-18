@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import { LoginPage } from "./features/auth/LoginPage";
@@ -30,12 +30,24 @@ const ChallengePage = lazy(() => import("./features/challenge/ChallengePage").th
 const CrosswordPage = lazy(() => import("./features/crossword/CrosswordPage").then((m) => ({ default: m.CrosswordPage })));
 const PetitBacPage = lazy(() => import("./features/petitbac/PetitBacPage").then((m) => ({ default: m.PetitBacPage })));
 const DatesPage = lazy(() => import("./features/couple/DatesPage").then((m) => ({ default: m.DatesPage })));
+const MessagesApp = lazy(() => import("./features/messages/MessagesApp").then((m) => ({ default: m.MessagesApp })));
 const SearchPage = lazy(() => import("./features/search/SearchPage").then((m) => ({ default: m.SearchPage })));
 
 export function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      {/* Messages, the app apart: full screen, without MemoCat's bars. */}
+      <Route
+        path="/messages"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={null}>
+              <MessagesApp />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
       <Route
         element={
           <ProtectedRoute>
