@@ -1,0 +1,118 @@
+/* 💬 Messages, the app apart (features/messages). While it is on screen the
+   whole document takes its look (see .msg-mode in MessagesApp): the role
+   tokens point to the --msg-* zone, so the shared pieces it reuses (photo
+   viewer, GIF search, voice notes) follow without a line of their own. */
+:root.msg-mode {
+  --color-bg: var(--msg-bg);
+  --color-bg-2: var(--msg-surface);
+  --color-surface: var(--msg-surface);
+  --color-surface-2: var(--msg-elev);
+  --color-border: var(--msg-line);
+  --color-text: var(--msg-text);
+  --color-text-muted: var(--msg-muted);
+  --color-primary: var(--msg-accent);
+  --color-primary-foreground: var(--msg-on-accent);
+  --color-accent: var(--msg-accent);
+  --color-accent-2: var(--msg-accent);
+  --color-danger: var(--msg-danger);
+  --font-display: var(--msg-font);
+  --grad: var(--msg-accent);
+  --glow: none;
+  --app-bg: var(--msg-bg);
+  color-scheme: dark;
+}
+:root.msg-mode body {
+  background: var(--msg-bg);
+}
+
+.msg-app {
+  font-family: var(--msg-font);
+  background: var(--msg-bg);
+  color: var(--msg-text);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.msg-bar {
+  border-bottom: 1px solid var(--msg-line);
+  background: var(--msg-bg);
+}
+
+/* Bubbles: theirs on the left in graphite, mine on the right in warm umber;
+   the corner on the sender's side tightens on the last one of a run. */
+.msg-bubble {
+  border-radius: 16px;
+  padding: 7px 10px 6px;
+  line-height: 1.4;
+  max-width: 100%;
+}
+.msg-bubble-media {
+  padding: 3px 3px 5px;
+  max-width: 20rem;
+}
+.msg-bubble-media .msg-meta {
+  margin-right: 6px;
+}
+.msg-in .msg-bubble {
+  background: var(--msg-in);
+  color: var(--msg-text);
+}
+.msg-out .msg-bubble {
+  background: var(--msg-out);
+  color: var(--msg-out-text);
+}
+.msg-in.msg-tail .msg-bubble {
+  border-bottom-left-radius: 5px;
+}
+.msg-out.msg-tail .msg-bubble {
+  border-bottom-right-radius: 5px;
+}
+.msg-meta {
+  font-size: 10.5px;
+  color: var(--msg-muted);
+}
+.msg-out .msg-meta {
+  color: color-mix(in srgb, var(--msg-out-text) 60%, transparent);
+}
+.msg-read {
+  color: var(--msg-accent);
+}
+.msg-quote {
+  border-left: 3px solid var(--msg-accent);
+  background: color-mix(in srgb, var(--msg-text) 6%, transparent);
+  border-radius: 8px;
+}
+.msg-quote b {
+  color: var(--msg-accent);
+}
+.msg-reacts {
+  background: var(--msg-elev);
+  border: 2px solid var(--msg-bg);
+}
+.msg-day {
+  background: var(--msg-surface);
+  color: var(--msg-muted);
+}
+.msg-veil {
+  background: var(--msg-veil);
+  backdrop-filter: blur(3px);
+}
+.msg-sheet {
+  background: var(--msg-elev);
+  border: 1px solid var(--msg-line);
+}
+.msg-field {
+  background: var(--msg-surface);
+  border: 1px solid var(--msg-line);
+}
+.msg-cta {
+  background: var(--msg-accent);
+  color: var(--msg-on-accent);
+}
+.msg-hl {
+  background: color-mix(in srgb, var(--msg-accent) 28%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 2px;
+}

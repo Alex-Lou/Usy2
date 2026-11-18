@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCompanion } from "../../app/companion";
 import { AnimalCharm } from "../../components/ui/animals";
 import { Button } from "../../components/ui/Button";
@@ -14,6 +14,7 @@ export function LoginPage() {
   const { login } = useAuth();
   const { companion } = useCompanion();
   const navigate = useNavigate();
+  const from = (useLocation().state as { from?: string } | null)?.from;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +26,8 @@ export function LoginPage() {
     setSubmitting(true);
     try {
       await login(username, password);
-      navigate("/", { replace: true });
+      // Only a path of this app (never another site).
+      navigate(from && from.startsWith("/") && !from.startsWith("//") ? from : "/", { replace: true });
     } catch (err) {
       setError(
         err instanceof ApiError && err.status === 401

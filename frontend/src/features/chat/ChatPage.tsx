@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import type { Client } from "@stomp/stompjs";
 import { useCompanion } from "../../app/companion";
 import { Animal } from "../../components/ui/animals";
@@ -365,6 +365,9 @@ export function ChatPage() {
             <Icon name="refresh" size={20} className={refreshing ? "animate-spin" : ""} />
           </button>
           <ReadingMenu reading={reading} onChange={saveReading} error={readingError} commonFont={common.chatFont} />
+          <Link to="/messages" aria-label="Ouvrir Messages, l'app à part" title="Ouvrir Messages" className="grid h-10 w-10 place-items-center rounded-full text-text-muted press hover:text-text">
+            <Icon name="chat" size={20} />
+          </Link>
         </div>
         {pet && (
           <button
