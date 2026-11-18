@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The same graphite & amber as the web app (frontend/src/styles/tokens.css, --msg-*). -->
+<!-- The same graphite & amber as the web app (frontend/src/styles/tokens.css, the msg zone). -->
 <resources>
     <color name="graphite">#111214</color>
     <color name="amber">#D6A46C</color>
