@@ -132,14 +132,14 @@ class NotificationServiceTest {
     }
 
     @Test
-    void listingReadsOnlyMyOwnEntries() {
-        when(repo.findByRecipientIdOrderByIdDesc(any(), any(Pageable.class))).thenReturn(List.of());
-        when(repo.countByRecipientIdAndReadFalse(2L)).thenReturn(3L);
+    void listingReadsOnlyMyOwnEntriesOutsideTheConversation() {
+        when(repo.bellNewestFirst(any(), any(Pageable.class))).thenReturn(List.of());
+        when(repo.countBellUnread(2L)).thenReturn(3L);
 
         var list = service.list("sam");
 
-        verify(repo).findByRecipientIdOrderByIdDesc(any(), any(Pageable.class));
-        verify(repo).countByRecipientIdAndReadFalse(2L);
+        verify(repo).bellNewestFirst(org.mockito.ArgumentMatchers.eq(2L), any(Pageable.class));
+        verify(repo).countBellUnread(2L);
         assertThat(list.unread()).isEqualTo(3L);
     }
 }

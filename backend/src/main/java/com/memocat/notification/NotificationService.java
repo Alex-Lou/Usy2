@@ -23,7 +23,8 @@ import java.util.List;
  * that person only (/user/queue/notifications). The same news still unread (same tag, e.g. several
  * messages in a row) replaces the previous entry instead of piling up. The conversation goes further:
  * one entry for its messages and one for reactions to them, read or not (the chat itself is the
- * history), and reading the conversation marks them read.
+ * history), and reading the conversation marks them read. Those two are not listed in the bell:
+ * they still go out live (banner, push, the red dot on the Messages tab), the bell is for the rest.
  */
 @Service
 public class NotificationService {
@@ -70,10 +71,10 @@ public class NotificationService {
     @Transactional(readOnly = true)
     public NotificationsDto list(String username) {
         Long me = requireUser(username).getId();
-        List<NotificationDto> items = notifications.findByRecipientIdOrderByIdDesc(me, PageRequest.of(0, PAGE)).stream()
+        List<NotificationDto> items = notifications.bellNewestFirst(me, PageRequest.of(0, PAGE)).stream()
                 .map(NotificationDto::from)
                 .toList();
-        return new NotificationsDto(items, notifications.countByRecipientIdAndReadFalse(me));
+        return new NotificationsDto(items, notifications.countBellUnread(me));
     }
 
     @Transactional

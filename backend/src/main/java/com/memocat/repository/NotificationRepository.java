@@ -10,10 +10,17 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    /** Newest first (ids follow the order of arrival). */
-    List<Notification> findByRecipientIdOrderByIdDesc(Long recipientId, Pageable page);
+    /**
+     * The bell: everything but the conversation (its messages and the reactions to them, which
+     * the red dot on the Messages tab tells), newest first (ids follow the order of arrival).
+     */
+    @Query("select n from Notification n where n.recipientId = :recipientId and " + NOT_CONVERSATION + " order by n.id desc")
+    List<Notification> bellNewestFirst(Long recipientId, Pageable page);
 
-    long countByRecipientIdAndReadFalse(Long recipientId);
+    @Query("select count(n) from Notification n where n.recipientId = :recipientId and n.read = false and " + NOT_CONVERSATION)
+    long countBellUnread(Long recipientId);
+
+    String NOT_CONVERSATION = "(n.tag is null or (n.tag <> 'chat' and n.tag not like 'message-reaction-%'))";
 
     List<Notification> findByRecipientIdAndTagAndReadFalse(Long recipientId, String tag);
 
