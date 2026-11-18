@@ -82,7 +82,9 @@ jobs:
           TAG: messages-v${{ github.run_number }}
         run: |
           cp android/messages/app/build/outputs/apk/release/app-release.apk "Messages-$TAG.apk"
-          gh release create "$TAG" "Messages-$TAG.apk" --target "$GITHUB_SHA" --title "Messages $TAG" \
+          # Also under a fixed name: MemoCat's « Installer l'app » links to releases/latest/download/Messages.apk.
+          cp "Messages-$TAG.apk" Messages.apk
+          gh release create "$TAG" "Messages-$TAG.apk" Messages.apk --latest --target "$GITHUB_SHA" --title "Messages $TAG" \
             --notes "APK Android de Messages. Sur le téléphone : télécharge le fichier .apk ci-dessous, ouvre-le, autorise l'installation."
       - name: Ménage
         if: always()

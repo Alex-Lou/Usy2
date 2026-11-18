@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Icon } from "../../components/ui/Icon";
 import { ApiError } from "../../lib/api/client";
 import { useAuth } from "../auth/useAuth";
+import { MESSAGES_APK_URL, offerAndroidApp } from "./androidApp";
 
 /**
  * Signing in to Messages, in its own look: the MemoCat account, once. Signed
@@ -69,6 +70,12 @@ export function MessagesLogin() {
           {busy ? "Connexion…" : "Se connecter"}
         </button>
         <p className="text-center text-[12.5px] text-text-muted">À faire une seule fois : l'app reste connectée.</p>
+        {offerAndroidApp && (
+          <a href={MESSAGES_APK_URL} className="mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-primary press">
+            <Icon name="download" size={18} />
+            Installer l'app Android
+          </a>
+        )}
       </form>
     </div>
   );
