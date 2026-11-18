@@ -28,6 +28,7 @@ import { ReadingMenu } from "./ReadingMenu";
 import type { Message, MessageReaction } from "./types";
 import { feel } from "../../lib/feel";
 import { refreshUnread } from "./unread";
+import { MESSAGES_APK_URL, offerAndroidApp } from "../messages/androidApp";
 import { useOnRefresh } from "../../lib/refresh";
 
 /** Adds messages not seen yet, keeping chronological (id) order. */
@@ -368,6 +369,11 @@ export function ChatPage() {
           <Link to="/messages" aria-label="Ouvrir Messages, l'app à part" title="Ouvrir Messages" className="grid h-10 w-10 place-items-center rounded-full text-text-muted press hover:text-text">
             <Icon name="chat" size={20} />
           </Link>
+          {offerAndroidApp && (
+            <a href={MESSAGES_APK_URL} aria-label="Installer l'app Messages (Android)" title="Installer l'app Messages (Android)" className="grid h-10 w-10 place-items-center rounded-full text-text-muted press hover:text-text">
+              <Icon name="download" size={20} />
+            </a>
+          )}
         </div>
         {pet && (
           <button
