@@ -12,6 +12,7 @@ import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
 import { Composer } from "./Composer";
 import { InfoView } from "./InfoView";
+import { MessagesLogin } from "./MessagesLogin";
 import { SearchView } from "./SearchView";
 import { Thread } from "./Thread";
 import { useConversation } from "./useConversation";
@@ -48,6 +49,13 @@ function useMessagesLook() {
 export function MessagesApp() {
   useManrope();
   useMessagesLook();
+  const { user, loading } = useAuth();
+  if (loading) return <div className="msg-app" />;
+  if (!user) return <MessagesLogin />;
+  return <Conversation />;
+}
+
+function Conversation() {
   const { user } = useAuth();
   const [params, setParams] = useSearchParams();
   const view = params.get("v");

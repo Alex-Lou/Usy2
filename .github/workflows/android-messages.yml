@@ -1,0 +1,89 @@
+# L'app Android « Messages » (android/messages) : une Trusted Web Activity qui ouvre
+# https://<MESSAGES_HOST>/messages en plein écran. Voir deploy/README.md, « L'app Messages sur Android ».
+#   - Sur une PR qui touche android/ : vérifie que l'app se construit (APK non signée, non publiée).
+#   - À la main (Actions → App Messages (Android) → Run workflow) : APK signée, publiée dans une
+#     Release « messages-vN » à télécharger depuis le téléphone.
+# Réglages (Settings → Secrets and variables → Actions) :
+#   Variable : MESSAGES_HOST = ton domaine (ex. memocat.fr)
+#   Secrets  : ANDROID_KEYSTORE_B64 (la clé, en base64), ANDROID_KEYSTORE_PASSWORD,
+#              ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+name: App Messages (Android)
+
+on:
+  pull_request:
+    paths:
+      - "android/**"
+      - ".github/workflows/android-messages.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-messages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Construction (vérification)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+      - name: APK (non signée)
+        run: gradle -p android/messages assembleRelease -PmessagesHost=memocat.example --no-daemon
+
+  release:
+    name: APK signée
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # publier la Release avec l'APK
+    steps:
+      - uses: actions/checkout@v4
+      - name: Réglages présents
+        env:
+          HOST: ${{ vars.MESSAGES_HOST }}
+          KEY: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          [ -n "$HOST" ] || { echo "::error::Variable MESSAGES_HOST manquante (ton domaine)"; exit 1; }
+          [ -n "$KEY" ] || { echo "::error::Secret ANDROID_KEYSTORE_B64 manquant (voir deploy/README.md)"; exit 1; }
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+      - name: Clé de signature
+        env:
+          KEY: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: printf '%s' "$KEY" | base64 -d > "$RUNNER_TEMP/messages.jks"
+      - name: APK signée
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/messages.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          HOST: ${{ vars.MESSAGES_HOST }}
+        run: gradle -p android/messages assembleRelease "-PmessagesHost=$HOST" "-PversionCode=${{ github.run_number }}" --no-daemon
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: messages-v${{ github.run_number }}
+        run: |
+          cp android/messages/app/build/outputs/apk/release/app-release.apk "Messages-$TAG.apk"
+          gh release create "$TAG" "Messages-$TAG.apk" --target "$GITHUB_SHA" --title "Messages $TAG" \
+            --notes "APK Android de Messages. Sur le téléphone : télécharge le fichier .apk ci-dessous, ouvre-le, autorise l'installation."
+      - name: Ménage
+        if: always()
+        run: rm -f "$RUNNER_TEMP/messages.jks"
