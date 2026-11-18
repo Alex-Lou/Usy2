@@ -1,11 +1,21 @@
 import type { Message, ReplyPreview } from "./types";
 
+const STICKER = /\[\[s:[a-z0-9-]+\]\]/g;
+
+/** Text as words: a lone sticker reads « ✨ Sticker », one among words « ✨ » (not its code). */
+export function plainText(text: string): string {
+  const t = text.trim();
+  if (/^\[\[s:[a-z0-9-]+\]\]$/.test(t)) return "✨ Sticker";
+  return t.replace(STICKER, "✨");
+}
+
 /** One line for a quoted message: its text, or what it carries. */
 export function quoteText(m: Pick<Message, "content" | "attachment"> | ReplyPreview): string {
-  const text = "excerpt" in m ? m.excerpt : m.content.trim();
+  const text = plainText("excerpt" in m ? m.excerpt : m.content);
   const type = "excerpt" in m ? null : m.attachment?.contentType;
   const kind = "excerpt" in m ? m.attachment : !type ? null : type.startsWith("image/") ? "image" : type.startsWith("audio/") ? "audio" : "file";
   if (text) return text;
+  if (type === "image/gif") return "🎞️ GIF";
   return kind === "image" ? "📷 Photo" : kind === "audio" ? "🎤 Message vocal" : kind === "file" ? "📎 Fichier" : "…";
 }
 

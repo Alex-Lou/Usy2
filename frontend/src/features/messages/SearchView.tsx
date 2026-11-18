@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "../../components/ui/Icon";
+import { plainText } from "../chat/Quote";
 import { search, type SearchHit } from "../search/api";
 
 const MIN_LENGTH = 2;
@@ -87,7 +88,7 @@ export function SearchView({ myName, onBack, onOpen }: { myName: string; onBack:
                       <b className="font-bold">{h.authorName === myName ? "Toi" : h.authorName}</b>
                       <span className="text-text-muted">{day(h.createdAt)}</span>
                     </span>
-                    <span className="line-clamp-2 text-[14.5px]">{marked(h.text ?? "", value)}</span>
+                    <span className="line-clamp-2 text-[14.5px]">{marked(plainText(h.text ?? ""), value)}</span>
                   </button>
                 </li>
               ))}

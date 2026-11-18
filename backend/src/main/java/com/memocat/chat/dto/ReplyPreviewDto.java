@@ -1,6 +1,7 @@
 package com.memocat.chat.dto;
 
 import com.memocat.domain.Message;
+import com.memocat.push.Previews;
 
 /**
  * The quoted message shown above a reply: who wrote it and a short excerpt.
@@ -11,8 +12,9 @@ public record ReplyPreviewDto(Long id, Long senderId, String senderName, String 
     static final int MAX_EXCERPT = 140;
 
     public static ReplyPreviewDto from(Message m) {
-        String text = m.getContent() == null ? "" : m.getContent().strip();
-        String excerpt = text.length() > MAX_EXCERPT ? text.substring(0, MAX_EXCERPT - 1) + "…" : text;
+        // One line, never cut inside an emoji, a sticker in words (as in a notification).
+        String shortened = Previews.shorten(m.getContent(), MAX_EXCERPT);
+        String excerpt = shortened == null ? "" : shortened;
         String type = m.getAttachment() == null ? null : m.getAttachment().getContentType();
         String attachment = type == null ? null
                 : type.startsWith("image/") ? "image" : type.startsWith("audio/") ? "audio" : "file";
