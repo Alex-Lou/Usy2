@@ -40,6 +40,10 @@ server:
     min-response-size: 1KB
 
 memocat:
+  android:
+    # The « Messages » Android app's signing fingerprints (SHA-256, comma-separated):
+    # served at /.well-known/assetlinks.json so it opens full screen. Empty = none.
+    cert-sha256: ${MEMOCAT_ANDROID_CERT_SHA256:}
   gif:
     # GIF search (GIPHY), off when empty; see deploy/README.md.
     giphy-key: ${MEMOCAT_GIPHY_KEY:}

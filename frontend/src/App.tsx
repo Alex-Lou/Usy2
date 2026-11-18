@@ -37,15 +37,13 @@ export function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      {/* Messages, the app apart: full screen, without MemoCat's bars. */}
+      {/* Messages, the app apart: full screen, without MemoCat's bars, its own sign-in. */}
       <Route
         path="/messages"
         element={
-          <ProtectedRoute>
-            <Suspense fallback={null}>
-              <MessagesApp />
-            </Suspense>
-          </ProtectedRoute>
+          <Suspense fallback={null}>
+            <MessagesApp />
+          </Suspense>
         }
       />
       <Route

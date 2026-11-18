@@ -214,6 +214,57 @@ docker compose -f deploy/docker-compose.yml restart app             # relancer l
 docker compose -f deploy/docker-compose.yml ps                      # ce qui tourne
 ```
 
+## L'app Messages sur Android (optionnel)
+
+« Messages », la messagerie à part, existe aussi en **vraie app Android** : une icône à elle, plein écran, sans barre d'adresse.
+- Elle passe par Chrome en coulisses : **connectée si MemoCat l'est déjà** dans Chrome, sinon elle demande l'identifiant et le mot de passe MemoCat, une fois.
+- Les notifications sont celles du site, sans rien de plus à configurer.
+- Elle affiche la page `/messages` du serveur : chaque `deploy.sh` la met à jour, et il n'y a pas d'APK à réinstaller.
+
+Mise en route, une seule fois, en quatre étapes.
+
+**1. La clé de signature.** Elle prouve que c'est bien ton app. **Garde-la précieusement** : sans elle, plus de mise à jour possible.
+
+Sur le serveur, en root :
+
+```bash
+mkdir -p /root/cle-messages && cd /root/cle-messages
+docker run --rm -it -v "$PWD":/k eclipse-temurin:17-jdk keytool -genkeypair -keystore /k/messages.jks -alias messages -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Il demande un mot de passe (tape-le deux fois et note-le), puis ton nom, etc. : Entrée partout, puis `oui`. Pour voir l'empreinte de la clé :
+
+```bash
+docker run --rm -v "$PWD":/k eclipse-temurin:17-jdk keytool -list -v -keystore /k/messages.jks -alias messages | grep SHA256
+```
+
+Copie la suite de paires `AA:BB:…` qui suit `SHA256:`. Garde aussi une copie de `messages.jks` sur ton ordinateur : `scp root@ton-domaine.fr:/root/cle-messages/messages.jks .`.
+
+**2. Sur le serveur : l'empreinte.** Dans `deploy/.env`, mets `MEMOCAT_ANDROID_CERT_SHA256=` suivi de l'empreinte copiée (`nano /opt/memocat/deploy/.env`), puis relance l'app :
+
+```bash
+docker compose -f /opt/memocat/deploy/docker-compose.yml up -d app
+```
+
+Pour vérifier, `https://ton-domaine.fr/.well-known/assetlinks.json` doit afficher `com.memocat.messages` et ton empreinte.
+
+**3. Sur GitHub : les réglages.** Dans le dépôt, va dans *Settings → Secrets and variables → Actions*.
+- Onglet **Variables** : `MESSAGES_HOST` = ton domaine, sans `https://` (ex. `memocat.fr`).
+- Onglet **Secrets** :
+  - `ANDROID_KEYSTORE_B64` : la clé en texte. Obtiens-la sur le serveur avec `base64 -w0 /root/cle-messages/messages.jks`, et copie toute la ligne.
+  - `ANDROID_KEYSTORE_PASSWORD` et `ANDROID_KEY_PASSWORD` : le mot de passe choisi à l'étape 1.
+  - `ANDROID_KEY_ALIAS` : `messages`.
+
+**4. Construire et installer.**
+1. Sur GitHub, va dans *Actions → App Messages (Android) → Run workflow*. Ça prend environ 5 minutes.
+2. Sur le téléphone, ouvre la page *Releases* du dépôt et la dernière « Messages messages-vN ». Télécharge le `.apk`, ouvre-le, puis autorise l'installation quand Android le demande.
+
+Une nouvelle APK ne sert qu'en cas de changement de l'app Android elle-même (icône, couleurs) ; l'interface se met à jour seule.
+
+**Si l'app s'ouvre avec une barre d'adresse en haut**, c'est qu'Android n'a pas trouvé l'empreinte :
+- vérifie `assetlinks.json` (étape 2) ;
+- puis désinstalle l'app et réinstalle-la.
+
 ## Déploiement automatique (optionnel)
 
 Pour que le serveur se mette à jour seul après chaque merge sur `main` (une fois la CI verte), comme Render aujourd'hui :
