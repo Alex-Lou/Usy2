@@ -10,6 +10,9 @@ import com.memocat.repository.PostRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * The short excerpt shown under a notification (the message, the comment, the
  * note…), read back by id once the change is committed. Null when there is
@@ -19,6 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class Previews {
 
     static final int MAX = 100;
+    /** A sticker in a message or comment is written as [[s:its-name]] (see RichBody). */
+    private static final Pattern STICKER = Pattern.compile("\\[\\[s:[a-z0-9-]+]]");
+    /** One visible character: a letter, or a whole emoji (family, flag, skin tone…). */
+    private static final Pattern GRAPHEME = Pattern.compile("\\X");
 
     private final PostRepository posts;
     private final CommentRepository comments;
@@ -66,29 +73,53 @@ public class Previews {
     private static String message(Message m) {
         String text = shorten(m.getContent());
         Asset a = m.getAttachment();
-        if (text != null || a == null) {
-            return text;
-        }
-        String type = a.getContentType();
-        if (type.startsWith("image/")) {
-            return "📷 Photo";
-        }
-        return type.startsWith("audio/") ? "🎤 Message vocal" : "📎 " + shorten(a.getOriginalFilename());
+        return text != null || a == null ? text : attachment(a.getContentType(), a.getOriginalFilename());
     }
 
-    /** One line, at most MAX characters (cut on a whole character, then "…"). */
+    /** What a message sent without words carries. */
+    static String attachment(String contentType, String filename) {
+        if ("image/gif".equals(contentType)) {
+            return "🎞️ GIF";
+        }
+        if (contentType.startsWith("image/")) {
+            return "📷 Photo";
+        }
+        return contentType.startsWith("audio/") ? "🎤 Message vocal" : "📎 " + shorten(filename);
+    }
+
+    /**
+     * One line, at most MAX visible characters (cut between two, never inside
+     * an emoji, then "…"); a sticker reads « ✨ Sticker » rather than its code.
+     */
     static String shorten(String text) {
+        return shorten(text, MAX);
+    }
+
+    /** {@link #shorten(String)} with another length (the quote above a reply). */
+    public static String shorten(String text, int max) {
         if (text == null) {
             return null;
         }
         String line = text.strip().replaceAll("\\s+", " ");
+        if (STICKER.matcher(line).matches()) {
+            return "✨ Sticker";
+        }
+        line = STICKER.matcher(line).replaceAll("✨");
         if (line.isEmpty()) {
             return null;
         }
-        if (line.codePointCount(0, line.length()) <= MAX) {
-            return line;
+        Matcher g = GRAPHEME.matcher(line);
+        int count = 0;
+        int cut = 0;
+        while (g.find()) {
+            if (++count == max) {
+                cut = g.start(); // max - 1 characters kept, then "…"
+            }
+            if (count > max) {
+                return line.substring(0, cut).stripTrailing() + "…";
+            }
         }
-        return line.substring(0, line.offsetByCodePoints(0, MAX - 1)).stripTrailing() + "…";
+        return line;
     }
 
     private static String or(String a, String b) {
