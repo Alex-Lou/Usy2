@@ -15,6 +15,7 @@ l'app, sa base de données, le HTTPS et des sauvegardes automatiques, sur un seu
 | `scripts/restore.sh` | Remet la base dans l'état d'une sauvegarde |
 | `scripts/deploy.sh` | Met le serveur à jour avec la dernière version |
 | `scripts/status.sh` | L'état du serveur en un coup d'œil |
+| `scripts/reset-password.sh` | Un nouveau mot de passe pour un compte oublié |
 
 Toutes les commandes se lancent **depuis la racine du dépôt** sur le serveur (`/opt/memocat`).
 
@@ -187,6 +188,14 @@ ls deploy/backups/
 ```
 
 Il demande de taper `RESTAURER`, et sauvegarde d'abord l'état actuel : on peut toujours revenir en arrière.
+
+**Mot de passe oublié** (sauvegarde faite avant, effet immédiat, sans redémarrer) :
+
+```bash
+cd /opt/memocat && sudo ./deploy/scripts/reset-password.sh anya
+```
+
+Il demande le nouveau mot de passe deux fois, sans l'afficher. Le nom s'écrit exactement comme dans l'app (minuscules comprises) ; en cas d'erreur, le script affiche les noms existants.
 
 **La recherche de GIFs** (messages, commentaires, publications) passe par GIPHY, avec une clé gratuite :
 1. Crée un compte sur [developers.giphy.com](https://developers.giphy.com), puis *Create an API Key* → *API*.
