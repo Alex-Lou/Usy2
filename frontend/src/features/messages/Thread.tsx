@@ -99,7 +99,7 @@ export function Thread({ messages, myId, partnerName, emojis, onOpenImage, onRea
                     )}
                     {text && <RichBody text={m.content} className="text-[14.5px]" />}
                     {!bare && (
-                      <span className="msg-meta float-right ml-2.5 mt-1 inline-flex items-center gap-1 leading-none">
+                      <span className="msg-meta float-right ml-4 mt-1 inline-flex items-center gap-1 leading-none">
                         {m.editedAt && <span className="italic">modifié</span>}
                         {time(m.createdAt)}
                         {mine && <Ticks m={m} />}
@@ -108,7 +108,7 @@ export function Thread({ messages, myId, partnerName, emojis, onOpenImage, onRea
                   </div>
                 </LongPress>
                 {bare && (
-                  <span className="msg-meta mt-0.5 inline-flex items-center gap-1 px-1">
+                  <span className="msg-meta mt-1 inline-flex items-center gap-1 px-1">
                     {time(m.createdAt)}
                     {mine && <Ticks m={m} />}
                   </span>

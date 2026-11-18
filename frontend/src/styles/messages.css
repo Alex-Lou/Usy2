@@ -46,6 +46,7 @@
   padding: 7px 10px 6px;
   line-height: 1.4;
   max-width: 100%;
+  display: flow-root; /* the time, floated right, stays inside the bubble */
 }
 .msg-bubble-media {
   padding: 3px 3px 5px;
