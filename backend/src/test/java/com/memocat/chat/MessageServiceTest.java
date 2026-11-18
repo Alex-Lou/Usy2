@@ -205,6 +205,7 @@ class MessageServiceTest {
         assertThat(read.readerId()).isEqualTo(2L);
         assertThat(read.upToId()).isEqualTo(40L);
         assertThat(read.readAt()).isNotNull();
+        verify(events).publishEvent(new ConversationRead(2L)); // the bell follows
     }
 
     @Test
@@ -215,6 +216,7 @@ class MessageServiceTest {
 
         assertThat(messageService.markRead("sam", 40L)).isNull();
         assertThat(messageService.markRead("sam", null)).isNull();
+        verify(events, never()).publishEvent(any());
     }
 
     @Test

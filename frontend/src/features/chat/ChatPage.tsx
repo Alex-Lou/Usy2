@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import type { Client } from "@stomp/stompjs";
 import { useCompanion } from "../../app/companion";
+import { useNotifications } from "../../app/notifications";
 import { Animal } from "../../components/ui/animals";
 import { Icon } from "../../components/ui/Icon";
 import { Avatar } from "../../components/ui/Avatar";
@@ -60,6 +61,9 @@ export function ChatPage() {
   const [typing, setTyping] = useState<string | null>(null); // "Lou écrit…"
   const typingTimer = useRef<number | null>(null);
   const myIdRef = useRef(user?.id);
+  const { reload: reloadBell } = useNotifications();
+  const reloadBellRef = useRef(reloadBell);
+  reloadBellRef.current = reloadBell;
   myIdRef.current = user?.id;
   const play = useCallback((effect: string | null | undefined) => {
     if (effect && SCREEN_EFFECTS.some((f) => f.id === effect)) setPlaying({ effect: effect as ScreenEffectId, key: Date.now() });
@@ -181,6 +185,7 @@ export function ChatPage() {
       (r) => {
         if (r.readerId === myIdRef.current) {
           refreshUnread(); // I read them (here or on my other device): the red bubble goes
+          void reloadBellRef.current(); // and the server marked their notifications read
           return;
         }
         // They saw my messages up to there (so received them too): the ticks turn to colour.

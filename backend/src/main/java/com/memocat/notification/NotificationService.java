@@ -7,6 +7,8 @@ import com.memocat.notification.dto.NotificationsDto;
 import com.memocat.repository.NotificationRepository;
 import com.memocat.repository.UserRepository;
 import com.memocat.web.ResourceNotFoundException;
+import com.memocat.chat.ConversationRead;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,9 @@ import java.util.List;
  * also holds what arrived while the app was closed. Written by PushNotifier,
  * which decides what is worth telling; each new entry also goes out live, to
  * that person only (/user/queue/notifications). The same news still unread (same tag, e.g. several
- * messages in a row) replaces the previous entry instead of piling up.
+ * messages in a row) replaces the previous entry instead of piling up. The conversation goes further:
+ * one entry for its messages and one for reactions to them, read or not (the chat itself is the
+ * history), and reading the conversation marks them read.
  */
 @Service
 public class NotificationService {
@@ -31,6 +35,8 @@ public class NotificationService {
     /** Entries sent to the app at once. */
     static final int PAGE = 30;
     private static final int MAX_TEXT = 300;
+    static final String CHAT = "chat";
+    static final String MESSAGE_REACTION = "message-reaction-";
 
     private final NotificationRepository notifications;
     private final UserRepository users;
@@ -44,7 +50,10 @@ public class NotificationService {
 
     @Transactional
     public NotificationDto record(Long recipientId, String text, String excerpt, String url, String tag) {
-        notifications.deleteAll(notifications.findByRecipientIdAndTagAndReadFalse(recipientId, tag));
+        notifications.deleteAll(CHAT.equals(tag) ? notifications.findByRecipientIdAndTag(recipientId, CHAT)
+                : tag != null && tag.startsWith(MESSAGE_REACTION)
+                ? notifications.findByRecipientIdAndTagStartingWith(recipientId, MESSAGE_REACTION)
+                : notifications.findByRecipientIdAndTagAndReadFalse(recipientId, tag));
         Notification saved = notifications.save(new Notification(recipientId, cut(text), cut(excerpt), url, tag));
         List<Long> kept = notifications.idsNewestFirst(recipientId, PageRequest.of(KEEP - 1, 1));
         if (!kept.isEmpty()) {
@@ -77,6 +86,12 @@ public class NotificationService {
     public void markRead(String username, Long id) {
         Long me = requireUser(username).getId();
         notifications.findById(id).filter(n -> n.getRecipientId().equals(me)).ifPresent(Notification::markRead);
+    }
+
+    /** The conversation was read (here or on another device): its entries in the bell are read too. */
+    @EventListener
+    public void onConversationRead(ConversationRead event) {
+        notifications.markConversationRead(event.readerId());
     }
 
     @Transactional

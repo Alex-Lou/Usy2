@@ -92,8 +92,11 @@ public class MessageService {
         User reader = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Instant now = Instant.now();
-        return messageRepository.markReadUpTo(reader.getId(), upToId, now) > 0
-                ? new ChatReadDto(reader.getId(), upToId, now) : null;
+        if (messageRepository.markReadUpTo(reader.getId(), upToId, now) == 0) {
+            return null;
+        }
+        events.publishEvent(new ConversationRead(reader.getId())); // the bell follows, in this transaction
+        return new ChatReadDto(reader.getId(), upToId, now);
     }
 
     /**

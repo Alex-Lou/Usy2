@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { LiveToast } from "../../components/layout/LiveToast";
 import { ImageViewer } from "../../components/photo/ImageViewer";
+import { NotificationsListener } from "../notifications/NotificationsListener";
 import { Avatar } from "../../components/ui/Avatar";
 import { Icon } from "../../components/ui/Icon";
 import type { Asset } from "../../lib/api/assets";
@@ -56,6 +58,17 @@ export function MessagesApp() {
 }
 
 function Conversation() {
+  return (
+    <>
+      {/* Like MemoCat: the server knows this screen is looked at (no push meanwhile), new bell entries come live. */}
+      <NotificationsListener />
+      <LiveToast />
+      <ConversationScreen />
+    </>
+  );
+}
+
+function ConversationScreen() {
   const { user } = useAuth();
   const [params, setParams] = useSearchParams();
   const view = params.get("v");
