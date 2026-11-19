@@ -73,7 +73,6 @@ export function useConversation(myId: number | undefined) {
         setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
       },
       setConnected,
-      undefined,
       (r) => setReactions(r.messageId, r.reactions),
       (r) => {
         if (r.readerId === myIdRef.current) {

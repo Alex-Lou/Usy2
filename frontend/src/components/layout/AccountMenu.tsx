@@ -47,13 +47,13 @@ export function AccountMenu() {
         aria-label="Mon compte"
         className="grid place-items-center rounded-full press ring-offset-2 ring-offset-bg hover:ring-2 hover:ring-primary/50"
       >
-        <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
+        <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} />
       </button>
 
       {open && (
         <div role="menu" className="absolute right-0 mt-2 flex w-72 flex-col gap-1 rounded-token border border-border bg-surface p-2 shadow-card animate-pop">
           <Link to="/profile" role="menuitem" className="flex items-center gap-3 rounded-token-sm p-2 hover:bg-surface-2">
-            <Avatar name={user?.displayName ?? "?"} size={44} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
+            <Avatar name={user?.displayName ?? "?"} size={44} assetId={user?.avatarAssetId} framing={user?.avatarFraming} />
             <span className="min-w-0">
               <span className="block truncate font-semibold">{user?.displayName}</span>
               <span className="block truncate text-xs text-text-muted">Voir mon profil · @{user?.username}</span>

@@ -3,7 +3,6 @@ import { openTab } from "../../lib/refresh";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
-import { CompanionPicker } from "../ui/CompanionPicker";
 import { Icon } from "../ui/Icon";
 import { HomeWidgets } from "../../features/feed/HomeWidgets";
 import { navItems } from "./nav";
@@ -63,7 +62,7 @@ export function MobileMenu() {
             </div>
 
             <div className="flex items-center gap-3 rounded-token border border-border bg-surface-2 p-2">
-              <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
+              <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold">{user?.displayName}</p>
                 <p className="truncate text-xs text-text-muted">@{user?.username}</p>
@@ -91,10 +90,6 @@ export function MobileMenu() {
             <HomeWidgets />
 
             <div className="mt-auto flex flex-col gap-3">
-              <div>
-                <p className="mb-1.5 text-xs font-semibold text-text-muted">Compagnon</p>
-                <CompanionPicker compact />
-              </div>
               <div>
                 <p className="mb-1.5 text-xs font-semibold text-text-muted">Thème</p>
                 <ThemeToggle />

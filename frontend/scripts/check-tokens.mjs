@@ -25,13 +25,6 @@ const ALLOWED = {
   "components/companions/bodies.tsx": "illustration",
   "components/companions/LivingCompanion.tsx": "illustration",
   "components/rich/stickers.tsx": "illustration",
-  "features/pet/accessories.tsx": "illustration",
-  "features/pet/coat.ts": "illustration (pelages)",
-  "features/pet/CatSprite.tsx": "illustration",
-  "features/pet/rig/CatRig.tsx": "illustration",
-  "features/pet/rig/LivingCat.tsx": "illustration",
-  "features/pet/house/Room.tsx": "illustration",
-  "features/pet/house/Garden.tsx": "illustration",
   "features/profile/widgets/scenes.tsx": "illustration",
   "features/naval/Ship.tsx": "illustration",
   "styles/naval.css": "illustration (thèmes de la bataille navale)",
@@ -39,7 +32,6 @@ const ALLOWED = {
 
   // Decorative particles: confetti and screen effects.
   "features/games/Confetti.tsx": "particules",
-  "features/chat/ScreenEffect.tsx": "particules",
   "components/photo/EffectLayer.tsx": "particules",
 
   // Palettes offered to choose from (and painted on a canvas).

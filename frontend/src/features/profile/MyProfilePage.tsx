@@ -211,7 +211,7 @@ export function MyProfilePage() {
           {tab === "identite" && (
             <section className="card p-4">
               <div className="flex items-center gap-4">
-                <Avatar key={draft.avatarAssetId ?? 0} name={user?.displayName ?? "?"} size={64} assetId={draft.avatarAssetId} framing={draft.avatarFraming} species={user?.companion} />
+                <Avatar key={draft.avatarAssetId ?? 0} name={user?.displayName ?? "?"} size={64} assetId={draft.avatarAssetId} framing={draft.avatarFraming} />
                 <div className="flex flex-wrap gap-2">
                   <label className="chip cursor-pointer press hover:border-primary/50">
                     <Icon name="camera" size={14} /> {draft.avatarAssetId ? "Changer la photo" : "Ajouter une photo"}

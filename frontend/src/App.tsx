@@ -18,8 +18,6 @@ const LivePage = lazy(() => import("./features/live/LivePage").then((m) => ({ de
 const NavalPage = lazy(() => import("./features/naval/NavalPage").then((m) => ({ default: m.NavalPage })));
 const SudokuPage = lazy(() => import("./features/games/sudoku/SudokuPage").then((m) => ({ default: m.SudokuPage })));
 const PostPage = lazy(() => import("./features/feed/PostPage").then((m) => ({ default: m.PostPage })));
-const FishingPage = lazy(() => import("./features/pet/games/FishingPage").then((m) => ({ default: m.FishingPage })));
-const PetHousePage = lazy(() => import("./features/pet/house/PetHousePage").then((m) => ({ default: m.PetHousePage })));
 const ProfilePage = lazy(() => import("./features/profile/ProfilePage").then((m) => ({ default: m.ProfilePage })));
 const MyProfilePage = lazy(() => import("./features/profile/MyProfilePage").then((m) => ({ default: m.MyProfilePage })));
 const SharedWidgetsPage = lazy(() => import("./features/couple/SharedWidgetsPage").then((m) => ({ default: m.SharedWidgetsPage })));
@@ -73,8 +71,8 @@ export function App() {
         <Route path="/jeux/nous" element={<NousPage />} />
         <Route path="/jeux/direct" element={<LivePage />} />
         <Route path="/jeux/bataille" element={<NavalPage />} />
-        <Route path="/jeux/chat" element={<PetHousePage />} />
-        <Route path="/jeux/chat/peche" element={<FishingPage />} />
+        {/* Moka's house and the fishing game are gone: old links land on the games. */}
+        <Route path="/jeux/chat/*" element={<Navigate to="/jeux" replace />} />
         {/* My four spaces (see SpaceSwitcher), all under /profile. */}
         <Route path="/profile" element={<MyProfileRedirect />} />
         <Route path="/profile/moi" element={<MyProfilePage />} />
