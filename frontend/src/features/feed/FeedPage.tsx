@@ -75,7 +75,7 @@ export function FeedPage() {
     if (!shared) return;
     handToChat(shared);
     setShared(null);
-    navigate("/chat");
+    navigate("/messages");
   }
 
   const load = useCallback(async (pageNum: number) => {
