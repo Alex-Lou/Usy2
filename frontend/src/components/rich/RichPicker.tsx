@@ -10,7 +10,7 @@ type Tab = "emoji" | PackId;
 const TABS: { id: Tab; label: string; icon: string }[] = [{ id: "emoji", label: "Emojis", icon: "😀" }, ...PACKS];
 
 // Sheet height, published as --picker-h while open so pages keep the text box
-// visible right above it (see AppLayout and ChatPage).
+// visible right above it (see AppLayout).
 const SHEET_H = "calc(min(20rem, 45dvh) + env(safe-area-inset-bottom, 0px))";
 
 const RECENT = "recent";
