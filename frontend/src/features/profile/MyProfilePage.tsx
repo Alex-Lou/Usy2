@@ -91,7 +91,14 @@ export function MyProfilePage() {
   const [selected, setSelected] = useState<number | null>(null);
   const [photo, setPhoto] = useState<"avatar" | "cover" | null>(null); // its actions in the panel
   const [framing, setFraming] = useState<"avatar" | "cover" | null>(null); // the framing editor open
-  const [open, setOpen] = useState(true); // the panel on a phone (folded = only its three choices)
+  const [open, setOpen] = useState(false); // the panel on a phone (folded = only its three choices)
+
+  // On a phone the panel covers the bottom: the block being changed comes up above it.
+  useEffect(() => {
+    if (selected === null || window.matchMedia("(min-width: 1536px)").matches) return;
+    const frame = requestAnimationFrame(() => document.querySelector(`[data-cell="${selected}"]`)?.scrollIntoView({ block: "start", behavior: "smooth" }));
+    return () => cancelAnimationFrame(frame);
+  }, [selected]);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedOnce, setSavedOnce] = useState(false);
@@ -127,7 +134,7 @@ export function MyProfilePage() {
   function choose(next: { selected?: number | null; photo?: "avatar" | "cover" | null }) {
     setSelected(next.selected ?? null);
     setPhoto(next.photo ?? null);
-    setOpen(true);
+    setOpen(next.selected != null || next.photo != null); // « Terminé » folds the panel away again
   }
 
   /** Sends a photo, then puts it where it goes. */
@@ -208,7 +215,7 @@ export function MyProfilePage() {
   const block = selected !== null ? draft.widgets[selected] : undefined;
 
   return (
-    <div className="flex flex-col gap-4 pb-[45dvh] 2xl:pb-0">
+    <div className={"flex flex-col gap-4 2xl:pb-0 " + (open ? "pb-[52dvh]" : "pb-24")}>
       {/* The bar: back to my profile, then cancel / save. */}
       <div className="sticky top-[var(--topbar-h)] z-20 -mx-1 flex items-center gap-2 rounded-token border border-border bg-surface/95 px-2 py-2 shadow-card backdrop-blur lg:top-[calc(var(--desk-topbar-h)+0.75rem)]">
         <Link to={`/profile/${base.userId}`} className="grid h-9 w-9 place-items-center rounded-full text-text-muted press hover:text-text" aria-label="Retour à mon profil">
@@ -271,9 +278,13 @@ export function MyProfilePage() {
         {/* The panel: a sheet at the bottom on a phone, a column on a computer. */}
         <aside
           aria-label="Modifier"
-          className="fixed inset-x-0 lg:left-1/2 lg:right-auto lg:bottom-3 lg:w-[38rem] lg:-translate-x-1/2 lg:rounded-2xl lg:border 2xl:translate-x-0 2xl:w-auto bottom-[var(--tabbar-h)] z-30 max-h-[55dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-surface p-3 shadow-card 2xl:sticky 2xl:inset-auto 2xl:top-[calc(var(--desk-topbar-h)+5rem)] 2xl:max-h-[calc(100dvh-var(--desk-topbar-h)-6rem)] 2xl:rounded-token 2xl:border"
+          className="fixed inset-x-0 lg:left-1/2 lg:right-auto lg:bottom-3 lg:w-[38rem] lg:-translate-x-1/2 lg:rounded-2xl lg:border 2xl:translate-x-0 2xl:w-auto bottom-[var(--tabbar-h)] mc-opaque z-30 max-h-[50dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-surface p-2.5 shadow-card 2xl:sticky 2xl:inset-auto 2xl:top-[calc(var(--desk-topbar-h)+5rem)] 2xl:max-h-[calc(100dvh-var(--desk-topbar-h)-6rem)] 2xl:rounded-token 2xl:border"
         >
-          <button type="button" onClick={() => setOpen((o) => !o)} className="mx-auto mb-2 block h-1.5 w-10 rounded-full bg-border 2xl:hidden" aria-label={open ? "Replier" : "Déplier"} />
+          {open && (
+            <button type="button" onClick={() => setOpen(false)} className="mx-auto -mt-1 mb-1.5 block py-1.5 2xl:hidden" aria-label="Replier">
+              <span className="block h-1.5 w-10 rounded-full bg-border" />
+            </button>
+          )}
 
           {photo ? (
             <PhotoPanel
@@ -299,7 +310,7 @@ export function MyProfilePage() {
             />
           ) : (
             <>
-              <div className="mb-3 flex rounded-token bg-bg-2 p-1" role="tablist" aria-label="Modifier">
+              <div className={"flex rounded-token bg-bg-2 p-1 2xl:mb-3 " + (open ? "mb-3" : "")} role="tablist" aria-label="Modifier">
                 {PANELS.map((p) => (
                   <button
                     key={p.id}
@@ -307,10 +318,14 @@ export function MyProfilePage() {
                     role="tab"
                     aria-selected={panel === p.id}
                     onClick={() => {
+                      // On a phone, the open choice again folds the panel away.
+                      setOpen(!(open && panel === p.id));
                       setPanel(p.id);
-                      setOpen(true);
                     }}
-                    className={"flex-1 rounded-token-sm py-1.5 text-sm font-semibold transition press " + (panel === p.id ? "bg-surface-2 text-text shadow-card" : "text-text-muted hover:text-text")}
+                    className={
+                      "flex-1 rounded-token-sm py-2 text-sm font-semibold transition press " +
+                      (panel === p.id && open ? "bg-surface-2 text-text shadow-card" : panel === p.id ? "text-text 2xl:bg-surface-2 2xl:shadow-card" : "text-text-muted hover:text-text")
+                    }
                   >
                     {p.label}
                   </button>
@@ -320,15 +335,15 @@ export function MyProfilePage() {
               <div className={open ? "" : "hidden 2xl:block"}>
                 {panel === "add" && (
                   <>
-                    <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 2xl:grid-cols-3">
+                    <div className="-mx-2.5 flex gap-2 overflow-x-auto px-2.5 pb-1 2xl:mx-0 2xl:grid 2xl:grid-cols-3 2xl:overflow-visible 2xl:px-0">
                       {BLOCKS.map((b) => (
-                        <button key={b.type} type="button" onClick={() => add(b.type)} className="flex flex-col items-center gap-1 rounded-token bg-surface-2 px-1 py-3 text-xs font-semibold press hover:text-primary">
+                        <button key={b.type} type="button" onClick={() => add(b.type)} className="flex w-[4.5rem] shrink-0 flex-col items-center gap-1 rounded-token bg-surface-2 px-1 py-2.5 text-xs font-semibold press hover:text-primary 2xl:w-auto">
                           <Icon name={b.icon} size={20} className="text-primary" />
                           {b.label}
                         </button>
                       ))}
                     </div>
-                    <p className="mt-3 text-xs text-text-muted">Sur ton profil : la poignée d'un bloc le déplace, son coin l'agrandit, un toucher le modifie.</p>
+                    <p className="mt-2 text-xs text-text-muted">Sur ton profil : la poignée d'un bloc le déplace, son coin l'agrandit, un toucher le modifie.</p>
                   </>
                 )}
 
