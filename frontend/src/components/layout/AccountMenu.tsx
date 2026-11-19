@@ -6,7 +6,7 @@ import { Icon } from "../ui/Icon";
 import { FeelToggle } from "./FeelToggle";
 
 const LINKS: { to: string; label: string; emoji: string }[] = [
-  { to: "/profile/moi", label: "Mon profil", emoji: "🙋" },
+  { to: "/profile/moi", label: "Modifier mon profil", emoji: "✏️" },
   { to: "/profile/nous", label: "Notre profil", emoji: "💑" },
   { to: "/profile/barre", label: "Ma barre latérale", emoji: "🧩" },
 ];

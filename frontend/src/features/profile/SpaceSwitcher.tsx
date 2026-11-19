@@ -1,17 +1,16 @@
 import { NavLink } from "react-router-dom";
+import { Icon, type IconName } from "../../components/ui/Icon";
 import { useAuth } from "../auth/useAuth";
 
 /**
- * My four spaces, always at the same place: see my profile, edit it, our
- * shared space, my side menu. Each has its own page, look and options.
+ * My two spaces: my profile (« Modifier » on it opens the editor) and ours.
+ * My settings and my side menu live in the editor, under « Moi ».
  */
 export function SpaceSwitcher() {
   const { user } = useAuth();
-  const spaces = [
-    { to: user ? `/profile/${user.id}` : "/profile", icon: "👁", label: "Profil", short: "Voir" },
-    { to: "/profile/moi", icon: "✏️", label: "Mon profil", short: "Moi" },
-    { to: "/profile/nous", icon: "💞", label: "Notre profil", short: "Nous" },
-    { to: "/profile/barre", icon: "🧩", label: "Barre latérale", short: "Barre" },
+  const spaces: { to: string; icon: IconName; label: string }[] = [
+    { to: user ? `/profile/${user.id}` : "/profile", icon: "user", label: "Mon profil" },
+    { to: "/profile/nous", icon: "heart", label: "Notre profil" },
   ];
   return (
     <nav aria-label="Mes espaces" className="relative z-10 -mx-1 overflow-x-auto px-1 no-scrollbar">
@@ -26,9 +25,8 @@ export function SpaceSwitcher() {
               (isActive ? "seg-on" : "text-text-muted hover:text-text")
             }
           >
-            <span className="mc-emoji" aria-hidden="true">{s.icon}</span>
-            <span className="sm:hidden">{s.short}</span>
-            <span className="hidden sm:inline">{s.label}</span>
+            <Icon name={s.icon} size={16} />
+            {s.label}
           </NavLink>
         ))}
       </div>

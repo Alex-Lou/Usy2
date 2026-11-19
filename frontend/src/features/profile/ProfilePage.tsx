@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Navigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
+import { Icon } from "../../components/ui/Icon";
 import { Loader } from "../../components/ui/states";
 import { useAuth } from "../auth/useAuth";
 import { getProfile } from "./api";
@@ -8,8 +9,8 @@ import { SpaceSwitcher } from "./SpaceSwitcher";
 import type { Profile } from "./types";
 
 /**
- * 👁 A profile, just to look at: its presentation and frames in its own look,
- * no editing controls. Editing lives in "Mon profil"; our shared space in
+ * 👁 A profile, just to look at: its presentation and its wall of blocks in
+ * its own look. On mine, « Modifier » opens the editor; our shared space is
  * "Notre profil" (see SpaceSwitcher).
  */
 export function ProfilePage() {
@@ -53,6 +54,11 @@ export function ProfilePage() {
         handle={own ? `@${user?.username}` : "@profil"}
         own={own}
         backdrop="page"
+        action={own && (
+          <Link to="/profile/moi" className="flex items-center gap-1.5 rounded-full bg-surface-2 px-4 py-2 text-sm font-semibold press hover:text-primary">
+            <Icon name="sliders" size={16} /> Modifier
+          </Link>
+        )}
       />
     </div>
   );

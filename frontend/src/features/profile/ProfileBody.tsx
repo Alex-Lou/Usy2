@@ -10,16 +10,24 @@ import { Icon } from "../../components/ui/Icon";
 import { useFonts } from "../../lib/fonts";
 import { filled } from "../../lib/framing";
 import { fillOf, pageVars, partFonts, partsOf, skin, widgetStyle } from "./partStyle";
-import { ProfileGrid } from "./ProfileGrid";
-import { WidgetRenderer } from "./widgets/WidgetRenderer";
+import { ProfileGrid, type GridEditing } from "./ProfileGrid";
 import { fontsApply, fontVars } from "./theme";
 import type { PartStyle, Profile, Theme, Widget } from "./types";
 
+/** Editing in place ("Mon profil"): the photos and the bio are touchable, the wall can be arranged. */
+export interface ProfileEditing {
+  grid: GridEditing;
+  bio: string;
+  onBio: (bio: string) => void;
+  onPhoto: (which: "cover" | "avatar") => void;
+}
+
 /**
- * A profile as everyone sees it — the presentation card and the frames, in
- * the profile's own look. `backdrop`: "page" paints the page background behind
- * the whole screen (the profile view); "inline" paints it inside this block
- * (the preview in "Mon profil").
+ * A profile as everyone sees it — the presentation card and the wall of
+ * blocks, in the profile's own look. `backdrop`: "page" paints the page
+ * background behind the whole screen (the profile view); "inline" paints it
+ * inside this block (the editor). With `editing`, the same profile is edited
+ * in place: what you arrange is what is shown.
  */
 export function ProfileBody({
   profile,
@@ -28,6 +36,8 @@ export function ProfileBody({
   handle,
   own,
   backdrop,
+  editing,
+  action,
 }: {
   profile: Profile;
   theme: Theme;
@@ -36,6 +46,9 @@ export function ProfileBody({
   handle: string;
   own: boolean;
   backdrop: "page" | "inline";
+  editing?: ProfileEditing;
+  /** Next to the name (e.g. « Modifier » on my own profile). */
+  action?: ReactNode;
 }) {
   const parts = partsOf(theme);
   const page = parts.page ?? {};
@@ -46,17 +59,13 @@ export function ProfileBody({
   const headerBox = skin(parts.header ?? {}, { box: true, scope: true });
   const headerText = skin(parts.header ?? {}, { text: true });
 
-  // Separate pinned widgets for featured display
-  const pinnedWidgets = widgets.filter(w => w.type === "pins");
-  const otherWidgets = widgets.filter(w => w.type !== "pins");
-
   return (
     <div style={{ ...fontVars(theme), ...pageVars(page) }} className={"relative flex flex-col gap-6 font-sans text-text " + (backdrop === "inline" ? "isolate overflow-hidden rounded-token p-4" : "")}>
       {backdrop === "page" ? <PageBackdrop look={page} /> : <InlineBackdrop look={page} />}
 
       <div className={headerBox.className} style={headerBox.style}>
         <div className="card overflow-hidden bg-bg animate-fade-up">
-          <div className="relative h-56 overflow-hidden sm:h-72" style={{ backgroundImage: "var(--grad)" }}>
+          <div className="relative h-56 overflow-hidden bg-surface-2 sm:h-72">
             {profile.coverAssetId && (
               <ZoomableImage
                 assetId={profile.coverAssetId}
@@ -65,63 +74,75 @@ export function ProfileBody({
                 imgClassName="h-full w-full object-cover"
               />
             )}
+            {editing && (
+              <button type="button" onClick={() => editing.onPhoto("cover")} className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-bg/80 px-3 py-1.5 text-sm font-semibold text-text shadow-card backdrop-blur press">
+                <Icon name="camera" size={16} /> Couverture
+              </button>
+            )}
           </div>
           <div className="px-6 pb-6">
-            <div
-              className="-mt-12 mb-3 inline-block rounded-full ring-4 ring-bg cursor-pointer"
-              onClick={() => profile.avatarAssetId != null && setIsAvatarZoomed(true)}
-            >
-              <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} />
+            <div className="flex items-end justify-between gap-3">
+              {editing ? (
+                <button type="button" onClick={() => editing.onPhoto("avatar")} className="relative -mt-12 mb-3 rounded-full ring-4 ring-bg press" aria-label="Changer ma photo">
+                  <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} />
+                  <span className="absolute bottom-0.5 right-0.5 grid h-8 w-8 place-items-center rounded-full bg-primary text-primary-foreground shadow-card">
+                    <Icon name="camera" size={16} />
+                  </span>
+                </button>
+              ) : (
+                <div
+                  className="-mt-12 mb-3 inline-block cursor-pointer rounded-full ring-4 ring-bg"
+                  onClick={() => profile.avatarAssetId != null && setIsAvatarZoomed(true)}
+                >
+                  <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} />
+                </div>
+              )}
+              {action && <div className="mb-3">{action}</div>}
             </div>
             <div className={headerText.className} style={headerText.style}>
               <div>
-                <h1 className="font-display text-3xl font-bold text-primary">{profile.displayName}</h1>
+                <h1 className="font-display text-3xl font-bold text-text">{profile.displayName}</h1>
                 <p className="text-text-muted">{handle}</p>
-                {profile.bio && <p className="mt-2 max-w-prose text-text">{profile.bio}</p>}
+                {editing ? (
+                  <textarea
+                    value={editing.bio}
+                    maxLength={200}
+                    rows={2}
+                    placeholder="Un mot sur toi…"
+                    aria-label="Bio"
+                    onChange={(e) => editing.onBio(e.target.value)}
+                    className="mt-2 w-full max-w-prose resize-none rounded-token border border-dashed border-border bg-transparent px-3 py-2 text-text outline-none placeholder:text-text-muted focus:border-primary"
+                  />
+                ) : (
+                  profile.bio && <p className="mt-2 max-w-prose text-text">{profile.bio}</p>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Featured pinned widgets */}
-      {pinnedWidgets.length > 0 && (
-        <section className="mb-6">
-          <h2 className="mb-4 text-xl font-bold text-primary">Épinglés</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {pinnedWidgets.map((widget, index) => {
-              const dressed = skin(widgetStyle(parts, widget));
-              return (
-                <div key={`pinned-${index}`} className={dressed.className} style={dressed.style}>
-                  <WidgetRenderer widget={widget} ownerId={profile.userId} />
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
       <section className="flex flex-col gap-3 animate-fade-up">
-        <h2 className="px-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
-          {own ? "Mon petit monde" : `Le monde de ${profile.displayName}`}
-        </h2>
-        {otherWidgets.length === 0 ? (
+        {widgets.length === 0 ? (
           <div className="card flex flex-col items-center gap-3 p-8 text-center">
-            <p className="text-text-muted">{own ? "Ton espace est encore vide." : "Rien ici pour l'instant."}</p>
-            {own && backdrop === "page" && (
+            <p className="text-text-muted">
+              {editing ? "Ton mur est vide : ajoute un premier bloc avec « Ajouter »." : own ? "Ton mur est encore vide." : "Rien ici pour l'instant."}
+            </p>
+            {own && !editing && backdrop === "page" && (
               <Link to="/profile/moi">
                 <Button>
-                  <Icon name="sparkles" size={16} /> Ajouter des widgets
+                  <Icon name="plus" size={16} /> Ajouter des blocs
                 </Button>
               </Link>
             )}
           </div>
         ) : (
           <ProfileGrid
-            widgets={otherWidgets}
+            widgets={widgets}
             ownerId={profile.userId}
             gap={theme.widgetGap}
-            styleOf={(i) => widgetStyle(parts, otherWidgets[i])}
+            editing={editing?.grid}
+            styleOf={(i) => widgetStyle(parts, widgets[i])}
           />
         )}
       </section>
