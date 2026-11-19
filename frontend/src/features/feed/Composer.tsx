@@ -190,7 +190,7 @@ export function Composer({
         }}
       />
       <div className={"flex gap-3 " + (expanded ? "" : "items-center")}>
-        <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
+        <Avatar name={user?.displayName ?? "?"} size={40} assetId={user?.avatarAssetId} framing={user?.avatarFraming} />
         <div className="flex-1">
           <textarea
             ref={textareaRef}

@@ -288,7 +288,7 @@ export function Comments({
         {items.map((c) => (
           <div key={c.id} className={`flex items-start gap-2.5 ${c.parentId != null ? "ml-10" : ""}`}>
             <ProfileLink userId={c.author.id} className="shrink-0 rounded-full">
-              <Avatar name={c.author.displayName} size={c.parentId != null ? 24 : 30} assetId={c.author.avatarAssetId} framing={c.author.avatarFraming} species={c.author.companion} />
+              <Avatar name={c.author.displayName} size={c.parentId != null ? 24 : 30} assetId={c.author.avatarAssetId} framing={c.author.avatarFraming} />
             </ProfileLink>
             <div id={`comment-${c.id}`} className="flex min-w-0 flex-1 flex-col items-start">
             <LongPress onLongPress={(anchor) => setMenu({ comment: c, anchor })}>

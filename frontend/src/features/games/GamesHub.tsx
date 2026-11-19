@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCompanion } from "../../app/companion";
-import { Animal } from "../../components/ui/animals";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { useOnRefresh } from "../../lib/refresh";
 import { getDaily } from "../crossword/api";
@@ -23,20 +21,6 @@ const GAMES: GameCard[] = [
     tagline: "9 thèmes, 450 questions sur un chemin de niveaux… et des défis à se lancer.",
     mode: "Solo · à deux",
     emoji: "🧠",
-  },
-  {
-    to: "/jeux/chat",
-    title: "La maison du chat",
-    tagline: "Nourrissez-le, brossez-le, jouez au laser… et offrez-lui des accessoires.",
-    mode: "À deux · en direct",
-    emoji: "🐱",
-  },
-  {
-    to: "/jeux/chat/peche",
-    title: "La pêche",
-    tagline: "Attrapez un max de poissons pour nourrir le chat… gare aux vieilles bottes.",
-    mode: "Solo · arcade",
-    emoji: "🎣",
   },
   {
     to: "/jeux/direct",
@@ -114,13 +98,12 @@ function usePending(): Record<string, string> {
 }
 
 export function GamesHub() {
-  const { companion } = useCompanion();
   const pending = usePending();
 
   return (
     <div className="mx-auto max-w-2xl lg:max-w-content">
       <div className="mb-4">
-        <PageHeader title="Jeux" subtitle="On joue ensemble ? 💕" leading={<Animal species={companion} size={44} />} />
+        <PageHeader title="Jeux" subtitle="On joue ensemble ? 💕" />
       </div>
 
       <Link

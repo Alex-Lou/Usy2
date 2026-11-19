@@ -9,7 +9,6 @@ const SHORTCUTS: { to: string; label: string; emoji: string }[] = [
   { to: "/carnet", label: "Notre carnet", emoji: "📓" },
   { to: "/defi", label: "Défi photo", emoji: "📸" },
   { to: "/jeux/nous", label: "Nous deux", emoji: "💞" },
-  { to: "/jeux/chat", label: "La maison de Moka", emoji: "🐱" },
   { to: "/jeux/quiz", label: "Quiz", emoji: "🧠" },
   { to: "/jeux/direct", label: "En direct", emoji: "⚡" },
   { to: "/jeux/bataille", label: "Bataille navale", emoji: "🚢" },
@@ -29,7 +28,7 @@ export function Sidebar() {
   return (
     <aside className="fixed bottom-0 left-0 top-desk-bar z-30 hidden w-shell flex-col gap-1 overflow-y-auto overflow-x-hidden border-r border-border glass px-3 py-4 lg:flex">
       <NavLink onClick={openTab} to={user ? `/profile/${user.id}` : "/profile"} className={row}>
-        <Avatar name={user?.displayName ?? "?"} size={36} assetId={user?.avatarAssetId} framing={user?.avatarFraming} species={user?.companion} />
+        <Avatar name={user?.displayName ?? "?"} size={36} assetId={user?.avatarAssetId} framing={user?.avatarFraming} />
         <span className="min-w-0 truncate">{user?.displayName}</span>
       </NavLink>
 

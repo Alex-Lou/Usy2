@@ -1,19 +1,17 @@
 import { Client, type IMessage } from "@stomp/stompjs";
 import { getToken } from "../../lib/api/client";
 import { wsUrl } from "../../lib/api/ws";
-import type { PetActivity } from "../pet/types";
 import type { ChatDelivered, ChatRead, Message, MessageReactions, Typing } from "./types";
 import { NO_LOOK, type MessageLook } from "./looks";
 
 /**
  * Opens a STOMP-over-WebSocket connection authenticated with the JWT (sent in
- * the CONNECT frame), subscribes to /topic/messages (and reactions, the cat,
+ * the CONNECT frame), subscribes to /topic/messages (and reactions,
  * the ✓✓ of received and read messages, "… écrit"), and auto-reconnects.
  */
 export function createChatClient(
   onMessage: (m: Message) => void,
   onStatus: (connected: boolean) => void,
-  onPet?: (a: PetActivity) => void,
   onReactions?: (r: MessageReactions) => void,
   onRead?: (r: ChatRead) => void,
   onTyping?: (t: Typing) => void,
@@ -30,7 +28,6 @@ export function createChatClient(
       client.subscribe("/topic/messages", (frame: IMessage) => {
         onMessage(JSON.parse(frame.body) as Message);
       });
-      if (onPet) client.subscribe("/topic/pet", (frame: IMessage) => onPet(JSON.parse(frame.body) as PetActivity));
       if (onReactions) {
         client.subscribe("/topic/message-reactions", (frame: IMessage) => onReactions(JSON.parse(frame.body) as MessageReactions));
       }

@@ -18,7 +18,7 @@ export function InfoView({ partner, onBack, onSearch }: { partner: Profile | nul
         <h1 className="text-[15px] font-bold">Infos</h1>
       </header>
       <div className="flex min-h-0 flex-1 flex-col items-center gap-1 overflow-y-auto px-4 pt-8">
-        {partner && <Avatar name={partner.displayName} size={96} assetId={partner.avatarAssetId} framing={partner.avatarFraming} species={partner.companion} />}
+        {partner && <Avatar name={partner.displayName} size={96} assetId={partner.avatarAssetId} framing={partner.avatarFraming} />}
         <h2 className="mt-3 text-[22px] font-bold tracking-tight">{name}</h2>
         <div className="mt-6 grid w-full max-w-sm grid-cols-3 gap-2.5">
           {partner && <Action to={`/profile/${partner.userId}`} icon="user" label="Son profil" />}

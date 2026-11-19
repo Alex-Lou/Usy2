@@ -165,7 +165,7 @@ function ConversationScreen() {
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-3 py-2">
         <button type="button" onClick={() => setParams({ v: "info" })} className="flex min-w-0 flex-1 items-center gap-3 text-left press" aria-label={`Infos sur ${partnerName}`}>
           {partner ? (
-            <Avatar name={partner.displayName} size={40} assetId={partner.avatarAssetId} framing={partner.avatarFraming} species={partner.companion} />
+            <Avatar name={partner.displayName} size={40} assetId={partner.avatarAssetId} framing={partner.avatarFraming} />
           ) : (
             <span className="h-10 w-10 rounded-full bg-surface" aria-hidden="true" />
           )}

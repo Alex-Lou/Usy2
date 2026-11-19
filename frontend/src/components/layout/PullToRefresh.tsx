@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { feel } from "../../lib/feel";
-import { Animal } from "../ui/animals";
+import { Icon } from "../ui/Icon";
 
 const TRIGGER = 70; // px of pull (after damping) that reloads
 const MAX = 110;
@@ -80,7 +80,7 @@ export function PullToRefresh() {
         style={{ transform: reloading ? undefined : `rotate(${pull * 3}deg)`, opacity: Math.min(1, pull / 40 + (reloading ? 1 : 0)) }}
       >
         <span className={reloading ? "grid animate-spin place-items-center" : "grid place-items-center"}>
-          <Animal species="cat" size={30} still />
+          <Icon name="refresh" size={20} />
         </span>
       </span>
       <span className="sr-only">{reloading ? "Actualisation…" : ready ? "Relâche pour actualiser" : "Tire pour actualiser"}</span>

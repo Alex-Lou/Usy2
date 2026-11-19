@@ -1,11 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { SPECIES, type Species } from "../../app/companion";
 import { AssetImage } from "../../components/AssetImage";
 import { ImageViewer } from "../../components/photo/ImageViewer";
 import { ZoomableImage } from "../../components/photo/ZoomableImage";
-import { Animal } from "../../components/ui/animals";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
@@ -44,8 +42,6 @@ export function ProfileBody({
   const fontsOn = fontsApply(theme);
   useFonts(fontsOn ? theme.font : null, fontsOn ? theme.headingFont : null, ...partFonts(parts, widgets));
 
-  const companion: Species =
-    profile.companion && (SPECIES as readonly string[]).includes(profile.companion) ? (profile.companion as Species) : "cat";
   const [isAvatarZoomed, setIsAvatarZoomed] = useState(false);
   const headerBox = skin(parts.header ?? {}, { box: true, scope: true });
   const headerText = skin(parts.header ?? {}, { text: true });
@@ -75,7 +71,7 @@ export function ProfileBody({
               className="-mt-12 mb-3 inline-block rounded-full ring-4 ring-bg cursor-pointer"
               onClick={() => profile.avatarAssetId != null && setIsAvatarZoomed(true)}
             >
-              <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} species={profile.companion} />
+              <Avatar name={profile.displayName} size={96} assetId={profile.avatarAssetId} framing={profile.avatarFraming} />
             </div>
             <div className={headerText.className} style={headerText.style}>
               <div>
@@ -111,7 +107,6 @@ export function ProfileBody({
         </h2>
         {otherWidgets.length === 0 ? (
           <div className="card flex flex-col items-center gap-3 p-8 text-center">
-            <Animal species={companion} size={64} />
             <p className="text-text-muted">{own ? "Ton espace est encore vide." : "Rien ici pour l'instant."}</p>
             {own && backdrop === "page" && (
               <Link to="/profile/moi">
@@ -134,7 +129,6 @@ export function ProfileBody({
       {isAvatarZoomed && profile.avatarAssetId != null && (
         <ImageViewer
           asset={{ id: profile.avatarAssetId, originalFilename: `memocat-${profile.avatarAssetId}.jpg` }}
-          badge={<Animal species={companion} size={64} />}
           onClose={() => setIsAvatarZoomed(false)}
         />
       )}

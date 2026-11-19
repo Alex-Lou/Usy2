@@ -4,7 +4,6 @@ import { daysBetween, nextOccurrence, today } from "../../features/couple/dates"
 import { useDates } from "../../features/couple/useDates";
 import { CoupleStrip } from "../../features/feed/CoupleStrip";
 import { HomeWidgets } from "../../features/feed/HomeWidgets";
-import { CompanionPicker } from "../ui/CompanionPicker";
 
 /**
  * 🖥️ The desktop right rail: on the home page our « Nous » block (moods,
@@ -23,7 +22,7 @@ export function RightRail({ open, onClose }: { open: boolean; onClose: () => voi
 
   return (
     <aside
-      aria-label="Nos widgets et le compagnon"
+      aria-label="Nos widgets"
       className={
         "fixed bottom-0 right-0 top-desk-bar z-30 w-shell-right flex-col gap-5 overflow-y-auto overflow-x-hidden border-l border-border glass px-4 py-5 "
         + (open ? "hidden shadow-card lg:flex" : "hidden xl:flex")
@@ -32,10 +31,6 @@ export function RightRail({ open, onClose }: { open: boolean; onClose: () => voi
       {pathname === "/" && <div className="hidden xl:block"><CoupleStrip /></div>}
       <NextDates />
       <HomeWidgets />
-      <section aria-label="Notre compagnon" className="flex flex-col gap-1.5">
-        <p className="text-xs font-semibold text-text-muted">Notre compagnon</p>
-        <CompanionPicker compact />
-      </section>
     </aside>
   );
 }
