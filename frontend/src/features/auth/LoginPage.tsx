@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Icon } from "../../components/ui/Icon";
 import { Input } from "../../components/ui/Input";
-import { ThemeToggle } from "../../components/layout/ThemeToggle";
 import { ApiError } from "../../lib/api/client";
 import { useAuth } from "./useAuth";
 
@@ -39,10 +38,6 @@ export function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-4">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full opacity-40 blur-3xl" style={{ background: "var(--grad)" }} />
-      </div>
-
       <div className="w-full max-w-sm animate-fade-up">
         <div className="mb-6 flex flex-col items-center gap-3 text-center">
           <span className="grid h-16 w-16 place-items-center rounded-token btn-brand animate-pop">
@@ -88,10 +83,6 @@ export function LoginPage() {
             {submitting ? "Connexion…" : "Entrer"}
           </Button>
         </form>
-
-        <div className="mt-6 flex justify-center">
-          <ThemeToggle />
-        </div>
 
       </div>
     </div>

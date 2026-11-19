@@ -19,19 +19,8 @@ import { SearchView } from "./SearchView";
 import { Thread } from "./Thread";
 import { useConversation } from "./useConversation";
 
-const FONT_HREF = "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap";
 const SEEK_PAGES = 10; // how far back a search result or a link may send us (10 × 30 messages)
 
-/** Messages' own font, loaded once, the first time it opens. */
-function useManrope() {
-  useEffect(() => {
-    if (document.querySelector(`link[href="${FONT_HREF}"]`)) return;
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = FONT_HREF;
-    document.head.appendChild(link);
-  }, []);
-}
 
 /** While Messages is on screen, the whole page wears its look (see messages.css). */
 function useMessagesLook() {
@@ -49,7 +38,6 @@ function useMessagesLook() {
  * browser as in the Android app.
  */
 export function MessagesApp() {
-  useManrope();
   useMessagesLook();
   const { user, loading } = useAuth();
   if (loading) return <div className="msg-app" />;

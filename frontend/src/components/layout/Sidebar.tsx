@@ -2,21 +2,22 @@ import { NavLink } from "react-router-dom";
 import { openTab } from "../../lib/refresh";
 import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
+import { Icon, type IconName } from "../ui/Icon";
 
 /** Places one click away, below my profile (the main sections are in the top bar). */
-const SHORTCUTS: { to: string; label: string; emoji: string }[] = [
-  { to: "/profile/nous", label: "Notre profil", emoji: "💑" },
-  { to: "/carnet", label: "Notre carnet", emoji: "📓" },
-  { to: "/defi", label: "Défi photo", emoji: "📸" },
-  { to: "/jeux/nous", label: "Nous deux", emoji: "💞" },
-  { to: "/jeux/quiz", label: "Quiz", emoji: "🧠" },
-  { to: "/jeux/direct", label: "En direct", emoji: "⚡" },
-  { to: "/jeux/bataille", label: "Bataille navale", emoji: "🚢" },
+const SHORTCUTS: { to: string; label: string; icon: IconName }[] = [
+  { to: "/profile/nous", label: "Notre profil", icon: "user" },
+  { to: "/carnet", label: "Notre carnet", icon: "file" },
+  { to: "/defi", label: "Défi photo", icon: "camera" },
+  { to: "/jeux/nous", label: "Nous deux", icon: "heart" },
+  { to: "/jeux/quiz", label: "Quiz", icon: "trophy" },
+  { to: "/jeux/direct", label: "En direct", icon: "sparkles" },
+  { to: "/jeux/bataille", label: "Bataille navale", icon: "gamepad" },
 ];
 
 const row = ({ isActive }: { isActive: boolean }) =>
   "flex items-center gap-3 rounded-token px-2.5 py-2 text-sm font-semibold transition press "
-  + (isActive ? "bg-surface-2 text-text shadow-glow" : "text-text-muted hover:bg-surface-2/60 hover:text-text");
+  + (isActive ? "bg-surface-2 text-text" : "text-text-muted hover:bg-surface-2/60 hover:text-text");
 
 /**
  * 🖥️ The desktop left rail (lg and up), below the top bar: my profile, then
@@ -36,7 +37,9 @@ export function Sidebar() {
       <nav className="flex flex-col gap-0.5" aria-label="Raccourcis">
         {SHORTCUTS.map((s) => (
           <NavLink onClick={openTab} key={s.to} to={s.to} className={row}>
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-token-sm bg-bg-2/60 text-lg" aria-hidden="true">{s.emoji}</span>
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-token-sm bg-surface-2 text-primary" aria-hidden="true">
+              <Icon name={s.icon} size={18} />
+            </span>
             <span className="truncate">{s.label}</span>
           </NavLink>
         ))}

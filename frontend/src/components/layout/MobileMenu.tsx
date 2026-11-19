@@ -7,7 +7,6 @@ import { Icon } from "../ui/Icon";
 import { HomeWidgets } from "../../features/feed/HomeWidgets";
 import { navItems } from "./nav";
 import { FeelToggle } from "./FeelToggle";
-import { ThemeToggle } from "./ThemeToggle";
 
 /**
  * Mobile-only slide-in menu (burger). Gives phones access to everything the
@@ -90,10 +89,6 @@ export function MobileMenu() {
             <HomeWidgets />
 
             <div className="mt-auto flex flex-col gap-3">
-              <div>
-                <p className="mb-1.5 text-xs font-semibold text-text-muted">Thème</p>
-                <ThemeToggle />
-              </div>
               <div>
                 <p className="mb-1.5 text-xs font-semibold text-text-muted">Sons et vibrations</p>
                 <FeelToggle />

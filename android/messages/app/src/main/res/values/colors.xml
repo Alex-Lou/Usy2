@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The same graphite & amber as the web app (frontend/src/styles/tokens.css, the msg zone). -->
+<!-- The same slate & turquoise as the web app (frontend/src/styles/tokens.css). -->
 <resources>
-    <color name="graphite">#111214</color>
-    <color name="amber">#D6A46C</color>
-    <color name="umber">#1A140E</color>
+    <color name="graphite">#101418</color>
+    <color name="amber">#3FB6C4</color>
+    <color name="umber">#06181B</color>
 </resources>

@@ -9,7 +9,6 @@ import { LiveToast } from "./LiveToast";
 import { LoveBurst } from "./LoveBurst";
 import { MobileMenu } from "./MobileMenu";
 import { NotificationBell } from "./NotificationBell";
-import { ColorModeSync } from "./ColorModeSync";
 import { DesktopTopBar } from "./DesktopTopBar";
 import { RightRail } from "./RightRail";
 import { SearchButton } from "./SearchButton";
@@ -46,7 +45,6 @@ export function AppLayout() {
   return (
     <div className="relative min-h-dvh">
       <SharedLook />
-      <ColorModeSync />
 
       <DesktopTopBar railOpen={railOpen} onRail={() => setRailOpen((o) => !o)} />
       <Sidebar />

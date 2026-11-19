@@ -4,7 +4,6 @@ import { useAuth } from "../../features/auth/useAuth";
 import { Avatar } from "../ui/Avatar";
 import { Icon } from "../ui/Icon";
 import { FeelToggle } from "./FeelToggle";
-import { ThemeToggle } from "./ThemeToggle";
 
 const LINKS: { to: string; label: string; emoji: string }[] = [
   { to: "/profile/moi", label: "Mon profil", emoji: "🙋" },
@@ -67,10 +66,6 @@ export function AccountMenu() {
             </Link>
           ))}
           <hr className="my-1 border-border" />
-          <div className="px-2 py-1">
-            <p className="mb-1.5 text-xs font-semibold text-text-muted">Thème de l'appli</p>
-            <ThemeToggle />
-          </div>
           <div className="px-2 py-1">
             <p className="mb-1.5 text-xs font-semibold text-text-muted">Sons et vibrations</p>
             <FeelToggle />
