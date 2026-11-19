@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import { LoginPage } from "./features/auth/LoginPage";
 import { FeedPage } from "./features/feed/FeedPage";
@@ -9,7 +9,6 @@ import { ProtectedRoute } from "./routes/ProtectedRoute";
 // Pages other than the feed load on first visit, so the app opens with less code to fetch and run.
 const AlbumsPage = lazy(() => import("./features/albums/AlbumsPage").then((m) => ({ default: m.AlbumsPage })));
 const AlbumPage = lazy(() => import("./features/albums/AlbumPage").then((m) => ({ default: m.AlbumPage })));
-const ChatPage = lazy(() => import("./features/chat/ChatPage").then((m) => ({ default: m.ChatPage })));
 const GamesHub = lazy(() => import("./features/games/GamesHub").then((m) => ({ default: m.GamesHub })));
 const MorpionPage = lazy(() => import("./features/games/MorpionPage").then((m) => ({ default: m.MorpionPage })));
 const SnakePage = lazy(() => import("./features/games/SnakePage").then((m) => ({ default: m.SnakePage })));
@@ -32,6 +31,11 @@ const PetitBacPage = lazy(() => import("./features/petitbac/PetitBacPage").then(
 const DatesPage = lazy(() => import("./features/couple/DatesPage").then((m) => ({ default: m.DatesPage })));
 const MessagesApp = lazy(() => import("./features/messages/MessagesApp").then((m) => ({ default: m.MessagesApp })));
 const SearchPage = lazy(() => import("./features/search/SearchPage").then((m) => ({ default: m.SearchPage })));
+
+function ToMessages() {
+  const { search } = useLocation();
+  return <Navigate to={`/messages${search}`} replace />;
+}
 
 export function App() {
   return (
@@ -57,7 +61,8 @@ export function App() {
         <Route path="/posts/:id" element={<PostPage />} />
         <Route path="/albums" element={<AlbumsPage />} />
         <Route path="/albums/:id" element={<AlbumPage />} />
-        <Route path="/chat" element={<ChatPage />} />
+        {/* The old chat: Messages replaces it (old links and notifications, ?m=42 kept). */}
+        <Route path="/chat" element={<ToMessages />} />
         <Route path="/jeux" element={<GamesHub />} />
         <Route path="/jeux/morpion" element={<MorpionPage />} />
         <Route path="/jeux/snake" element={<SnakePage />} />

@@ -37,7 +37,7 @@ export function BottomTabBar() {
                   }
                 >
                   <Icon name={it.icon} size={21} />
-                  {it.to === "/chat" && <CountBubble count={unread} label={`${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}`} />}
+                  {it.to === "/messages" && <CountBubble count={unread} label={`${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}`} />}
                 </span>
               </>
             )}

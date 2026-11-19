@@ -4,6 +4,7 @@ import { isSendKey, useAutoGrow } from "../../components/rich/useRichInput";
 import { Icon } from "../../components/ui/Icon";
 import { uploadAudio, type Asset } from "../../lib/api/assets";
 import { checkFile, DOCUMENT_ACCEPT, uploadAttachment } from "../chat/attachments";
+import { takeForChat } from "../feed/sharedContent";
 import { quoteText } from "../chat/Quote";
 import type { Message } from "../chat/types";
 import { canRecordVoice, formatDuration, MAX_VOICE_SECONDS, useVoiceRecorder } from "../chat/useVoiceRecorder";
@@ -54,6 +55,14 @@ export function Composer({ connected, partnerName, myId, replyTo, editing, onSen
   useEffect(() => () => {
     if (pending?.preview) URL.revokeObjectURL(pending.preview);
   }, [pending]);
+
+  // Content shared from another app, sent here from the feed's "post or message?" choice (once, on arrival).
+  useEffect(() => {
+    const shared = takeForChat();
+    if (!shared) return;
+    if (shared.text) setText(shared.text);
+    if (shared.file) pick(shared.file);
+  }, []);
 
   const voice = useVoiceRecorder((recording) => void run(async () => onSend("", await uploadAudio(recording)), "Envoi du vocal impossible, réessaie."));
 

@@ -47,7 +47,7 @@ export function DesktopTopBar({ railOpen, onRail }: { railOpen: boolean; onRail:
                 <span className={"grid h-11 w-full place-items-center rounded-token-sm " + (isActive ? "" : "group-hover:bg-surface-2/70")}>
                   <span className="relative">
                     <Icon name={it.icon} size={22} />
-                    {it.to === "/chat" && <CountBubble count={unread} label={`${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}`} />}
+                    {it.to === "/messages" && <CountBubble count={unread} label={`${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}`} />}
                   </span>
                 </span>
                 <span className={"absolute inset-x-2 bottom-0 h-[3px] rounded-t-full " + (isActive ? "bg-primary" : "bg-transparent")} aria-hidden="true" />
