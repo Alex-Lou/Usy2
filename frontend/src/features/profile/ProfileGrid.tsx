@@ -187,7 +187,7 @@ function Cell({
       ref={cellRef}
       data-cell={index}
       className={
-        "relative flex min-w-0 flex-col " +
+        "relative flex min-w-0 scroll-mt-32 flex-col " +
         (editing ? "cursor-pointer rounded-token outline outline-2 outline-offset-2 " + (selected ? "outline-primary" : target ? "outline-primary/70" : "outline-border") : "") +
         (moving?.from === index ? " opacity-50" : "")
       }
