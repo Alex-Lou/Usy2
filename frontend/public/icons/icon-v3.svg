@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- MemoCat: the cat's silhouette, off-white on a deep blue-green with a soft diagonal light. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2b5f68"/>
+      <stop offset="0.55" stop-color="#163a41"/>
+      <stop offset="1" stop-color="#0b1f23"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <g fill="#e6ebef" stroke="#e6ebef" transform="translate(256 256) scale(0.78) translate(-256 -268)">
+    <path d="M136 372C116 322 116 262 140 217L152 108L222 167C245 160 267 160 290 167L360 108L372 217C396 262 396 322 376 372C350 412 300 428 256 428C212 428 162 412 136 372Z" stroke-linejoin="round" stroke-width="22"/>
+  </g>
+</svg>
