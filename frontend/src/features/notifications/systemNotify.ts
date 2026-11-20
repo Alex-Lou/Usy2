@@ -36,3 +36,22 @@ export async function showSystemNotification(body: string, url = "/"): Promise<v
     /* best-effort */
   }
 }
+
+/** Tags of the conversation's banners (same as the server's: see NotificationService). */
+const isConversationTag = (tag: string) => tag === "chat" || tag.startsWith("message-reaction-");
+
+/**
+ * The conversation is on screen (or read): its banners still in the phone's
+ * notification shade have nothing left to say, so they go. Only those: the
+ * others (posts, dates…) stay until opened.
+ */
+export async function clearConversationNotifications(): Promise<void> {
+  if (!systemNotificationsSupported()) return;
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    const shown = (await reg?.getNotifications()) ?? [];
+    shown.filter((n) => isConversationTag(n.tag)).forEach((n) => n.close());
+  } catch {
+    /* best-effort */
+  }
+}

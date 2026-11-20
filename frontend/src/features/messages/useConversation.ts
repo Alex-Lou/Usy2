@@ -7,6 +7,7 @@ import { editMessage, getHistory, reactToMessage } from "../chat/api";
 import { createChatClient, sendMessage, sendRead, sendTyping } from "../chat/chatClient";
 import type { Message, MessageReaction } from "../chat/types";
 import { refreshUnread } from "../chat/unread";
+import { clearConversationNotifications } from "../notifications/systemNotify";
 
 const PAGE = 30;
 
@@ -78,6 +79,7 @@ export function useConversation(myId: number | undefined) {
         if (r.readerId === myIdRef.current) {
           refreshUnread();
           void reloadBell.current(); // the server marked the conversation's notifications read
+          void clearConversationNotifications(); // and the phone's shade lets them go too
           return;
         }
         setMessages((prev) =>
@@ -112,6 +114,14 @@ export function useConversation(myId: number | undefined) {
     }
     loadLatest();
   }, [connected, loadLatest]);
+
+  // On screen, the conversation's banners in the phone's shade are already seen.
+  useEffect(() => {
+    const clear = () => document.visibilityState === "visible" && void clearConversationNotifications();
+    clear();
+    document.addEventListener("visibilitychange", clear);
+    return () => document.removeEventListener("visibilitychange", clear);
+  }, []);
 
   // On screen, their newest message counts as seen: their ticks turn to colour.
   const lastReadSent = useRef(0);
