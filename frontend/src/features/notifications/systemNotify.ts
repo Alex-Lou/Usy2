@@ -29,7 +29,7 @@ export async function showSystemNotification(body: string, url = "/"): Promise<v
   if (pushActive()) return; // this device gets the server's push instead
   try {
     const reg = await navigator.serviceWorker.getRegistration();
-    const options: NotificationOptions = { body, icon: "/icons/icon-192-v3.png", badge: "/icons/badge-96-v3.png", data: { url } };
+    const options: NotificationOptions = { body, icon: "/icons/icon-192-v4.png", badge: "/icons/badge-96-v4.png", data: { url } };
     if (reg) await reg.showNotification("MemoCat", options);
     else new Notification("MemoCat", options);
   } catch {
