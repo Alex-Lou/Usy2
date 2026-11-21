@@ -36,12 +36,13 @@ export function pushActive(): boolean {
 /**
  * Keeps the server in sync with this device's subscription (idempotent). Called
  * after the permission prompt and on every app start. Best-effort, never throws.
+ * @return true when this device is registered with the server
  */
-export async function ensurePushSubscription(): Promise<void> {
-  if (!pushSupported() || Notification.permission !== "granted") return;
+export async function ensurePushSubscription(): Promise<boolean> {
+  if (!pushSupported() || Notification.permission !== "granted") return false;
   try {
     const reg = await navigator.serviceWorker.getRegistration();
-    if (!reg) return; // no service worker (dev build)
+    if (!reg) return false; // no service worker (dev build)
     const { publicKey } = await apiRequest<{ publicKey: string }>("/api/push/public-key");
     const serverKey = base64UrlToBytes(publicKey);
 
@@ -53,8 +54,9 @@ export async function ensurePushSubscription(): Promise<void> {
     sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: serverKey });
     await apiRequest("/api/push/subscriptions", { method: "POST", body: sub.toJSON() });
     active = true;
+    return true;
   } catch {
-    /* retried on next app start */
+    return false; // retried on next app start
   }
 }
 
