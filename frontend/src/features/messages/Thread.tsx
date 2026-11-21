@@ -8,6 +8,8 @@ import { AttachmentView } from "../chat/AttachmentView";
 import { isImage } from "../chat/attachments";
 import { LongPress, ReactionBar, ReactionPills } from "../chat/MessageReactions";
 import { quoteText } from "../chat/Quote";
+import { EmojiSheet } from "./EmojiSheet";
+import { FIXED_REACTIONS, readReactionRecents, rememberReaction } from "./reactionEmojis";
 import type { Message } from "../chat/types";
 
 const RUN_GAP_MS = 5 * 60_000;
@@ -50,18 +52,23 @@ function Ticks({ m }: { m: Message }) {
  * A long press opens the reactions and the actions; a swipe answers. The
  * bubble styles and screen effects sent from MemoCat show as plain messages.
  */
-export function Thread({ messages, myId, partnerName, emojis, onOpenImage, onReact, onReply, onEdit }: {
+export function Thread({ messages, myId, partnerName, onOpenImage, onReact, onReply, onEdit }: {
   messages: Message[];
   myId: number | undefined;
   partnerName: string;
-  emojis: string[];
   onOpenImage: (a: Asset) => void;
   onReact: (messageId: number, emoji: string | null) => void;
   onReply: (m: Message) => void;
   onEdit: (m: Message) => void;
 }) {
   const [menu, setMenu] = useState<{ message: Message; anchor: DOMRect } | null>(null);
+  const [more, setMore] = useState<Message | null>(null); // every emoji, for this message
   const myReaction = (m: Message) => m.reactions.find((r) => r.userId === myId)?.emoji ?? null;
+  const react = (m: Message, emoji: string) => {
+    const again = myReaction(m) === emoji; // the same one again takes it back
+    if (!again) rememberReaction(emoji);
+    onReact(m.id, again ? null : emoji);
+  };
 
   return (
     <div className="flex flex-col">
@@ -135,16 +142,30 @@ export function Thread({ messages, myId, partnerName, emojis, onOpenImage, onRea
         <ReactionBar
           anchor={menu.anchor}
           mine={menu.message.sender.id === myId}
-          emojis={emojis}
+          emojis={[...FIXED_REACTIONS]}
+          recents={readReactionRecents()}
+          onMore={() => {
+            setMore(menu.message);
+            setMenu(null);
+          }}
           current={myReaction(menu.message)}
           copyText={menu.message.content.trim() ? menu.message.content : null}
           onReply={() => onReply(menu.message)}
           onEdit={menu.message.sender.id === myId && menu.message.content.trim() ? () => onEdit(menu.message) : undefined}
           onPick={(emoji) => {
-            onReact(menu.message.id, myReaction(menu.message) === emoji ? null : emoji);
+            react(menu.message, emoji);
             setMenu(null);
           }}
           onClose={() => setMenu(null)}
+        />
+      )}
+      {more && (
+        <EmojiSheet
+          onPick={(emoji) => {
+            react(more, emoji);
+            setMore(null);
+          }}
+          onClose={() => setMore(null)}
         />
       )}
     </div>

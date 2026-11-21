@@ -5,7 +5,6 @@ import com.memocat.domain.Message;
 import com.memocat.domain.MessageReaction;
 import com.memocat.domain.User;
 import com.memocat.feed.ReactionAdded;
-import com.memocat.feed.ReactionEmojis;
 import com.memocat.repository.MessageReactionRepository;
 import com.memocat.repository.MessageRepository;
 import com.memocat.repository.UserRepository;
@@ -45,7 +44,7 @@ public class MessageReactionService {
         Message message = messages.findById(messageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Message not found"));
         String wanted = emoji == null || emoji.isBlank() ? null : emoji;
-        if (wanted != null && !ReactionEmojis.ALLOWED.contains(wanted)) {
+        if (wanted != null && !MessageEmoji.isValid(wanted)) {
             throw new ContentValidationException("Réaction non autorisée");
         }
 

@@ -9,7 +9,6 @@ import type { Asset } from "../../lib/api/assets";
 import { flashElement } from "../../lib/flash";
 import { useAuth } from "../auth/useAuth";
 import type { Message } from "../chat/types";
-import { getReactionEmojis } from "../feed/api";
 import { getAllProfiles } from "../profile/api";
 import type { Profile } from "../profile/types";
 import { Composer } from "./Composer";
@@ -64,7 +63,6 @@ function ConversationScreen() {
   const target = Number(params.get("m")) || null;
   const chat = useConversation(user?.id);
   const [partner, setPartner] = useState<Profile | null>(null);
-  const [emojis, setEmojis] = useState<string[]>([]);
   const [viewing, setViewing] = useState<Asset | null>(null);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [editing, setEditing] = useState<Message | null>(null);
@@ -75,7 +73,6 @@ function ConversationScreen() {
 
   useEffect(() => {
     getAllProfiles().then((all) => setPartner(all.find((p) => p.userId !== user?.id) ?? null)).catch(() => {});
-    getReactionEmojis().then(setEmojis).catch(() => {});
   }, [user?.id]);
 
   // Pinned to the newest message while photos load and the keyboard opens, unless scrolled up.
@@ -195,7 +192,6 @@ function ConversationScreen() {
             messages={chat.messages}
             myId={user?.id}
             partnerName={partnerName}
-            emojis={emojis}
             onOpenImage={setViewing}
             onReact={chat.react}
             onReply={(m) => {
