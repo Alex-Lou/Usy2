@@ -10,6 +10,16 @@ import { refreshUnread } from "../chat/unread";
 import { clearConversationNotifications } from "../notifications/systemNotify";
 
 const PAGE = 30;
+const STALE_AFTER_MS = 20_000; // back after longer than this: the old socket may be dead without knowing it
+const SLOW_AFTER_MS = 2500; // « Connexion… » only shows when it takes longer than this
+
+/** A message written while the connection was not there yet: it leaves as soon as it is. */
+export interface Outgoing {
+  key: number;
+  text: string;
+  attachment: Asset | null;
+  replyToId: number | null;
+}
 
 /** Adds messages not seen yet, keeping chronological (id) order. */
 function mergeById(prev: Message[], fresh: Message[]): Message[] {
@@ -30,6 +40,9 @@ export function useConversation(myId: number | undefined) {
   const [page, setPage] = useState(0);
   const [hasOlder, setHasOlder] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [slow, setSlow] = useState(false);
+  const [outbox, setOutbox] = useState<Outgoing[]>([]);
+  const outboxKey = useRef(0);
   const clientRef = useRef<Client | null>(null);
   const myIdRef = useRef(myId);
   myIdRef.current = myId;
@@ -105,6 +118,56 @@ export function useConversation(myId: number | undefined) {
     };
   }, [replace, setReactions]);
 
+  // Back on the app, or the network back: connect again now, not at the next try.
+  // After a long while away, the socket may look open but be dead: a fresh one.
+  useEffect(() => {
+    let hiddenAt: number | null = null;
+    const reconnect = () => {
+      const client = clientRef.current;
+      if (client) void client.deactivate().then(() => client.activate());
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        hiddenAt = Date.now();
+        return;
+      }
+      const away = hiddenAt === null ? 0 : Date.now() - hiddenAt;
+      hiddenAt = null;
+      if (!clientRef.current?.connected || away > STALE_AFTER_MS) reconnect();
+    };
+    const onOnline = () => {
+      if (!clientRef.current?.connected) reconnect();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("online", onOnline);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("online", onOnline);
+    };
+  }, []);
+
+  // « Connexion… » only when it really takes a while (no flash on every opening).
+  useEffect(() => {
+    if (connected) {
+      setSlow(false);
+      return;
+    }
+    const t = window.setTimeout(() => setSlow(true), SLOW_AFTER_MS);
+    return () => window.clearTimeout(t);
+  }, [connected]);
+
+  // Connected: what was written meanwhile leaves, in order.
+  useEffect(() => {
+    const client = clientRef.current;
+    if (!connected || !client || outbox.length === 0) return;
+    try {
+      outbox.forEach((o) => sendMessage(client, o.text, o.attachment?.id ?? null, o.replyToId));
+      setOutbox([]);
+    } catch {
+      /* the socket fell again: they stay and leave at the next connection */
+    }
+  }, [connected, outbox]);
+
   // Back online after a while (the phone slept): catch up on what was missed.
   useEffect(() => {
     if (!connected) return;
@@ -151,9 +214,16 @@ export function useConversation(myId: number | undefined) {
 
   const send = useCallback((text: string, attachment: Asset | null, replyToId: number | null) => {
     const client = clientRef.current;
-    if (!client) return;
     feel.tap();
-    sendMessage(client, text, attachment?.id ?? null, replyToId);
+    if (client?.connected) {
+      try {
+        sendMessage(client, text, attachment?.id ?? null, replyToId);
+        return;
+      } catch {
+        /* closed in between: it waits below */
+      }
+    }
+    setOutbox((list) => [...list, { key: ++outboxKey.current, text, attachment, replyToId }]);
   }, []);
 
   // Optimistic: my emoji shows at once, and goes back if the server refuses.
@@ -189,5 +259,5 @@ export function useConversation(myId: number | undefined) {
     sendTyping(client);
   }, []);
 
-  return { messages, loaded, failed, connected, hasOlder, typing, loadLatest, loadOlder, send, react, edit, notifyTyping };
+  return { messages, loaded, failed, connected, slow, outbox, hasOlder, typing, loadLatest, loadOlder, send, react, edit, notifyTyping };
 }

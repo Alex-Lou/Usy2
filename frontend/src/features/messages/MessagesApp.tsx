@@ -146,7 +146,7 @@ function ConversationScreen() {
     );
   }
 
-  const status = chat.typing ? "écrit…" : chat.connected ? null : "Connexion…";
+  const status = chat.typing ? "écrit…" : chat.slow ? "Connexion…" : null;
   return (
     <div className="msg-app">
       <header className="msg-bar shrink-0">
@@ -204,6 +204,14 @@ function ConversationScreen() {
               setEditing(m);
             }}
           />
+          {chat.outbox.map((o) => (
+            <div key={o.key} className="msg-out msg-tail mt-0.5 flex flex-col items-end">
+              <div className="msg-bubble max-w-[82%] opacity-70">
+                {o.text || (o.attachment ? "📎 Pièce jointe" : "")}
+                <span className="msg-meta float-right ml-4 mt-1 leading-none">En attente…</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -211,7 +219,6 @@ function ConversationScreen() {
 
       <div className="mx-auto w-full max-w-3xl shrink-0" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <Composer
-          connected={chat.connected}
           partnerName={partnerName}
           myId={user?.id}
           replyTo={replyTo}

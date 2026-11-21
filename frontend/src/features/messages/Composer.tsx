@@ -17,8 +17,7 @@ const MAX_TEXT = 2000;
  * file (uploaded first, then sent), and the microphone while it is empty.
  * Above it, the message being answered or rewritten.
  */
-export function Composer({ connected, partnerName, myId, replyTo, editing, onSend, onSaveEdit, onCancel, onTyping }: {
-  connected: boolean;
+export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEdit, onCancel, onTyping }: {
   partnerName: string;
   myId: number | undefined;
   replyTo: Message | null;
@@ -98,7 +97,7 @@ export function Composer({ connected, partnerName, myId, replyTo, editing, onSen
       else onCancel();
       return;
     }
-    if ((!value && !pending) || !connected || sending) return;
+    if ((!value && !pending) || sending) return; // not connected yet: it waits in the outbox
     const file = pending;
     void run(async () => {
       onSend(value, file ? await uploadAttachment(file.file) : null);
@@ -193,11 +192,11 @@ export function Composer({ connected, partnerName, myId, replyTo, editing, onSen
           />
         </div>
         {showMic ? (
-          <button type="button" onClick={() => void voice.start()} disabled={!connected || sending} aria-label="Enregistrer un vocal" className="msg-cta grid h-11 w-11 shrink-0 place-items-center rounded-full press disabled:opacity-50">
+          <button type="button" onClick={() => void voice.start()} disabled={sending} aria-label="Enregistrer un vocal" className="msg-cta grid h-11 w-11 shrink-0 place-items-center rounded-full press disabled:opacity-50">
             <Icon name="mic" size={21} />
           </button>
         ) : (
-          <button type="submit" disabled={!connected || sending || (empty && !editing)} aria-label={editing ? "Enregistrer" : "Envoyer"} className="msg-cta grid h-11 w-11 shrink-0 place-items-center rounded-full press disabled:opacity-50">
+          <button type="submit" disabled={sending || (empty && !editing)} aria-label={editing ? "Enregistrer" : "Envoyer"} className="msg-cta grid h-11 w-11 shrink-0 place-items-center rounded-full press disabled:opacity-50">
             <Icon name="send" size={20} className={sending ? "animate-pulse" : ""} />
           </button>
         )}
@@ -207,7 +206,7 @@ export function Composer({ connected, partnerName, myId, replyTo, editing, onSen
       <input ref={photoInput} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
       <input ref={cameraInput} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
       <input ref={fileInput} type="file" accept={DOCUMENT_ACCEPT} hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
-      {gifs && <GifPicker onPick={(asset) => connected && onSend("", asset)} onClose={() => setGifs(false)} />}
+      {gifs && <GifPicker onPick={(asset) => onSend("", asset)} onClose={() => setGifs(false)} />}
     </form>
   );
 }

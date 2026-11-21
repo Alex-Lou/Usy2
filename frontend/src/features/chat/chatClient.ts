@@ -22,7 +22,7 @@ export function createChatClient(
   const client = new Client({
     brokerURL: wsUrl(),
     connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
-    reconnectDelay: 3000,
+    reconnectDelay: 1000, // back quickly: the conversation is useless while it waits
     onConnect: () => {
       onStatus(true);
       client.subscribe("/topic/messages", (frame: IMessage) => {
