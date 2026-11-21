@@ -15,6 +15,7 @@ import type { Profile } from "../profile/types";
 import { Composer } from "./Composer";
 import { InfoView } from "./InfoView";
 import { MessagesLogin } from "./MessagesLogin";
+import { NotifPrompt } from "./NotifPrompt";
 import { SearchView } from "./SearchView";
 import { Thread } from "./Thread";
 import { useConversation } from "./useConversation";
@@ -167,6 +168,8 @@ function ConversationScreen() {
         </button>
         </div>
       </header>
+
+      <NotifPrompt />
 
       <div
         ref={scrollerRef}
