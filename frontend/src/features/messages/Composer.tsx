@@ -29,6 +29,12 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
 }) {
   const [text, setText] = useState("");
   const [menu, setMenu] = useState(false);
+  useEffect(() => {
+    if (!menu) return;
+    const close = (e: KeyboardEvent) => e.key === "Escape" && setMenu(false);
+    document.addEventListener("keydown", close);
+    return () => document.removeEventListener("keydown", close);
+  }, [menu]);
   const [gifs, setGifs] = useState(false);
   const [pending, setPending] = useState<{ file: File; preview: string | null } | null>(null);
   const [sending, setSending] = useState(false);
@@ -155,6 +161,10 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
 
       {error && <p role="alert" className="mx-2 mb-1 text-xs text-danger">{error}</p>}
 
+      {menu && (
+        // A touch anywhere else closes the menu (the invisible layer catches it).
+        <div className="fixed inset-0 z-20" aria-hidden="true" onPointerDown={() => setMenu(false)} />
+      )}
       {menu && (
         <div className="msg-sheet absolute bottom-full left-3 z-30 mb-1 flex flex-col overflow-hidden rounded-2xl text-[14.5px] shadow-lg">
           <MenuItem icon="images" label="Photo" onClick={() => photoInput.current?.click()} />
