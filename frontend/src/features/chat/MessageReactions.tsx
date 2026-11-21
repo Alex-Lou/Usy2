@@ -120,10 +120,16 @@ export function ReactionBar({
   onReply,
   onEdit,
   onClose,
+  recents,
+  onMore,
 }: {
   anchor: DOMRect;
   mine: boolean;
   emojis: string[];
+  /** After `emojis`: my recent ones, in a strip that scrolls sideways. */
+  recents?: string[];
+  /** A « + » at the end: every other emoji. */
+  onMore?: () => void;
   current: string | null;
   copyText: string | null;
   onPick: (emoji: string) => void;
@@ -144,7 +150,20 @@ export function ReactionBar({
   // always fit on a phone instead of being pushed out of the bar.
   const extras = (copyText ? 1 : 0) + (onReply ? 1 : 0) + (onEdit ? 1 : 0);
   const barH = 52 + (extras ? 40 : 0);
-  const width = Math.min(window.innerWidth - 16, Math.max(emojis.length * 44 + 16, extras * 96));
+  const shown = emojis.length + Math.min(recents?.length ?? 0, 3) + (onMore ? 1 : 0);
+  const width = Math.min(window.innerWidth - 16, Math.max(shown * 44 + 16, extras * 96));
+  const emojiButton = (e: string) => (
+    <button
+      key={e}
+      type="button"
+      onClick={() => onPick(e)}
+      aria-label={`Réagir ${e}`}
+      aria-pressed={current === e}
+      className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-2xl leading-none press ${current === e ? "bg-primary/20" : "hover:bg-surface-2"}`}
+    >
+      {e}
+    </button>
+  );
   const above = anchor.top - barH - 8 > 72; // keep clear of the top bar
   const top = above ? anchor.top - barH - 8 : Math.min(window.innerHeight - barH - 8, anchor.bottom + 8);
   const left = Math.max(8, Math.min(window.innerWidth - width - 8, mine ? anchor.right - width : anchor.left));
@@ -163,20 +182,20 @@ export function ReactionBar({
         className={"absolute flex flex-col border border-border bg-surface shadow-lg animate-pop " + (extras ? "rounded-[26px]" : "rounded-full")}
         style={{ top, left, width, height: barH }}
       >
-        <div className="no-scrollbar flex h-[52px] shrink-0 items-center gap-0.5 overflow-x-auto px-2">
-        {emojis.map((e) => (
-          <button
-            key={e}
-            type="button"
-            onClick={() => onPick(e)}
-            aria-label={`Réagir ${e}`}
-            aria-pressed={current === e}
-            className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-2xl leading-none press ${current === e ? "bg-primary/20" : "hover:bg-surface-2"}`}
-          >
-            {e}
-          </button>
-        ))}
-        </div>
+        {onMore ? (
+          // The fixed ones stay put; the recents scroll between them and the « + ».
+          <div className="flex h-[52px] shrink-0 items-center gap-0.5 px-2">
+            {emojis.map(emojiButton)}
+            <div className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto">
+              {(recents ?? []).filter((e) => !emojis.includes(e)).map(emojiButton)}
+            </div>
+            <button type="button" onClick={onMore} aria-label="Plus d'emojis" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-surface-2 text-xl leading-none text-text-muted press">
+              +
+            </button>
+          </div>
+        ) : (
+          <div className="no-scrollbar flex h-[52px] shrink-0 items-center gap-0.5 overflow-x-auto px-2">{emojis.map(emojiButton)}</div>
+        )}
         {extras > 0 && (
           <div className="flex h-10 items-center justify-around border-t border-border px-2">
             {onReply && (
