@@ -13,11 +13,10 @@ async function latestScript(): Promise<string | null> {
 }
 
 /**
- * After a deployment, a phone that kept the app open still runs the old one:
- * « Nouvelle version » appears, one tap reloads. Checked on return to the app
- * and every few minutes (production only).
+ * True once a newer deployment is online than the one this page runs.
+ * Checked on return to the app and every few minutes (production only).
  */
-export function UpdateBanner() {
+export function useNewVersion(): boolean {
   const [fresh, setFresh] = useState(false);
 
   useEffect(() => {
@@ -38,7 +37,15 @@ export function UpdateBanner() {
       document.removeEventListener("visibilitychange", check);
     };
   }, []);
+  return fresh;
+}
 
+/**
+ * After a deployment, a phone that kept the app open still runs the old one:
+ * « Nouvelle version » appears, one tap reloads.
+ */
+export function UpdateBanner() {
+  const fresh = useNewVersion();
   if (!fresh) return null;
   return (
     <div className="fixed inset-x-0 bottom-[calc(var(--tabbar-h)+0.75rem)] z-[55] flex justify-center px-4 lg:bottom-4" role="status">

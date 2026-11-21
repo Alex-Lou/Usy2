@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { LiveToast } from "../../components/layout/LiveToast";
+import { useNewVersion } from "../../components/layout/UpdateBanner";
 import { ImageViewer } from "../../components/photo/ImageViewer";
 import { NotificationsListener } from "../notifications/NotificationsListener";
 import { Avatar } from "../../components/ui/Avatar";
@@ -62,6 +63,7 @@ function ConversationScreen() {
   const view = params.get("v");
   const target = Number(params.get("m")) || null;
   const chat = useConversation(user?.id);
+  const newVersion = useNewVersion();
   const [partner, setPartner] = useState<Profile | null>(null);
   const [viewing, setViewing] = useState<Asset | null>(null);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
@@ -167,6 +169,15 @@ function ConversationScreen() {
       </header>
 
       <NotifPrompt />
+
+      {newVersion && (
+        <div className="flex shrink-0 justify-center px-3 pt-2" role="status">
+          <button type="button" onClick={() => window.location.reload()} className="msg-cta flex items-center gap-2 rounded-full px-4 py-2 text-[13.5px] font-semibold shadow-lg animate-pop press">
+            <Icon name="refresh" size={16} />
+            Nouvelle version · Actualiser
+          </button>
+        </div>
+      )}
 
       <div
         ref={scrollerRef}
