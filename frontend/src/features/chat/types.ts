@@ -14,6 +14,7 @@ export interface Message {
   deliveredAt?: string | null; // when it reached the other one's app or phone (✓✓), null until then
   readAt?: string | null; // when the other one saw it (✓✓ in colour), null until then
   editedAt?: string | null; // when its sender last rewrote it ("modifié"), null if never
+  kind?: string | null; // null: a usual message; "thinking": « … pense à toi 💭 », no text
 }
 
 /** Broadcast on /topic/chat-read: readerId has seen the other one's messages up to upToId. */
