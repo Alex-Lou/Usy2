@@ -29,7 +29,7 @@ function dayLabel(iso: string): string {
 
 /** Same sender, same day, a few minutes apart: one block, the tail on the last one. */
 function sameRun(a: Message | undefined, b: Message | undefined): boolean {
-  return !!a && !!b && a.sender.id === b.sender.id && dayKey(a.createdAt) === dayKey(b.createdAt)
+  return !!a && !!b && !a.kind && !b.kind && a.sender.id === b.sender.id && dayKey(a.createdAt) === dayKey(b.createdAt)
     && Math.abs(new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) < RUN_GAP_MS;
 }
 
@@ -82,13 +82,29 @@ export function Thread({ messages, myId, partnerName, onOpenImage, onReact, onRe
         const bare = !!text && !m.attachment && isBare(m.content);
         const url = text && !m.attachment ? firstUrl(m.content) : null;
         const photoOnly = !text && !!m.attachment && isImage(m.attachment);
+        const day = (!prev || dayKey(prev.createdAt) !== dayKey(m.createdAt)) && (
+          <div className="my-3 flex justify-center">
+            <span className="msg-day rounded-full px-3 py-1 text-[11px] font-semibold first-letter:uppercase">{dayLabel(m.createdAt)}</span>
+          </div>
+        );
+        if (m.kind === "thinking") {
+          // « Je pense à toi »: a little cloud in the middle, not a bubble to answer.
+          return (
+            <Fragment key={m.id}>
+              {day}
+              <div id={`msg-${m.id}`} className="my-3 flex flex-col items-center">
+                <div className="msg-thought px-4 py-2 text-[14px]">
+                  <span className="mr-1.5" aria-hidden="true">💭</span>
+                  {mine ? <>Tu as pensé à <b>{partnerName}</b></> : <><b>{partnerName}</b> pense à toi</>}
+                </div>
+                <span className="msg-meta mt-1.5 text-[11px]">{time(m.createdAt)}</span>
+              </div>
+            </Fragment>
+          );
+        }
         return (
           <Fragment key={m.id}>
-            {(!prev || dayKey(prev.createdAt) !== dayKey(m.createdAt)) && (
-              <div className="my-3 flex justify-center">
-                <span className="msg-day rounded-full px-3 py-1 text-[11px] font-semibold first-letter:uppercase">{dayLabel(m.createdAt)}</span>
-              </div>
-            )}
+            {day}
             <div id={`msg-${m.id}`} className={`flex flex-col ${mine ? "msg-out items-end" : "msg-in items-start"} ${lastOfRun ? "msg-tail" : ""} ${firstOfRun ? "mt-2.5" : "mt-0.5"}`}>
               <div className={`flex max-w-[82%] flex-col ${mine ? "items-end" : "items-start"}`}>
                 <LongPress onLongPress={(anchor) => setMenu({ message: m, anchor })} onSwipe={() => onReply(m)}>

@@ -117,3 +117,33 @@
   border-radius: 3px;
   padding: 0 2px;
 }
+
+/* « … pense à toi 💭 »: a soft see-through cloud, with two puffs trailing below. */
+.msg-thought {
+  position: relative;
+  border-radius: 999px;
+  color: var(--msg-text);
+  background: color-mix(in srgb, var(--msg-accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--msg-accent) 28%, transparent);
+  backdrop-filter: blur(4px);
+}
+.msg-thought::before,
+.msg-thought::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  background: inherit;
+  border: inherit;
+}
+.msg-thought::before {
+  width: 10px;
+  height: 10px;
+  left: 22px;
+  bottom: -9px;
+}
+.msg-thought::after {
+  width: 6px;
+  height: 6px;
+  left: 14px;
+  bottom: -16px;
+}

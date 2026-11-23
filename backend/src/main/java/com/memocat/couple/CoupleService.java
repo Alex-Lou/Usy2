@@ -1,5 +1,6 @@
 package com.memocat.couple;
 
+import com.memocat.chat.MessageService;
 import com.memocat.couple.dto.CoupleDto;
 import com.memocat.couple.dto.MoodDto;
 import com.memocat.couple.dto.NoteDto;
@@ -47,16 +48,19 @@ public class CoupleService {
     private final CoupleSettingsRepository settings;
     private final CoupleClock clock;
     private final ApplicationEventPublisher events;
+    private final MessageService messages;
     private final Map<Long, Instant> lastThinking = new ConcurrentHashMap<>();
 
     public CoupleService(UserRepository users, MoodRepository moods, CoupleNoteRepository notes,
-                         CoupleSettingsRepository settings, CoupleClock clock, ApplicationEventPublisher events) {
+                         CoupleSettingsRepository settings, CoupleClock clock, ApplicationEventPublisher events,
+                         MessageService messages) {
         this.users = users;
         this.moods = moods;
         this.notes = notes;
         this.settings = settings;
         this.clock = clock;
         this.events = events;
+        this.messages = messages;
     }
 
     @Transactional(readOnly = true)
@@ -129,7 +133,10 @@ public class CoupleService {
         notes.delete(note);
     }
 
-    /** Tells the other person "je pense à toi" (notification only, nothing stored). */
+    /**
+     * Tells the other person "je pense à toi": a notification, and a little
+     * cloud kept in the conversation (the notification opens it).
+     */
     @Transactional // the notification goes out after commit
     public void thinkOfYou(String username) {
         User me = requireUser(username);
@@ -142,7 +149,8 @@ public class CoupleService {
         if (tooSoon[0]) {
             throw new TooSoonException("Déjà envoyé, réessaie dans une minute 💭");
         }
-        events.publishEvent(CoupleActivity.of(CoupleActivity.THINKING, me, null, null));
+        Long cloud = messages.sendThought(me);
+        events.publishEvent(CoupleActivity.of(CoupleActivity.THINKING, me, null, cloud));
     }
 
     private User requireUser(String username) {

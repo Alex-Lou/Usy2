@@ -65,6 +65,12 @@ public class Message {
     @Column(length = 16)
     private String effect;
 
+    /** Null for a usual message; {@link #THINKING} for « … pense à toi 💭 » (no text). */
+    @Column(length = 16)
+    private String kind;
+
+    public static final String THINKING = "thinking";
+
     protected Message() {
         // for JPA
     }
@@ -84,6 +90,17 @@ public class Message {
         this.replyTo = replyTo;
         this.style = style;
         this.effect = effect;
+    }
+
+    /** « Je pense à toi », kept in the conversation as a little cloud. */
+    public static Message thought(User sender) {
+        Message m = new Message(sender, "", null);
+        m.kind = THINKING;
+        return m;
+    }
+
+    public String getKind() {
+        return kind;
     }
 
     public String getStyle() {

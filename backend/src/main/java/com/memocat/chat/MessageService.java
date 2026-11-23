@@ -80,6 +80,19 @@ public class MessageService {
     }
 
     /**
+     * « Je pense à toi », kept in the conversation: shown live to both (once
+     * committed), unread for the other one until seen. Its notification is the
+     * « pense à toi » one (CoupleActivity), not a message's.
+     * @return the new message's id
+     */
+    @Transactional
+    public Long sendThought(User sender) {
+        Message message = messageRepository.save(Message.thought(sender));
+        events.publishEvent(new ThoughtSent(MessageDto.from(message)));
+        return message.getId();
+    }
+
+    /**
      * {@code username} has the conversation on screen up to {@code upToId}: the
      * other one's messages until then are seen. Null when nothing new was seen
      * (nothing to tell), else what to broadcast.
@@ -111,6 +124,9 @@ public class MessageService {
                 .orElseThrow(() -> new ResourceNotFoundException("Message not found"));
         if (!message.getSender().getId().equals(me.getId())) {
             throw new ForbiddenException("You can only edit your own messages");
+        }
+        if (message.getKind() != null) {
+            throw new ContentValidationException("Ce message ne se modifie pas");
         }
         message.edit(validateContent(content, message.getAttachment() != null), Instant.now());
         List<MessageReactionDto> reactions = reactionRepository.findByMessageIdInOrderByCreatedAtAsc(List.of(messageId))

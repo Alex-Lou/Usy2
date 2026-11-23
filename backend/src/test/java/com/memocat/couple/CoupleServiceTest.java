@@ -1,5 +1,7 @@
 package com.memocat.couple;
 
+import com.memocat.chat.MessageService;
+
 import com.memocat.domain.CoupleNote;
 import com.memocat.domain.CoupleSettings;
 import com.memocat.domain.Mood;
@@ -44,6 +46,7 @@ class CoupleServiceTest {
     @Mock private CoupleNoteRepository notes;
     @Mock private CoupleSettingsRepository settings;
     @Mock private ApplicationEventPublisher events;
+    @Mock private MessageService messages;
 
     private CoupleService service;
     private final User lou = user(1, "lou", "Lou");
@@ -59,7 +62,7 @@ class CoupleServiceTest {
     void setUp() {
         CoupleClock clock = new CoupleClock(ZoneId.of("Atlantic/Canary"),
                 Clock.fixed(Instant.parse("2026-09-23T10:00:00Z"), ZoneOffset.UTC));
-        service = new CoupleService(users, moods, notes, settings, clock, events);
+        service = new CoupleService(users, moods, notes, settings, clock, events, messages);
         lenient().when(users.findByUsername("lou")).thenReturn(Optional.of(lou));
         lenient().when(users.findByUsername("sam")).thenReturn(Optional.of(sam));
     }
@@ -140,7 +143,7 @@ class CoupleServiceTest {
             @Override public Clock withZone(ZoneId zone) { return this; }
             @Override public Instant instant() { return now[0]; }
         };
-        service = new CoupleService(users, moods, notes, settings, new CoupleClock(ZoneId.of("Atlantic/Canary"), moving), events);
+        service = new CoupleService(users, moods, notes, settings, new CoupleClock(ZoneId.of("Atlantic/Canary"), moving), events, messages);
 
         service.thinkOfYou("lou");
         now[0] = now[0].plusSeconds(30);
@@ -152,6 +155,7 @@ class CoupleServiceTest {
         ArgumentCaptor<CoupleActivity> event = ArgumentCaptor.forClass(CoupleActivity.class);
         verify(events, times(3)).publishEvent(event.capture());
         assertThat(event.getAllValues()).extracting(CoupleActivity::kind).containsOnly(CoupleActivity.THINKING);
+        verify(messages, times(3)).sendThought(any()); // each one also leaves its cloud in the conversation
         assertThat(event.getAllValues()).extracting(CoupleActivity::actorName).containsExactly("Lou", "Sam", "Lou");
     }
 }

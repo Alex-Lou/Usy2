@@ -17,7 +17,7 @@ import java.util.List;
  */
 public record MessageDto(Long id, UserDto sender, String content, AssetDto attachment, Instant createdAt,
                          List<MessageReactionDto> reactions, ReplyPreviewDto replyTo, String style, String effect,
-                         Instant deliveredAt, Instant readAt, Instant editedAt) {
+                         Instant deliveredAt, Instant readAt, Instant editedAt, String kind) {
 
     public static MessageDto from(Message message) {
         return from(message, List.of());
@@ -36,6 +36,7 @@ public record MessageDto(Long id, UserDto sender, String content, AssetDto attac
                 message.getEffect(),
                 message.getDeliveredAt(),
                 message.getReadAt(),
-                message.getEditedAt());
+                message.getEditedAt(),
+                message.getKind());
     }
 }

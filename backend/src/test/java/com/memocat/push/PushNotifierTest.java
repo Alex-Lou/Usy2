@@ -248,11 +248,12 @@ class PushNotifierTest {
     void thinkingOfYouReachesTheOtherPerson() throws Exception {
         when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
 
-        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.THINKING, 1L, "Lou", null, null));
+        notifier.onCoupleActivity(new CoupleActivity(CoupleActivity.THINKING, 1L, "Lou", null, 42L));
 
         JsonNode payload = sentPayload(phone);
         assertThat(payload.get("body").asText()).isEqualTo("Lou pense à toi 💭");
         assertThat(payload.get("tag").asText()).isEqualTo("thinking");
+        assertThat(payload.get("url").asText()).isEqualTo("/messages?m=42"); // opens the cloud in the conversation
     }
 
     @Test

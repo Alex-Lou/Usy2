@@ -164,7 +164,8 @@ public class PushNotifier {
             case CoupleActivity.MOOD -> alert(a.actorName() + " a changé d'humeur : " + a.detail(),
                     previews.moodLabel(a.actorId()), "/profile/nous", "mood");
             case CoupleActivity.NOTE -> alert(a.actorName() + " t'a laissé un mot 💌", previews.note(a.refId()), "/profile/nous", "note");
-            case CoupleActivity.THINKING -> alert(a.actorName() + " pense à toi 💭", "/chat", "thinking");
+            case CoupleActivity.THINKING -> alert(a.actorName() + " pense à toi 💭",
+                    a.refId() == null ? "/messages" : "/messages?m=" + a.refId(), "thinking");
             case CoupleActivity.CROSSWORD -> alert(a.actorName() + " t'attend sur une grille de mots fléchés ✏️",
                     "Grille " + a.detail() + ", à remplir à deux", "/jeux/mots-fleches?partie=" + a.refId(), "crossword-" + a.refId());
             case CoupleActivity.CROSSWORD_DONE -> alert(a.actorName() + " a posé la dernière lettre : grille terminée 🎉",
