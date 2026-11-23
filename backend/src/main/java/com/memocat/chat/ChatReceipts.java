@@ -46,6 +46,11 @@ public class ChatReceipts {
         }
     }
 
+    /** Not seen on screen yet by the one it was sent to (false once read or gone). */
+    public boolean isUnread(Long messageId) {
+        return messages.findById(messageId).map(m -> m.getReadAt() == null).orElse(false);
+    }
+
     /** {@code username} just opened the app: everything waiting for them has arrived. */
     public void deliveredAllTo(String username) {
         users.findByUsername(username).ifPresent(u -> delivered(u.getId(), Long.MAX_VALUE));

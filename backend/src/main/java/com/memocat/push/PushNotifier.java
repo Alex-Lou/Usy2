@@ -28,6 +28,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 /**
  * Turns the other person's activity into notifications, once the change is
@@ -58,6 +62,20 @@ public class PushNotifier {
     private final ObjectMapper json;
     private final Clock clock;
     private final Map<Long, Instant> lastListPush = new ConcurrentHashMap<>();
+    /** Runs a check a little later (a scheduler in the app, at once in tests). */
+    private final BiConsumer<Duration, Runnable> later;
+
+    /**
+     * Someone "looking at the app" gets no push for a message, but Android can
+     * freeze a page in the background before it says so: still unread after
+     * this long, the push goes anyway.
+     */
+    static final Duration UNSEEN_AFTER = Duration.ofSeconds(15);
+    private static final ScheduledExecutorService LATER = Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread t = new Thread(r, "push-later");
+        t.setDaemon(true);
+        return t;
+    });
 
     @Autowired
     public PushNotifier(PushSubscriptionRepository subscriptions, UserRepository users, PresenceRegistry presence,
@@ -69,6 +87,13 @@ public class PushNotifier {
     PushNotifier(PushSubscriptionRepository subscriptions, UserRepository users, PresenceRegistry presence,
                  WebPushSender sender, Previews previews, NotificationService notifications, ChatReceipts receipts,
                  ObjectMapper json, Clock clock) {
+        this(subscriptions, users, presence, sender, previews, notifications, receipts, json, clock,
+                (delay, task) -> LATER.schedule(task, delay.toMillis(), TimeUnit.MILLISECONDS));
+    }
+
+    PushNotifier(PushSubscriptionRepository subscriptions, UserRepository users, PresenceRegistry presence,
+                 WebPushSender sender, Previews previews, NotificationService notifications, ChatReceipts receipts,
+                 ObjectMapper json, Clock clock, BiConsumer<Duration, Runnable> later) {
         this.subscriptions = subscriptions;
         this.users = users;
         this.presence = presence;
@@ -78,6 +103,7 @@ public class PushNotifier {
         this.receipts = receipts;
         this.json = json;
         this.clock = clock;
+        this.later = later;
     }
 
     @Async(PushConfig.EXECUTOR)
@@ -122,10 +148,19 @@ public class PushNotifier {
         Alert payload = new Alert(event.senderName() + " t'a envoyé un message 💬", excerpt,
                 excerpt == null ? "/chat" : "/chat?m=" + event.messageId(), "chat", event.senderName() + " 💬");
         for (User recipient : othersThan(event.senderId())) {
+            boolean looking = presence.isLookingAtApp(recipient.getUsername());
             boolean pushed = notify(recipient, payload, true);
             // ✓✓: it reached their app (connected) or their phone (push accepted).
             if (event.messageId() != null && (pushed || presence.isConnected(recipient.getUsername()))) {
                 receipts.delivered(recipient.getId(), event.messageId());
+            }
+            if (looking && event.messageId() != null) {
+                // Maybe not really looking (a page frozen in the background): unread a bit later, it rings.
+                later.accept(UNSEEN_AFTER, () -> {
+                    if (receipts.isUnread(event.messageId()) && push(recipient, payload, true)) {
+                        receipts.delivered(recipient.getId(), event.messageId());
+                    }
+                });
             }
         }
     }

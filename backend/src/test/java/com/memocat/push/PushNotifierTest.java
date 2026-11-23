@@ -129,6 +129,40 @@ class PushNotifierTest {
     }
 
     @Test
+    void lookingButStillUnreadALittleLaterRingsAnyway() throws Exception {
+        java.util.List<Runnable> scheduled = new java.util.ArrayList<>();
+        PushNotifier withLater = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, receipts,
+                json, java.time.Clock.systemUTC(), (delay, task) -> {
+                    assertThat(delay).isEqualTo(PushNotifier.UNSEEN_AFTER);
+                    scheduled.add(task);
+                });
+        presence.report("frozen-page", "sam", true); // said "visible", then Android froze it
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
+        when(receipts.isUnread(40L)).thenReturn(true);
+
+        withLater.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
+        verify(sender, never()).send(any(), any(), anyBoolean()); // not at once: maybe really looking
+
+        scheduled.forEach(Runnable::run); // 15 s later, still not seen
+        assertThat(sentPayload(phone).get("tag").asText()).isEqualTo("chat");
+        verify(receipts, org.mockito.Mockito.atLeastOnce()).delivered(2L, 40L);
+    }
+
+    @Test
+    void lookingAndReadMeansNoPushLater() {
+        java.util.List<Runnable> scheduled = new java.util.ArrayList<>();
+        PushNotifier withLater = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, receipts,
+                json, java.time.Clock.systemUTC(), (delay, task) -> scheduled.add(task));
+        presence.report("session", "sam", true);
+        when(receipts.isUnread(40L)).thenReturn(false); // seen on screen meanwhile
+
+        withLater.onChatMessage(new ChatMessageSent(1L, "Lou", 40L));
+        scheduled.forEach(Runnable::run);
+
+        verify(sender, never()).send(any(), any(), anyBoolean());
+    }
+
+    @Test
     void reactionNotifiesOnlyThePostAuthor() throws Exception {
         notifier.onFeedActivity(new FeedActivity(FeedActivity.REACTION, 1L, "Lou", 7L, 1L, "😍")); // Lou's own post
         verify(sender, never()).send(any(), any(), anyBoolean());
