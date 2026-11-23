@@ -7,6 +7,7 @@ import { editMessage, getHistory, reactToMessage } from "../chat/api";
 import { createChatClient, sendMessage, sendRead, sendTyping } from "../chat/chatClient";
 import type { Message, MessageReaction } from "../chat/types";
 import { refreshUnread } from "../chat/unread";
+import { isLooking, markActive } from "../notifications/notifClient";
 import { clearConversationNotifications } from "../notifications/systemNotify";
 
 const PAGE = 30;
@@ -186,12 +187,14 @@ export function useConversation(myId: number | undefined) {
     return () => document.removeEventListener("visibilitychange", clear);
   }, []);
 
-  // On screen, their newest message counts as seen: their ticks turn to colour.
+  // Looked at (on screen and touched lately), their newest message counts as seen:
+  // their ticks turn to colour. A screen left open with nobody in front (a computer)
+  // reads nothing, so the phone still rings. Seen as soon as someone comes back.
   const lastReadSent = useRef(0);
   useEffect(() => {
     const tell = () => {
       const client = clientRef.current;
-      if (!client || !connected || document.visibilityState !== "visible") return;
+      if (!client || !connected || !isLooking()) return;
       const theirs = messages.filter((m) => m.sender.id !== myId);
       const newest = theirs[theirs.length - 1];
       if (newest && newest.id > lastReadSent.current && !newest.readAt) {
@@ -199,9 +202,19 @@ export function useConversation(myId: number | undefined) {
         sendRead(client, newest.id);
       }
     };
+    const back = () => {
+      if (document.visibilityState !== "visible") return;
+      markActive(); // a touch, a key, or the app brought back: someone is there
+      tell();
+    };
+    const ACTIVITY = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
     tell();
-    document.addEventListener("visibilitychange", tell);
-    return () => document.removeEventListener("visibilitychange", tell);
+    document.addEventListener("visibilitychange", back);
+    for (const type of ACTIVITY) window.addEventListener(type, back, { passive: true });
+    return () => {
+      document.removeEventListener("visibilitychange", back);
+      for (const type of ACTIVITY) window.removeEventListener(type, back);
+    };
   }, [messages, connected, myId]);
 
   const loadOlder = useCallback(async () => {
