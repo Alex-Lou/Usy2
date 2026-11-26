@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { LiveToast } from "../../components/layout/LiveToast";
 import { useNewVersion } from "../../components/layout/UpdateBanner";
 import { ImageViewer } from "../../components/photo/ImageViewer";
@@ -60,8 +60,31 @@ function Conversation() {
 function ConversationScreen() {
   const { user } = useAuth();
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
   const view = params.get("v");
   const target = Number(params.get("m")) || null;
+  // Search and info were opened over the conversation: closing them goes back to it
+  // (same as the phone's back button), not one more step in the history.
+  const closeView = () => ((window.history.state?.idx ?? 0) > 0 ? navigate(-1) : setParams({}, { replace: true }));
+  // A search result: back to the conversation first (search leaves the history), then to it.
+  const pendingTarget = useRef<number | null>(null);
+  const openFound = (id: number) => {
+    if ((window.history.state?.idx ?? 0) > 0) {
+      pendingTarget.current = id;
+      navigate(-1);
+    } else setParams({ m: String(id) }, { replace: true });
+  };
+  useEffect(() => {
+    if (view || pendingTarget.current === null) return;
+    setParams({ m: String(pendingTarget.current) }, { replace: true });
+    pendingTarget.current = null;
+  }, [view, setParams]);
+  // Once a message from a link is on screen, the address is the conversation again:
+  // « back » then leaves Messages instead of seeking that message again.
+  const forgetTarget = useCallback(() => setParams((p) => {
+    p.delete("m");
+    return p;
+  }, { replace: true }), [setParams]);
   const chat = useConversation(user?.id);
   const newVersion = useNewVersion();
   const [partner, setPartner] = useState<Profile | null>(null);
@@ -108,6 +131,7 @@ function ConversationScreen() {
       s.done = true;
       stickToBottom.current = false;
       requestAnimationFrame(() => flashElement(`msg-${target}`));
+      forgetTarget();
     } else if (chat.hasOlder && s.pages < SEEK_PAGES) {
       s.pages++;
       s.busy = true;
@@ -120,8 +144,9 @@ function ConversationScreen() {
     } else {
       s.done = true;
       setNotice("Ce message est trop ancien pour être affiché ici.");
+      forgetTarget();
     }
-  }, [target, view, chat.loaded, chat.messages, chat.hasOlder, loadOlder, seekTick]);
+  }, [target, view, chat.loaded, chat.messages, chat.hasOlder, loadOlder, seekTick, forgetTarget]);
 
   useEffect(() => {
     if (!notice) return;
@@ -134,14 +159,14 @@ function ConversationScreen() {
   if (view === "search") {
     return (
       <div className="msg-app">
-        <SearchView myName={user?.displayName ?? ""} onBack={() => setParams({})} onOpen={(id) => setParams({ m: String(id) }, { replace: true })} />
+        <SearchView myName={user?.displayName ?? ""} onBack={closeView} onOpen={openFound} />
       </div>
     );
   }
   if (view === "info") {
     return (
       <div className="msg-app">
-        <InfoView partner={partner} onBack={() => setParams({})} onSearch={() => setParams({ v: "search" }, { replace: true })} />
+        <InfoView partner={partner} onBack={closeView} onSearch={() => setParams({ v: "search" }, { replace: true })} />
       </div>
     );
   }

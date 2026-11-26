@@ -48,7 +48,11 @@ export function NotificationsListener() {
     if (!("serviceWorker" in navigator)) return;
     const onSwMessage = (e: MessageEvent<{ type?: string; url?: string } | null>) => {
       const url = e.data?.url;
-      if (e.data?.type === "memocat:navigate" && url && /^\/(?!\/)/.test(url)) navigate(url); // in-app paths only
+      if (!(e.data?.type === "memocat:navigate" && url && /^\/(?!\/)/.test(url))) return; // in-app paths only
+      // Already in Messages and going to the conversation: in place, so « back » leaves instead
+      // of walking through every message a notification once opened.
+      const inConversation = (path: string) => path.startsWith("/messages") || path.startsWith("/chat");
+      navigate(url, { replace: inConversation(window.location.pathname) && inConversation(url) });
     };
     navigator.serviceWorker.addEventListener("message", onSwMessage);
     return () => navigator.serviceWorker.removeEventListener("message", onSwMessage);
