@@ -33,6 +33,26 @@ class PresenceRegistryTest {
     }
 
     @Test
+    void aVisiblePageThatStopsSayingSoNoLongerCounts() {
+        java.time.Instant[] now = {java.time.Instant.parse("2026-11-26T10:00:00Z")};
+        java.time.Clock moving = new java.time.Clock() {
+            @Override public java.time.ZoneId getZone() { return java.time.ZoneOffset.UTC; }
+            @Override public java.time.Clock withZone(java.time.ZoneId zone) { return this; }
+            @Override public java.time.Instant instant() { return now[0]; }
+        };
+        PresenceRegistry timed = new PresenceRegistry(moving);
+        timed.report("phone", "lou", true);
+        now[0] = now[0].plusSeconds(20);
+        timed.report("phone", "lou", true); // still looked at: said again
+        now[0] = now[0].plusSeconds(40);
+        assertThat(timed.isLookingAtApp("lou")).isTrue();
+
+        now[0] = now[0].plusSeconds(10); // frozen in the background: nothing for 50 s
+        assertThat(timed.isLookingAtApp("lou")).isFalse();
+        assertThat(timed.isConnected("lou")).isTrue(); // still connected, just not looked at
+    }
+
+    @Test
     void theFirstReportOfAConnectionSaysTheAppJustOpened() {
         PresenceRegistry fresh = new PresenceRegistry();
         org.assertj.core.api.Assertions.assertThat(fresh.report("s9", "sam", false)).isTrue();

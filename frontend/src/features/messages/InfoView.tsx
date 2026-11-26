@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ApiError } from "../../lib/api/client";
+import { sendTestPush } from "../notifications/push";
 import { Avatar } from "../../components/ui/Avatar";
 import { Icon } from "../../components/ui/Icon";
 import type { Profile } from "../profile/types";
@@ -28,6 +31,7 @@ export function InfoView({ partner, onBack, onSearch }: { partner: Profile | nul
           </button>
           <Action to="/" icon="home" label="MemoCat" />
         </div>
+        <NotifTest />
       </div>
     </>
   );
@@ -39,5 +43,38 @@ function Action({ to, icon, label }: { to: string; icon: "user" | "home"; label:
       <Icon name={icon} size={21} className="text-primary" />
       {label}
     </Link>
+  );
+}
+
+/**
+ * 🔔 Checks the whole way to this phone: the server sends a notification a few
+ * seconds later, looked at or not, time to leave the app or lock the screen.
+ */
+function NotifTest() {
+  const [state, setState] = useState<{ busy: boolean; text: string | null }>({ busy: false, text: null });
+
+  async function run() {
+    setState({ busy: true, text: null });
+    try {
+      const { devices, inSeconds } = await sendTestPush();
+      setState({
+        busy: false,
+        text: devices === 0
+          ? "Ce téléphone n'est inscrit nulle part : touche « Activer » dans la conversation."
+          : `Envoyée dans ${inSeconds} s : quitte l'app ou verrouille ton téléphone, elle doit sonner.`,
+      });
+    } catch (e) {
+      setState({ busy: false, text: e instanceof ApiError ? e.message : "Le test n'a pas pu partir, réessaie." });
+    }
+  }
+
+  return (
+    <div className="mt-6 w-full max-w-sm">
+      <button type="button" onClick={() => void run()} disabled={state.busy} className="msg-field flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold press disabled:opacity-60">
+        <Icon name="bell" size={18} className="text-primary" />
+        {state.busy ? "Envoi…" : "Tester les notifications"}
+      </button>
+      {state.text && <p role="status" className="mt-2 px-1 text-center text-xs text-text-muted">{state.text}</p>}
+    </div>
   );
 }
