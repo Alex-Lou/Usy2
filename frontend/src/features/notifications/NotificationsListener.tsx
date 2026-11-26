@@ -12,7 +12,7 @@ import { feel } from "../../lib/feel";
 import type { NotificationEntry } from "./api";
 import { emitToast } from "./liveToast";
 import { refreshUnread } from "../chat/unread";
-import { createNotifClient, markActive, reportPresence } from "./notifClient";
+import { createNotifClient, isLooking, markActive, reportPresence } from "./notifClient";
 import { ensurePushSubscription } from "./push";
 import { showSystemNotification } from "./systemNotify";
 
@@ -97,7 +97,9 @@ export function NotificationsListener() {
     const ACTIVITY = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
     document.addEventListener("visibilitychange", onVisibility);
     for (const type of ACTIVITY) window.addEventListener(type, onActivity, { passive: true });
-    const idleCheck = window.setInterval(() => reportPresence(client, true), 30_000); // gone idle
+    // Every 20 s: still looked at → said again (the server forgets a "visible" after 45 s,
+    // in case the phone froze this page before it could say it was hidden); gone idle → said once.
+    const idleCheck = window.setInterval(() => reportPresence(client, !isLooking()), 20_000);
     return () => {
       document.removeEventListener("visibilitychange", onVisibility);
       for (const type of ACTIVITY) window.removeEventListener(type, onActivity);

@@ -79,6 +79,7 @@ public class WebPushSender {
                 return Outcome.DELIVERED;
             }
             if (status == 404 || status == 410) {
+                log.info("Push service {} answered {}: subscription gone, dropped", endpoint.getHost(), status);
                 return Outcome.GONE; // unsubscribed or expired on the browser side
             }
             log.warn("Push service {} answered {}", endpoint.getHost(), status);

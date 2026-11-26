@@ -149,6 +149,24 @@ class PushNotifierTest {
     }
 
     @Test
+    void aTestReachesMyOwnDevicesALittleLaterEvenWhileLooking() throws Exception {
+        java.util.List<Runnable> scheduled = new java.util.ArrayList<>();
+        PushNotifier withLater = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, receipts,
+                json, java.time.Clock.systemUTC(), (delay, task) -> {
+                    assertThat(delay).isEqualTo(PushNotifier.TEST_AFTER);
+                    scheduled.add(task);
+                });
+        presence.report("session", "sam", true); // the test is about the phone: sent anyway
+        when(sender.send(any(), any(), eq(true))).thenReturn(WebPushSender.Outcome.DELIVERED);
+
+        assertThat(withLater.test(sam)).isEqualTo(2);
+        verify(sender, never()).send(any(), any(), anyBoolean());
+
+        scheduled.forEach(Runnable::run);
+        assertThat(sentPayload(phone).get("tag").asText()).isEqualTo("test");
+    }
+
+    @Test
     void lookingAndReadMeansNoPushLater() {
         java.util.List<Runnable> scheduled = new java.util.ArrayList<>();
         PushNotifier withLater = new PushNotifier(subscriptions, users, presence, sender, previews, notifications, receipts,

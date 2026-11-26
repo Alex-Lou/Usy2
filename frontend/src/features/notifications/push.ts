@@ -74,3 +74,8 @@ export async function unsubscribeThisDevice(): Promise<void> {
     /* best-effort */
   }
 }
+
+/** 🔔 Asks the server for a test notification to my own devices in a few seconds. */
+export function sendTestPush(): Promise<{ devices: number; inSeconds: number }> {
+  return apiRequest<{ devices: number; inSeconds: number }>("/api/push/test", { method: "POST" });
+}

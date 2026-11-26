@@ -1,6 +1,8 @@
 package com.memocat.push;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memocat.chat.ChatMessageSent;
 import com.memocat.chat.ChatReceipts;
@@ -45,6 +47,8 @@ import java.util.function.BiConsumer;
  */
 @Component
 public class PushNotifier {
+
+    private static final Logger log = LoggerFactory.getLogger(PushNotifier.class);
 
     static final String TITLE = "MemoCat";
     /** Adding several items in a row notifies once, not once per item. */
@@ -157,7 +161,11 @@ public class PushNotifier {
             if (looking && event.messageId() != null) {
                 // Maybe not really looking (a page frozen in the background): unread a bit later, it rings.
                 later.accept(UNSEEN_AFTER, () -> {
-                    if (receipts.isUnread(event.messageId()) && push(recipient, payload, true)) {
+                    if (!receipts.isUnread(event.messageId())) {
+                        return;
+                    }
+                    log.info("push tag=chat to={} still unread after {}s: sending anyway", recipient.getUsername(), UNSEEN_AFTER.toSeconds());
+                    if (push(recipient, payload, true)) {
                         receipts.delivered(recipient.getId(), event.messageId());
                     }
                 });
@@ -312,7 +320,11 @@ public class PushNotifier {
      */
     private boolean notify(User recipient, Alert alert, boolean urgent) {
         record(recipient, alert);
-        return !presence.isLookingAtApp(recipient.getUsername()) && push(recipient, alert, urgent);
+        if (presence.isLookingAtApp(recipient.getUsername())) {
+            log.info("push tag={} to={} skipped: looking at the app", alert.tag(), recipient.getUsername());
+            return false;
+        }
+        return push(recipient, alert, urgent);
     }
 
     /** Into the bell, and a push even with the app open. */
@@ -333,14 +345,39 @@ public class PushNotifier {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Cannot serialize push payload", e);
         }
-        boolean accepted = false;
+        int delivered = 0;
+        int gone = 0;
+        int failed = 0;
         for (PushSubscription device : subscriptions.findByUserIdOrderByCreatedAtAsc(recipient.getId())) {
             WebPushSender.Outcome outcome = sender.send(device, bytes, urgent);
             if (outcome == WebPushSender.Outcome.GONE) {
                 subscriptions.delete(device);
             }
-            accepted |= outcome == WebPushSender.Outcome.DELIVERED;
+            if (outcome == WebPushSender.Outcome.DELIVERED) {
+                delivered++;
+            } else if (outcome == WebPushSender.Outcome.GONE) {
+                gone++;
+            } else {
+                failed++;
+            }
         }
-        return accepted;
+        // One line per decision: when a phone stays silent, the log says whether it was sent.
+        log.info("push tag={} to={} delivered={} gone={} failed={}", alert.tag(), recipient.getUsername(), delivered, gone, failed);
+        return delivered > 0;
+    }
+
+    /** How long a test notification waits: time to leave the app or lock the phone. */
+    static final Duration TEST_AFTER = Duration.ofSeconds(10);
+
+    /**
+     * 🔔 A test notification to my own devices a little later, looked at or not:
+     * checks the whole way to the phone.
+     * @return how many devices it will be sent to
+     */
+    public int test(User me) {
+        int devices = subscriptions.findByUserIdOrderByCreatedAtAsc(me.getId()).size();
+        Alert alert = alert("🔔 Test : les notifications arrivent bien sur ce téléphone.", "/messages", "test");
+        later.accept(TEST_AFTER, () -> push(me, alert, true));
+        return devices;
     }
 }
