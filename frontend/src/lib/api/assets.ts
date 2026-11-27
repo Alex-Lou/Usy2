@@ -30,6 +30,11 @@ export function uploadAudio(recording: Blob): Promise<Asset> {
   return uploadFile<Asset>("/api/assets/audio", new File([recording], "vocal", { type: recording.type }));
 }
 
+/** An audio file picked on the device (a song…): keeps its name (the server checks the real format). */
+export function uploadAudioFile(file: File): Promise<Asset> {
+  return uploadFile<Asset>("/api/assets/audio-files", file);
+}
+
 export interface StorageUsage {
   usedBytes: number;
   quotaBytes: number;

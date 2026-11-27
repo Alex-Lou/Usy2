@@ -72,6 +72,13 @@ public class AssetService {
         return store(username, file, "vocal." + type.extension(), type.extension(), type.contentType(), null);
     }
 
+    /** An audio file picked on the device (a song…); keeps its name to show in the bubble. */
+    @Transactional
+    public AssetDto uploadAudioFile(String username, MultipartFile file) {
+        AudioUploadValidator.AudioType type = audioUploadValidator.validateFile(file);
+        return store(username, file, file.getOriginalFilename(), type.extension(), type.contentType(), null);
+    }
+
     @Transactional(readOnly = true)
     public StorageUsageDto usage() {
         return new StorageUsageDto(assetRepository.totalSizeBytes(), quotaBytes);

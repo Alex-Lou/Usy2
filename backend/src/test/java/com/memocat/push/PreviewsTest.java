@@ -42,6 +42,7 @@ class PreviewsTest {
         assertThat(Previews.attachment("image/jpeg", "IMG_1.jpg")).isEqualTo("📷 Photo");
         assertThat(Previews.attachment("image/gif", "giphy.gif")).isEqualTo("🎞️ GIF");
         assertThat(Previews.attachment("audio/webm", "vocal.webm")).isEqualTo("🎤 Message vocal");
+        assertThat(Previews.attachment("audio/mpeg", "Notre chanson.mp3")).isEqualTo("🎵 Notre chanson.mp3");
         assertThat(Previews.attachment("application/pdf", "billet.pdf")).isEqualTo("📎 billet.pdf");
     }
 }
