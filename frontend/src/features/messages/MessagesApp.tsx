@@ -88,7 +88,7 @@ function ConversationScreen() {
   const chat = useConversation(user?.id);
   const newVersion = useNewVersion();
   const [partner, setPartner] = useState<Profile | null>(null);
-  const [viewing, setViewing] = useState<Asset | null>(null);
+  const [viewing, setViewing] = useState<{ photos: Asset[]; index: number } | null>(null);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [editing, setEditing] = useState<Message | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -228,7 +228,7 @@ function ConversationScreen() {
             messages={chat.messages}
             myId={user?.id}
             partnerName={partnerName}
-            onOpenImage={setViewing}
+            onOpenImage={(photos, index) => setViewing({ photos, index })}
             onReact={chat.react}
             onReply={(m) => {
               setEditing(null);
@@ -242,7 +242,7 @@ function ConversationScreen() {
           {chat.outbox.map((o) => (
             <div key={o.key} className="msg-out msg-tail mt-0.5 flex flex-col items-end">
               <div className="msg-bubble max-w-[82%] opacity-70">
-                {o.text || (o.attachment ? "📎 Pièce jointe" : "")}
+                {o.text || (o.attachments.length > 1 ? `📎 ${o.attachments.length} fichiers` : o.attachments.length ? "📎 Pièce jointe" : "")}
                 <span className="msg-meta float-right ml-4 mt-1 leading-none">En attente…</span>
               </div>
             </div>
@@ -258,9 +258,9 @@ function ConversationScreen() {
           myId={user?.id}
           replyTo={replyTo}
           editing={editing}
-          onSend={(text, attachment) => {
+          onSend={(text, attachments) => {
             stickToBottom.current = true;
-            chat.send(text, attachment, replyTo?.id ?? null);
+            chat.send(text, attachments, replyTo?.id ?? null);
             setReplyTo(null);
           }}
           onSaveEdit={(text) => {
@@ -275,7 +275,13 @@ function ConversationScreen() {
         />
       </div>
 
-      {viewing && <ImageViewer asset={viewing} onClose={() => setViewing(null)} />}
+      {viewing && (
+        <ImageViewer
+          asset={viewing.photos[viewing.index]}
+          onClose={() => setViewing(null)}
+          gallery={viewing.photos.length > 1 ? { index: viewing.index, count: viewing.photos.length, onGo: (index) => setViewing({ ...viewing, index }) } : undefined}
+        />
+      )}
     </div>
   );
 }

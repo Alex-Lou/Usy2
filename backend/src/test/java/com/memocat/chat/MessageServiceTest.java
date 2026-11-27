@@ -32,6 +32,7 @@ class MessageServiceTest {
     @Mock private UserRepository userRepository;
     @Mock private AssetRepository assetRepository;
     @Mock private com.memocat.repository.MessageReactionRepository reactionRepository;
+    @Mock private com.memocat.repository.MessageExtraAttachmentRepository extraRepository;
     @Mock private ApplicationEventPublisher events;
 
     @InjectMocks private MessageService messageService;
@@ -91,6 +92,44 @@ class MessageServiceTest {
         assertThat(dto.content()).isEmpty();
         assertThat(dto.attachment().id()).isEqualTo(7L);
         assertThat(dto.attachment().originalFilename()).isEqualTo("plage.jpg");
+    }
+
+    @Test
+    void severalPhotosGoTogetherInOrder() {
+        User lou = user(1, "lou");
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(lou));
+        for (long id = 11; id <= 13; id++) {
+            Asset photo = new Asset("k" + id + ".jpg", "p" + id + ".jpg", "image/jpeg", 10, lou);
+            ReflectionTestUtils.setField(photo, "id", id);
+            when(assetRepository.findById(id)).thenReturn(Optional.of(photo));
+        }
+        when(messageRepository.save(any(Message.class))).thenAnswer(inv -> {
+            Message m = inv.getArgument(0);
+            ReflectionTestUtils.setField(m, "id", 50L);
+            return m;
+        });
+
+        MessageDto dto = messageService.sendWithFiles("lou", "", java.util.List.of(12L, 11L, 13L, 11L), null, null, null);
+
+        assertThat(dto.attachment().id()).isEqualTo(12L); // the first picked, for older apps
+        assertThat(dto.attachments()).extracting(a -> a.id()).containsExactly(12L, 11L, 13L); // all, in order, once
+        org.mockito.ArgumentCaptor<com.memocat.domain.MessageExtraAttachment> extra =
+                org.mockito.ArgumentCaptor.forClass(com.memocat.domain.MessageExtraAttachment.class);
+        verify(extraRepository, org.mockito.Mockito.times(2)).save(extra.capture());
+        assertThat(extra.getAllValues()).extracting(e -> e.getAsset().getId()).containsExactly(11L, 13L);
+        assertThat(extra.getAllValues()).extracting(e -> e.getPosition()).containsExactly(1, 2);
+        assertThat(extra.getAllValues()).extracting(e -> e.getMessageId()).containsOnly(50L);
+    }
+
+    @Test
+    void elevenFilesAreTooMany() {
+        when(userRepository.findByUsername("lou")).thenReturn(Optional.of(user(1, "lou")));
+        java.util.List<Long> eleven = java.util.stream.LongStream.rangeClosed(1, 11).boxed().toList();
+
+        assertThatThrownBy(() -> messageService.sendWithFiles("lou", "", eleven, null, null, null))
+                .isInstanceOf(ContentValidationException.class)
+                .hasMessageContaining("10");
+        verify(messageRepository, never()).save(any());
     }
 
     @Test

@@ -2,9 +2,11 @@ package com.memocat.chat.dto;
 
 import com.memocat.asset.dto.AssetDto;
 import com.memocat.auth.dto.UserDto;
+import com.memocat.domain.Asset;
 import com.memocat.domain.Message;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,13 +19,27 @@ import java.util.List;
  */
 public record MessageDto(Long id, UserDto sender, String content, AssetDto attachment, Instant createdAt,
                          List<MessageReactionDto> reactions, ReplyPreviewDto replyTo, String style, String effect,
-                         Instant deliveredAt, Instant readAt, Instant editedAt, String kind) {
+                         Instant deliveredAt, Instant readAt, Instant editedAt, String kind,
+                         List<AssetDto> attachments) {
 
     public static MessageDto from(Message message) {
         return from(message, List.of());
     }
 
     public static MessageDto from(Message message, List<MessageReactionDto> reactions) {
+        return from(message, reactions, List.of());
+    }
+
+    /**
+     * {@code extras}: the files sent with the first one, in order. {@code attachments}
+     * holds them all (the first one too, also in {@code attachment} for older apps).
+     */
+    public static MessageDto from(Message message, List<MessageReactionDto> reactions, List<Asset> extras) {
+        List<AssetDto> all = new ArrayList<>();
+        if (message.getAttachment() != null) {
+            all.add(AssetDto.from(message.getAttachment()));
+        }
+        extras.forEach(a -> all.add(AssetDto.from(a)));
         return new MessageDto(
                 message.getId(),
                 UserDto.from(message.getSender()),
@@ -37,6 +53,7 @@ public record MessageDto(Long id, UserDto sender, String content, AssetDto attac
                 message.getDeliveredAt(),
                 message.getReadAt(),
                 message.getEditedAt(),
-                message.getKind());
+                message.getKind(),
+                all);
     }
 }

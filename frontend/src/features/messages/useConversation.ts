@@ -18,7 +18,7 @@ const SLOW_AFTER_MS = 2500; // « Connexion… » only shows when it takes longe
 export interface Outgoing {
   key: number;
   text: string;
-  attachment: Asset | null;
+  attachments: Asset[];
   replyToId: number | null;
 }
 
@@ -162,7 +162,7 @@ export function useConversation(myId: number | undefined) {
     const client = clientRef.current;
     if (!connected || !client || outbox.length === 0) return;
     try {
-      outbox.forEach((o) => sendMessage(client, o.text, o.attachment?.id ?? null, o.replyToId));
+      outbox.forEach((o) => sendMessage(client, o.text, o.attachments.map((a) => a.id), o.replyToId));
       setOutbox([]);
     } catch {
       /* the socket fell again: they stay and leave at the next connection */
@@ -225,18 +225,18 @@ export function useConversation(myId: number | undefined) {
     setHasOlder(next + 1 < p.totalPages);
   }, [page]);
 
-  const send = useCallback((text: string, attachment: Asset | null, replyToId: number | null) => {
+  const send = useCallback((text: string, attachments: Asset[], replyToId: number | null) => {
     const client = clientRef.current;
     feel.tap();
     if (client?.connected) {
       try {
-        sendMessage(client, text, attachment?.id ?? null, replyToId);
+        sendMessage(client, text, attachments.map((a) => a.id), replyToId);
         return;
       } catch {
         /* closed in between: it waits below */
       }
     }
-    setOutbox((list) => [...list, { key: ++outboxKey.current, text, attachment, replyToId }]);
+    setOutbox((list) => [...list, { key: ++outboxKey.current, text, attachments, replyToId }]);
   }, []);
 
   // Optimistic: my emoji shows at once, and goes back if the server refuses.

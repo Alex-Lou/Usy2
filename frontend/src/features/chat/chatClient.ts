@@ -44,17 +44,18 @@ export function createChatClient(
 }
 
 /**
- * `attachmentAssetId`: a photo/GIF/document uploaded first (see attachments.ts);
+ * `attachmentIds`: up to 10 photos/GIFs/files uploaded first, in order (see attachments.ts);
  * `replyToId`: the earlier message this one answers.
  */
 export function sendMessage(
   client: Client,
   content: string,
-  attachmentAssetId: number | null = null,
+  attachmentIds: number[] = [],
   replyToId: number | null = null,
   look: MessageLook = NO_LOOK,
 ): void {
-  client.publish({ destination: "/app/chat.send", body: JSON.stringify({ content, attachmentAssetId, replyToId, style: look.style, effect: look.effect }) });
+  const body = { content, attachmentAssetId: attachmentIds[0] ?? null, attachmentAssetIds: attachmentIds, replyToId, style: look.style, effect: look.effect };
+  client.publish({ destination: "/app/chat.send", body: JSON.stringify(body) });
 }
 
 /** The conversation is on screen up to this message: the other one sees it read (✓✓ in colour). */
