@@ -3,6 +3,7 @@ import { Icon } from "../../components/ui/Icon";
 import { useInView } from "../../hooks/useInView";
 import { getAssetUrl } from "../../lib/api/blobCache";
 import type { Asset } from "../../lib/api/assets";
+import { audioTitle } from "./attachments";
 import { formatDuration } from "./useVoiceRecorder";
 
 /**
@@ -63,6 +64,7 @@ export function VoiceNote({ asset, mine }: { asset: Asset; mine: boolean }) {
   }
 
   const progress = duration ? Math.min(1, current / duration) : 0;
+  const title = audioTitle(asset); // a song sent from the phone: its name; a voice message: none
 
   return (
     <div
@@ -76,7 +78,7 @@ export function VoiceNote({ asset, mine }: { asset: Asset; mine: boolean }) {
         type="button"
         onClick={toggle}
         disabled={!src || error}
-        aria-label={playing ? "Mettre en pause" : "Écouter le message vocal"}
+        aria-label={playing ? "Mettre en pause" : title ? `Écouter ${title}` : "Écouter le message vocal"}
         className={
           "grid h-10 w-10 shrink-0 place-items-center rounded-full press disabled:opacity-50 " +
           (mine ? "bg-white/25" : "bg-primary text-white")
@@ -85,6 +87,7 @@ export function VoiceNote({ asset, mine }: { asset: Asset; mine: boolean }) {
         <Icon name={playing ? "pause" : "play"} size={18} />
       </button>
       <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+        {title && <span className="truncate text-[13px] font-semibold leading-tight">{title}</span>}
         <span className={"block h-1.5 overflow-hidden rounded-full " + (mine ? "bg-white/30" : "bg-border")}>
           <span
             className={"block h-full rounded-full " + (mine ? "bg-white" : "bg-primary")}
@@ -92,7 +95,7 @@ export function VoiceNote({ asset, mine }: { asset: Asset; mine: boolean }) {
           />
         </span>
         <span className={"text-xs tabular-nums " + (mine ? "opacity-90" : "text-text-muted")}>
-          {error ? "Lecture impossible" : `🎤 ${formatDuration(playing || current > 0 ? current : duration ?? 0)}`}
+          {error ? "Lecture impossible" : `${title ? "🎵" : "🎤"} ${formatDuration(playing || current > 0 ? current : duration ?? 0)}`}
         </span>
       </span>
       {src && (

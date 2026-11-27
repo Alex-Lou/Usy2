@@ -84,7 +84,11 @@ public class Previews {
         if (contentType.startsWith("image/")) {
             return "📷 Photo";
         }
-        return contentType.startsWith("audio/") ? "🎤 Message vocal" : "📎 " + shorten(filename);
+        if (contentType.startsWith("audio/")) {
+            // Recorded in the app (stored as "vocal.…"), or a file sent from the phone: its name.
+            return filename == null || filename.startsWith("vocal.") ? "🎤 Message vocal" : "🎵 " + shorten(filename);
+        }
+        return "📎 " + shorten(filename);
     }
 
     /**

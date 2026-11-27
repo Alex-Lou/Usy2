@@ -3,7 +3,7 @@ import { GifPicker } from "../../components/rich/GifPicker";
 import { isSendKey, useAutoGrow } from "../../components/rich/useRichInput";
 import { Icon } from "../../components/ui/Icon";
 import { uploadAudio, type Asset } from "../../lib/api/assets";
-import { checkFile, DOCUMENT_ACCEPT, uploadAttachment } from "../chat/attachments";
+import { checkFile, FILE_ACCEPT, uploadAttachment } from "../chat/attachments";
 import { takeForChat } from "../feed/sharedContent";
 import { quoteText } from "../chat/Quote";
 import type { Message } from "../chat/types";
@@ -215,7 +215,7 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
 
       <input ref={photoInput} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
       <input ref={cameraInput} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
-      <input ref={fileInput} type="file" accept={DOCUMENT_ACCEPT} hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
+      <input ref={fileInput} type="file" accept={FILE_ACCEPT} hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
       {gifs && <GifPicker onPick={(asset) => onSend("", asset)} onClose={() => setGifs(false)} />}
     </form>
   );

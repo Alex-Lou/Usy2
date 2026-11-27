@@ -1,8 +1,23 @@
 import { fetchBlobUrl } from "../../lib/api/client";
-import { uploadDocument, uploadImage, type Asset } from "../../lib/api/assets";
+import { uploadAudioFile, uploadDocument, uploadImage, type Asset } from "../../lib/api/assets";
 
 /** What the document picker offers (the server checks the real content). */
 export const DOCUMENT_ACCEPT = ".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.odp,.txt,.csv";
+
+/** Audio files the « Fichier » picker also offers. */
+const AUDIO_EXTENSIONS = [".mp3", ".m4a", ".aac", ".wav", ".ogg", ".oga", ".opus", ".flac"];
+export const FILE_ACCEPT = `${DOCUMENT_ACCEPT},audio/*,${AUDIO_EXTENSIONS.join(",")}`;
+
+function isAudioFile(file: File): boolean {
+  const name = file.name.toLowerCase();
+  return file.type.startsWith("audio/") || AUDIO_EXTENSIONS.some((ext) => name.endsWith(ext));
+}
+
+/** Sent from the phone (a song…) rather than recorded in the app (stored as « vocal.… »). */
+export function audioTitle(asset: Pick<Asset, "originalFilename">): string | null {
+  const name = asset.originalFilename ?? "";
+  return !name || /^vocal\.[a-z0-9]+$/i.test(name) ? null : name.replace(/\.[a-z0-9]{2,4}$/i, "");
+}
 
 const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024;
 
@@ -30,9 +45,10 @@ export function checkFile(file: File): string | null {
   return null;
 }
 
-/** Photos are compressed on the device (GIFs kept animated); documents go as-is. */
+/** Photos are compressed on the device (GIFs kept animated); audio and documents go as-is. */
 export function uploadAttachment(file: File, effect: string | null = null): Promise<Asset> {
-  return isImageFile(file) ? uploadImage(file, effect) : uploadDocument(file);
+  if (isImageFile(file)) return uploadImage(file, effect);
+  return isAudioFile(file) ? uploadAudioFile(file) : uploadDocument(file);
 }
 
 function saveBlobUrl(url: string, filename: string): void {
