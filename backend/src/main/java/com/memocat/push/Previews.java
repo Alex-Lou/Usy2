@@ -1,15 +1,17 @@
 package com.memocat.push;
 
-import com.memocat.domain.Asset;
 import com.memocat.domain.Message;
 import com.memocat.repository.CommentRepository;
 import com.memocat.repository.CoupleNoteRepository;
+import com.memocat.repository.MessageExtraAttachmentRepository;
 import com.memocat.repository.MessageRepository;
 import com.memocat.repository.MoodRepository;
 import com.memocat.repository.PostRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,14 +34,16 @@ public class Previews {
     private final MessageRepository messages;
     private final CoupleNoteRepository notes;
     private final MoodRepository moods;
+    private final MessageExtraAttachmentRepository extras;
 
     public Previews(PostRepository posts, CommentRepository comments, MessageRepository messages,
-                    CoupleNoteRepository notes, MoodRepository moods) {
+                    CoupleNoteRepository notes, MoodRepository moods, MessageExtraAttachmentRepository extras) {
         this.posts = posts;
         this.comments = comments;
         this.messages = messages;
         this.notes = notes;
         this.moods = moods;
+        this.extras = extras;
     }
 
     @Transactional(readOnly = true)
@@ -56,7 +60,18 @@ public class Previews {
 
     @Transactional(readOnly = true)
     public String message(Long id) {
-        return id == null ? null : messages.findById(id).map(Previews::message).orElse(null);
+        return id == null ? null : messages.findById(id).map(m -> {
+            String text = shorten(m.getContent());
+            if (text != null || m.getAttachment() == null) {
+                return text;
+            }
+            List<String> types = new ArrayList<>();
+            types.add(m.getAttachment().getContentType());
+            extras.findByMessageIdInOrderByMessageIdAscPositionAsc(List.of(id)).forEach(e -> types.add(e.getAsset().getContentType()));
+            return types.size() == 1
+                    ? attachment(m.getAttachment().getContentType(), m.getAttachment().getOriginalFilename())
+                    : several(types);
+        }).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -70,10 +85,11 @@ public class Previews {
         return userId == null ? null : moods.findById(userId).map(m -> shorten(m.getLabel())).orElse(null);
     }
 
-    private static String message(Message m) {
-        String text = shorten(m.getContent());
-        Asset a = m.getAttachment();
-        return text != null || a == null ? text : attachment(a.getContentType(), a.getOriginalFilename());
+
+    /** Several photos or files sent together: « 📷 3 photos », else « 📎 3 fichiers ». */
+    static String several(List<String> contentTypes) {
+        boolean photos = contentTypes.stream().allMatch(t -> t.startsWith("image/"));
+        return photos ? "📷 " + contentTypes.size() + " photos" : "📎 " + contentTypes.size() + " fichiers";
     }
 
     /** What a message sent without words carries. */

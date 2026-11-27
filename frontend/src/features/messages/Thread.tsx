@@ -6,6 +6,7 @@ import type { Asset } from "../../lib/api/assets";
 import { flashElement } from "../../lib/flash";
 import { AttachmentView } from "../chat/AttachmentView";
 import { isImage } from "../chat/attachments";
+import { MediaGrid } from "./MediaGrid";
 import { LongPress, ReactionBar, ReactionPills } from "../chat/MessageReactions";
 import { quoteText } from "../chat/Quote";
 import { EmojiSheet } from "./EmojiSheet";
@@ -56,7 +57,8 @@ export function Thread({ messages, myId, partnerName, onOpenImage, onReact, onRe
   messages: Message[];
   myId: number | undefined;
   partnerName: string;
-  onOpenImage: (a: Asset) => void;
+  /** A photo was tapped: these photos of the message, opened on that one. */
+  onOpenImage: (photos: Asset[], index: number) => void;
   onReact: (messageId: number, emoji: string | null) => void;
   onReply: (m: Message) => void;
   onEdit: (m: Message) => void;
@@ -79,9 +81,12 @@ export function Thread({ messages, myId, partnerName, onOpenImage, onReact, onRe
         const lastOfRun = !sameRun(m, next);
         const firstOfRun = !sameRun(prev, m);
         const text = m.content.trim();
-        const bare = !!text && !m.attachment && isBare(m.content);
-        const url = text && !m.attachment ? firstUrl(m.content) : null;
-        const photoOnly = !text && !!m.attachment && isImage(m.attachment);
+        const files = m.attachments?.length ? m.attachments : m.attachment ? [m.attachment] : [];
+        const photos = files.filter(isImage);
+        const others = files.filter((f) => !isImage(f));
+        const bare = !!text && files.length === 0 && isBare(m.content);
+        const url = text && files.length === 0 ? firstUrl(m.content) : null;
+        const photoOnly = !text && files.length > 0 && others.length === 0;
         const day = (!prev || dayKey(prev.createdAt) !== dayKey(m.createdAt)) && (
           <div className="my-3 flex justify-center">
             <span className="msg-day rounded-full px-3 py-1 text-[11px] font-semibold first-letter:uppercase">{dayLabel(m.createdAt)}</span>
@@ -115,9 +120,17 @@ export function Thread({ messages, myId, partnerName, onOpenImage, onReact, onRe
                         <span className="line-clamp-2 opacity-90">{quoteText(m.replyTo)}</span>
                       </button>
                     )}
-                    {m.attachment && (
+                    {files.length === 1 && (
                       <div className={text ? "mb-1" : ""}>
-                        <AttachmentView asset={m.attachment} mine={mine} onOpenImage={onOpenImage} />
+                        <AttachmentView asset={files[0]} mine={mine} onOpenImage={(a) => onOpenImage([a], 0)} />
+                      </div>
+                    )}
+                    {files.length > 1 && (
+                      // Sent together: the photos as one mosaic, then the other files one under the other.
+                      <div className={"flex flex-col gap-1.5 " + (text ? "mb-1" : "")}>
+                        {photos.length === 1 && <AttachmentView asset={photos[0]} mine={mine} onOpenImage={(a) => onOpenImage([a], 0)} />}
+                        {photos.length > 1 && <MediaGrid photos={photos} onOpen={(i) => onOpenImage(photos, i)} />}
+                        {others.map((f) => <AttachmentView key={f.id} asset={f} mine={mine} onOpenImage={(a) => onOpenImage([a], 0)} />)}
                       </div>
                     )}
                     {text && <RichBody text={m.content} className="text-[14.5px]" />}

@@ -5,9 +5,11 @@ import com.memocat.chat.dto.MessageDto;
 import com.memocat.chat.dto.MessageReactionDto;
 import com.memocat.domain.Asset;
 import com.memocat.domain.Message;
+import com.memocat.domain.MessageExtraAttachment;
 import com.memocat.domain.MessageReaction;
 import com.memocat.domain.User;
 import com.memocat.repository.AssetRepository;
+import com.memocat.repository.MessageExtraAttachmentRepository;
 import com.memocat.repository.MessageReactionRepository;
 import com.memocat.repository.MessageRepository;
 import com.memocat.repository.UserRepository;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,20 +35,24 @@ public class MessageService {
 
     private static final int MAX_CONTENT = 2000;
     private static final int MAX_PAGE_SIZE = 100;
+    /** Photos or files sent together in one message, shown as a grid. */
+    public static final int MAX_FILES = 10;
 
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final AssetRepository assetRepository;
     private final MessageReactionRepository reactionRepository;
+    private final MessageExtraAttachmentRepository extraRepository;
     private final ApplicationEventPublisher events;
 
     public MessageService(MessageRepository messageRepository, UserRepository userRepository,
                           AssetRepository assetRepository, MessageReactionRepository reactionRepository,
-                          ApplicationEventPublisher events) {
+                          MessageExtraAttachmentRepository extraRepository, ApplicationEventPublisher events) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
         this.assetRepository = assetRepository;
         this.reactionRepository = reactionRepository;
+        this.extraRepository = extraRepository;
         this.events = events;
     }
 
@@ -66,17 +73,38 @@ public class MessageService {
     @Transactional
     public MessageDto send(String username, String content, Long attachmentAssetId, Long replyToId,
                            String style, String effect) {
+        return sendWithFiles(username, content, attachmentAssetId == null ? List.of() : List.of(attachmentAssetId),
+                replyToId, style, effect);
+    }
+
+    /**
+     * {@code assetIds}: up to {@link #MAX_FILES} files the sender uploaded, in the
+     * order they were picked (each one theirs). The first is the message's
+     * attachment, the others follow it (see MessageExtraAttachment).
+     */
+    @Transactional
+    public MessageDto sendWithFiles(String username, String content, List<Long> assetIds, Long replyToId,
+                                    String style, String effect) {
         String bubble = MessageLooks.style(style);
         String screen = MessageLooks.effect(effect);
         User sender = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Asset attachment = resolveAttachment(sender, attachmentAssetId);
+        List<Long> ids = assetIds == null ? List.of() : assetIds.stream().filter(Objects::nonNull).distinct().toList();
+        if (ids.size() > MAX_FILES) {
+            throw new ContentValidationException(MAX_FILES + " photos ou fichiers au plus par message");
+        }
+        List<Asset> files = ids.stream().map(id -> resolveAttachment(sender, id)).toList();
+        Asset first = files.isEmpty() ? null : files.get(0);
         Message replyTo = replyToId == null ? null : messageRepository.findById(replyToId)
                 .orElseThrow(() -> new ContentValidationException("Le message cité n'existe plus"));
         Message message = messageRepository.save(
-                new Message(sender, validateContent(content, attachment != null), attachment, replyTo, bubble, screen));
+                new Message(sender, validateContent(content, first != null), first, replyTo, bubble, screen));
+        List<Asset> extras = files.size() > 1 ? files.subList(1, files.size()) : List.of();
+        for (int i = 0; i < extras.size(); i++) {
+            extraRepository.save(new MessageExtraAttachment(message.getId(), extras.get(i), i + 1));
+        }
         events.publishEvent(new ChatMessageSent(sender.getId(), sender.getDisplayName(), message.getId()));
-        return MessageDto.from(message);
+        return MessageDto.from(message, List.of(), extras);
     }
 
     /**
@@ -131,7 +159,7 @@ public class MessageService {
         message.edit(validateContent(content, message.getAttachment() != null), Instant.now());
         List<MessageReactionDto> reactions = reactionRepository.findByMessageIdInOrderByCreatedAtAsc(List.of(messageId))
                 .stream().map(MessageReactionDto::from).toList();
-        return MessageDto.from(message, reactions);
+        return MessageDto.from(message, reactions, extrasOf(List.of(messageId)).getOrDefault(messageId, List.of()));
     }
 
     /** How many of the other one's messages {@code username} has not seen yet. */
@@ -150,7 +178,19 @@ public class MessageService {
         Map<Long, List<MessageReactionDto>> reactions = ids.isEmpty() ? Map.of()
                 : reactionRepository.findByMessageIdInOrderByCreatedAtAsc(ids).stream().collect(Collectors.groupingBy(
                         MessageReaction::getMessageId, Collectors.mapping(MessageReactionDto::from, Collectors.toList())));
-        return PageResponse.of(result, m -> MessageDto.from(m, reactions.getOrDefault(m.getId(), List.of())));
+        Map<Long, List<Asset>> extras = extrasOf(ids);
+        return PageResponse.of(result, m -> MessageDto.from(m, reactions.getOrDefault(m.getId(), List.of()),
+                extras.getOrDefault(m.getId(), List.of())));
+    }
+
+    /** The extra files of these messages, in order, in one query. */
+    private Map<Long, List<Asset>> extrasOf(List<Long> messageIds) {
+        if (messageIds.isEmpty()) {
+            return Map.of();
+        }
+        return extraRepository.findByMessageIdInOrderByMessageIdAscPositionAsc(messageIds).stream()
+                .collect(Collectors.groupingBy(MessageExtraAttachment::getMessageId,
+                        Collectors.mapping(MessageExtraAttachment::getAsset, Collectors.toList())));
     }
 
     /** Only a file the sender uploaded themselves can be attached. */

@@ -11,6 +11,14 @@ import { canRecordVoice, formatDuration, MAX_VOICE_SECONDS, useVoiceRecorder } f
 import { MsgIcon } from "./icons";
 
 const MAX_TEXT = 2000;
+/** Photos or files sent together in one message (the server allows as many). */
+const MAX_FILES = 10;
+
+interface Pending {
+  key: number;
+  file: File;
+  preview: string | null;
+}
 
 /**
  * The message box: text that grows, a ＋ for a photo, the camera, a GIF or a
@@ -22,7 +30,7 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
   myId: number | undefined;
   replyTo: Message | null;
   editing: Message | null;
-  onSend: (text: string, attachment: Asset | null) => void;
+  onSend: (text: string, attachments: Asset[]) => void;
   onSaveEdit: (text: string) => void;
   onCancel: () => void;
   onTyping: () => void;
@@ -36,8 +44,10 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
     return () => document.removeEventListener("keydown", close);
   }, [menu]);
   const [gifs, setGifs] = useState(false);
-  const [pending, setPending] = useState<{ file: File; preview: string | null } | null>(null);
+  const [pending, setPending] = useState<Pending[]>([]);
+  const pendingKey = useRef(0);
   const [sending, setSending] = useState(false);
+  const [progress, setProgress] = useState<string | null>(null); // « 2/5 » while several files go up
   const [error, setError] = useState<string | null>(null);
   const ref = useRef<HTMLTextAreaElement>(null);
   const photoInput = useRef<HTMLInputElement>(null);
@@ -57,19 +67,24 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
     if (editing || replyTo) ref.current?.focus();
   }, [editing, replyTo]);
 
-  useEffect(() => () => {
-    if (pending?.preview) URL.revokeObjectURL(pending.preview);
+  // Thumbnails are freed once gone from the strip (and when leaving).
+  const previews = useRef(new Set<string>());
+  useEffect(() => {
+    const kept = new Set(pending.map((p) => p.preview).filter((u): u is string => !!u));
+    previews.current.forEach((u) => !kept.has(u) && URL.revokeObjectURL(u));
+    previews.current = kept;
   }, [pending]);
+  useEffect(() => () => previews.current.forEach((u) => URL.revokeObjectURL(u)), []);
 
   // Content shared from another app, sent here from the feed's "post or message?" choice (once, on arrival).
   useEffect(() => {
     const shared = takeForChat();
     if (!shared) return;
     if (shared.text) setText(shared.text);
-    if (shared.file) pick(shared.file);
+    if (shared.file) pick([shared.file]);
   }, []);
 
-  const voice = useVoiceRecorder((recording) => void run(async () => onSend("", await uploadAudio(recording)), "Envoi du vocal impossible, réessaie."));
+  const voice = useVoiceRecorder((recording) => void run(async () => onSend("", [await uploadAudio(recording)]), "Envoi du vocal impossible, réessaie."));
 
   async function run(task: () => Promise<void>, fallback: string) {
     setSending(true);
@@ -83,16 +98,20 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
     }
   }
 
-  function pick(file: File | undefined) {
+  /** Adds picked files to the strip, up to MAX_FILES in all; a file that can't go is said, the others stay. */
+  function pick(files: File[]) {
     setMenu(false);
-    if (!file) return;
-    const problem = checkFile(file);
-    if (problem) {
-      setError(problem);
-      return;
-    }
-    setError(null);
-    setPending({ file, preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null });
+    if (files.length === 0) return;
+    const room = MAX_FILES - pending.length;
+    const problems = files.map(checkFile).filter((p): p is string => !!p);
+    const ok = files.filter((f) => !checkFile(f));
+    const added = ok.slice(0, Math.max(0, room));
+    setError(problems[0] ?? (ok.length > added.length ? `${MAX_FILES} photos ou fichiers au plus par message` : null));
+    if (added.length === 0) return;
+    setPending((list) => [
+      ...list,
+      ...added.map((file) => ({ key: ++pendingKey.current, file, preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null })),
+    ]);
   }
 
   function submit(e?: FormEvent) {
@@ -103,16 +122,26 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
       else onCancel();
       return;
     }
-    if ((!value && !pending) || sending) return; // not connected yet: it waits in the outbox
-    const file = pending;
+    if ((!value && pending.length === 0) || sending) return; // not connected yet: it waits in the outbox
+    const files = pending;
     void run(async () => {
-      onSend(value, file ? await uploadAttachment(file.file) : null);
+      // One after the other, in the order picked; then one message carries them all.
+      const uploaded: Asset[] = [];
+      try {
+        for (const [i, p] of files.entries()) {
+          if (files.length > 1) setProgress(`${i + 1}/${files.length}`);
+          uploaded.push(await uploadAttachment(p.file));
+        }
+      } finally {
+        setProgress(null);
+      }
+      onSend(value, uploaded);
       setText("");
-      setPending(null);
+      setPending([]);
     }, "Envoi impossible, réessaie.");
   }
 
-  const empty = text.trim().length === 0 && !pending;
+  const empty = text.trim().length === 0 && pending.length === 0;
   const showMic = canRecordVoice && empty && !editing;
 
   if (voice.recording) {
@@ -149,13 +178,43 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
         </div>
       )}
 
-      {pending && (
+      {pending.length === 1 && (
         <div className="msg-field mx-1 mb-1.5 flex items-center gap-3 rounded-2xl p-2">
-          {pending.preview ? <img src={pending.preview} alt="" className="h-14 w-14 rounded-xl object-cover" /> : <Icon name="file" size={28} className="mx-3 text-text-muted" />}
-          <span className="min-w-0 flex-1 truncate text-sm">{pending.file.name}</span>
-          <button type="button" onClick={() => setPending(null)} aria-label="Retirer" className="grid h-8 w-8 place-items-center rounded-full text-text-muted press">
+          {pending[0].preview ? <img src={pending[0].preview} alt="" className="h-14 w-14 rounded-xl object-cover" /> : <Icon name="file" size={28} className="mx-3 text-text-muted" />}
+          <span className="min-w-0 flex-1 truncate text-sm">{pending[0].file.name}</span>
+          <button type="button" onClick={() => setPending([])} aria-label="Retirer" className="grid h-8 w-8 place-items-center rounded-full text-text-muted press">
             <Icon name="x" size={16} />
           </button>
+        </div>
+      )}
+      {pending.length > 1 && (
+        // Several: a strip of thumbnails, each with its own ✕, and how many of the 10.
+        <div className="msg-field mx-1 mb-1.5 rounded-2xl p-2">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto px-1 pt-1">
+            {pending.map((p) => (
+              <div key={p.key} className="relative h-16 w-16 shrink-0">
+                {p.preview ? (
+                  <img src={p.preview} alt="" className="h-full w-full rounded-xl object-cover" />
+                ) : (
+                  <span className="flex h-full w-full flex-col items-center justify-center gap-0.5 rounded-xl bg-surface px-1 text-center">
+                    <Icon name="file" size={20} className="text-text-muted" />
+                    <span className="w-full truncate text-[10px] text-text-muted">{p.file.name}</span>
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setPending((list) => list.filter((x) => x.key !== p.key))}
+                  aria-label={`Retirer ${p.file.name}`}
+                  className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-bg text-text shadow press"
+                >
+                  <Icon name="x" size={12} />
+                </button>
+              </div>
+            ))}
+          </div>
+          <p className="mt-1.5 px-1 text-[11.5px] text-text-muted">
+            {progress ? `Envoi ${progress}…` : `${pending.length} / ${MAX_FILES} · envoyés ensemble`}
+          </p>
         </div>
       )}
 
@@ -213,10 +272,10 @@ export function Composer({ partnerName, myId, replyTo, editing, onSend, onSaveEd
       </div>
       {voice.error && <p role="alert" className="mx-2 mt-1 text-xs text-danger">{voice.error}</p>}
 
-      <input ref={photoInput} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
-      <input ref={cameraInput} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
-      <input ref={fileInput} type="file" accept={FILE_ACCEPT} hidden onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }} />
-      {gifs && <GifPicker onPick={(asset) => onSend("", asset)} onClose={() => setGifs(false)} />}
+      <input ref={photoInput} type="file" accept="image/*" multiple hidden onChange={(e) => { pick(Array.from(e.target.files ?? [])); e.target.value = ""; }} />
+      <input ref={cameraInput} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { pick(Array.from(e.target.files ?? [])); e.target.value = ""; }} />
+      <input ref={fileInput} type="file" accept={FILE_ACCEPT} multiple hidden onChange={(e) => { pick(Array.from(e.target.files ?? [])); e.target.value = ""; }} />
+      {gifs && <GifPicker onPick={(asset) => onSend("", [asset])} onClose={() => setGifs(false)} />}
     </form>
   );
 }

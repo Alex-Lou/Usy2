@@ -15,6 +15,7 @@ export interface Message {
   readAt?: string | null; // when the other one saw it (✓✓ in colour), null until then
   editedAt?: string | null; // when its sender last rewrote it ("modifié"), null if never
   kind?: string | null; // null: a usual message; "thinking": « … pense à toi 💭 », no text
+  attachments?: Asset[]; // all the files sent together, in order (the first one is also `attachment`)
 }
 
 /** Broadcast on /topic/chat-read: readerId has seen the other one's messages up to upToId. */
